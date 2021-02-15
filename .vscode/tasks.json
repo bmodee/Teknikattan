@@ -1,0 +1,51 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Client",
+            "type": "npm",
+            "script": "start",
+            "path": "client/",
+            "group": "build",
+            "problemMatcher": [],
+            "presentation": {
+                "group": "Client/Server"
+            }
+        },
+        {
+            "label": "Server",
+            "type": "shell",
+            "group": "build",
+            "command": "${workspaceFolder}/server/env/Scripts/python main.py",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}/server"
+            },
+            "presentation": {
+                "group": "Client/Server"
+            }
+        },
+        {
+            "label": "Test Server",
+            "type": "shell",
+            "group": "build",
+            "command": "${workspaceFolder}/server/env/Scripts/python test.py",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}/server"
+            },
+            "presentation": {
+                "group": "Client/Server"
+            }
+        },
+        {
+            "label": "Client + Server",
+            "group": "build",
+            "dependsOn": [
+                "Server",
+                "Client"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}

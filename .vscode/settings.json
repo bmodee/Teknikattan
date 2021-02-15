@@ -1,0 +1,15 @@
+{
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": false,
+    "editor.tabCompletion": "on",
+    "python.venvPath": "${workspaceFolder}\\server",
+    "python.analysis.extraPaths": ["server"],
+    "python.terminal.activateEnvironment": true,
+    "python.formatting.provider": "black",
+    "python.formatting.blackPath": "server\\env\\Scripts\\black.exe",
+    "python.formatting.blackArgs": [
+        "--line-length",
+        "119"
+    ],
+    "git.ignoreLimitWarning": true
+}
