@@ -13,6 +13,14 @@ install:
       - client/.npm/
       - client/node_modules/
 
+linting:
+  stage: client-test
+  script:
+    - cd client
+    - npm run lint
+  dependencies:
+    - install
+
 test:unit:
   stage: client-test
   script:
