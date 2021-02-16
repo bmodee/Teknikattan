@@ -1,31 +1,36 @@
-image: node:10
-
-install:
-  stage: client-install
+client:setup:
+  image: node:10
+  stage: setup
   script:
     - cd client
     - npm install
   artifacts:
     name: "artifacts"
     untracked: true
-    expire_in: 60 mins
+    expire_in: 15 mins
+    paths:
+      - client/.npm/
+      - client/node_modules/
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
     paths:
       - client/.npm/
       - client/node_modules/
 
-linting:
-  stage: client-test
+client:linting:
+  image: node:10
+  stage: test
+  needs: ["client:setup"]
   script:
     - cd client
     - npm run lint
-  dependencies:
-    - install
 
-test:unit:
-  stage: client-test
+client:test:
+  image: node:10
+  stage: test
+  needs: ["client:setup"]
   script:
     - cd client
     - npm run test:coverage
-  dependencies:
-    - install
+
   coverage: /All files\s*\|\s*([\d\.]+)/
