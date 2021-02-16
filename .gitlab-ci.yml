@@ -1,6 +1,8 @@
 stages:
-  - setup
-  - test
+  - server-test
+  - client-install
+  - client-test
 
 include:
   - local: .gitlab/server.gitlab-ci.yml
+  - local: .gitlab/client.gitlab-ci.yml

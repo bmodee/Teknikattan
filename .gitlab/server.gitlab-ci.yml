@@ -1,18 +1,16 @@
-image: python
 
-cache:
-  paths:
-    - server/env/
-
-before_script:
-  - python --version
-  - pip install virtualenv
-  - cd server/
-  - python -m venv env
-  - source env/bin/activate
-  - pip install -r requirements.txt
 
 test-server:
-  stage: test
+  image: python
+  cache:
+    paths:
+      - server/env/
+  stage: server-test
   script:
+    - python --version
+    - pip install virtualenv
+    - cd server/
+    - python -m venv env
+    - source env/bin/activate
+    - pip install -r requirements.txt
     - pytest --cov app tests/
