@@ -1,7 +1,13 @@
 {
+    //editor
     "editor.formatOnSave": true,
     "editor.formatOnPaste": false,
     "editor.tabCompletion": "on",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true,
+        "source.organizeImports": true
+    },
+    //python
     "python.venvPath": "${workspaceFolder}\\server",
     "python.analysis.extraPaths": ["server"],
     "python.terminal.activateEnvironment": true,
@@ -11,5 +17,18 @@
         "--line-length",
         "119"
     ],
-    "git.ignoreLimitWarning": true
+    //eslint
+    "eslint.workingDirectories": ["./client"],
+    "eslint.options": {
+        "configFile":"./.eslintrc"
+    },
+    //git
+    "git.ignoreLimitWarning": true,
+    //language specific
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
 }
