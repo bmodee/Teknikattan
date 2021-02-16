@@ -1,5 +1,5 @@
-![coverage report](https://gitlab.liu.se/tddd96-grupp11/teknikattan-scoring-system/badges/dev/coverage.svg?job=test:unit&key_text=Client+Coverage&key_width=110)
-![coverage report](https://gitlab.liu.se/tddd96-grupp11/teknikattan-scoring-system/badges/dev/coverage.svg?job=test-server&key_text=Server+Coverage&key_width=115)
+![coverage report](https://gitlab.liu.se/tddd96-grupp11/teknikattan-scoring-system/badges/dev/coverage.svg?job=client:test&key_text=Client+Coverage&key_width=110)
+![coverage report](https://gitlab.liu.se/tddd96-grupp11/teknikattan-scoring-system/badges/dev/coverage.svg?job=server:test&key_text=Server+Coverage&key_width=115)
 
 
 # Scoring system for Teknikåttan
