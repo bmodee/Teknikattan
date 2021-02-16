@@ -29,14 +29,12 @@
             "label": "Test Server",
             "type": "shell",
             "group": "build",
-            "command": "${workspaceFolder}/server/env/Scripts/python test.py",
+            "command": "env/Scripts/pytest.exe --cov app tests/",
             "problemMatcher": [],
             "options": {
                 "cwd": "${workspaceFolder}/server"
             },
-            "presentation": {
-                "group": "Client/Server"
-            }
+
         },
         {
             "label": "Client + Server",
