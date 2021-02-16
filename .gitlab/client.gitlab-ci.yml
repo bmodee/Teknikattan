@@ -1,0 +1,23 @@
+image: node:10
+
+install:
+  stage: client-install
+  script:
+    - cd client
+    - npm install
+  artifacts:
+    name: "artifacts"
+    untracked: true
+    expire_in: 60 mins
+    paths:
+      - client/.npm/
+      - client/node_modules/
+
+test:unit:
+  stage: client-test
+  script:
+    - cd client
+    - npm run test:coverage
+  dependencies:
+    - install
+  coverage: /All files\s*\|\s*([\d\.]+)/
