@@ -1,20 +1,19 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { useState, useEffect } from "react";
-import axios from "axios";
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import './App.css'
+import logo from './logo.svg'
 
 interface Message {
-  message: string;
+  message: string
 }
 
-function App() {
-  const [currentMessage, setCurrentMessage] = useState<Message>();
+const App: React.FC = () => {
+  const [currentMessage, setCurrentMessage] = useState<Message>()
   useEffect(() => {
-    axios.get<Message>("users/test").then(response=> {
-      setCurrentMessage(response.data);
-    });
-  }, []);
+    axios.get<Message>('users/test').then((response) => {
+      setCurrentMessage(response.data)
+    })
+  }, [])
 
   return (
     <div className="App">
@@ -34,7 +33,7 @@ function App() {
         <p>Current message is {currentMessage?.message}</p>
       </header>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
