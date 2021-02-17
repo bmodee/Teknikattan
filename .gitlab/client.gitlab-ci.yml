@@ -32,7 +32,7 @@ client:linting:
       - dev
       - merge_requests
     changes:
-      - server/**/*
+      - client/**/*
   script:
     - cd client
     - npm run lint
@@ -46,7 +46,7 @@ client:test:
       - dev
       - merge_requests
     changes:
-      - server/**/*
+      - client/**/*
   script:
     - cd client
     - npm run test:coverage
