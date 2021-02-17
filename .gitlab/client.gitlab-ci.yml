@@ -1,6 +1,12 @@
 client:setup:
   image: node:10
   stage: setup
+  only:
+    refs:
+      - dev
+      - merge_requests
+    changes:
+      - client/**/*
   script:
     - cd client
     - npm install
@@ -21,6 +27,12 @@ client:linting:
   image: node:10
   stage: test
   needs: ["client:setup"]
+  only:
+    refs:
+      - dev
+      - merge_requests
+    changes:
+      - server/**/*
   script:
     - cd client
     - npm run lint
@@ -29,8 +41,13 @@ client:test:
   image: node:10
   stage: test
   needs: ["client:setup"]
+  only:
+    refs:
+      - dev
+      - merge_requests
+    changes:
+      - server/**/*
   script:
     - cd client
     - npm run test:coverage
-
   coverage: /All files\s*\|\s*([\d\.]+)/

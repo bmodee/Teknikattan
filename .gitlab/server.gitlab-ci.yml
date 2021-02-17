@@ -1,6 +1,12 @@
 server:setup:
   image: python
   stage: setup
+  only:
+    refs:
+      - dev
+      - merge_requests
+    changes:
+      - server/**/*
   artifacts:
     paths:
       - server/env
@@ -22,6 +28,12 @@ server:test:
   image: python
   stage: test
   needs: ["server:setup"]
+  only:
+    refs:
+      - dev
+      - merge_requests
+    changes:
+      - server/**/*
   script:
     - cd server
     - source env/bin/activate
