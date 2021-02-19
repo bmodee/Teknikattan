@@ -38,7 +38,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint \"./src/**/*.{js,ts,tsx}\"",
-    "test:coverage": "react-scripts test --coverage"
+    "test:coverage": "react-scripts test --coverage --coverageDirectory=output/coverage/jest"
   },
   "browserslist": {
     "production": [
@@ -57,6 +57,10 @@
       "src/**/*.{js,jsx,tsx,ts}",
       "!src/index.tsx",
       "!src/reportWebVitals.ts"
+    ],
+    "coverageReporters": [
+      "text",
+      "cobertura"
     ]
   },
   "proxy": "http://localhost:5000/api/"

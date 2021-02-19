@@ -1,17 +1,18 @@
 import datetime
+
+from app import db
+from app.api import api_blueprint
+from app.database.models import Blacklist, User
+from app.utils.validator import edit_user_schema, login_schema, register_schema, validateObject
 from flask import request
 from flask_jwt_extended import (
-    jwt_required,
     create_access_token,
-    jwt_refresh_token_required,
     create_refresh_token,
     get_jwt_identity,
     get_raw_jwt,
+    jwt_refresh_token_required,
+    jwt_required,
 )
-from app import db
-from app.api import api_blueprint
-from app.database.models import User, Blacklist
-from app.utils.validator import validateObject, login_schema, register_schema, edit_user_schema
 
 
 def get_current_user():

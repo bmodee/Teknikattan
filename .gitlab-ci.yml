@@ -1,6 +1,7 @@
 stages:
   - setup
   - test
+  - report
 
 include:
   - local: .gitlab/server.gitlab-ci.yml

@@ -51,3 +51,25 @@ client:test:
     - cd client
     - npm run test:coverage
   coverage: /All files\s*\|\s*([\d\.]+)/
+  artifacts:
+    paths:
+      - client/output/coverage/jest/cobertura-coverage.xml
+    expire_in: 5 min
+
+client:report:
+  image: python
+  stage: report
+  needs: ["client:test"]
+  only:
+    refs:
+      - dev
+      - merge_requests
+    changes:
+      - client/**/*
+  script:
+    - cd client
+    - python coverage_report.py
+  artifacts:
+    reports:
+      cobertura: client/output/coverage/jest/cobertura-coverage.xml
+    expire_in: 1 week

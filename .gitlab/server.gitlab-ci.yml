@@ -38,3 +38,26 @@ server:test:
     - cd server
     - source env/bin/activate
     - pytest --cov app tests/
+    - coverage xml
+  artifacts:
+    paths:
+      - server/coverage.xml
+    expire_in: 5 min
+
+server:report:
+  image: python
+  stage: report
+  needs: ["server:test"]
+  only:
+    refs:
+      - dev
+      - merge_requests
+    changes:
+      - server/**/*
+  script:
+    - cd server
+    - python coverage_report.py
+  artifacts:
+    reports:
+      cobertura: server/coverage.xml
+    expire_in: 1 week
