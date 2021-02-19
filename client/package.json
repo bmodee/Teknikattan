@@ -52,5 +52,12 @@
       "last 1 safari version"
     ]
   },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,tsx,ts}",
+      "!src/index.tsx",
+      "!src/reportWebVitals.ts"
+    ]
+  },
   "proxy": "http://localhost:5000/api/"
 }
