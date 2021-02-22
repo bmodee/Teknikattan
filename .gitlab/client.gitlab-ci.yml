@@ -5,8 +5,6 @@ client:setup:
     refs:
       - dev
       - merge_requests
-    changes:
-      - client/**/*
   script:
     - cd client
     - npm install
@@ -46,8 +44,6 @@ client:test:
     refs:
       - dev
       - merge_requests
-    changes:
-      - client/**/*
   script:
     - cd client
     - npm run test:coverage
@@ -63,7 +59,6 @@ client:report:
   needs: ["client:test"]
   only:
     refs:
-      - dev
       - merge_requests
     changes:
       - client/**/*

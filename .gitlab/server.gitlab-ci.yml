@@ -5,8 +5,6 @@ server:setup:
     refs:
       - dev
       - merge_requests
-    changes:
-      - server/**/*
   artifacts:
     paths:
       - server/env
@@ -32,8 +30,6 @@ server:test:
     refs:
       - dev
       - merge_requests
-    changes:
-      - server/**/*
   script:
     - cd server
     - source env/bin/activate
@@ -50,7 +46,6 @@ server:report:
   needs: ["server:test"]
   only:
     refs:
-      - dev
       - merge_requests
     changes:
       - server/**/*
