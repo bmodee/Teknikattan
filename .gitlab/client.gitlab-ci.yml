@@ -27,6 +27,7 @@ client:linting:
   image: node:10
   stage: test
   needs: ["client:setup"]
+  allow_failure: true
   only:
     refs:
       - dev
