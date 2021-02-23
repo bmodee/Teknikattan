@@ -1,37 +1,21 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import './App.css'
-import logo from './logo.svg'
-
-interface Message {
-  message: string
-}
+import LoginForm from './components/Login'
+import TestConnection from './components/TestConnection'
 
 const App: React.FC = () => {
-  const [currentMessage, setCurrentMessage] = useState<Message>()
-  useEffect(() => {
-    axios.get<Message>('users/test').then((response) => {
-      setCurrentMessage(response.data)
-    })
-  }, [])
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <p>Current message is {currentMessage?.message}</p>
-      </header>
+    <div className="wrapper">
+      <h1>Application</h1>
+      <TestConnection />
+      <BrowserRouter>
+        <Switch>
+          <Route path="/">
+            <LoginForm />
+          </Route>
+        </Switch>
+      </BrowserRouter>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-  {
+{
     "env": {
         "browser": true,
         "es6": true,
@@ -9,14 +9,15 @@
         "ecmaFeatures": {
             "jsx": true
         },
-        "project": ["tsconfig.json"],
+        "project": [
+            "tsconfig.json"
+        ],
         "ecmaVersion": 2021,
         "sourceType": "module"
     },
-    
     "settings": {
         "react": {
-          "version": "detect"
+            "version": "detect"
         }
     },
     "extends": [
@@ -27,10 +28,28 @@
         "plugin:prettier/recommended"
     ],
     "rules": {
-        "semi":"off",
+        "semi": "off",
         "react/jsx-one-expression-per-line": "off",
-        "prettier/prettier": ["error", {
-           "endOfLine":"auto"
-         }]
+        "prettier/prettier": [
+            "error",
+            {
+                "endOfLine": "auto"
+            }
+        ],
+        "jsx-a11y/label-has-associated-control": [
+            2,
+            {
+                "labelComponents": [
+                    "CustomInputLabel"
+                ],
+                "labelAttributes": [
+                    "label"
+                ],
+                "controlComponents": [
+                    "CustomInput"
+                ],
+                "depth": 3
+            }
+        ]
     }
 }
