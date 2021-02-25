@@ -28,8 +28,10 @@
         "plugin:prettier/recommended"
     ],
     "rules": {
+        
         "semi": "off",
         "react/jsx-one-expression-per-line": "off",
+
         "prettier/prettier": [
             "error",
             {

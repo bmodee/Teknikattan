@@ -1,9 +1,14 @@
+import { Button, TextField } from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
+import { Alert, AlertTitle } from '@material-ui/lab'
 import axios from 'axios'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import { ErrorMessage, Field, Form, Formik } from 'formik'
+import { Formik, FormikHelpers } from 'formik'
 import React, { useState } from 'react'
 import * as Yup from 'yup'
 import { LoginModel } from '../interfaces/models'
+import './Login.css'
+
+const styles = {}
 
 interface LoginState {
   status: number
@@ -13,6 +18,11 @@ interface LoginState {
 interface LoginFormModel {
   model: LoginModel
   error?: string
+}
+
+interface ServerResponse {
+  code: number
+  message: string
 }
 
 const schema: Yup.SchemaOf<LoginFormModel> = Yup.object({
@@ -29,63 +39,82 @@ const schema: Yup.SchemaOf<LoginFormModel> = Yup.object({
   error: Yup.string().optional()
 })
 
-const LoginForm: React.FC = () => {
+const handleSubmit = async (
+  values: LoginFormModel,
+  actions: FormikHelpers<LoginFormModel>
+) => {
+  await axios
+    .post<ServerResponse>(`users/login`, values.model)
+    .then((res) => {
+      actions.resetForm()
+    })
+    .catch(({ response }) => {
+      actions.setFieldError('error', response.data.message)
+    })
+    .finally(() => {
+      actions.setSubmitting(false)
+    })
+}
+
+const LoginForm: React.FC = (props) => {
   const [serverState, setServerState] = useState<LoginFormModel>()
   const initialValues: LoginFormModel = { model: { email: '', password: '' } }
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={schema}
-      onSubmit={async (values, actions) => {
-        await axios
-          .post(`users/login`, values.model)
-          .then((res) => {
-            actions.resetForm()
-          })
-          .catch((error) => {
-            actions.setFieldError('error', 'Invalid email or password')
-          })
-          .finally(() => {
-            actions.setSubmitting(false)
-          })
-      }}
-    >
-      {(formik) => (
-        <Form>
-          <div className="form-group">
-            <label htmlFor="model.email">Email Address</label>
-            <Field name="model.email" type="email" className="form-control" />
-            <ErrorMessage name="model.email">
-              {(msg) => <div className="text-danger">{msg}</div>}
-            </ErrorMessage>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="model.password">Password</label>
-            <Field
+    <div className="login-page">
+      <Formik
+        initialValues={initialValues}
+        validationSchema={schema}
+        onSubmit={handleSubmit}
+      >
+        {(formik) => (
+          <form onSubmit={formik.handleSubmit} className="login-form">
+            <TextField
+              label="Email Address"
+              name="model.email"
+              helperText={
+                formik.touched.model?.email ? formik.errors.model?.email : ''
+              }
+              error={Boolean(formik.errors.model?.email)}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              margin="normal"
+            />
+            <TextField
+              label="Password"
               name="model.password"
               type="password"
-              className="form-control"
+              helperText={
+                formik.touched.model?.password
+                  ? formik.errors.model?.password
+                  : ''
+              }
+              error={Boolean(formik.errors.model?.password)}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              margin="normal"
             />
-            <ErrorMessage name="model.password">
-              {(msg) => <div className="text-danger">{msg}</div>}
-            </ErrorMessage>
-          </div>
-
-          <div className="form-group">
-            <button type="submit" className="btn btn-primary">
-              Login
-            </button>
-          </div>
-          <div className="form-group">
-            <ErrorMessage name="error">
-              {(msg) => <div className="text-danger">{msg}</div>}
-            </ErrorMessage>
-          </div>
-        </Form>
-      )}
-    </Formik>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              disabled={!formik.isValid}
+            >
+              Submit
+            </Button>
+            {formik.errors.error ? (
+              <Alert severity="error">
+                <AlertTitle>Error</AlertTitle>
+                {formik.errors.error}
+              </Alert>
+            ) : (
+              <div />
+            )}
+          </form>
+        )}
+      </Formik>
+    </div>
   )
 }
 
-export default LoginForm
+export default withStyles(styles)(LoginForm)
