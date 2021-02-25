@@ -5,6 +5,7 @@ from app.api import api_blueprint
 from app.database.models import Blacklist, User
 from app.utils.validator import edit_user_schema, login_schema, register_schema, validateObject
 from flask import request
+from flask.globals import session
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
