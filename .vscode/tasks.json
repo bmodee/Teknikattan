@@ -16,7 +16,7 @@
             "label": "Server",
             "type": "shell",
             "group": "build",
-            "command": "${workspaceFolder}/server/env/Scripts/python main.py",
+            "command": "env/Scripts/python main.py",
             "problemMatcher": [],
             "options": {
                 "cwd": "${workspaceFolder}/server"
