@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Client",
+            "label": "Start client",
             "type": "npm",
             "script": "start",
             "path": "client/",
@@ -13,7 +13,26 @@
             }
         },
         {
-            "label": "Server",
+            "label": "Test client",
+            "type": "npm",
+            "script": "test:coverage:html",
+            "path": "client/",
+            "group": "test",
+            "problemMatcher": [],
+        },
+        {
+            "label": "Open client coverage",
+            "type": "shell",
+            "group": "build",
+            "command": "start ./output/coverage/jest/index.html",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}/client"
+            },
+
+        },
+        {
+            "label": "Start server",
             "type": "shell",
             "group": "build",
             "command": "env/Scripts/python main.py",
@@ -26,10 +45,20 @@
             }
         },
         {
-            "label": "Test Server",
+            "label": "Test server",
             "type": "shell",
             "group": "build",
-            "command": "env/Scripts/pytest.exe --cov app tests/",
+            "command": "env/Scripts/pytest.exe --cov-report html --cov app tests/",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}/server"
+            },
+        },
+        {
+            "label": "Open server coverage",
+            "type": "shell",
+            "group": "build",
+            "command": "start ./htmlcov/index.html",
             "problemMatcher": [],
             "options": {
                 "cwd": "${workspaceFolder}/server"
@@ -37,7 +66,7 @@
 
         },
         {
-            "label": "Client + Server",
+            "label": "Start client and server",
             "group": "build",
             "dependsOn": [
                 "Server",

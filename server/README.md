@@ -11,7 +11,7 @@ You will need to do the following things to install the server:
 3. Clone this repository if you haven't done so already.
 4. Open the project folder in VSCode.
 5. Open the integrated terminal by pressing `ctrl+ö`.
-6. Type the following commands (or if you are on Windows, simply paste them) into your terminal:
+6. Type the following commands into your terminal:
 
 ```bash
 # Install virtualenv package. You may need to open as administrator if you get
@@ -29,12 +29,13 @@ py -m venv env
 # This step is different depending on your operating system.
 
 # Windows
-# You migt to run the following before activating the virtual environment.
 Set-ExecutionPolicy Unrestricted -Scope Process
 ./env/Scripts/activate
+# =====
 
 # Linux/Mac
-# source env/bin/activate
+source env/bin/activate
+# =====
 
 # Install all the required packages into your virtual environment.
 pip install -r requirements.txt
@@ -42,35 +43,40 @@ pip install -r requirements.txt
 
 ## Using
 
-After you have done every step described in setup, you are ready to run the server.
-You can either run the server using tasks (recommended) or run it directly in the terminal.
+After you have done every step described in setup, you are ready to start the server.
+To see the tasks described in the following steps, press `ctrl+shift+b`.
 
-### Tasks
+### Starting
 
-You can run the server using Visual Studio Code tasks.
-This is done by pressing `ctrl+shift+b` and running the `Server` task.
+Start the server by running the `Start server` task.
 
-### Terminal
+### Testing
 
-You can also run the server and tests directly from the terminal.
-Before doing anything in the terminal, you need to activate the Python virtual environment (see Setup).
-All of the following snippets assume you are in the `server` folder.
+Run the client tests running the `Test server` task.
 
-Running the server:
+After it has finished, you can view a coverage report.
+This is done by running the `Open server coverage` task.
+
+### Adding and removing new packages
+
+All of the following snippets assume you are in the `server` folder and have activated the virtual environment (see Setup).
+
+Installing new package:
 
 ```bash
-python main.py
+pip install <package>
 ```
 
-Running the tests:
+Uninstalling package:
 
 ```bash
-python test.py
+pip uninstall <package>
 ```
 
-Adding new packages:
+If you have added or removed a package from the repository, you will also have to run the following before commiting it to git:
 
 ```bash
-pip install new_package
 pip freeze > requirements.txt
 ```
+
+Whenever a new package is installed, commited and pushed to git, everyone else needs to run `pip install -r requirements.txt` after pulling to install it as well.

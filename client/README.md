@@ -24,32 +24,33 @@ npm install
 ## Using
 
 After you have done every step described in setup, you are ready to start the client.
-You can either start the client using tasks (recommended) or start it directly in the terminal.
+To see the tasks described in the following steps, press `ctrl+shift+b`.
 
-### Tasks
+### Starting
 
-You can run the client using Visual Studio Code tasks.
-This is done by pressing `ctrl+shift+b` and running the `Client` task.
+Start the server by running the `Start client` task.
 
-### Terminal
+### Testing
 
-You can also run the client directly from the terminal.
+Run the client tests running the `Test client` task.
+
+After it has finished, you can view a coverage report.
+This is done by running the `Open client coverage` task.
+
+### Adding and removing new modules
+
 All of the following snippets assume you are in the `client` folder.
 
-Running the client:
+Installing new module:
 
 ```bash
-npm run start
+npm install <module>
 ```
 
-Installing new modules:
+Uninstalling module:
 
 ```bash
-npm install new_module
+npm uninstall <module>
 ```
 
 Whenever a new module is installed, commited and pushed to git, everyone else needs to run `npm install` after pulling to install it as well.
-
-Author: Victor Löfgren
-
-Last updated: 11 February 2020
