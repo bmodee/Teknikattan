@@ -69,8 +69,8 @@
             "label": "Start client and server",
             "group": "build",
             "dependsOn": [
-                "Server",
-                "Client"
+                "Start server",
+                "Start client"
             ],
             "problemMatcher": []
         }
