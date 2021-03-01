@@ -28,6 +28,7 @@ class City(db.Model):
     name = db.Column(db.String(STRING_SIZE), unique=True)
 
     users = db.relationship("User", backref="city")
+    competitions = db.relationship("Competition", backref="city")
 
     def __init__(self, name):
         self.name = name
@@ -76,8 +77,10 @@ class User(db.Model):
 class Media(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(STRING_SIZE), unique=True)
-    type = db.Column(db.String(STRING_SIZE), nullable=False)
+    type = db.Column(db.Integer, nullable=False)
     upload_by_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+    styles = db.relationship("Style", backref="bg_image")
 
     def __init__(self, filename, type, upload_by_id):
         self.filename = filename
@@ -91,7 +94,7 @@ class Style(db.Model):
     css = db.Column(db.Text, nullable=True)
     bg_image_id = db.Column(db.Integer, db.ForeignKey("media.id"), nullable=True)
 
-    bg_image = db.relationship("Media", foreign_keys=[bg_image_id], uselist=False)
+    competition = db.relationship("Competition", backref="style")
 
     def __init__(self, name, css=None, bg_image_id=None):
         self.name = name
@@ -105,8 +108,8 @@ class Competition(db.Model):
     style_id = db.Column(db.Integer, db.ForeignKey("style.id"), nullable=False)
     city_id = db.Column(db.Integer, db.ForeignKey("city.id"), nullable=False)
 
-    style = db.relationship("Style", foreign_keys=[style_id], uselist=False)
-    city = db.relationship("City", foreign_keys=[city_id], uselist=False)
+    slides = db.relationship("Slide", backref="competition")
+    teams = db.relationship("Team", backref="competition")
 
     def __init__(self, name, style_id, city_id):
         self.name = name
@@ -118,7 +121,8 @@ class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(STRING_SIZE), unique=True)
     competition_id = db.Column(db.Integer, db.ForeignKey("competition.id"), nullable=False)
-    competition = db.relationship("Competition", foreign_keys=[competition_id], uselist=False)
+
+    answered_questions = db.relationship("AnsweredQuestion", backref="team")
 
     def __init__(self, name, competition_id):
         self.name = name
@@ -132,7 +136,7 @@ class Slide(db.Model):
     tweak_settings = db.Column(db.Text, nullable=True)
     competition_id = db.Column(db.Integer, db.ForeignKey("competition.id"), nullable=False)
 
-    competition = db.relationship("Competition", foreign_keys=[competition_id], uselist=False)
+    questions = db.relationship("Question", backref="slide")
 
     def __init__(self, name, order, competition_id, tweak_settings=None):
         self.name = name
@@ -148,7 +152,7 @@ class Question(db.Model):
     timer = db.Column(db.Integer, nullable=False)
     slide_id = db.Column(db.Integer, db.ForeignKey("slide.id"), nullable=False)
 
-    slide = db.relationship("Slide", foreign_keys=[slide_id], uselist=False)
+    answered_questions = db.relationship("AnsweredQuestion", backref="question")
 
     def __init__(self, name, title, timer, slide_id):
         self.name = name
@@ -172,7 +176,9 @@ class TrueFalseQuestion(db.Model):
 class TextQuestion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question_id = db.Column(db.Integer, db.ForeignKey("question.id"), nullable=False)
+
     question = db.relationship("Question", foreign_keys=[question_id], uselist=False)
+    alternatives = db.relationship("TextQuestionAlternative", backref="text_question")
 
     def __init__(self, question_id):
         self.question_id = question_id
@@ -182,7 +188,6 @@ class TextQuestionAlternative(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(STRING_SIZE), nullable=False)
     text_question_id = db.Column(db.Integer, db.ForeignKey("text_question.id"), nullable=False)
-    text_question = db.relationship("TextQuestion", foreign_keys=[text_question_id], uselist=False)
 
     def __init__(self, text, text_question_id):
         self.text = text
@@ -196,6 +201,7 @@ class MCQuestion(db.Model):
     question_id = db.Column(db.Integer, db.ForeignKey("question.id"), nullable=False)
 
     question = db.relationship("Question", foreign_keys=[question_id], uselist=False)
+    alternatives = db.relationship("MCQuestionAlternative", backref="mc_question")
 
     def __init__(self, title, timer, slide_id):
         self.title = title
@@ -209,8 +215,6 @@ class MCQuestionAlternative(db.Model):
     true_false = db.Column(db.Boolean, nullable=False, default=False)
     mc_id = db.Column(db.Integer, db.ForeignKey("mc_question.id"), nullable=False)
 
-    mc = db.relationship("MCQuestion", foreign_keys=[mc_id], uselist=False)
-
     def __init__(self, text, true_false, mc_id):
         self.text = text
         self.true_false = true_false
@@ -223,9 +227,6 @@ class AnsweredQuestion(db.Model):
     score = db.Column(db.Integer, nullable=False)
     question_id = db.Column(db.Integer, db.ForeignKey("question.id"), nullable=False)
     team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
-
-    question = db.relationship("Question", foreign_keys=[question_id], uselist=False)
-    team = db.relationship("Team", foreign_keys=[team_id], uselist=False)
 
     def __init__(self, data, score, question_id, team_id):
         self.data = data
