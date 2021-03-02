@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
@@ -63,11 +64,12 @@
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,tsx,ts}",
       "!src/index.tsx",
-      "!src/reportWebVitals.ts"
+      "!src/reportWebVitals.ts",
+      "!src/components/TestConnection.tsx"
     ],
     "coverageReporters": [
       "text",
-      "cobertura", 
+      "cobertura",
       "html"
     ]
   },

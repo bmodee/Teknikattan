@@ -2,5 +2,6 @@ __pycache__
 *.db
 */env
 *.coverage
+*/coverage
 htmlcov
 .pytest_cache

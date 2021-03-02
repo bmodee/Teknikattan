@@ -17,7 +17,7 @@
             "type": "npm",
             "script": "test:coverage:html",
             "path": "client/",
-            "group": "test",
+            "group": "build",
             "problemMatcher": [],
         },
         {

@@ -28,12 +28,10 @@ interface ServerResponse {
 const schema: Yup.SchemaOf<LoginFormModel> = Yup.object({
   model: Yup.object()
     .shape({
-      email: Yup.string()
-        .email('Email not valid')
-        .required('Email is required'),
+      email: Yup.string().email('Email inte giltig').required('Email krävs'),
       password: Yup.string()
-        .required('Password is required')
-        .min(6, 'Password must be at least 6 characters')
+        .required('Lösenord krävs')
+        .min(6, 'Lösenord måste vara minst 6 karaktärer')
     })
     .required(),
   error: Yup.string().optional()
@@ -69,7 +67,7 @@ const LoginForm: React.FC = (props) => {
         {(formik) => (
           <form onSubmit={formik.handleSubmit} className="login-form">
             <TextField
-              label="Email Address"
+              label="Email Adress"
               name="model.email"
               helperText={
                 formik.touched.model?.email ? formik.errors.model?.email : ''
@@ -80,7 +78,7 @@ const LoginForm: React.FC = (props) => {
               margin="normal"
             />
             <TextField
-              label="Password"
+              label="Lösenord"
               name="model.password"
               type="password"
               helperText={
