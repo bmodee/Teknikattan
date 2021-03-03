@@ -18,9 +18,11 @@ After making a change to either the client or the server while they are running,
 
 ## Workflow
 
+You will need to follow the instructions given below to contribute to this project.
+
 ### Working on an issue
 
-This following steps describe how you choose an issue and create a branch and merge request from it.
+To begin working, you need to choose an issue and create a branch from.
 
 1. See all issues by going to `Issues->Boards`.
 2. The issues no one has started on yet are showed in the `Open` tab. Choose one of these by dragging it into the `In progress` tab and opening it.
@@ -28,20 +30,17 @@ This following steps describe how you choose an issue and create a branch and me
 4. Add the current week as a milestone to the issue (to the right).
 5. Press the little green downarrow on the right of the `Create merge request` button and select and press `Create branch`.
 6. Open the project in VSCode.
-7. Type `git pull`. This will fetch the new branch you just created and you should see it in the log (Example: `* [new branch] 5-add-login-api -> origin/5-add-login-api`)
-8. Switch to it by running `git checkout <issue>-<name>`. (Example: `git checkout 5-add-login-api`)
+7. Type `git pull`. This will fetch the new branch you just created.
+8. Switch to it by running `git checkout <branch>`. (Example: `git checkout 5-add-login-api`)
 
 You are now ready to start working on your issue.
 
 ### Creating a merge request
 
-When you have solved the issue and are ready to merge them into the `dev` will have to create a merge request.
-
-1. On GitLab open `Repository->Branches`.
-2. Find your branch and press `Merge request`.
-
-You have now create a merge request for your branch.
-The next step is to prepare your branch to be merged.
+After solving your issue, you will need to merge your branch into `dev`.
+This is in two steps:
+First you need to prepare your branch to be merged and then create a merge request.
+First, prepare your branch to be merged.
 
 1. Open the project in VSCode.
 2. Checkout your branch, if you are not already on it (`git checkout <branch>`).
@@ -50,22 +49,30 @@ The next step is to prepare your branch to be merged.
    - There will be no conflicting changes, which is also fine.
    - There will be conflicting changes, in which case you will need to merge it manually (see Merge conflicts) before continuing to the next step.
 4. Run `git push`.
-5. Go to GitLab and press `Merge Requests`, open your merge request and press the green `Mark as ready` button (in the top righ corner).
+
+Your branch is now ready to be merged.
+The next step is to create the actual merge request.
+
+1. On GitLab open `Repository->Branches`.
+2. Find your branch and press `Merge request`.
+3. Press `Merge Requests` on the left, open your merge request and press the green `Mark as ready` button (in the top right corner).
 
 The test will then run on your changes in the merge request on GitLab.
-You will be allowed to merge once the pipelines have passed and another person has approved your merge request.
-When this is done, simply press the `Merge` button.
+After the tests have passed and another person has approved your merged request, you will be able to merge.
+To merge your branch the tests will have to pass and another person has to approve your merge request.
+When this is done, press the `Merge` button.
 
 ### Merge conflicts
 
 You will need to manually merge if there is a merge conflict between your branch and another.
 This is simply done by opening the project in VSCode and going to the Git tab on the left (git symbol).
-You will then see som files marked with `C`, which means that there are conflicts in these files.
-Open them one by one and choose if you want to keep incoming changes (from `dev`), current changes (from your branch) or both.
-The only thing you really need to do is removing the `<<<`, `===` and `>>>` symbols from the document, although you don't have to do it by hand.
-A merge typically looks like the following picture in plain (try opening this in VSCode and see how it looks).
-Simply solve all the merge conflicts in every file, run the tests to make sure it still works.
-When you are done, simply commit and push your changes.
+You will then see som files marked with `C`, which indicates that there are conflicts in these files.
+You will have to go through all of the merge conflicts and solve them in each file.
+A merge typically looks like the code snippet at the bottom of this document in plain text (try opening this in VSCode and see how it looks).
+The only thing you really need to do is removing the `<<<<<<<`, `=======` and `>>>>>>>` symbols from the document, although you don't have to do it by hand.
+In VSCode, you can simply choose if you want to keep incoming changes (from the branch you merging into), current changes (from your branch) or both.
+Solve all the merge conflicts in every file and run the tests to make sure it still works.
+When you are done, commit and push your changes.
 
 ```
 <<<<<<< file.txt
