@@ -2,6 +2,7 @@ import datetime
 
 from app import db
 from app.api import api_blueprint
+from app.database.controller import add_user
 from app.database.models import Blacklist, User
 from app.utils.validator import edit_user_schema, login_schema, register_schema, validateObject
 from flask import request
@@ -90,11 +91,12 @@ def create():
     if existing_user != None:
         return {"message": "User already exists"}, 400
 
-    user = User(json_dict["email"], json_dict["password"])
-    db.session.add(user)
+    add_user(json_dict["email"], json_dict["password"], json_dict["role"], json_dict["city"])
     db.session.commit()
 
-    return user.get_dict(), 200
+    item_user = User.query.filter_by(email=json_dict["email"]).first()
+
+    return item_user.get_dict(), 200
 
 
 @api_blueprint.route("/users/", methods=["PUT"])

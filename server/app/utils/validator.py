@@ -17,6 +17,8 @@ login_schema = {
 register_schema = {
     "email": {"type": "string", "required": True, "regex": _email_regex},
     "password": {"type": "string", "required": True, "minlength": 6, "maxlength": 128},
+    "role": {"type": "string", "required": True},
+    "city": {"type": "string", "required": True},
 }
 
 edit_user_schema = {

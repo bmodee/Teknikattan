@@ -2,8 +2,8 @@ from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended.jwt_manager import JWTManager
 from flask_sqlalchemy import SQLAlchemy
-from app.database import Base
 
+from app.database import Base
 
 bcrypt = Bcrypt()
 jwt = JWTManager()

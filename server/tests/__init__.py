@@ -6,9 +6,15 @@ from app import create_app, db
 def app():
     app = create_app("configmodule.TestingConfig")
 
+    """
     with app.app_context():
         db.drop_all()
         db.create_all()
+        yield app
+    """
+    app.app_context().push()
+    db.drop_all()
+    db.create_all()
     return app
 
 
