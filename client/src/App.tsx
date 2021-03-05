@@ -6,7 +6,6 @@ import Main from './Main'
 const theme = createMuiTheme({
   palette: {
     primary: {
-      // Purple and green play nicely together.
       main: '#6200EE',
     },
   },
