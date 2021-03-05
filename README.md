@@ -22,18 +22,28 @@ You will need to follow the instructions given below to contribute to this proje
 
 ### Working on an issue
 
-To begin working, you need to choose an issue and create a branch from.
+To begin working, you need to choose an issue and create a branch from it.
 
-1. See all issues by going to `Issues->Boards`.
-2. The issues no one has started on yet are showed in the `Open` tab. Choose one of these by dragging it into the `In progress` tab and opening it.
-3. Add yourself as an asignee (in top right corner).
-4. Add the current week as a milestone to the issue (to the right).
-5. Press the little green downarrow on the right of the `Create merge request` button and select and press `Create branch`.
-6. Open the project in VSCode.
-7. Type `git pull`. This will fetch the new branch you just created.
-8. Switch to it by running `git checkout <branch>`. (Example: `git checkout 5-add-login-api`)
+1. On GitLab, see this weeks issues by going to `Issues->Milstones` on the left.
+2. Open the milestone for the current week.
+3. All unstarted issues are shown in the left tab labeled `Unstarted Issues`.
+4. Choose one of these issues and click on it.
+5. Add yourself as an asignee (in top right corner).
+6. Press the little green downarrow on the right of the `Create merge request` button and select and press `Create branch`.
+7. Open the project in VSCode.
+8. Type `git pull`. This will fetch the new branch you just created.
+9. Switch to it by running `git checkout <branch>`. (Example: `git checkout 5-add-login-api`)
 
 You are now ready to start working on your issue.
+
+### Adding a new issue
+
+If there are no more issues for the current or you just found something that needs to be done, you can create your own issue.
+
+1. On GitLab, open `Issues` (on the left).
+2. Press the green `New issue` button (in top right corner).
+3. Give it an appropriate name, add yourself as an asignee and add the current week as the milestone.
+4. Press the green `Submit Issue` (in the bottom left corner).
 
 ### Creating a merge request
 
@@ -55,7 +65,7 @@ The next step is to create the actual merge request.
 
 1. On GitLab open `Repository->Branches`.
 2. Find your branch and press `Merge request`.
-3. Press `Merge Requests` on the left, open your merge request and press the green `Mark as ready` button (in the top right corner).
+3. Press `Merge Requests` on the left, open your merge request and press the `Mark as ready` button (in the top right corner).
 
 The test will then run on your changes in the merge request on GitLab.
 After the tests have passed and another person has approved your merged request, you will be able to merge.
