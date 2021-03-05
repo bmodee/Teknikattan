@@ -22,6 +22,7 @@
     "eslint.options": {
         "configFile":"./.eslintrc"
     },
+    "prettier.configPath": "./client/.prettierrc",
     //git
     "git.ignoreLimitWarning": true,
     //language specific

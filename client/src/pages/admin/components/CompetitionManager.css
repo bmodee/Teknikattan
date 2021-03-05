@@ -1,0 +1,13 @@
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items:flex-end;
+}
+
+.new-competition-button {
+  margin-bottom: 8px !important;
+}
+
+.remove-competition {
+  color:red !important;
+}

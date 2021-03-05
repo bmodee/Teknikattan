@@ -9,16 +9,16 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
-  Typography
+  Typography,
 } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import DashboardIcon from '@material-ui/icons/Dashboard'
 import MailIcon from '@material-ui/icons/Mail'
 import React from 'react'
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom'
-import './AdminView.css'
-import CompetitionManager from './CompetitionManager'
-import Regions from './Regions'
+import './AdminPage.css'
+import CompetitionManager from './components/CompetitionManager'
+import Regions from './components/Regions'
 
 const drawerWidth = 240
 const menuItems = ['Startsida', 'Regioner', 'Användare', 'Tävlingshanterare']
@@ -26,36 +26,34 @@ const menuItems = ['Startsida', 'Regioner', 'Användare', 'Tävlingshanterare']
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex'
+      display: 'flex',
     },
     appBar: {
       width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth
+      marginLeft: drawerWidth,
     },
     drawer: {
       width: drawerWidth,
       flexShrink: 0,
-      marginRight: drawerWidth
+      marginRight: drawerWidth,
     },
     drawerPaper: {
-      width: drawerWidth
+      width: drawerWidth,
     },
     // necessary for content to be below app bar
     toolbar: theme.mixins.toolbar,
     content: {
       flexGrow: 1,
       backgroundColor: theme.palette.background.default,
-      paddingLeft: theme.spacing(30)
-    }
+      paddingLeft: theme.spacing(30),
+    },
   })
 )
 
 const AdminView: React.FC = (props) => {
   const classes = useStyles()
   const [openIndex, setOpenIndex] = React.useState(0)
-  const match = useRouteMatch()
-  console.log(match)
-  const { path, url } = match
+  const { path, url } = useRouteMatch()
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -70,7 +68,7 @@ const AdminView: React.FC = (props) => {
         className={(classes.drawer, 'background')}
         variant="permanent"
         classes={{
-          paper: classes.drawerPaper
+          paper: classes.drawerPaper,
         }}
         anchor="left"
       >
@@ -87,9 +85,7 @@ const AdminView: React.FC = (props) => {
                 selected={index === openIndex}
                 onClick={() => setOpenIndex(index)}
               >
-                <ListItemIcon>
-                  {text === 'Dashboard' ? <DashboardIcon /> : <MailIcon />}
-                </ListItemIcon>
+                <ListItemIcon>{index === 0 ? <DashboardIcon /> : <MailIcon />}</ListItemIcon>
                 <ListItemText primary={text} />
               </ListItem>
             ))}
@@ -97,14 +93,7 @@ const AdminView: React.FC = (props) => {
           <Divider />
           <List>
             <ListItem>
-              <Button
-                component={Link}
-                to="/"
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-              >
+              <Button component={Link} to="/" type="submit" fullWidth variant="contained" color="primary">
                 Logga ut
               </Button>
             </ListItem>
