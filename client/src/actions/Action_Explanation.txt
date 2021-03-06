@@ -1,0 +1,8 @@
+An action is a plain JavaScript object that has a type field.
+The actions, the events that occur in the app based on user input,
+and trigger updates in the state
+
+You can think of an action as an event that describes something 
+that happened in the application.
+
+https://redux.js.org/tutorials/fundamentals/part-2-concepts-data-flow
