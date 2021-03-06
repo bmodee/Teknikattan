@@ -48,7 +48,7 @@ If there are no more issues for the current or you just found something that nee
 ### Creating a merge request
 
 After solving your issue, you will need to merge your branch into `dev`.
-This is in two steps:
+This is done in two steps:
 First you need to prepare your branch to be merged and then create a merge request.
 First, prepare your branch to be merged.
 
@@ -65,12 +65,10 @@ The next step is to create the actual merge request.
 
 1. On GitLab open `Repository->Branches`.
 2. Find your branch and press `Merge request`.
-3. Press `Merge Requests` on the left, open your merge request and press the `Mark as ready` button (in the top right corner).
+3. Press `Submit merge request` button (in the bottom the left corner).
 
-The test will then run on your changes in the merge request on GitLab.
-After the tests have passed and another person has approved your merged request, you will be able to merge.
-To merge your branch the tests will have to pass and another person has to approve your merge request.
-When this is done, press the `Merge` button.
+A green `Merge` button will appear when all tests have passed (run automatically) and another person has approved your merge request.
+You cannot approve your own merge requests but once it's approved anyone can merge.
 
 ### Merge conflicts
 
@@ -82,7 +80,7 @@ A merge typically looks like the code snippet at the bottom of this document in 
 The only thing you really need to do is removing the `<<<<<<<`, `=======` and `>>>>>>>` symbols from the document, although you don't have to do it by hand.
 In VSCode, you can simply choose if you want to keep incoming changes (from the branch you merging into), current changes (from your branch) or both.
 Solve all the merge conflicts in every file and run the tests to make sure it still works.
-When you are done, commit and push your changes.
+Commit and push your changes when you are done.
 
 ```
 <<<<<<< file.txt
