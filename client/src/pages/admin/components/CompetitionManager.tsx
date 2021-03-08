@@ -176,7 +176,7 @@ const CompetitionManager: React.FC = (props) => {
               .map((row) => (
                 <TableRow key={row.name}>
                   <TableCell scope="row">
-                    <Button color="primary" component={Link} to={`/competition-id=${row.id}`}>
+                    <Button color="primary" component={Link} to={`/editor/competition-id=${row.id}`}>
                       {row.name}
                     </Button>
                   </TableCell>

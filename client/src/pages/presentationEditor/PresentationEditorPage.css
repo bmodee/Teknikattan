@@ -1,0 +1,23 @@
+.toolbar-container {
+  display:flex;
+  justify-content: space-between;
+}
+
+.view-button {
+  margin-right: 8px;
+}
+
+.view-button-group {
+  display: flex;
+  flex-direction: row;
+}
+
+.slide-list-item {
+  text-align: center !important;
+  height: 60px;
+}
+
+.right-drawer-tab {
+  height: 64px;
+  min-width: 130px !important;
+}

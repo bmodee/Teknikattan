@@ -1,4 +1,5 @@
 import { createMuiTheme, ThemeProvider } from '@material-ui/core'
+import { teal } from '@material-ui/core/colors'
 import React from 'react'
 import './App.css'
 import Main from './Main'
@@ -7,6 +8,9 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       main: '#6200EE',
+    },
+    secondary: {
+      main: teal.A400,
     },
   },
 })
