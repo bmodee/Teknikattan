@@ -1,5 +1,4 @@
 import pytest
-from app.database.controller import add_user
 from app.database.models import (
     City,
     Competition,
@@ -14,6 +13,7 @@ from app.database.models import (
     Team,
     User,
 )
+import app.database.controller as dbc
 from app.database.populate import add_default_values
 from app.utils.test_helpers import *
 
@@ -27,7 +27,7 @@ def test_user(client):
     item_user = User.query.filter_by(email="test@test.se").first()
 
     # Assert user
-    assert item_user != None
+    assert item_user is not None
     assert item_user.city.name == "Linköping"
     assert item_user.role.name == "Admin"
 
@@ -52,7 +52,7 @@ def test_media_style(client):
 
     # Assert image
     item_media = Media.query.filter_by(filename="bild.png").first()
-    assert item_media != None
+    assert item_media is not None
     assert len(item_user.media) == 1
     assert item_media.upload_by.email == "test@test.se"
 
@@ -62,7 +62,7 @@ def test_media_style(client):
 
     # Assert style
     item_style = Style.query.filter_by(name="template").first()
-    assert item_style != None
+    assert item_style is not None
     assert len(item_media.styles) == 1
     assert item_style.bg_image.filename == "bild.png"
 
@@ -95,7 +95,7 @@ def test_question(client):
     item_competition = Competition.query.filter_by(name="teknik8").first()
     item_competition_2 = Competition.query.filter_by(name="teknik9").first()
 
-    assert item_competition != None
+    assert item_competition is not None
     assert item_competition.id == 1
     assert item_competition.style.name == "template"
     assert item_competition.city.name == "Linköping"
@@ -131,9 +131,9 @@ def test_question(client):
     item_slide2 = Slide.query.filter_by(order=2).first()
     item_slide3 = Slide.query.filter_by(order=3).first()
 
-    assert item_slide1 != None
-    assert item_slide2 != None
-    assert item_slide3 != None
+    assert item_slide1 is not None
+    assert item_slide2 is not None
+    assert item_slide3 is not None
 
     # Add questions
     question_type_bool = QuestionType.query.filter_by(name="Boolean").first()
@@ -143,8 +143,8 @@ def test_question(client):
     db.session.add(Question("Fråga2", 1, question_type_multiple.id, item_slide3.id))
     db.session.commit()
 
-    assert question_type_bool != None
-    assert question_type_multiple != None
+    assert question_type_bool is not None
+    assert question_type_multiple is not None
 
     item_q1 = Question.query.filter_by(name="Fråga1").first()
     item_q2 = Question.query.filter_by(name="Fråga2").first()

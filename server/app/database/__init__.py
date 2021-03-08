@@ -1,6 +1,5 @@
 import sqlalchemy as sa
 from flask_sqlalchemy.model import Model
-from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.sql import func
 
 

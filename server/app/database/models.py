@@ -1,7 +1,4 @@
-from enum import unique
-
 from app import bcrypt, db
-from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 
 STRING_SIZE = 254
@@ -45,10 +42,9 @@ class User(db.Model):
 
     _password = db.Column(db.LargeBinary(60), nullable=False)
 
-    # Change to false for Two factor authen
     authenticated = db.Column(db.Boolean, default=False)
-    twoAuthConfirmed = db.Column(db.Boolean, default=True)
-    twoAuthCode = db.Column(db.String(STRING_SIZE), nullable=True)
+    # twoAuthConfirmed = db.Column(db.Boolean, default=True)
+    # twoAuthCode = db.Column(db.String(STRING_SIZE), nullable=True)
 
     role_id = db.Column(db.Integer, db.ForeignKey("role.id"), nullable=False)
     city_id = db.Column(db.Integer, db.ForeignKey("city.id"), nullable=False)

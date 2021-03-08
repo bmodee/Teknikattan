@@ -1,12 +1,11 @@
 import datetime
 
+import app.database.controller as dbc
 from app import db
 from app.api import api_blueprint
-from app.database.controller import add_user
 from app.database.models import Blacklist, User
-from app.utils.validator import edit_user_schema, login_schema, register_schema, validateObject
+from app.utils.validator import edit_user_schema, login_schema, register_schema, validate_object
 from flask import request
-from flask.globals import session
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -36,15 +35,15 @@ def test_auth():
 def login():
     json_dict = request.get_json(force=True)
 
-    validate_msg = validateObject(login_schema, json_dict)
-    if validate_msg != None:
+    validate_msg = validate_object(login_schema, json_dict)
+    if validate_msg is not None:
         return {"message": validate_msg}, 400
 
     email = json_dict["email"]
     password = json_dict["password"]
     user = User.query.filter_by(email=email).first()
 
-    # Dont show the user that the email was correct unless the password was also correct
+    # Don't show the user that the email was correct unless the password was also correct
     if not user:
         return {"message": "The email or password you entered is incorrect."}, 401
 
@@ -82,17 +81,16 @@ def refresh():
 def create():
     json_dict = request.get_json(force=True)
 
-    validate_msg = validateObject(register_schema, json_dict)
-    if validate_msg != None:
+    validate_msg = validate_object(register_schema, json_dict)
+    if validate_msg is not None:
         return {"message": validate_msg}, 400
 
     existing_user = User.query.filter_by(email=json_dict["email"]).first()
 
-    if existing_user != None:
+    if existing_user is not None:
         return {"message": "User already exists"}, 400
 
-    add_user(json_dict["email"], json_dict["password"], json_dict["role"], json_dict["city"])
-    db.session.commit()
+    dbc.add.user(json_dict["email"], json_dict["password"], json_dict["role"], json_dict["city"])
 
     item_user = User.query.filter_by(email=json_dict["email"]).first()
 
@@ -104,8 +102,8 @@ def create():
 def edit():
     json_dict = request.get_json(force=True)
 
-    validate_msg = validateObject(edit_user_schema, json_dict)
-    if validate_msg != None:
+    validate_msg = validate_object(edit_user_schema, json_dict)
+    if validate_msg is not None:
         return {"message": validate_msg}, 400
 
     user = get_current_user()

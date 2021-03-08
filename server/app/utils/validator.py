@@ -1,7 +1,7 @@
 from cerberus import Validator
 
 
-def validateObject(schema, obj, allow_unknown=False):
+def validate_object(schema, obj, allow_unknown=False):
     v = Validator(schema, allow_unknown)
     if not v.validate(obj):
         return v.errors

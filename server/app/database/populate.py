@@ -1,5 +1,5 @@
+import app.database.controller as dbc
 from app import db
-from app.database.controller import add_user
 from app.database.models import City, MediaType, QuestionType, Role
 
 media_types = ["Image", "Video"]
@@ -11,24 +11,23 @@ cities = ["Linköping"]
 def add_default_values():
 
     # Add media types
-    for type in media_types:
-        db.session.add(MediaType(type))
+    for item in media_types:
+        db.session.add(MediaType(item))
 
     # Add question types
-    for type in question_types:
-        db.session.add(QuestionType(type))
+    for item in question_types:
+        db.session.add(QuestionType(item))
 
     # Add roles
-    for role in roles:
-        db.session.add(Role(role))
+    for item in roles:
+        db.session.add(Role(item))
 
     # Add cities
-    for city in cities:
-        db.session.add(City(city))
+    for item in cities:
+        db.session.add(City(item))
 
     # Commit changes to db
     db.session.commit()
 
     # Add user with role and city
-    add_user("test@test.se", "password", "Admin", "Linköping")
-    db.session.commit()
+    dbc.add.user("test@test.se", "password", "Admin", "Linköping")

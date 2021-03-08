@@ -38,4 +38,4 @@ def identity(payload):
 def check_if_token_in_blacklist(decrypted_token):
     jti = decrypted_token["jti"]
 
-    return models.Blacklist.query.filter_by(jti=jti).first() != None
+    return models.Blacklist.query.filter_by(jti=jti).first() is not None
