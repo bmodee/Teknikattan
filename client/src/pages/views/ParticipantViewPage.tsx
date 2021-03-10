@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ParticipantViewPage: React.FC = (props) => {
+const ParticipantViewPage: React.FC = () => {
   return <div>Deltagare</div>
 }
 

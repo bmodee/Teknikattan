@@ -29,7 +29,7 @@ const accountSchema: Yup.SchemaOf<AccountLoginFormModel> = Yup.object({
 const handleAccountSubmit = async (values: AccountLoginFormModel, actions: FormikHelpers<AccountLoginFormModel>) => {
   await axios
     .post<ServerResponse>(`users/login`, values.model)
-    .then((res) => {
+    .then(() => {
       actions.resetForm()
     })
     .catch(({ response }) => {
@@ -41,7 +41,7 @@ const handleAccountSubmit = async (values: AccountLoginFormModel, actions: Formi
     })
 }
 
-const AdminLogin: React.FC = (props) => {
+const AdminLogin: React.FC = () => {
   const accountInitialValues: AccountLoginFormModel = {
     model: { email: '', password: '' },
   }

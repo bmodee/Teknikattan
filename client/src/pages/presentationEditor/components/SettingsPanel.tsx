@@ -17,7 +17,7 @@ function TabContent(props: TabPanelProps) {
   return <div>3</div>
 }
 
-const SettingsPanel: React.FC = (props) => {
+const SettingsPanel: React.FC = () => {
   const [activeTab, setActiveTab] = React.useState(0)
   return (
     <div>

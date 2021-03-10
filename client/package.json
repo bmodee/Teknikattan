@@ -53,7 +53,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint \"./src/**/*.{js,ts,tsx}\"",
+    "lint": "eslint \"./src/**/*.{ts,tsx}\"",
     "test:coverage": "react-scripts test --coverage --coverageDirectory=output/coverage/jest",
     "test:coverage:html": "npm test -- --coverage --watchAll=false --coverageDirectory=output/coverage/jest"
   },

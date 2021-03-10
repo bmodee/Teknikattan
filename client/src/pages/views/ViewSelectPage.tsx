@@ -3,8 +3,8 @@ import React from 'react'
 import { Link, useRouteMatch } from 'react-router-dom'
 import './ViewSelectPage.css'
 
-const ViewSelectPage: React.FC = (props) => {
-  const { path, url } = useRouteMatch()
+const ViewSelectPage: React.FC = () => {
+  const url = useRouteMatch().url
   return (
     <div className="root">
       <div className="button-group">

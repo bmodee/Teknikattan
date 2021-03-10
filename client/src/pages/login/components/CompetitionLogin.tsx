@@ -32,7 +32,7 @@ const handleCompetitionSubmit = async (
   console.log(values.model)
   await axios
     .post<ServerResponse>(`users/login`, { code: values.model.code })
-    .then((res) => {
+    .then(() => {
       actions.resetForm()
     })
     .catch(({ response }) => {
@@ -44,7 +44,7 @@ const handleCompetitionSubmit = async (
     })
 }
 
-const CompetitionLogin: React.FC = (props) => {
+const CompetitionLogin: React.FC = () => {
   const competitionInitialValues: CompetitionLoginFormModel = {
     model: { code: '' },
   }

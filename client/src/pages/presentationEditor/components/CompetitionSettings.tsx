@@ -24,11 +24,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
-interface TeamListItemProps {
-  name: string
-}
 
-const CompetitionSettings: React.FC = (props) => {
+const CompetitionSettings: React.FC = () => {
   const classes = useStyles()
   const initialList = [
     { id: '1', name: 'Lag1' },

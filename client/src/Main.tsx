@@ -8,7 +8,7 @@ import JudgeViewPage from './pages/views/JudgeViewPage'
 import ParticipantViewPage from './pages/views/ParticipantViewPage'
 import ViewSelectPage from './pages/views/ViewSelectPage'
 
-const Main = () => {
+const Main: React.FC = () => {
   return (
     <BrowserRouter>
       <Switch>

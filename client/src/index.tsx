@@ -23,10 +23,7 @@ declare global {
 // const store = createStore(allReducers, composeEnhancers(applyMiddleware()))
 
 // simple store with plugin
-const store = createStore(
-  allReducers,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-)
+const store = createStore(allReducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
 
 // Provider wraps the app component so that it can access store
 ReactDOM.render(

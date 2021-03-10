@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-const LoginPage: React.FC = (props) => {
+const LoginPage: React.FC = () => {
   const classes = useStyles()
   const [loginTab, setLoginTab] = React.useState(0)
   return (

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const AudienceViewPage: React.FC = (props) => {
+const AudienceViewPage: React.FC = () => {
   return <div>Publik</div>
 }
 

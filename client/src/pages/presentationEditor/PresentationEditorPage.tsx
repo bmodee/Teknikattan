@@ -68,7 +68,7 @@ interface CompetitionParams {
   id: string
 }
 
-const PresentationEditorPage: React.FC = (props) => {
+const PresentationEditorPage: React.FC = () => {
   const classes = useStyles()
   const params: CompetitionParams = useParams()
   return (
@@ -103,7 +103,7 @@ const PresentationEditorPage: React.FC = (props) => {
         <div className={classes.toolbar} />
         <Divider />
         <List>
-          {slides.map((slide, index) => (
+          {slides.map((slide) => (
             <ListItem className="slide-list-item" divider button key={slide.name}>
               <ListItemText primary={slide.name} />
             </ListItem>

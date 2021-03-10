@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const CompetitionManager: React.FC = (props) => {
+const CompetitionManager: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const classes = useStyles()
   const yearInitialValue = 0
@@ -124,7 +124,7 @@ const CompetitionManager: React.FC = (props) => {
               <MenuItem value={noFilterText} onClick={() => setRegion(regionInitialValue)}>
                 {noFilterText}
               </MenuItem>
-              {regions.map((text, index) => (
+              {regions.map((text) => (
                 <MenuItem key={text} value={text} onClick={() => setRegion(text)}>
                   {text}
                 </MenuItem>
@@ -143,7 +143,7 @@ const CompetitionManager: React.FC = (props) => {
               <MenuItem value={noFilterText} onClick={() => setYear(yearInitialValue)}>
                 {noFilterText}
               </MenuItem>
-              {years.map((year, index) => (
+              {years.map((year) => (
                 <MenuItem key={year} value={year} onClick={() => setYear(year)}>
                   {year}
                 </MenuItem>

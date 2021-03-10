@@ -1,6 +1,6 @@
 import React from 'react'
 
-const JudgeViewPage: React.FC = (props) => {
+const JudgeViewPage: React.FC = () => {
   return <div>Judge</div>
 }
 

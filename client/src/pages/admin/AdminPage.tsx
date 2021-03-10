@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const AdminView: React.FC = (props) => {
+const AdminView: React.FC = () => {
   const classes = useStyles()
   const [openIndex, setOpenIndex] = React.useState(0)
   const { path, url } = useRouteMatch()
