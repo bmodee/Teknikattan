@@ -5,6 +5,7 @@ import { Formik, FormikHelpers } from 'formik'
 import React from 'react'
 import * as Yup from 'yup'
 import { CompetitionLoginModel } from '../../../interfaces/models'
+import { LoginForm } from './styled'
 
 interface CompetitionLoginFormModel {
   model: CompetitionLoginModel
@@ -55,7 +56,7 @@ const CompetitionLogin: React.FC = () => {
       onSubmit={handleCompetitionSubmit}
     >
       {(formik) => (
-        <form onSubmit={formik.handleSubmit} className="login-form">
+        <LoginForm onSubmit={formik.handleSubmit}>
           <TextField
             label="Tävlingskod"
             name="model.code"
@@ -76,7 +77,7 @@ const CompetitionLogin: React.FC = () => {
           ) : (
             <div />
           )}
-        </form>
+        </LoginForm>
       )}
     </Formik>
   )

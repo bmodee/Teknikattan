@@ -15,7 +15,7 @@ import TableRow from '@material-ui/core/TableRow'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import './CompetitionManager.css'
+import { NewCompetitionButton, RemoveCompetition, TopBar } from './styled'
 
 const BootstrapInput = withStyles((theme: Theme) =>
   createStyles({
@@ -103,7 +103,7 @@ const CompetitionManager: React.FC = () => {
 
   return (
     <div>
-      <div className="top-bar">
+      <TopBar>
         <div>
           <FormControl className={classes.margin}>
             <InputLabel shrink id="demo-customized-textbox">
@@ -151,10 +151,10 @@ const CompetitionManager: React.FC = () => {
             </Select>
           </FormControl>
         </div>
-        <Button color="secondary" variant="contained" className="new-competition-button">
+        <NewCompetitionButton color="secondary" variant="contained">
           Ny Tävling
-        </Button>
-      </div>
+        </NewCompetitionButton>
+      </TopBar>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
@@ -195,9 +195,9 @@ const CompetitionManager: React.FC = () => {
       <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         <MenuItem onClick={handleClose}>Starta</MenuItem>
         <MenuItem onClick={handleClose}>Duplicera</MenuItem>
-        <MenuItem className="remove-competition" onClick={handleClose}>
+        <RemoveCompetition onClick={handleClose}>
           Ta bort
-        </MenuItem>
+        </RemoveCompetition>
       </Menu>
     </div>
   )

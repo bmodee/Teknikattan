@@ -5,6 +5,7 @@ import { Formik, FormikHelpers } from 'formik'
 import React from 'react'
 import * as Yup from 'yup'
 import { AccountLoginModel } from '../../../interfaces/models'
+import { LoginForm } from './styled'
 
 interface AccountLoginFormModel {
   model: AccountLoginModel
@@ -48,7 +49,7 @@ const AdminLogin: React.FC = () => {
   return (
     <Formik initialValues={accountInitialValues} validationSchema={accountSchema} onSubmit={handleAccountSubmit}>
       {(formik) => (
-        <form onSubmit={formik.handleSubmit} className="login-form">
+        <LoginForm onSubmit={formik.handleSubmit}>
           <TextField
             label="Email Adress"
             name="model.email"
@@ -85,7 +86,7 @@ const AdminLogin: React.FC = () => {
           ) : (
             <div />
           )}
-        </form>
+        </LoginForm>
       )}
     </Formik>
   )

@@ -1,16 +1,14 @@
-import { Button, Divider, Typography } from '@material-ui/core'
+import { Divider, Typography } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import Toolbar from '@material-ui/core/Toolbar'
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import SettingsPanel from './components/SettingsPanel'
-import './PresentationEditorPage.css'
+import { SlideListItem, ToolBarContainer, ViewButton, ViewButtonGroup } from './styled'
 
 function createSlide(name: string) {
   return { name }
@@ -75,22 +73,22 @@ const PresentationEditorPage: React.FC = () => {
     <div className={classes.root}>
       <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar className="toolbar-container">
+        <ToolBarContainer>
           <Typography variant="h6" noWrap>
             Tävling nr: {params.id}
           </Typography>
-          <div className="view-button-group">
-            <Button className="view-button" variant="contained" color="secondary">
+          <ViewButtonGroup>
+            <ViewButton variant="contained" color="secondary">
               Åskådarvy
-            </Button>
-            <Button className="view-button" variant="contained" color="secondary">
+            </ViewButton>
+            <ViewButton variant="contained" color="secondary">
               Deltagarvy
-            </Button>
-            <Button className="view-button" variant="contained" color="secondary">
+            </ViewButton>
+            <ViewButton variant="contained" color="secondary">
               Domarvy
-            </Button>
-          </div>
-        </Toolbar>
+            </ViewButton>
+          </ViewButtonGroup>
+        </ToolBarContainer>
       </AppBar>
       <Drawer
         className={classes.leftDrawer}
@@ -104,9 +102,9 @@ const PresentationEditorPage: React.FC = () => {
         <Divider />
         <List>
           {slides.map((slide) => (
-            <ListItem className="slide-list-item" divider button key={slide.name}>
+            <SlideListItem divider button key={slide.name}>
               <ListItemText primary={slide.name} />
-            </ListItem>
+            </SlideListItem>
           ))}
         </List>
       </Drawer>

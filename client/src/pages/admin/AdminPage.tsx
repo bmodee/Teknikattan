@@ -9,14 +9,13 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
-  Typography,
+  Typography
 } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import DashboardIcon from '@material-ui/icons/Dashboard'
 import MailIcon from '@material-ui/icons/Mail'
 import React from 'react'
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom'
-import './AdminPage.css'
 import CompetitionManager from './components/CompetitionManager'
 import Regions from './components/Regions'
 
@@ -72,7 +71,7 @@ const AdminView: React.FC = () => {
         }}
         anchor="left"
       >
-        <div className="background">
+        <div>
           <div className={classes.toolbar} />
           <Divider />
           <List>

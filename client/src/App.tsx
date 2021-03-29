@@ -1,28 +1,32 @@
-import { createMuiTheme, ThemeProvider } from '@material-ui/core'
-import { teal } from '@material-ui/core/colors'
+import { createMuiTheme, MuiThemeProvider, StylesProvider } from '@material-ui/core'
 import React from 'react'
-import './App.css'
+import { ThemeProvider } from 'styled-components'
 import Main from './Main'
+import { Wrapper } from './styled'
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#6200EE',
+      main: '#11064D',
     },
     secondary: {
-      main: teal.A400,
+      main: '#A6141D',
     },
   },
 })
 
 const App: React.FC = () => {
   return (
-    <div className="wrapper">
-      <ThemeProvider theme={theme}>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
-        <Main />
-      </ThemeProvider>
-    </div>
+    <StylesProvider injectFirst>
+      <Wrapper>
+        <MuiThemeProvider theme={theme}>
+          <ThemeProvider theme={theme}>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+            <Main />
+          </ThemeProvider>
+        </MuiThemeProvider>
+      </Wrapper>
+    </StylesProvider>
   )
 }
 

@@ -3,7 +3,7 @@ import { makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import AdminLogin from './components/AdminLogin'
 import CompetitionLogin from './components/CompetitionLogin'
-import './LoginPage.css'
+import { LoginPageContainer } from './styled'
 
 interface TabPanelProps {
   activeTab: number
@@ -27,7 +27,7 @@ const LoginPage: React.FC = () => {
   const classes = useStyles()
   const [loginTab, setLoginTab] = React.useState(0)
   return (
-    <div className="login-page">
+    <LoginPageContainer>
       <div className={classes.root}>
         <AppBar position="static">
           <Tabs value={loginTab} onChange={(event, selectedTab) => setLoginTab(selectedTab)}>
@@ -37,7 +37,7 @@ const LoginPage: React.FC = () => {
         </AppBar>
         <LoginContent activeTab={loginTab} />
       </div>
-    </div>
+    </LoginPageContainer>
   )
 }
 

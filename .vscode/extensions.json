@@ -6,6 +6,7 @@
         "dbaeumer.vscode-eslint",
         "ms-vsliveshare.vsliveshare",
         "cssho.vscode-svgviewer",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "jpoissonnier.vscode-styled-components"
     ]
 }
