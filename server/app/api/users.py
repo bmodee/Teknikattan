@@ -1,9 +1,10 @@
 import datetime
 
 import app.database.controller as dbc
+import app.utils.http_codes as codes
 from app import db
-from app.api import api_blueprint
-from app.database.models import Blacklist, User
+from app.api import admin_required, api_blueprint, object_response, query_response, text_response
+from app.database.models import Blacklist, City, Role, User
 from app.utils.validator import edit_user_schema, login_schema, register_schema, validate_object
 from flask import request
 from flask_jwt_extended import (
@@ -16,19 +17,34 @@ from flask_jwt_extended import (
 )
 
 
-def get_current_user():
+##Helpers
+def _get_current_user():
     return User.query.filter_by(id=get_jwt_identity()).first()
+
+
+def _create_token(user):
+    expires = datetime.timedelta(days=7)
+    claims = {"role": user.role.name}
+
+    return create_access_token(identity=user.id, expires_delta=expires, user_claims=claims)
 
 
 @api_blueprint.route("/users/test", methods=["GET"])
 def test():
-    return {"message": "hello teknik8"}, 200
+    return text_response("hello teknik8")
 
 
 @api_blueprint.route("/users/test_auth", methods=["GET"])
 @jwt_required
+@admin_required()
 def test_auth():
-    return {"message": "you are authenticated"}, 200
+    return text_response("you are authenticated")
+
+
+@api_blueprint.route("/roles", methods=["GET"])
+@jwt_required
+def get_roles():
+    return query_response(Role.query.all())
 
 
 @api_blueprint.route("/users/login", methods=["POST"])
@@ -37,26 +53,20 @@ def login():
 
     validate_msg = validate_object(login_schema, json_dict)
     if validate_msg is not None:
-        return {"message": validate_msg}, 400
+        return text_response(validate_msg, codes.BAD_REQUEST)
 
-    email = json_dict["email"]
-    password = json_dict["password"]
+    email = json_dict.get("email")
+    password = json_dict.get("password")
     user = User.query.filter_by(email=email).first()
 
-    # Don't show the user that the email was correct unless the password was also correct
-    if not user:
-        return {"message": "The email or password you entered is incorrect."}, 401
+    if not user or not user.is_correct_password(password):
+        return text_response("Invalid email or password", codes.UNAUTHORIZED)
 
-    if not user.is_correct_password(password):
-        return {"message": "The email or password you entered is incorrect."}, 401
-
-    expires = datetime.timedelta(days=7)
-    access_token = create_access_token(identity=user.id, expires_delta=expires)
+    access_token = _create_token(user)
     refresh_token = create_refresh_token(identity=user.id)
-    return (
-        {"id": user.id, "access_token": access_token, "refresh_token": refresh_token},
-        200,
-    )
+
+    response = {"id": user.id, "access_token": access_token, "refresh_token": refresh_token}
+    return object_response(response)
 
 
 @api_blueprint.route("/users/logout", methods=["POST"])
@@ -66,15 +76,16 @@ def logout():
 
     db.session.add(Blacklist(jti))
     db.session.commit()
-    return {"message": "message fully logged out"}, 200
+    return text_response("Logged out")
 
 
 @api_blueprint.route("/users/refresh", methods=["POST"])
 @jwt_refresh_token_required
 def refresh():
     current_user = get_jwt_identity()
-    ret = {"access_token": create_access_token(identity=current_user)}
-    return ret, 200
+    response = {"access_token": _create_token(current_user)}
+
+    return object_response(response)
 
 
 @api_blueprint.route("/users/", methods=["POST"])
@@ -83,68 +94,101 @@ def create():
 
     validate_msg = validate_object(register_schema, json_dict)
     if validate_msg is not None:
-        return {"message": validate_msg}, 400
+        return text_response(validate_msg, codes.BAD_REQUEST)
 
-    existing_user = User.query.filter_by(email=json_dict["email"]).first()
+    email = json_dict.get("email")
+    password = json_dict.get("password")
+    role = json_dict.get("role")
+    city = json_dict.get("city")
+
+    existing_user = User.query.filter(User.email == email).first()
 
     if existing_user is not None:
-        return {"message": "User already exists"}, 400
+        return text_response("User already exists", codes.BAD_REQUEST)
 
-    dbc.add.user(json_dict["email"], json_dict["password"], json_dict["role"], json_dict["city"])
+    dbc.add.user(email, password, role, city)
 
-    item_user = User.query.filter_by(email=json_dict["email"]).first()
+    item_user = User.query.filter(User.email == email).first()
 
-    return item_user.get_dict(), 200
+    return query_response(item_user)
 
 
-@api_blueprint.route("/users/", methods=["PUT"])
+@api_blueprint.route("/users/", defaults={"user_id": None}, methods=["PUT"])
+@api_blueprint.route("/users/<int:user_id>", methods=["PUT"])
 @jwt_required
-def edit():
+def edit(user_id):
     json_dict = request.get_json(force=True)
 
     validate_msg = validate_object(edit_user_schema, json_dict)
     if validate_msg is not None:
-        return {"message": validate_msg}, 400
+        return text_response(validate_msg, codes.BAD_REQUEST)
 
-    user = get_current_user()
-    user.name = json_dict["name"].title()
+    if user_id:
+        item_user = User.query.filter(User.id == user_id).first()
+    else:
+        item_user = _get_current_user()
+
+    name = json_dict.get("name")
+    role = json_dict.get("city")
+    city = json_dict.get("password")
+
+    if name:
+        item_user.name = name.title()
+
+    if city:
+        if City.query.filter(City.name == city).first() is None:
+            return text_response(f"City {city} does not exist", codes.BAD_REQUEST)
+        item_user.city = city
+
+    if role:
+        if Role.query.filter(Role.name == role).first() is None:
+            return text_response(f"Role {role} does not exist", codes.BAD_REQUEST)
+        item_user.role = role
 
     db.session.commit()
-    return user.get_dict(), 200
+    db.session.refresh(item_user)
+    return query_response(item_user)
 
 
-@api_blueprint.route("/users/", methods=["DELETE"])
+@api_blueprint.route("/users/", defaults={"user_id": None}, methods=["DELETE"])
+@api_blueprint.route("/users/<int:user_id>", methods=["DELETE"])
 @jwt_required
-def delete():
-    user = get_current_user()
-    db.session.delete(user)
+def delete(user_id):
+    if user_id:
+        item_user = User.query.filter(User.id == user_id).first()
+    else:
+        item_user = _get_current_user()
+
+    db.session.delete(item_user)
     jti = get_raw_jwt()["jti"]
     db.session.add(Blacklist(jti))
     db.session.commit()
-    return {"message": "User was deleted"}, 200
+
+    return text_response("User deleted")
 
 
 ###
 # Getters
 ###
-@api_blueprint.route("/users/", defaults={"UserID": None}, methods=["GET"])
-@api_blueprint.route("/users/<int:UserID>", methods=["GET"])
+@api_blueprint.route("/users/", defaults={"user_id": None}, methods=["GET"])
+@api_blueprint.route("/users/<int:user_id>", methods=["GET"])
 @jwt_required
-def get(UserID):
+def get(user_id):
 
-    if UserID:
-        user = User.query.filter_by(id=UserID).first()
+    if user_id:
+        user = User.query.filter(User.id == user_id).first()
     else:
-        user = get_current_user()
+        user = _get_current_user()
 
     if not user:
-        return {"message": "User not found"}, 404
+        return text_response("User not found", codes.NOT_FOUND)
 
-    return user.get_dict(), 200
+    return query_response(user)
 
 
-# Searchable, returns 10 max at default
+# Searchable, returns 15 max at default
 @api_blueprint.route("/users/search", methods=["GET"])
+@jwt_required
 def search():
     arguments = request.args
     query = User.query
@@ -164,4 +208,4 @@ def search():
     else:
         query = query.limit(15)
 
-    return [i.get_dict() for i in query.all()], 200
+    return query_response(query.all())

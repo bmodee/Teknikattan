@@ -23,4 +23,6 @@ register_schema = {
 
 edit_user_schema = {
     "name": {"type": "string", "required": False, "minlength": 1, "maxlength": 50},
+    "role": {"type": "string", "required": False},
+    "city": {"type": "string", "required": False},
 }

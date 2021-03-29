@@ -1,3 +1,4 @@
+import app.database.controller as dbc
 import pytest
 from app.database.models import (
     City,
@@ -13,9 +14,8 @@ from app.database.models import (
     Team,
     User,
 )
-import app.database.controller as dbc
 from app.database.populate import add_default_values
-from app.utils.test_helpers import *
+from app.utils.test_helpers import assert_exists, assert_insert_fail, assert_object_values
 
 from tests import app, client, db
 
@@ -89,8 +89,8 @@ def test_question(client):
 
     # Add competition
     item_city = City.query.filter_by(name="Linköping").first()
-    db.session.add(Competition("teknik8", item_style.id, item_city.id))
-    db.session.add(Competition("teknik9", item_style.id, item_city.id))
+    db.session.add(Competition("teknik8", 2020, item_style.id, item_city.id))
+    db.session.add(Competition("teknik9", 2020, item_style.id, item_city.id))
     db.session.commit()
     item_competition = Competition.query.filter_by(name="teknik8").first()
     item_competition_2 = Competition.query.filter_by(name="teknik9").first()

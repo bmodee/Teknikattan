@@ -12,6 +12,9 @@ class Blacklist(db.Model):
     def __init__(self, jti):
         self.jti = jti
 
+    def get_dict(self):
+        return {"id": self.id, "jti": self.jti, "expire_date": self.expire_date}
+
 
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -21,6 +24,9 @@ class Role(db.Model):
 
     def __init__(self, name):
         self.name = name
+
+    def get_dict(self):
+        return {"id": self.id, "name": self.name}
 
 
 # TODO Region?
@@ -59,7 +65,13 @@ class User(db.Model):
         self.authenticated = False
 
     def get_dict(self):
-        return {"id": self.id, "email": self.email, "name": self.name}
+        return {
+            "id": self.id,
+            "email": self.email,
+            "name": self.name,
+            "role_id": self.role_id,
+            "city_id": self.city_id,
+        }
 
     @hybrid_property
     def password(self):
@@ -105,14 +117,17 @@ class Style(db.Model):
 class Competition(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(STRING_SIZE), unique=True)
+    year = db.Column(db.Integer, nullable=False, default=2020)
+
     style_id = db.Column(db.Integer, db.ForeignKey("style.id"), nullable=False)
     city_id = db.Column(db.Integer, db.ForeignKey("city.id"), nullable=False)
 
     slides = db.relationship("Slide", backref="competition")
     teams = db.relationship("Team", backref="competition")
 
-    def __init__(self, name, style_id, city_id):
+    def __init__(self, name, year, style_id, city_id):
         self.name = name
+        self.year = year
         self.style_id = style_id
         self.city_id = city_id
 

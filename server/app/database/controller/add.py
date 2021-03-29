@@ -13,8 +13,8 @@ def user(email, plaintext_password, role, city):
     return User.query.filter(User.email == email).first()
 
 
-def competition(name, style_id, city_id):
-    db.session.add(Competition(name, style_id, city_id))
+def competition(name, year, style_id, city_id):
+    db.session.add(Competition(name, year, style_id, city_id))
     db.session.commit()
 
     filters = (Competition.name == name) & (Competition.city_id == city_id)
