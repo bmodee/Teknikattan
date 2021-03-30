@@ -1,50 +1,64 @@
 import json
 
-from app.database.populate import add_default_values
-from app.utils.test_helpers import delete, get, post, put
+from app.core.utils.test_helpers import add_default_values, get, post, put
 
-from tests import app, client
+from tests import app, client, db
+
+
+def test_competition(client):
+    add_default_values()
+
+    # Login in with default user
+    response, body = post(client, "/api/auth/login", {"email": "test@test.se", "password": "password"})
+    assert response.status_code == 200
+    headers = {"Authorization": "Bearer " + body["access_token"]}
+
+    # Create competition
+    data = {"name": "c1", "year": 2020, "city_id": 1, "style_id": 1}
+    response, body = post(client, "/api/competitions", data, headers=headers)
+    assert response.status_code == 200
+    assert body["name"] == "c1"
+
+    # Get competition
+    response, body = get(client, "/api/competitions/1", headers=headers)
+    assert response.status_code == 200
+    assert body["name"] == "c1"
 
 
 def test_app(client):
     add_default_values()
 
     # Login in with default user
-    response, body = post(client, "/api/users/login", {"email": "test@test.se", "password": "password"})
-    item = body["result"][0]
-    headers = {"Authorization": "Bearer " + item["access_token"]}
+    response, body = post(client, "/api/auth/login", {"email": "test@test.se", "password": "password"})
+    assert response.status_code == 200
+    headers = {"Authorization": "Bearer " + body["access_token"]}
 
     # Create user
     register_data = {"email": "test1@test.se", "password": "abc123", "role": "Admin", "city": "Linköping"}
-    response, body = post(client, "/api/users/", register_data, headers)
-    item = body["result"][0]
+    response, body = post(client, "/api/auth/signup", register_data, headers)
 
     assert response.status_code == 200
-    assert item["id"] == 2
-    assert "password" not in item
-    assert item["email"] == "test1@test.se"
+    assert body["id"] == 2
+    assert "password" not in body
 
     # Try loggin with wrong PASSWORD
-    response, body = post(client, "/api/users/login", {"email": "test1@test.se", "password": "abc1234"})
+    response, body = post(client, "/api/auth/login", {"email": "test1@test.se", "password": "abc1234"})
     assert response.status_code == 401
 
     # Try loggin with wrong Email
-    response, body = post(client, "/api/users/login", {"email": "testx@test.se", "password": "abc1234"})
+    response, body = post(client, "/api/auth/login", {"email": "testx@test.se", "password": "abc1234"})
     assert response.status_code == 401
 
     # Try loggin with right PASSWORD
-    response, body = post(client, "/api/users/login", {"email": "test1@test.se", "password": "abc123"})
-    item = body["result"][0]
-    headers = {"Authorization": "Bearer " + item["access_token"]}
+    response, body = post(client, "/api/auth/login", {"email": "test1@test.se", "password": "abc123"})
     assert response.status_code == 200
+    headers = {"Authorization": "Bearer " + body["access_token"]}
 
     # Get the current user
-    response, body = get(client, "/api/users/", headers=headers)
-    item = body["result"][0]
+    response, body = get(client, "/api/users", headers=headers)
     assert response.status_code == 200
-    assert item["email"] == "test1@test.se"
+    assert body["email"] == "test1@test.se"
 
-    response, body = put(client, "/api/users/", {"name": "carl carlsson"}, headers=headers)
-    item = body["result"][0]
+    response, body = put(client, "/api/users", {"name": "carl carlsson"}, headers=headers)
     assert response.status_code == 200
-    assert item["name"] == "Carl Carlsson"
+    assert body["name"] == "Carl Carlsson"

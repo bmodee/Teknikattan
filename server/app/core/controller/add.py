@@ -1,5 +1,10 @@
-from app import db
-from app.database.models import City, Competition, Role, Slide, Style, User
+from app.core import db
+from app.core.models import Blacklist, City, Competition, Role, Slide, User
+
+
+def blacklist(jti):
+    db.session.add(Blacklist(jti))
+    db.session.commit()
 
 
 def user(email, plaintext_password, role, city):
@@ -27,5 +32,5 @@ def slide(competition_id):
     db.session.add(Slide(order, competition_id))
     db.session.commit()
 
-    filters = (Slide.order == order) & (Competition.competition_id == competition_id)
+    filters = (Slide.order == order) & (Slide.competition_id == competition_id)
     return Slide.query.filter(filters).first()

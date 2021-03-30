@@ -1,20 +1,13 @@
-from flask import Flask
-from flask_bcrypt import Bcrypt
-from flask_jwt_extended.jwt_manager import JWTManager
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, redirect, request
 
-from app.database import Base
-
-bcrypt = Bcrypt()
-jwt = JWTManager()
-db = SQLAlchemy(model_class=Base)
-
-from app.database import models
+import app.core.models as models
+from app.core import bcrypt, db, jwt
 
 
 def create_app(config_name="configmodule.DevelopmentConfig"):
     app = Flask(__name__)
     app.config.from_object(config_name)
+    app.url_map.strict_slashes = False
 
     with app.app_context():
 
@@ -22,9 +15,16 @@ def create_app(config_name="configmodule.DevelopmentConfig"):
         jwt.init_app(app)
         db.init_app(app)
 
-        from app.api import api_blueprint
+        from app.apis import flask_api
 
-        app.register_blueprint(api_blueprint, url_prefix="/api")
+        flask_api.init_app(app)
+
+        @app.before_request
+        def clear_trailing():
+            rp = request.path
+            if rp != "/" and rp.endswith("/"):
+                return redirect(rp[:-1])
+
         return app
 
 

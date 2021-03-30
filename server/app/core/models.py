@@ -1,4 +1,4 @@
-from app import bcrypt, db
+from app.core import bcrypt, db
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 
 STRING_SIZE = 254
@@ -72,7 +72,7 @@ class User(db.Model):
             "role_id": self.role_id,
             "city_id": self.city_id,
         }
-
+    
     @hybrid_property
     def password(self):
         return self._password
@@ -227,60 +227,3 @@ class QuestionType(db.Model):
     def __init__(self, name):
         self.name = name
 
-
-"""
-QuestionHandler = db.Table(
-    "question_handler",
-    db.Column("question_id", db.Integer, db.ForeignKey("question.id"), primary_key=True),
-    db.Column("sub_question_id", db.Integer, unique=True),
-    db.Column("question_type", db.Integer, nullable=False),
-)
-
-class TrueFalseQuestion(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    true_false = db.Column(db.Boolean, nullable=False, default=False)
-
-    def __init__(self, true_false):
-        self.true_false = true_false
-
-
-class TextQuestion(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    alternatives = db.relationship("TextQuestionAlternative", backref="text_question")
-
-
-class TextQuestionAlternative(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(STRING_SIZE), nullable=False)
-    text_question_id = db.Column(db.Integer, db.ForeignKey("text_question.id"), nullable=False)
-
-    def __init__(self, text, text_question_id):
-        self.text = text
-        self.text_question_id = text_question_id
-
-
-class MCQuestion(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(STRING_SIZE), nullable=False)
-    timer = db.Column(db.Integer, nullable=False)
-    alternatives = db.relationship("MCQuestionAlternative", backref="mc_question")
-
-    def __init__(self, title, timer):
-        self.title = title
-        self.timer = timer
-
-
-class MCQuestionAlternative(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(STRING_SIZE), nullable=False)
-    true_false = db.Column(db.Boolean, nullable=False, default=False)
-    mc_id = db.Column(db.Integer, db.ForeignKey("mc_question.id"), nullable=False)
-
-    def __init__(self, text, true_false, mc_id):
-        self.text = text
-        self.true_false = true_false
-        self.mc_id = mc_id
-
-
-
-"""

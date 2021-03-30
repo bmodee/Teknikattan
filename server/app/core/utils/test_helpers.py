@@ -1,9 +1,47 @@
 import json
 
-from app import db
+import app.core.controller as dbc
+import pytest
+from app.core import db
+from app.core.models import City, MediaType, QuestionType, Role, Style
+
+
+def add_default_values():
+    media_types = ["Image", "Video"]
+    question_types = ["Boolean", "Multiple", "Text"]
+    roles = ["Admin", "Editor"]
+    cities = ["Linköping"]
+
+    # Add media types
+    for item in media_types:
+        db.session.add(MediaType(item))
+
+    # Add question types
+    for item in question_types:
+        db.session.add(QuestionType(item))
+
+    # Add roles
+    for item in roles:
+        db.session.add(Role(item))
+
+    # Add cities
+    for item in cities:
+        db.session.add(City(item))
+
+    # Add deafult style
+    db.session.add(Style("Main Style", ""))
+
+    # Commit changes to db
+    db.session.commit()
+
+    # Add user with role and city
+    dbc.add.user("test@test.se", "password", "Admin", "Linköping")
 
 
 def post(client, url, data, headers=None):
+    if headers is None:
+        headers = {}
+    headers["Content-Type"] = "application/json"
     response = client.post(url, data=json.dumps(data), headers=headers)
     body = json.loads(response.data.decode())
     return response, body
@@ -16,6 +54,10 @@ def get(client, url, query_string=None, headers=None):
 
 
 def put(client, url, data, headers=None):
+    if headers is None:
+        headers = {}
+    headers["Content-Type"] = "application/json"
+
     response = client.put(url, data=json.dumps(data), headers=headers)
     body = json.loads(response.data.decode())
     return response, body

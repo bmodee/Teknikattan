@@ -1,6 +1,6 @@
-import app.database.controller as dbc
+import app.core.controller as dbc
 from app import create_app, db
-from app.database.models import City, MediaType, QuestionType, Role
+from app.core.models import City, MediaType, QuestionType, Role, Style
 
 user = {"email": "test@test.se", "password": "password", "role": "Admin", "city": "Linköping"}
 media_types = ["Image", "Video"]
@@ -29,6 +29,12 @@ def _add_items():
     # Add cities
     for item in cities:
         db.session.add(City(item))
+    db.session.commit()
+
+    # Add deafult style
+    db.session.add(Style("Main Style", ""))
+
+    # Commit changes to db
     db.session.commit()
 
     # Add user with role and city

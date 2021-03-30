@@ -1,21 +1,5 @@
-import app.database.controller as dbc
-import pytest
-from app.database.models import (
-    City,
-    Competition,
-    Media,
-    MediaType,
-    Question,
-    QuestionAnswer,
-    QuestionType,
-    Role,
-    Slide,
-    Style,
-    Team,
-    User,
-)
-from app.database.populate import add_default_values
-from app.utils.test_helpers import assert_exists, assert_insert_fail, assert_object_values
+from app.core.models import City, Competition, Media, MediaType, Question, QuestionType, Role, Slide, Style, Team, User
+from app.core.utils.test_helpers import add_default_values, assert_exists, assert_insert_fail
 
 from tests import app, client, db
 

@@ -1,6 +1,5 @@
 from functools import wraps
 
-from flask import Blueprint
 from flask_jwt_extended import verify_jwt_in_request
 from flask_jwt_extended.utils import get_jwt_claims
 
@@ -37,7 +36,15 @@ def object_response(items, code=200):
     return {"result": items}, code
 
 
-api_blueprint = Blueprint("api", __name__)
+from flask_restx import Api
 
-# Import the rest of the routes.
-from app.api import admin, users
+from .auth import api as ns2
+from .competitions import api as ns4
+from .slides import api as ns3
+from .users import api as ns1
+
+flask_api = Api()
+flask_api.add_namespace(ns1, path="/api/users")
+flask_api.add_namespace(ns3, path="/api/slides")
+flask_api.add_namespace(ns2, path="/api/auth")
+flask_api.add_namespace(ns4, path="/api/competitions")
