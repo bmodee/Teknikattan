@@ -1,11 +1,13 @@
 import { Button, TextField } from '@material-ui/core'
 import { Alert, AlertTitle } from '@material-ui/lab'
-import axios from 'axios'
 import { Formik, FormikHelpers } from 'formik'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import * as Yup from 'yup'
+import { loginUser } from '../../../actions/user'
 import { AccountLoginModel } from '../../../interfaces/models'
-import { LoginForm } from './styled'
+import { CenteredCircularProgress, LoginForm } from './styled'
 
 interface AccountLoginFormModel {
   model: AccountLoginModel
@@ -14,6 +16,10 @@ interface AccountLoginFormModel {
 
 interface ServerResponse {
   code: number
+  message: string
+}
+
+interface formError {
   message: string
 }
 
@@ -27,22 +33,20 @@ const accountSchema: Yup.SchemaOf<AccountLoginFormModel> = Yup.object({
   error: Yup.string().optional(),
 })
 
-const handleAccountSubmit = async (values: AccountLoginFormModel, actions: FormikHelpers<AccountLoginFormModel>) => {
-  await axios
-    .post<ServerResponse>(`users/login`, values.model)
-    .then(() => {
-      actions.resetForm()
-    })
-    .catch(({ response }) => {
-      console.log(response.data.message)
-      actions.setFieldError('error', response.data.message)
-    })
-    .finally(() => {
-      actions.setSubmitting(false)
-    })
-}
+const AdminLogin: React.FC = (props: any) => {
+  const [errors, setErrors] = useState({} as formError)
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    if (props.UI.errors) {
+      setErrors(props.UI.errors)
+    }
+    setLoading(props.UI.loading)
+  }, [props.UI])
+  const handleAccountSubmit = (values: AccountLoginFormModel, actions: FormikHelpers<AccountLoginFormModel>) => {
+    props.loginUser(values.model, history)
+  }
 
-const AdminLogin: React.FC = () => {
+  const history = useHistory()
   const accountInitialValues: AccountLoginFormModel = {
     model: { email: '', password: '' },
   }
@@ -73,23 +77,28 @@ const AdminLogin: React.FC = () => {
             type="submit"
             fullWidth
             variant="contained"
-            color="primary"
-            disabled={!formik.isValid || !formik.touched.model?.email || !formik.touched.model?.email}
+            color="secondary"
+            disabled={!formik.isValid || !formik.touched.model?.email || !formik.touched.model?.email || loading}
           >
             Logga in
           </Button>
-          {formik.errors.error ? (
+          {errors.message && (
             <Alert severity="error">
               <AlertTitle>Error</AlertTitle>
-              {formik.errors.error}
+              {errors.message}
             </Alert>
-          ) : (
-            <div />
           )}
+          {loading && <CenteredCircularProgress color="secondary" />}
         </LoginForm>
       )}
     </Formik>
   )
 }
-
-export default AdminLogin
+const mapStateToProps = (state: any) => ({
+  user: state.user,
+  UI: state.UI,
+})
+const mapDispatchToProps = {
+  loginUser,
+}
+export default connect(mapStateToProps, mapDispatchToProps)(AdminLogin)

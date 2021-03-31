@@ -66,7 +66,7 @@ const CompetitionLogin: React.FC = () => {
             onBlur={formik.handleBlur}
             margin="normal"
           />
-          <Button type="submit" fullWidth variant="contained" color="primary" disabled={!formik.isValid}>
+          <Button type="submit" fullWidth variant="contained" color="secondary" disabled={!formik.isValid}>
             Anslut till tävling
           </Button>
           {formik.errors.error ? (

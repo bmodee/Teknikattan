@@ -18,14 +18,14 @@ const theme = createMuiTheme({
 const App: React.FC = () => {
   return (
     <StylesProvider injectFirst>
-      <Wrapper>
-        <MuiThemeProvider theme={theme}>
-          <ThemeProvider theme={theme}>
+      <MuiThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
+          <Wrapper>
             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
             <Main />
-          </ThemeProvider>
-        </MuiThemeProvider>
-      </Wrapper>
+          </Wrapper>
+        </ThemeProvider>
+      </MuiThemeProvider>
     </StylesProvider>
   )
 }

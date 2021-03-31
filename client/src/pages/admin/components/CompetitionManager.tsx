@@ -195,9 +195,7 @@ const CompetitionManager: React.FC = () => {
       <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         <MenuItem onClick={handleClose}>Starta</MenuItem>
         <MenuItem onClick={handleClose}>Duplicera</MenuItem>
-        <RemoveCompetition onClick={handleClose}>
-          Ta bort
-        </RemoveCompetition>
+        <RemoveCompetition onClick={handleClose}>Ta bort</RemoveCompetition>
       </Menu>
     </div>
   )

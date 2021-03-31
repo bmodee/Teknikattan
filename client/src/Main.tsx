@@ -7,14 +7,15 @@ import AudienceViewPage from './pages/views/AudienceViewPage'
 import JudgeViewPage from './pages/views/JudgeViewPage'
 import ParticipantViewPage from './pages/views/ParticipantViewPage'
 import ViewSelectPage from './pages/views/ViewSelectPage'
+import SecureRoute from './utils/SecureRoute'
 
 const Main: React.FC = () => {
   return (
     <BrowserRouter>
       <Switch>
-        <Route exact path="/" component={LoginPage} />
-        <Route path="/admin" component={AdminPage} />
-        <Route path="/editor/competition-id=:id" component={PresentationEditorPage} />
+        <SecureRoute login exact path="/" component={LoginPage} />
+        <SecureRoute path="/admin" component={AdminPage} />
+        <SecureRoute path="/editor/competition-id=:id" component={PresentationEditorPage} />
         <Route exact path="/view" component={ViewSelectPage} />
         <Route exact path="/view/participant" component={ParticipantViewPage} />
         <Route exact path="/view/judge" component={JudgeViewPage} />
@@ -23,5 +24,4 @@ const Main: React.FC = () => {
     </BrowserRouter>
   )
 }
-
 export default Main

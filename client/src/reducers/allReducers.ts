@@ -1,10 +1,12 @@
 // Combines all the reducers so that we only have to pass "one" reducer to the store in src/index.tsx
 
 import { combineReducers } from 'redux'
-import loggedInReducer from './isLoggedIn'
+import uiReducer from './uiReducer'
+import userReducer from './userReducer'
 
 const allReducers = combineReducers({
   // name: state
-  isLoggedIn: loggedInReducer, // You can write "loggedInReducer" because its the same as "loggedInReducer: loggedInReducer"
+  user: userReducer,
+  UI: uiReducer,
 })
 export default allReducers

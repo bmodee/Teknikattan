@@ -9,13 +9,15 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
-  Typography
+  Typography,
 } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import DashboardIcon from '@material-ui/icons/Dashboard'
 import MailIcon from '@material-ui/icons/Mail'
 import React from 'react'
+import { connect } from 'react-redux'
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom'
+import { logoutUser } from '../../actions/user'
 import CompetitionManager from './components/CompetitionManager'
 import Regions from './components/Regions'
 
@@ -49,10 +51,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const AdminView: React.FC = () => {
+const AdminView: React.FC = (props: any) => {
   const classes = useStyles()
   const [openIndex, setOpenIndex] = React.useState(0)
   const { path, url } = useRouteMatch()
+  const handleLogout = () => {
+    props.logoutUser()
+  }
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -92,7 +97,7 @@ const AdminView: React.FC = () => {
           <Divider />
           <List>
             <ListItem>
-              <Button component={Link} to="/" type="submit" fullWidth variant="contained" color="primary">
+              <Button onClick={handleLogout} type="submit" fullWidth variant="contained" color="primary">
                 Logga ut
               </Button>
             </ListItem>
@@ -123,5 +128,7 @@ const AdminView: React.FC = () => {
     </div>
   )
 }
-
-export default AdminView
+const mapDispatchToProps = {
+  logoutUser,
+}
+export default connect(null, mapDispatchToProps)(AdminView)
