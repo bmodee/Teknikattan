@@ -1,4 +1,5 @@
 from flask import Flask, redirect, request
+from flask_cors import CORS
 
 import app.core.models as models
 from app.core import bcrypt, db, jwt
@@ -8,7 +9,6 @@ def create_app(config_name="configmodule.DevelopmentConfig"):
     app = Flask(__name__)
     app.config.from_object(config_name)
     app.url_map.strict_slashes = False
-
     with app.app_context():
 
         bcrypt.init_app(app)
@@ -24,6 +24,12 @@ def create_app(config_name="configmodule.DevelopmentConfig"):
             rp = request.path
             if rp != "/" and rp.endswith("/"):
                 return redirect(rp[:-1])
+
+        @app.after_request
+        def set_core(response):
+            header = response.headers
+            header["Access-Control-Allow-Origin"] = "*"
+            return response
 
         return app
 

@@ -11,7 +11,7 @@ from flask_jwt_extended import (
     jwt_refresh_token_required,
     jwt_required,
 )
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, cors
 
 api = Namespace("auth")
 
@@ -23,6 +23,7 @@ def get_user_claims(item_user):
 @api.route("/signup")
 class AuthSignup(Resource):
     @jwt_required
+    @cors.crossdomain(origin="*")
     def post(self):
         args = create_user_parser.parse_args(strict=True)
         email = args.get("email")
@@ -44,6 +45,7 @@ class AuthSignup(Resource):
 @api.param("ID")
 class AuthDelete(Resource):
     @jwt_required
+    @cors.crossdomain(origin="*")
     def delete(self, ID):
         item_user = User.query.filter(User.id == ID).first()
         dbc.delete(item_user)
@@ -55,6 +57,7 @@ class AuthDelete(Resource):
 
 @api.route("/login")
 class AuthLogin(Resource):
+    @cors.crossdomain(origin="*")
     def post(self):
         args = login_parser.parse_args(strict=True)
         email = args.get("email")
@@ -74,6 +77,7 @@ class AuthLogin(Resource):
 @api.route("/logout")
 class AuthLogout(Resource):
     @jwt_required
+    @cors.crossdomain(origin="*")
     def post(self):
         jti = get_raw_jwt()["jti"]
         dbc.add.blacklist(jti)
@@ -84,6 +88,7 @@ class AuthLogout(Resource):
 class AuthRefresh(Resource):
     @jwt_required
     @jwt_refresh_token_required
+    @cors.crossdomain(origin="*")
     def post(self):
         old_jti = get_raw_jwt()["jti"]
 
