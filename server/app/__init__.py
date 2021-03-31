@@ -1,5 +1,4 @@
 from flask import Flask, redirect, request
-from flask_cors import CORS
 
 import app.core.models as models
 from app.core import bcrypt, db, jwt
