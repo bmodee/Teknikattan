@@ -1,16 +1,24 @@
-from app.core.models import Competition, User
+from app.core.models import Competition, Slide, Team, User
 
 
-def search_user(email=None, name=None, city=None, role=None, page=1, page_size=15):
+def slide(CID, SID):
+    return Slide.query.filter((Slide.competition_id == CID) & (Slide.id == SID)).first()
+
+
+def team(CID, TID):
+    return Team.query.filter((Team.competition_id == CID) & (Team.id == TID)).first()
+
+
+def search_user(email=None, name=None, city_id=None, role_id=None, page=1, page_size=15):
     query = User.query
     if name:
         query = query.filter(User.name.like(f"%{name}%"))
     if email:
         query = query.filter(User.email.like(f"%{email}%"))
-    if city:
-        query = query.filter(User.city.name == city)
-    if role:
-        query = query.filter(User.role.name == role)
+    if city_id:
+        query = query.filter(User.city_id == city_id)
+    if role_id:
+        query = query.filter(User.role_id == role_id)
 
     query = query.limit(page_size).offset(page * page_size)
 

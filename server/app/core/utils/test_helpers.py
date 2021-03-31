@@ -3,7 +3,7 @@ import json
 import app.core.controller as dbc
 import pytest
 from app.core import db
-from app.core.models import City, MediaType, QuestionType, Role, Style
+from app.core.models import City, MediaType, QuestionType, Role, Style, User
 
 
 def add_default_values():
@@ -35,7 +35,15 @@ def add_default_values():
     db.session.commit()
 
     # Add user with role and city
-    dbc.add.user("test@test.se", "password", "Admin", "Linköping")
+    dbc.add.default(User("test@test.se", "password", 1, 1))
+
+
+def get_body(response):
+    try:
+        body = json.loads(response.data.decode())
+    except:
+        body = None
+    return body
 
 
 def post(client, url, data, headers=None):
@@ -43,13 +51,13 @@ def post(client, url, data, headers=None):
         headers = {}
     headers["Content-Type"] = "application/json"
     response = client.post(url, data=json.dumps(data), headers=headers)
-    body = json.loads(response.data.decode())
+    body = get_body(response)
     return response, body
 
 
 def get(client, url, query_string=None, headers=None):
     response = client.get(url, query_string=query_string, headers=headers)
-    body = json.loads(response.data.decode())
+    body = get_body(response)
     return response, body
 
 
@@ -59,13 +67,13 @@ def put(client, url, data, headers=None):
     headers["Content-Type"] = "application/json"
 
     response = client.put(url, data=json.dumps(data), headers=headers)
-    body = json.loads(response.data.decode())
+    body = get_body(response)
     return response, body
 
 
 def delete(client, url, data, headers=None):
     response = client.delete(url, data=json.dumps(data), headers=headers)
-    body = json.loads(response.data.decode())
+    body = get_body(response)
     return response, body
 
 

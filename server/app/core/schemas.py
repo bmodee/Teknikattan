@@ -6,8 +6,8 @@ user_schema = (
         "id": fields.Integer(),
         "name": fields.String(),
         "email": fields.String(),
-        "role": fields.String(attribute=lambda x: x.role.name),
-        "city": fields.String(attribute=lambda x: x.city.name),
+        "role_id": fields.Integer(),
+        "city_id": fields.Integer(),
     },
 )
 

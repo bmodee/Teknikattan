@@ -17,7 +17,7 @@ def competition(item, name=None, year=None, city_id=None, style_id=None):
     return item
 
 
-def user(item, name=None, email=None, city=None, role=None):
+def user(item, name=None, email=None, city_id=None, role_id=None):
 
     if name:
         item.name = name.title()
@@ -25,13 +25,11 @@ def user(item, name=None, email=None, city=None, role=None):
     if email:
         item.email = email
 
-    if city:
-        item_city = City.query.filter(City.name == city).first()
-        item.city_id = item_city.id
+    if city_id:
+        item.city_id = city_id
 
-    if role:
-        item_role = Role.query.filter(Role.name == role).first()
-        item.role_id = item_role.id
+    if role_id:
+        item.role_id = role_id
 
     db.session.commit()
     db.session.refresh(item)

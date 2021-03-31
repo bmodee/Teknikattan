@@ -1,6 +1,7 @@
 import app.core.controller as dbc
 import app.core.utils.http_codes as codes
 from app.apis import admin_required
+from app.core.dto import AuthDTO
 from app.core.models import User
 from app.core.parsers import create_user_parser, login_parser
 from flask_jwt_extended import (
@@ -13,7 +14,8 @@ from flask_jwt_extended import (
 )
 from flask_restx import Namespace, Resource, cors
 
-api = Namespace("auth")
+api = AuthDTO.api
+user_model = AuthDTO.model
 
 
 def get_user_claims(item_user):
@@ -28,13 +30,13 @@ class AuthSignup(Resource):
         args = create_user_parser.parse_args(strict=True)
         email = args.get("email")
         password = args.get("password")
-        role = args.get("role")
-        city = args.get("city")
+        role_id = args.get("role_id")
+        city_id = args.get("city_id")
 
         if User.query.filter(User.email == email).count() > 0:
             api.abort(codes.BAD_REQUEST, "User already exists")
 
-        item_user = dbc.add.user(email, password, role, city)
+        item_user = dbc.add.default(User(email, password, role_id, city_id))
         if not item_user:
             api.abort(codes.BAD_REQUEST, "User could not be created")
 
@@ -48,7 +50,7 @@ class AuthDelete(Resource):
     @cors.crossdomain(origin="*")
     def delete(self, ID):
         item_user = User.query.filter(User.id == ID).first()
-        dbc.delete(item_user)
+        dbc.delete.default(item_user)
         if ID == get_jwt_identity():
             jti = get_raw_jwt()["jti"]
             dbc.add.blacklist(jti)

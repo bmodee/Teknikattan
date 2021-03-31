@@ -1,6 +1,6 @@
 import app.core.controller as dbc
 from app import create_app, db
-from app.core.models import City, MediaType, QuestionType, Role, Style
+from app.core.models import City, MediaType, QuestionType, Role, Style, User
 
 user = {"email": "test@test.se", "password": "password", "role": "Admin", "city": "Linköping"}
 media_types = ["Image", "Video"]
@@ -38,7 +38,7 @@ def _add_items():
     db.session.commit()
 
     # Add user with role and city
-    dbc.add.user("test@test.se", "password", "Admin", "Linköping")
+    dbc.add.default(User("test@test.se", "password", 1, 1))
 
     db.session.flush()
 

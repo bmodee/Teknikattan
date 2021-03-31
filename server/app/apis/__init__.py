@@ -38,13 +38,11 @@ def object_response(items, code=200):
 
 from flask_restx import Api
 
-from .auth import api as ns2
-from .competitions import api as ns4
-from .slides import api as ns3
-from .users import api as ns1
+from .auth import api as auth_ns
+from .competitions import api as comp_ns
+from .users import api as user_ns
 
 flask_api = Api()
-flask_api.add_namespace(ns1, path="/api/users")
-flask_api.add_namespace(ns3, path="/api/slides")
-flask_api.add_namespace(ns2, path="/api/auth")
-flask_api.add_namespace(ns4, path="/api/competitions")
+flask_api.add_namespace(user_ns, path="/api/users")
+flask_api.add_namespace(auth_ns, path="/api/auth")
+flask_api.add_namespace(comp_ns, path="/api/competitions")
