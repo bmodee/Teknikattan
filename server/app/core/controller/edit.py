@@ -1,7 +1,10 @@
-import math
-
 from app.core import db
-from app.core.models import Blacklist, City, Competition, Role, Slide, User
+
+
+def default(item):
+    db.session.commit()
+    db.session.refresh(item)
+    return item
 
 
 def switch_order(item1, item2):
