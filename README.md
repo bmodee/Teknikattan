@@ -1,9 +1,9 @@
-
 ![coverage report](https://gitlab.liu.se/tddd96-grupp11/teknikattan-scoring-system/badges/dev/coverage.svg?job=client:test&key_text=Client+Coverage&key_width=110)
 ![coverage report](https://gitlab.liu.se/tddd96-grupp11/teknikattan-scoring-system/badges/dev/coverage.svg?job=server:test&key_text=Server+Coverage&key_width=115)
 ![Lines of Code](http://localhost:9000/api/project_badges/measure?project=TDDD96&metric=ncloc)
 ![Quality Gate Status](http://localhost:9000/api/project_badges/measure?project=TDDD96&metric=alert_status)
 ![Reliability Rating](http://localhost:9000/api/project_badges/measure?project=TDDD96&metric=reliability_rating)
+![Rating](http://localhost:9000/api/project_badges/measure?project=TDDD96&metric=new_maintainability_rating)
 
 
 # Scoring system for Teknikåttan
