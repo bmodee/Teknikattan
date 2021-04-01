@@ -16,6 +16,8 @@ class UserDTO:
             "email": fields.String(),
             "role_id": fields.Integer(),
             "city_id": fields.Integer(),
+            "page": fields.Integer(),
+            "page_size": fields.Integer(),
         },
     )
     user_list_model = api.model(
