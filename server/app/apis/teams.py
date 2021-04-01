@@ -1,5 +1,5 @@
 import app.core.controller as dbc
-import app.core.utils.http_codes as codes
+import app.core.http_codes as codes
 from app.apis import admin_required
 from app.core.dto import TeamDTO
 from app.core.models import Competition, Team

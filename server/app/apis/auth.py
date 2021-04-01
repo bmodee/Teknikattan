@@ -1,17 +1,12 @@
 import app.core.controller as dbc
-import app.core.utils.http_codes as codes
+import app.core.http_codes as codes
 from app.apis import admin_required
 from app.core.dto import AuthDTO
 from app.core.models import User
 from app.core.parsers import create_user_parser, login_parser
-from flask_jwt_extended import (
-    create_access_token,
-    create_refresh_token,
-    get_jwt_identity,
-    get_raw_jwt,
-    jwt_refresh_token_required,
-    jwt_required,
-)
+from flask_jwt_extended import (create_access_token, create_refresh_token,
+                                get_jwt_identity, get_raw_jwt,
+                                jwt_refresh_token_required, jwt_required)
 from flask_restx import Namespace, Resource, cors
 
 api = AuthDTO.api

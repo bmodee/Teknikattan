@@ -1,9 +1,7 @@
 from app.core.models import City, Competition, Media, MediaType, Question, QuestionType, Role, Slide, Style, Team, User
-from app.core.utils.test_helpers import add_default_values, assert_exists, assert_insert_fail
 
 from tests import app, client, db
-
-# server/env/Scripts/pytest.exe --cov app server/tests/
+from tests.test_helpers import add_default_values, assert_exists, assert_insert_fail
 
 
 def test_user(client):

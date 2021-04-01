@@ -1,8 +1,5 @@
-import json
-
-from app.core.utils.test_helpers import add_default_values, delete, get, post, put
-
 from tests import app, client, db
+from tests.test_helpers import add_default_values, delete, get, post, put
 
 
 def test_competition(client):

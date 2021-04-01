@@ -1,7 +1,6 @@
 import json
 
 import app.core.controller as dbc
-import pytest
 from app.core import db
 from app.core.models import City, MediaType, QuestionType, Role, Style, User
 
