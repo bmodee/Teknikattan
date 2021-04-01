@@ -9,7 +9,9 @@
     },
     //python
     "python.venvPath": "${workspaceFolder}\\server",
-    "python.analysis.extraPaths": ["server"],
+    "python.analysis.extraPaths": [
+        "server"
+    ],
     "python.terminal.activateEnvironment": true,
     "python.formatting.provider": "black",
     "python.formatting.blackPath": "server\\env\\Scripts\\black.exe",
@@ -18,9 +20,11 @@
         "119"
     ],
     //eslint
-    "eslint.workingDirectories": ["./client"],
+    "eslint.workingDirectories": [
+        "./client"
+    ],
     "eslint.options": {
-        "configFile":"./.eslintrc"
+        "configFile": "./.eslintrc"
     },
     "prettier.configPath": "./client/.prettierrc",
     //git
@@ -31,5 +35,17 @@
     },
     "[typescriptreact]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.pytest_cache": true,
+        "**/env/Include": true,
+        "**/env/Lib": true
+    },
+    "files.watcherExclude": {
+        "**/env/Lib/**": true
+    },
+    "search.exclude": {
+        "**/env": true
     },
 }
