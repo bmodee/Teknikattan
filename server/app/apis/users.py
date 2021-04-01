@@ -4,12 +4,12 @@ from app.apis import admin_required
 from app.core.dto import UserDTO
 from app.core.models import User
 from app.core.parsers import user_parser, user_search_parser
-from app.core.schemas import user_schema
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restx import Namespace, Resource
 
 api = UserDTO.api
 user_model = UserDTO.model
+user_list_model = UserDTO.user_list_model
 
 
 def edit_user(item_user, args):
@@ -59,14 +59,15 @@ class Users(Resource):
 @api.route("/search")
 class UserSearch(Resource):
     @jwt_required
-    @api.marshal_list_with(user_model)
+    @api.marshal_list_with(user_list_model)
     def get(self):
         args = user_search_parser.parse_args(strict=True)
         name = args.get("name")
         email = args.get("email")
         role_id = args.get("role_id")
         city_id = args.get("city_id")
-        page = args.get("page", 1)
+        page = args.get("page", 0)
         page_size = args.get("page_size", 15)
 
-        return dbc.get.search_user(email, name, city_id, role_id, page, page_size)
+        result, total = dbc.get.search_user(email, name, city_id, role_id, page, page_size)
+        return {"users": result, "count": len(result), "total": total}

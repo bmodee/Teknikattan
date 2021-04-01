@@ -31,6 +31,9 @@ def test_competition(client):
     assert response.status_code == 200
     assert len(body) == 2
 
+    response, body = put(client, "/api/competitions/1/slides/1/order", {"order": 1}, headers=headers)
+    assert response.status_code == 200
+
     response, body = post(client, "/api/competitions/1/teams", {"name": "t1"}, headers=headers)
     assert response.status_code == 200
 

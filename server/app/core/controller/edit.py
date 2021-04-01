@@ -1,5 +1,37 @@
+import math
+
 from app.core import db
 from app.core.models import Blacklist, City, Competition, Role, Slide, User
+
+
+def switch_order(item1, item2):
+    old_order = item1.order
+    new_order = item2.order
+
+    item2.order = -1
+    db.session.commit()
+    db.session.refresh(item2)
+
+    item1.order = new_order
+    db.session.commit()
+    db.session.refresh(item1)
+
+    item2.order = old_order
+    db.session.commit()
+    db.session.refresh(item2)
+
+    return item1
+
+
+def slide(item, title=None, timer=None):
+    if title:
+        item.title = title
+    if timer:
+        item.timer = timer
+
+    db.session.commit()
+    db.session.refresh(item)
+    return item
 
 
 def competition(item, name=None, year=None, city_id=None, style_id=None):

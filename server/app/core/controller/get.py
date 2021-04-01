@@ -1,6 +1,10 @@
 from app.core.models import Competition, Slide, Team, User
 
 
+def slide_by_order(CID, order):
+    return Slide.query.filter((Slide.competition_id == CID) & (Slide.order == order)).first()
+
+
 def slide(CID, SID):
     return Slide.query.filter((Slide.competition_id == CID) & (Slide.id == SID)).first()
 
@@ -9,7 +13,7 @@ def team(CID, TID):
     return Team.query.filter((Team.competition_id == CID) & (Team.id == TID)).first()
 
 
-def search_user(email=None, name=None, city_id=None, role_id=None, page=1, page_size=15):
+def search_user(email=None, name=None, city_id=None, role_id=None, page=0, page_size=15):
     query = User.query
     if name:
         query = query.filter(User.name.like(f"%{name}%"))
@@ -20,12 +24,14 @@ def search_user(email=None, name=None, city_id=None, role_id=None, page=1, page_
     if role_id:
         query = query.filter(User.role_id == role_id)
 
+    total = query.count()
     query = query.limit(page_size).offset(page * page_size)
+    result = query.all()
 
-    return query.all()
+    return result, total
 
 
-def search_competitions(name=None, year=None, city_id=None, style_id=None, page=1, page_size=15):
+def search_competitions(name=None, year=None, city_id=None, style_id=None, page=0, page_size=15):
     query = Competition.query
     if name:
         query = query.filter(Competition.name.like(f"%{name}%"))
@@ -36,6 +42,8 @@ def search_competitions(name=None, year=None, city_id=None, style_id=None, page=
     if style_id:
         query = query.filter(Competition.style_id == style_id)
 
+    total = query.count()
     query = query.limit(page_size).offset(page * page_size)
+    result = query.all()
 
-    return query.all()
+    return result, total

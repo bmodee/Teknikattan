@@ -2,8 +2,8 @@ from flask_restx import inputs, reqparse
 
 ###SEARCH####
 search_parser = reqparse.RequestParser()
-search_parser.add_argument("page", type=int, default=0, location="args")
-search_parser.add_argument("page_size", type=int, default=15, location="args")
+search_parser.add_argument("page", type=int, default=0)
+search_parser.add_argument("page_size", type=int, default=15)
 
 ###LOGIN####
 login_parser = reqparse.RequestParser()
@@ -33,15 +33,23 @@ user_search_parser.add_argument("role_id", type=int, default=None, location="arg
 
 ###COMPETIION####
 competition_parser = reqparse.RequestParser()
-competition_parser.add_argument("name", type=str, location="json")
-competition_parser.add_argument("year", type=int, location="json")
-competition_parser.add_argument("city_id", type=int, location="json")
-competition_parser.add_argument("style_id", type=int, location="json")
+competition_parser.add_argument("name", type=str)
+competition_parser.add_argument("year", type=int)
+competition_parser.add_argument("city_id", type=int)
+competition_parser.add_argument("style_id", type=int)
 
 
 ###SEARCH_COMPETITOIN####
-competition_search_parser = search_parser.copy()
+competition_search_parser = reqparse.RequestParser()
+# competition_search_parser.add_argument(competition_parser, search_parser)
 competition_search_parser.add_argument("name", type=str, default=None, location="args")
 competition_search_parser.add_argument("year", type=str, default=None, location="args")
 competition_search_parser.add_argument("city_id", type=int, default=None, location="args")
 competition_search_parser.add_argument("style_id", type=int, default=None, location="args")
+
+
+###SEARCH_COMPETITOIN####
+slide_parser = reqparse.RequestParser()
+slide_parser.add_argument("order", type=int, default=None)
+slide_parser.add_argument("title", type=str, default=None)
+slide_parser.add_argument("timer", type=int, default=None)
