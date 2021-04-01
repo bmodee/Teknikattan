@@ -3,6 +3,11 @@
 
 [![Lines of Code](http://localhost:9000/api/project_badges/measure?project=TDDD96&metric=ncloc)](http://localhost:9000/dashboard?id=TDDD96)
 
+[![Quality Gate Status](http://localhost:9000/api/project_badges/measure?project=TDDD96&metric=alert_status)](http://localhost:9000/dashboard?id=TDDD96)
+
+[![Reliability Rating](http://localhost:9000/api/project_badges/measure?project=TDDD96&metric=reliability_rating)](http://localhost:9000/dashboard?id=TDDD96)
+
+
 # Scoring system for Teknikåttan
 
 This is the scoring system for Teknikåttan!
