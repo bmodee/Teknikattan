@@ -2,6 +2,7 @@ import { Tabs } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import React from 'react'
 import CompetitionSettings from './CompetitionSettings'
+import SlideSettings from './SlideSettings'
 import { SettingsTab } from './styled'
 
 interface TabPanelProps {
@@ -13,7 +14,7 @@ function TabContent(props: TabPanelProps) {
   if (activeTab === 0) {
     return <CompetitionSettings />
   } else if (activeTab === 1) {
-    return <div>2</div>
+    return <SlideSettings />
   }
   return <div>3</div>
 }
