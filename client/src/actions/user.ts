@@ -1,15 +1,18 @@
 import axios from 'axios'
+import { History } from 'history'
+import { AppDispatch } from '../store'
+import { AdminLoginData } from './../interfaces/AdminLoginData'
 import Types from './types'
 
-export const loginUser = (userData: any, history: any) => (dispatch: any) => {
+export const loginUser = (userData: AdminLoginData, history: History) => async (dispatch: AppDispatch) => {
   dispatch({ type: Types.LOADING_UI })
-  axios
+  await axios
     .post('/auth/login', userData)
     .then((res) => {
       const token = `Bearer ${res.data.access_token}`
       localStorage.setItem('token', token) //setting token to local storage
       axios.defaults.headers.common['Authorization'] = token //setting authorize token to header in axios
-      dispatch(getUserData())
+      getUserData()(dispatch)
       dispatch({ type: Types.CLEAR_ERRORS }) // no error
       history.push('/admin') //redirecting to admin page after login success
     })
@@ -22,14 +25,20 @@ export const loginUser = (userData: any, history: any) => (dispatch: any) => {
     })
 }
 
-export const getUserData = () => (dispatch: any) => {
+export const getUserData = () => async (dispatch: AppDispatch) => {
   dispatch({ type: Types.LOADING_USER })
-  axios
+  await axios
     .get('/users')
     .then((res) => {
       dispatch({
         type: Types.SET_USER,
-        payload: res.data,
+        payload: {
+          id: res.data.id,
+          name: res.data.name,
+          email: res.data.email,
+          roleId: res.data.role_id,
+          cityId: res.data.city_id,
+        },
       })
     })
     .catch((err) => {
@@ -37,7 +46,7 @@ export const getUserData = () => (dispatch: any) => {
     })
 }
 
-export const logoutUser = () => (dispatch: any) => {
+export const logoutUser = () => (dispatch: AppDispatch) => {
   localStorage.removeItem('token')
   delete axios.defaults.headers.common['Authorization']
   dispatch({

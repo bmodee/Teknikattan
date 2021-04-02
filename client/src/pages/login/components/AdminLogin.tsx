@@ -2,21 +2,16 @@ import { Button, TextField } from '@material-ui/core'
 import { Alert, AlertTitle } from '@material-ui/lab'
 import { Formik, FormikHelpers } from 'formik'
 import React, { useEffect, useState } from 'react'
-import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import * as Yup from 'yup'
 import { loginUser } from '../../../actions/user'
+import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { AccountLoginModel } from '../../../interfaces/models'
 import { CenteredCircularProgress, LoginForm } from './styled'
 
 interface AccountLoginFormModel {
   model: AccountLoginModel
   error?: string
-}
-
-interface ServerResponse {
-  code: number
-  message: string
 }
 
 interface formError {
@@ -33,17 +28,20 @@ const accountSchema: Yup.SchemaOf<AccountLoginFormModel> = Yup.object({
   error: Yup.string().optional(),
 })
 
-const AdminLogin: React.FC = (props: any) => {
+const AdminLogin: React.FC = () => {
   const [errors, setErrors] = useState({} as formError)
   const [loading, setLoading] = useState(false)
+  const dispatch = useAppDispatch()
+  const UIErrors = useAppSelector((state) => state.UI.errors)
+  const UILoading = useAppSelector((state) => state.UI.loading)
   useEffect(() => {
-    if (props.UI.errors) {
-      setErrors(props.UI.errors)
+    if (UIErrors) {
+      setErrors(UIErrors)
     }
-    setLoading(props.UI.loading)
-  }, [props.UI])
+    setLoading(UILoading)
+  }, [UIErrors, UILoading])
   const handleAccountSubmit = (values: AccountLoginFormModel, actions: FormikHelpers<AccountLoginFormModel>) => {
-    props.loginUser(values.model, history)
+    dispatch(loginUser(values.model, history))
   }
 
   const history = useHistory()
@@ -94,11 +92,4 @@ const AdminLogin: React.FC = (props: any) => {
     </Formik>
   )
 }
-const mapStateToProps = (state: any) => ({
-  user: state.user,
-  UI: state.UI,
-})
-const mapDispatchToProps = {
-  loginUser,
-}
-export default connect(mapStateToProps, mapDispatchToProps)(AdminLogin)
+export default AdminLogin

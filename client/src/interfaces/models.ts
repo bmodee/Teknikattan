@@ -3,6 +3,12 @@ export interface AccountLoginModel {
   password: string
 }
 
+export interface AddCompetitionModel {
+  name: string
+  city: string
+  year: number
+}
+
 export interface CompetitionLoginModel {
   code: string
 }

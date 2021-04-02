@@ -1,4 +1,9 @@
-import { createMuiTheme, MuiThemeProvider, StylesProvider } from '@material-ui/core'
+import {
+  MuiThemeProvider,
+  StylesProvider,
+  unstable_createMuiStrictModeTheme as createMuiTheme,
+} from '@material-ui/core'
+// unstable version of createMuiTheme is required for React.StrictMode currently
 import React from 'react'
 import { ThemeProvider } from 'styled-components'
 import Main from './Main'

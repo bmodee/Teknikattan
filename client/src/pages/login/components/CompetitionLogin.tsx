@@ -30,7 +30,6 @@ const handleCompetitionSubmit = async (
   values: CompetitionLoginFormModel,
   actions: FormikHelpers<CompetitionLoginFormModel>
 ) => {
-  console.log(values.model)
   await axios
     .post<ServerResponse>(`users/login`, { code: values.model.code })
     .then(() => {

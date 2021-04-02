@@ -1,13 +1,27 @@
 //in userReducer.ts
+import { AnyAction } from 'redux'
 import Types from '../actions/types'
 
-const initialState = {
-  authenticated: false,
-  credentials: {},
-  loading: false,
+interface UserInfo {
+  name: string
+  email: string
+  roleId: number
+  cityId: number
 }
 
-export default function (state = initialState, action: any) {
+interface UserState {
+  authenticated: boolean
+  userInfo: UserInfo | null
+  loading: boolean
+}
+
+const initialState: UserState = {
+  authenticated: false,
+  loading: true,
+  userInfo: null,
+}
+
+export default function (state = initialState, action: AnyAction) {
   switch (action.type) {
     case Types.SET_AUTHENTICATED:
       return {
@@ -20,7 +34,7 @@ export default function (state = initialState, action: any) {
       return {
         authenticated: true,
         loading: false,
-        ...action.payload,
+        userInfo: action.payload as UserInfo,
       }
     case Types.LOADING_USER:
       return {

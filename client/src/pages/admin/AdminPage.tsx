@@ -3,7 +3,6 @@ import {
   Button,
   CssBaseline,
   Divider,
-  Drawer,
   List,
   ListItem,
   ListItemIcon,
@@ -15,13 +14,14 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import DashboardIcon from '@material-ui/icons/Dashboard'
 import MailIcon from '@material-ui/icons/Mail'
 import React from 'react'
-import { connect } from 'react-redux'
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom'
 import { logoutUser } from '../../actions/user'
+import { useAppDispatch } from '../../hooks'
 import CompetitionManager from './components/CompetitionManager'
 import Regions from './components/Regions'
+import { LeftDrawer } from './styled'
 
-const drawerWidth = 240
+const drawerWidth = 250
 const menuItems = ['Startsida', 'Regioner', 'Användare', 'Tävlingshanterare']
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -30,13 +30,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
     },
     appBar: {
-      width: `calc(100% - ${drawerWidth}px)`,
+      width: '100%',
       marginLeft: drawerWidth,
-    },
-    drawer: {
-      width: drawerWidth,
-      flexShrink: 0,
-      marginRight: drawerWidth,
     },
     drawerPaper: {
       width: drawerWidth,
@@ -51,13 +46,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const AdminView: React.FC = (props: any) => {
+const AdminView: React.FC = () => {
   const classes = useStyles()
   const [openIndex, setOpenIndex] = React.useState(0)
   const { path, url } = useRouteMatch()
   const handleLogout = () => {
-    props.logoutUser()
+    dispatch(logoutUser())
   }
+  const dispatch = useAppDispatch()
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -68,12 +64,12 @@ const AdminView: React.FC = (props: any) => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Drawer
-        className={(classes.drawer, 'background')}
-        variant="permanent"
+      <LeftDrawer
+        width={drawerWidth}
         classes={{
           paper: classes.drawerPaper,
         }}
+        variant="permanent"
         anchor="left"
       >
         <div>
@@ -103,7 +99,7 @@ const AdminView: React.FC = (props: any) => {
             </ListItem>
           </List>
         </div>
-      </Drawer>
+      </LeftDrawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
         <Switch>
@@ -128,7 +124,4 @@ const AdminView: React.FC = (props: any) => {
     </div>
   )
 }
-const mapDispatchToProps = {
-  logoutUser,
-}
-export default connect(null, mapDispatchToProps)(AdminView)
+export default AdminView

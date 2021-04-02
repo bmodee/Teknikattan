@@ -1,4 +1,4 @@
-import { Button, MenuItem } from '@material-ui/core'
+import { Button, MenuItem, TextField } from '@material-ui/core'
 import styled from 'styled-components'
 
 export const TopBar = styled.div`
@@ -7,12 +7,29 @@ export const TopBar = styled.div`
   align-items: flex-end;
 `
 
-export const NewCompetitionButton = styled(Button)`
+export const AddCompetitionButton = styled(Button)`
   margin-bottom: 8px;
 `
 
-export const RemoveCompetition = styled(MenuItem)`
-  color:red;
+export const AddCompetitionForm = styled.form`
+  display: flex;
+  flex-direction: column;
 `
 
+export const AddCompetitionContent = styled.div`
+  padding: 15px;
+`
 
+export const RemoveCompetition = styled(MenuItem)`
+  color: red;
+`
+
+export const YearFilterTextField = styled(TextField)`
+  width: 70px;
+`
+
+export const FilterContainer = styled.div`
+  display: flex;
+  align-items: flex-end;
+  margin: left 10px;
+`

@@ -4,23 +4,30 @@ import Types from '../actions/types'
 import { logoutUser } from '../actions/user'
 import store from '../store'
 
-const UnAuthorized = async () => {
-  store.dispatch(logoutUser())
+const UnAuthorized = () => {
+  logoutUser()(store.dispatch)
 }
 
-export const CheckAuthentication = async () => {
+export const CheckAuthentication = () => {
   const authToken = localStorage.token
   if (authToken) {
     const decodedToken: any = jwtDecode(authToken)
     if (decodedToken.exp * 1000 >= Date.now()) {
       axios.defaults.headers.common['Authorization'] = authToken
-      await axios
+      store.dispatch({ type: Types.LOADING_USER })
+      console.log('loading user')
+      axios
         .get('/users')
         .then((res) => {
           store.dispatch({ type: Types.SET_AUTHENTICATED })
           store.dispatch({
             type: Types.SET_USER,
-            payload: res.data,
+            payload: {
+              name: res.data.name,
+              email: res.data.email,
+              roleId: res.data.role_id,
+              cityId: res.data.city_id,
+            },
           })
         })
         .catch((error) => {

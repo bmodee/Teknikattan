@@ -1,6 +1,6 @@
-import { applyMiddleware, compose, createStore } from 'redux'
+import { AnyAction, applyMiddleware, compose, createStore } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
-import thunk from 'redux-thunk'
+import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk'
 import allReducers from './reducers/allReducers'
 /*
   TypeScript does not know the type of the property. 
@@ -21,5 +21,8 @@ const middleware = [thunk]
 
 // simple store with plugin
 const store = createStore(allReducers, initialState, composeWithDevTools(applyMiddleware(...middleware)))
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, AnyAction>
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = ThunkDispatch<RootState, void, AnyAction>
 
 export default store
