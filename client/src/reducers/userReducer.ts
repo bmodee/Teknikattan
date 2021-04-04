@@ -17,7 +17,7 @@ interface UserState {
 
 const initialState: UserState = {
   authenticated: false,
-  loading: true,
+  loading: false,
   userInfo: null,
 }
 
