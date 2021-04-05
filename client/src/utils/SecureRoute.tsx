@@ -11,11 +11,15 @@ interface SecureRouteProps extends RouteProps {
 /** Utility component to use for authentication, replace all routes that should be private with secure routes*/
 const SecureRoute: React.FC<SecureRouteProps> = ({ login, component: Component, ...rest }: SecureRouteProps) => {
   const authenticated = useAppSelector((state) => state.user.authenticated)
-  const loading = useAppSelector((state) => state.user.loading)
+  const [initialized, setInitialized] = React.useState(false)
   useEffect(() => {
-    CheckAuthentication()
+    const waitForAuthentication = async () => {
+      await CheckAuthentication()
+      setInitialized(true)
+    }
+    waitForAuthentication()
   }, [])
-  if (!loading) {
+  if (initialized) {
     if (login)
       return (
         <Route {...rest} render={(props) => (authenticated ? <Redirect to="/admin" /> : <Component {...props} />)} />
