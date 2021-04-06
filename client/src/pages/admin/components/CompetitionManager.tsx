@@ -40,7 +40,7 @@ const CompetitionManager: React.FC = (props: any) => {
   const competitions = useAppSelector((state) => state.competitions.competitions)
   const filterParams = useAppSelector((state) => state.competitions.filterParams)
   const competitionTotal = useAppSelector((state) => state.competitions.total)
-  const cities = useAppSelector((state) => state.cities)
+  const cities = useAppSelector((state) => state.cities.cities)
   const classes = useStyles()
   const noFilterText = 'Alla'
   const dispatch = useAppDispatch()

@@ -19,11 +19,11 @@ export const getCompetitions = () => async (dispatch: AppDispatch, getState: () 
     .then((res) => {
       dispatch({
         type: Types.SET_COMPETITIONS,
-        payload: res.data.competitions,
+        payload: res.data.items,
       })
       dispatch({
         type: Types.SET_COMPETITIONS_TOTAL,
-        payload: res.data.total,
+        payload: res.data.total_count,
       })
       dispatch({
         type: Types.SET_COMPETITIONS_COUNT,
