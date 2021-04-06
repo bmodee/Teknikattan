@@ -1,16 +1,22 @@
 import app.core.controller as dbc
 import app.core.http_codes as codes
-from app.apis import admin_required
+from app.apis import admin_required, item_response, text_response
 from app.core.dto import AuthDTO
 from app.core.models import User
 from app.core.parsers import create_user_parser, login_parser
-from flask_jwt_extended import (create_access_token, create_refresh_token,
-                                get_jwt_identity, get_raw_jwt,
-                                jwt_refresh_token_required, jwt_required)
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    get_jwt_identity,
+    get_raw_jwt,
+    jwt_refresh_token_required,
+    jwt_required,
+)
 from flask_restx import Namespace, Resource, cors
 
 api = AuthDTO.api
-user_model = AuthDTO.model
+schema = AuthDTO.schema
+list_schema = AuthDTO.list_schema
 
 
 def get_user_claims(item_user):
@@ -20,7 +26,6 @@ def get_user_claims(item_user):
 @api.route("/signup")
 class AuthSignup(Resource):
     @jwt_required
-    @cors.crossdomain(origin="*")
     def post(self):
         args = create_user_parser.parse_args(strict=True)
         email = args.get("email")
@@ -35,26 +40,24 @@ class AuthSignup(Resource):
         if not item_user:
             api.abort(codes.BAD_REQUEST, "User could not be created")
 
-        return {"id": item_user.id}
+        return item_response(schema.dump(item_user))
 
 
 @api.route("/delete/<ID>")
 @api.param("ID")
 class AuthDelete(Resource):
     @jwt_required
-    @cors.crossdomain(origin="*")
     def delete(self, ID):
         item_user = User.query.filter(User.id == ID).first()
         dbc.delete.default(item_user)
         if ID == get_jwt_identity():
             jti = get_raw_jwt()["jti"]
             dbc.add.blacklist(jti)
-        return "deleted"
+        return text_response(f"User {ID} deleted")
 
 
 @api.route("/login")
 class AuthLogin(Resource):
-    @cors.crossdomain(origin="*")
     def post(self):
         args = login_parser.parse_args(strict=True)
         email = args.get("email")
@@ -74,18 +77,16 @@ class AuthLogin(Resource):
 @api.route("/logout")
 class AuthLogout(Resource):
     @jwt_required
-    @cors.crossdomain(origin="*")
     def post(self):
         jti = get_raw_jwt()["jti"]
         dbc.add.blacklist(jti)
-        return "logout"
+        return text_response("User logout")
 
 
 @api.route("/refresh")
 class AuthRefresh(Resource):
     @jwt_required
     @jwt_refresh_token_required
-    @cors.crossdomain(origin="*")
     def post(self):
         old_jti = get_raw_jwt()["jti"]
 

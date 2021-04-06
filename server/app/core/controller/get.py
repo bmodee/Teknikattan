@@ -13,7 +13,19 @@ def team(CID, TID):
     return Team.query.filter((Team.competition_id == CID) & (Team.id == TID)).first()
 
 
-def search_user(email=None, name=None, city_id=None, role_id=None, page=0, page_size=15):
+def _search(query, order_column, page=0, page_size=15, order=1):
+    if order == 1:
+        query = query.order_by(order_column)
+    else:
+        query = query.order_by(order_column.desc())
+
+    total = query.count()
+    query = query.limit(page_size).offset(page * page_size)
+    items = query.all()
+    return items, total
+
+
+def search_user(email=None, name=None, city_id=None, role_id=None, page=0, page_size=15, order=1, order_by=None):
     query = User.query
     if name:
         query = query.filter(User.name.like(f"%{name}%"))
@@ -24,14 +36,16 @@ def search_user(email=None, name=None, city_id=None, role_id=None, page=0, page_
     if role_id:
         query = query.filter(User.role_id == role_id)
 
-    total = query.count()
-    query = query.limit(page_size).offset(page * page_size)
-    result = query.all()
+    order_column = User.id  # Default order_by
+    if order_by:
+        order_column = getattr(User.__table__.c, order_by)
 
-    return result, total
+    return _search(query, order_column, page, page_size, order)
 
 
-def search_competitions(name=None, year=None, city_id=None, style_id=None, page=0, page_size=15):
+def search_competitions(
+    name=None, year=None, city_id=None, style_id=None, page=0, page_size=15, order=1, order_by=None
+):
     query = Competition.query
     if name:
         query = query.filter(Competition.name.like(f"%{name}%"))
@@ -42,8 +56,8 @@ def search_competitions(name=None, year=None, city_id=None, style_id=None, page=
     if style_id:
         query = query.filter(Competition.style_id == style_id)
 
-    total = query.count()
-    query = query.limit(page_size).offset(page * page_size)
-    result = query.all()
+    order_column = Competition.year  # Default order_by
+    if order_by:
+        order_column = getattr(Competition.columns, order_by)
 
-    return result, total
+    return _search(query, order_column, page, page_size, order)

@@ -1,6 +1,7 @@
 import app.core.controller as dbc
 import app.core.http_codes as codes
-from app.apis import admin_required
+from app.apis import admin_required, item_response, list_response
+from app.core import schemas
 from app.core.dto import SlideDTO
 from app.core.models import Competition, Slide
 from app.core.parsers import slide_parser
@@ -8,7 +9,8 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restx import Namespace, Resource, reqparse
 
 api = SlideDTO.api
-model = SlideDTO.model
+schema = SlideDTO.schema
+list_schema = SlideDTO.list_schema
 
 
 def get_comp(CID):
@@ -19,38 +21,36 @@ def get_comp(CID):
 @api.param("CID")
 class SlidesList(Resource):
     @jwt_required
-    @api.marshal_with(model)
     def get(self, CID):
         item_comp = get_comp(CID)
-        return item_comp.slides
+        return list_response(list_schema.dump(item_comp.slides))
 
     @jwt_required
-    @api.marshal_with(model)
     def post(self, CID):
-        dbc.add.slide(CID)
         item_comp = get_comp(CID)
-        return item_comp.slides
+        dbc.add.slide(item_comp)
+        dbc.refresh(item_comp)
+        return list_response(list_schema.dump(item_comp.slides))
 
 
 @api.route("/<SID>")
 @api.param("CID,SID")
 class Slides(Resource):
     @jwt_required
-    @api.marshal_with(model)
     def get(self, CID, SID):
         item_slide = dbc.get.slide(CID, SID)
-        return item_slide
+        return item_response(schema.dump(item_slide))
 
     @jwt_required
-    @api.marshal_with(model)
     def put(self, CID, SID):
         args = slide_parser.parse_args(strict=True)
         title = args.get("title")
         timer = args.get("timer")
 
         item_slide = dbc.get.slide(CID, SID)
+        item_slide = dbc.edit.slide(item_slide, title, timer)
 
-        return dbc.edit.slide(item_slide, title, timer)
+        return item_response(schema.dump(item_slide))
 
     @jwt_required
     def delete(self, CID, SID):
@@ -63,7 +63,6 @@ class Slides(Resource):
 @api.param("CID,SID")
 class SlidesOrder(Resource):
     @jwt_required
-    @api.marshal_with(model)
     def put(self, CID, SID):
         args = slide_parser.parse_args(strict=True)
         order = args.get("order")
@@ -86,4 +85,4 @@ class SlidesOrder(Resource):
         # switch place between them
         item_slide = dbc.edit.switch_order(item_slide, item_slide_order)
 
-        return item_slide
+        return item_response(schema.dump(item_slide))

@@ -1,7 +1,7 @@
 from flask import Flask, redirect, request
 
 import app.core.models as models
-from app.core import bcrypt, db, jwt
+from app.core import bcrypt, db, jwt, ma
 
 
 def create_app(config_name="configmodule.DevelopmentConfig"):
@@ -13,6 +13,7 @@ def create_app(config_name="configmodule.DevelopmentConfig"):
         bcrypt.init_app(app)
         jwt.init_app(app)
         db.init_app(app)
+        ma.init_app(app)
 
         from app.apis import flask_api
 

@@ -1,12 +1,6 @@
 from app.core import db
 
 
-def default(item):
-    db.session.commit()
-    db.session.refresh(item)
-    return item
-
-
 def switch_order(item1, item2):
     old_order = item1.order
     new_order = item2.order

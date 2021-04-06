@@ -1,15 +1,14 @@
 import app.core.controller as dbc
-import app.core.http_codes as codes
-from app.apis import admin_required
+from app.apis import admin_required, item_response, list_response
 from app.core.dto import CompetitionDTO
-from app.core.models import Competition, Slide, Team
+from app.core.models import Competition
 from app.core.parsers import competition_parser, competition_search_parser
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from flask_restx import Resource, reqparse
+from flask_jwt_extended import jwt_required
+from flask_restx import Resource
 
 api = CompetitionDTO.api
-competition_model = CompetitionDTO.model
-competition_list_model = CompetitionDTO.user_list_model
+schema = CompetitionDTO.schema
+list_schema = CompetitionDTO.list_schema
 
 
 def get_comp(CID):
@@ -19,7 +18,6 @@ def get_comp(CID):
 @api.route("/")
 class CompetitionsList(Resource):
     @jwt_required
-    @api.marshal_with(competition_model)
     def post(self):
         args = competition_parser.parse_args(strict=True)
 
@@ -29,25 +27,24 @@ class CompetitionsList(Resource):
         style_id = args.get("style_id")
 
         # Add competition
-        item_competition = dbc.add.default(Competition(name, year, style_id, city_id))
+        item = dbc.add.default(Competition(name, year, style_id, city_id))
 
         # Add default slide
-        item_slide = dbc.add.slide(item_competition.id)
+        item_slide = dbc.add.slide(item)
 
-        return item_competition
+        dbc.refresh(item)
+        return item_response(schema.dump(item))
 
 
 @api.route("/<ID>")
 @api.param("ID")
 class Competitions(Resource):
     @jwt_required
-    @api.marshal_with(competition_model)
     def get(self, ID):
         item = get_comp(ID)
-        return item
+        return item_response(schema.dump(item))
 
     @jwt_required
-    @api.marshal_with(competition_model)
     def put(self, ID):
         args = competition_parser.parse_args(strict=True)
 
@@ -56,7 +53,8 @@ class Competitions(Resource):
         year = args.get("year")
         city_id = args.get("city_id")
         style_id = args.get("style_id")
-        return dbc.edit.competition(item, name, year, city_id, style_id)
+        item = dbc.edit.competition(item, name, year, city_id, style_id)
+        return item_response(schema.dump(item))
 
     @jwt_required
     def delete(self, ID):
@@ -68,7 +66,6 @@ class Competitions(Resource):
 @api.route("/search")
 class CompetitionSearch(Resource):
     @jwt_required
-    @api.marshal_with(competition_list_model)
     def get(self):
         args = competition_search_parser.parse_args(strict=True)
         name = args.get("name")
@@ -77,6 +74,8 @@ class CompetitionSearch(Resource):
         style_id = args.get("style_id")
         page = args.get("page", 0)
         page_size = args.get("page_size", 15)
-        result, total = dbc.get.search_competitions(name, year, city_id, style_id, page, page_size)
+        order = args.get("order", 1)
+        order_by = args.get("order_by")
 
-        return {"competitions": result, "count": len(result), "total": total}
+        items, total = dbc.get.search_competitions(name, year, city_id, style_id, page, page_size, order, order_by)
+        return list_response(list_schema.dump(items), total)

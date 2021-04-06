@@ -1,7 +1,9 @@
 from functools import wraps
 
+import app.core.http_codes as codes
 from flask_jwt_extended import verify_jwt_in_request
 from flask_jwt_extended.utils import get_jwt_claims
+from flask_restx.errors import abort
 
 
 def admin_required():
@@ -13,27 +15,29 @@ def admin_required():
             if claims["role"] == "Admin":
                 return fn(*args, **kwargs)
             else:
-                return {"message:": "Admins only"}, 403
+                return {"message:": "Admins only"}, codes.FORBIDDEN
 
         return decorator
 
     return wrapper
 
 
-def text_response(text, code=200):
-    return {"message": text}, code
+def text_response(message, code=200):
+    return {"message": message}, 200
 
 
-def query_response(db_items, code=200):
-    if type(db_items) is not list:
-        db_items = [db_items]
-    return {"result": [i.get_dict() for i in db_items]}, code
-
-
-def object_response(items, code=200):
+def list_response(items, total=None, code=200):
     if type(items) is not list:
-        items = [items]
-    return {"result": items}, code
+        abort(codes.INTERNAL_SERVER_ERROR)
+    if not total:
+        total = len(items)
+    return {"items": items, "count": len(items), "total_count": total}, code
+
+
+def item_response(item, code=200):
+    if isinstance(item, list):
+        abort(codes.INTERNAL_SERVER_ERROR)
+    return item, code
 
 
 from flask_restx import Api

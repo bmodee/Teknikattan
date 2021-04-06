@@ -1,6 +1,7 @@
 import sqlalchemy as sa
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended.jwt_manager import JWTManager
+from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.model import Model
 from sqlalchemy.sql import func
@@ -15,3 +16,4 @@ class Base(Model):
 db = SQLAlchemy(model_class=Base)
 bcrypt = Bcrypt()
 jwt = JWTManager()
+ma = Marshmallow()

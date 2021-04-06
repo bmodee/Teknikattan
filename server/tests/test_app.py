@@ -2,6 +2,38 @@ from tests import app, client, db
 from tests.test_helpers import add_default_values, delete, get, post, put
 
 
+def test_misc(client):
+    add_default_values()
+
+    # Login in with default user
+    response, body = post(client, "/api/auth/login", {"email": "test@test.se", "password": "password"})
+    assert response.status_code == 200
+    headers = {"Authorization": "Bearer " + body["access_token"]}
+
+    ## Get misc
+    response, body = get(client, "/api/misc/roles", headers=headers)
+    assert body["count"] >= 2
+
+    response, body = get(client, "/api/misc/cities", headers=headers)
+    assert body["count"] >= 1
+    assert body["items"][0]["name"] == "Linköping"
+
+    response, body = get(client, "/api/misc/media_types", headers=headers)
+    assert body["count"] >= 2
+
+    response, body = get(client, "/api/misc/question_types", headers=headers)
+    assert body["count"] >= 3
+
+    ## Cities
+    response, body = post(client, "/api/misc/cities", {"name": "Göteborg"}, headers=headers)
+    assert body["count"] >= 2
+    assert body["items"][1]["name"] == "Göteborg"
+
+    response, body = put(client, "/api/misc/cities/2", {"name": "Gbg"}, headers=headers)
+    assert body["count"] >= 2
+    assert body["items"][1]["name"] == "Gbg"
+
+
 def test_competition(client):
     add_default_values()
 
@@ -26,7 +58,7 @@ def test_competition(client):
 
     response, body = get(client, "/api/competitions/1/slides", headers=headers)
     assert response.status_code == 200
-    assert len(body) == 2
+    assert len(body["items"]) == 2
 
     response, body = put(client, "/api/competitions/1/slides/1/order", {"order": 1}, headers=headers)
     assert response.status_code == 200
@@ -36,8 +68,8 @@ def test_competition(client):
 
     response, body = get(client, "/api/competitions/1/teams", headers=headers)
     assert response.status_code == 200
-    assert len(body) == 1
-    assert body[0]["name"] == "t1"
+    assert len(body["items"]) == 1
+    assert body["items"][0]["name"] == "t1"
 
     response, body = delete(client, "/api/competitions/1", {}, headers=headers)
     assert response.status_code == 200
@@ -57,6 +89,7 @@ def test_app(client):
     assert response.status_code == 200
     assert body["id"] == 2
     assert "password" not in body
+    assert "_password" not in body
 
     # Try loggin with wrong PASSWORD
     response, body = post(client, "/api/auth/login", {"email": "test1@test.se", "password": "abc1234"})

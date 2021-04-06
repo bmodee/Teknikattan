@@ -1,6 +1,6 @@
 import app.core.controller as dbc
 import app.core.http_codes as codes
-from app.apis import admin_required
+from app.apis import admin_required, item_response, list_response
 from app.core.dto import UserDTO
 from app.core.models import User
 from app.core.parsers import user_parser, user_search_parser
@@ -8,8 +8,8 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restx import Namespace, Resource
 
 api = UserDTO.api
-user_model = UserDTO.model
-user_list_model = UserDTO.user_list_model
+schema = UserDTO.schema
+list_schema = UserDTO.list_schema
 
 
 def edit_user(item_user, args):
@@ -28,38 +28,37 @@ def edit_user(item_user, args):
 @api.route("/")
 class UsersList(Resource):
     @jwt_required
-    @api.marshal_list_with(user_model)
     def get(self):
-        return User.query.filter(User.id == get_jwt_identity()).first()
+        item = User.query.filter(User.id == get_jwt_identity()).first()
+        return item_response(schema.dump(item))
 
     @jwt_required
-    @api.marshal_with(user_model)
     def put(self):
         args = user_parser.parse_args(strict=True)
-        item_user = User.query.filter(User.id == get_jwt_identity()).first()
-        return edit_user(item_user, args)
+        item = User.query.filter(User.id == get_jwt_identity()).first()
+        item = edit_user(item, args)
+        return item_response(schema.dump(item))
 
 
 @api.route("/<ID>")
 @api.param("ID")
 class Users(Resource):
     @jwt_required
-    @api.marshal_with(user_model)
     def get(self, ID):
-        return User.query.filter(User.id == ID).first()
+        item = User.query.filter(User.id == ID).first()
+        return item_response(schema.dump(item))
 
     @jwt_required
-    @api.marshal_with(user_model)
     def put(self, ID):
         args = user_parser.parse_args(strict=True)
-        item_user = User.query.filter(User.id == ID).first()
-        return edit_user(item_user, args)
+        item = User.query.filter(User.id == ID).first()
+        item = edit_user(item, args)
+        return item_response(schema.dump(item))
 
 
 @api.route("/search")
 class UserSearch(Resource):
     @jwt_required
-    @api.marshal_list_with(user_list_model)
     def get(self):
         args = user_search_parser.parse_args(strict=True)
         name = args.get("name")
@@ -68,6 +67,8 @@ class UserSearch(Resource):
         city_id = args.get("city_id")
         page = args.get("page", 0)
         page_size = args.get("page_size", 15)
+        order = args.get("order", 1)
+        order_by = args.get("order_by")
 
-        result, total = dbc.get.search_user(email, name, city_id, role_id, page, page_size)
-        return {"users": result, "count": len(result), "total": total}
+        items, total = dbc.get.search_user(email, name, city_id, role_id, page, page_size, order, order_by)
+        return list_response(list_schema.dump(items), total)

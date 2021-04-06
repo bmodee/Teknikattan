@@ -14,9 +14,9 @@ def blacklist(jti):
     db.session.commit()
 
 
-def slide(competition_id):
-    order = Slide.query.filter(Slide.competition_id == competition_id).count()
-    item = Slide(order, competition_id)
+def slide(item_competition):
+    order = Slide.query.filter(Slide.competition_id == item_competition.id).count()
+    item = Slide(order, item_competition.id)
     db.session.add(item)
     db.session.commit()
     db.session.refresh(item)
