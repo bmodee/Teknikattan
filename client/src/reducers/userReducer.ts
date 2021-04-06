@@ -1,12 +1,14 @@
-//in userReducer.ts
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
+import { City } from '../interfaces/City'
+import { Competition } from './../interfaces/Competition'
 
 interface UserInfo {
   name: string
   email: string
-  roleId: number
-  cityId: number
+  role: Competition
+  city: City
+  id: number
 }
 
 interface UserState {

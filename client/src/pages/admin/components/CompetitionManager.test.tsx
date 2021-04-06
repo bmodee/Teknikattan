@@ -8,37 +8,41 @@ import CompetitionManager from './CompetitionManager'
 
 it('renders competition manager', () => {
   const cityRes: any = {
-    data: [
-      {
-        id: 1,
-        name: 'Link\u00f6ping',
-      },
-      {
-        id: 2,
-        name: 'Stockholm',
-      },
-    ],
+    data: {
+      items: [
+        {
+          id: 1,
+          name: 'Link\u00f6ping',
+        },
+        {
+          id: 2,
+          name: 'Stockholm',
+        },
+      ],
+      count: 2,
+      total_count: 3,
+    },
   }
   const compRes: any = {
     data: {
-      competitions: [
+      items: [
         {
           id: 21,
           name: 'ggff',
           year: 2021,
           style_id: 1,
-          city_id: 1,
+          city: cityRes.data.items[0],
         },
         {
           id: 22,
           name: 'sssss',
           year: 2021,
           style_id: 1,
-          city_id: 1,
+          city: cityRes.data.items[1],
         },
       ],
       count: 2,
-      total: 3,
+      total_count: 3,
     },
   }
 

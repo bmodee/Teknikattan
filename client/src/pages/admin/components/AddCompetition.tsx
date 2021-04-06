@@ -37,8 +37,9 @@ const competitionSchema: Yup.SchemaOf<AddCompetitionFormModel> = Yup.object({
 
 const AddCompetition: React.FC = (props: any) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
-  const [selectedCity, setSelectedCity] = React.useState<City | undefined>()
   const cities = useAppSelector((state) => state.cities.cities)
+  const userCity = useAppSelector((state) => state.user.userInfo?.city)
+  const [selectedCity, setSelectedCity] = React.useState<City | undefined>(userCity)
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
@@ -80,7 +81,7 @@ const AddCompetition: React.FC = (props: any) => {
   }
 
   const competitionInitialValues: AddCompetitionFormModel = {
-    model: { name: '', city: noCitySelected, year: currentYear },
+    model: { name: '', city: userCity?.name ? userCity.name : noCitySelected, year: currentYear },
   }
   return (
     <div>

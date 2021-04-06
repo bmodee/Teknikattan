@@ -2,7 +2,8 @@ import { City } from './City'
 
 export interface Competition {
   name: string
-  id: number
   city: City
+  style_id: number
   year: number
+  id: number
 }

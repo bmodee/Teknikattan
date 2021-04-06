@@ -22,12 +22,7 @@ export const CheckAuthentication = async () => {
           store.dispatch({ type: Types.SET_AUTHENTICATED })
           store.dispatch({
             type: Types.SET_USER,
-            payload: {
-              name: res.data.name,
-              email: res.data.email,
-              roleId: res.data.role_id,
-              cityId: res.data.city_id,
-            },
+            payload: res.data,
           })
         })
         .catch((error) => {

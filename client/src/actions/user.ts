@@ -30,15 +30,10 @@ export const getUserData = () => async (dispatch: AppDispatch) => {
   await axios
     .get('/users')
     .then((res) => {
+      console.log(res.data)
       dispatch({
         type: Types.SET_USER,
-        payload: {
-          id: res.data.id,
-          name: res.data.name,
-          email: res.data.email,
-          roleId: res.data.role_id,
-          cityId: res.data.city_id,
-        },
+        payload: res.data,
       })
     })
     .catch((err) => {
