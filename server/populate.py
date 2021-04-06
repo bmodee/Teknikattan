@@ -2,14 +2,13 @@ import app.core.controller as dbc
 from app import create_app, db
 from app.core.models import City, MediaType, QuestionType, Role, Style, User
 
-user = {"email": "test@test.se", "password": "password", "role": "Admin", "city": "Linköping"}
-media_types = ["Image", "Video"]
-question_types = ["Boolean", "Multiple", "Text"]
-roles = ["Admin", "Editor"]
-cities = ["Linköping"]
-
 
 def _add_items():
+    media_types = ["Image", "Video"]
+    question_types = ["Boolean", "Multiple", "Text"]
+    roles = ["Admin", "Editor"]
+    cities = ["Linköping"]
+
     # Add media types
     for item in media_types:
         db.session.add(MediaType(item))

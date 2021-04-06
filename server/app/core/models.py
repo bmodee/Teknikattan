@@ -12,9 +12,6 @@ class Blacklist(db.Model):
     def __init__(self, jti):
         self.jti = jti
 
-    def get_dict(self):
-        return {"id": self.id, "jti": self.jti, "expire_date": self.expire_date}
-
 
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -24,9 +21,6 @@ class Role(db.Model):
 
     def __init__(self, name):
         self.name = name
-
-    def get_dict(self):
-        return {"id": self.id, "name": self.name}
 
 
 # TODO Region?
@@ -64,15 +58,6 @@ class User(db.Model):
         self.city_id = city_id
         self.authenticated = False
 
-    def get_dict(self):
-        return {
-            "id": self.id,
-            "email": self.email,
-            "name": self.name,
-            "role_id": self.role_id,
-            "city_id": self.city_id,
-        }
-    
     @hybrid_property
     def password(self):
         return self._password
@@ -152,7 +137,7 @@ class Slide(db.Model):
     title = db.Column(db.String(STRING_SIZE), nullable=False, default="")
     body = db.Column(db.Text, nullable=False, default="")
     timer = db.Column(db.Integer, nullable=False, default=0)
-    tweak_settings = db.Column(db.Text, nullable=False, default="")
+    settings = db.Column(db.Text, nullable=False, default="{}")  # Json object
     competition_id = db.Column(db.Integer, db.ForeignKey("competition.id"), nullable=False)
 
     questions = db.relationship("Question", backref="slide")
@@ -194,7 +179,6 @@ class QuestionAlternative(db.Model):
         self.question_id = question_id
 
 
-# TODO QuestionAnswer
 class QuestionAnswer(db.Model):
     __table_args__ = (db.UniqueConstraint("question_id", "team_id"),)
     id = db.Column(db.Integer, primary_key=True)
@@ -226,4 +210,3 @@ class QuestionType(db.Model):
 
     def __init__(self, name):
         self.name = name
-
