@@ -13,10 +13,8 @@ function TabContent(props: TabPanelProps) {
   const { activeTab } = props
   if (activeTab === 0) {
     return <CompetitionSettings />
-  } else if (activeTab === 1) {
-    return <SlideSettings />
   }
-  return <div>3</div>
+  return <SlideSettings />
 }
 
 const SettingsPanel: React.FC = () => {
@@ -27,7 +25,6 @@ const SettingsPanel: React.FC = () => {
         <Tabs value={activeTab} onChange={(event, val) => setActiveTab(val)} aria-label="simple tabs example">
           <SettingsTab label="Tävling" />
           <SettingsTab label="Sida" />
-          <SettingsTab label="Stil" />
         </Tabs>
       </AppBar>
       <TabContent activeTab={activeTab} />

@@ -15,11 +15,3 @@ it('renders slide settings tab', () => {
   tabs.children().at(1).simulate('click')
   expect(wrapper.text().includes('2')).toBe(true) //TODO: check that SlideSettings exists
 })
-
-it('renders style settings tab', () => {
-  const wrapper = mount(<SettingsPanel />)
-  const tabs = wrapper.find('.MuiTabs-flexContainer')
-  expect(wrapper.find(CompetitionSettings).length).toEqual(1)
-  tabs.children().at(2).simulate('click')
-  expect(wrapper.text().includes('3')).toBe(true) //TODO: check that StyleSettings exists
-})

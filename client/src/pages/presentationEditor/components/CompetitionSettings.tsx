@@ -9,18 +9,27 @@ const useStyles = makeStyles((theme: Theme) =>
       '& > *': {
         margin: theme.spacing(1),
         width: '100%',
+        background: 'white',
       },
     },
     textInput: {
       margin: theme.spacing(2),
       width: '87%',
+      background: 'white',
     },
     textCenter: {
       textAlign: 'center',
+      background: 'white',
     },
     center: {
       display: 'flex',
       justifyContent: 'center',
+      background: 'white',
+    },
+    importedImage: {
+      width: 70,
+      height: 50,
+      background: 'white',
     },
   })
 )
@@ -43,8 +52,8 @@ const CompetitionSettings: React.FC = () => {
         <Divider />
         <TextField className={classes.textInput} id="outlined-basic" label="Stad" variant="outlined" />
       </form>
+
       <List>
-        <Divider />
         <ListItem>
           <ListItemText className={classes.textCenter} primary="Lag" />
         </ListItem>
@@ -60,6 +69,15 @@ const CompetitionSettings: React.FC = () => {
           <Button>Lägg till lag</Button>
         </ListItem>
       </List>
+
+      <ListItem button>
+        <img
+          id="temp source, todo: add image source to elements of pictureList"
+          src="https://i1.wp.com/stickoutmedia.se/wp-content/uploads/2021/01/placeholder-3.png?ssl=1"
+          className={classes.importedImage}
+        />
+        <ListItemText className={classes.textCenter} primary="Välj bakgrundsbild ..." />
+      </ListItem>
     </div>
   )
 }

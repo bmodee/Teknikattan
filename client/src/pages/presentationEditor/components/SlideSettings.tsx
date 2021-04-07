@@ -1,9 +1,7 @@
 import {
   Button,
   Checkbox,
-  Divider,
   FormControl,
-  Grid,
   InputLabel,
   List,
   ListItem,
@@ -11,7 +9,6 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography,
 } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
@@ -24,29 +21,39 @@ const useStyles = makeStyles((theme: Theme) =>
       '& > *': {
         margin: theme.spacing(1),
         width: '100%',
+        background: 'white',
       },
     },
     textInput: {
       margin: theme.spacing(2),
       width: '87%',
+      background: 'white',
     },
     textCenter: {
       textAlign: 'center',
+      background: 'white',
     },
     center: {
       display: 'flex',
       justifyContent: 'center',
+      background: 'white',
     },
-    slideTypeSelection: {
+    dropDown: {
       margin: theme.spacing(2),
       width: '87%',
+      background: 'white',
     },
     clickableIcon: {
       cursor: 'pointer',
+      background: 'white',
     },
     importedImage: {
       width: 70,
       height: 50,
+      background: 'white',
+    },
+    whiteBackground: {
+      background: 'white',
     },
   })
 )
@@ -88,39 +95,39 @@ const SlideSettings: React.FC = () => {
 
   return (
     <div className={classes.textInputContainer}>
-      <FormControl variant="outlined" className={classes.slideTypeSelection}>
-        <InputLabel id="slide-type-selection-label">Sidtyp</InputLabel>
-        <Select value={slideTypeSelected} label="Sidtyp" defaultValue="informationSlide" onChange={handleChange}>
-          <MenuItem value="informationSlide">
-            <Button>Informationssida</Button>
-          </MenuItem>
-          <MenuItem value="textQuestion">
-            <Button>Skriftlig fråga</Button>
-          </MenuItem>
-          <MenuItem value="practicalQuestion">
-            <Button>Praktisk fråga</Button>
-          </MenuItem>
-          <MenuItem value="multipleChoiceQuestion">
-            <Button>Flervalsfråga</Button>
-          </MenuItem>
-        </Select>
-      </FormControl>
-      <Divider />
+      <div className={classes.whiteBackground}>
+        <FormControl variant="outlined" className={classes.dropDown}>
+          <InputLabel id="slide-type-selection-label">Sidtyp</InputLabel>
+          <Select value={slideTypeSelected} label="Sidtyp" defaultValue="informationSlide" onChange={handleChange}>
+            <MenuItem value="informationSlide">
+              <Button>Informationssida</Button>
+            </MenuItem>
+            <MenuItem value="textQuestion">
+              <Button>Skriftlig fråga</Button>
+            </MenuItem>
+            <MenuItem value="practicalQuestion">
+              <Button>Praktisk fråga</Button>
+            </MenuItem>
+            <MenuItem value="multipleChoiceQuestion">
+              <Button>Flervalsfråga</Button>
+            </MenuItem>
+          </Select>
+        </FormControl>
+      </div>
 
-      <Grid container spacing={0} justify="space-evenly" alignItems="center">
-        <Grid item>
-          <Typography variant="subtitle2">Timer (s):</Typography>
-        </Grid>
-        <Divider orientation="vertical" flexItem />
-        <Grid item>
-          <TextField margin="dense" id="outlined-basic" label="Antal sekunder" variant="outlined" />
-        </Grid>
-      </Grid>
-      <Divider />
+      <ListItem>
+        <TextField
+          id="standard-number"
+          variant="outlined"
+          placeholder="Antal sekunder"
+          helperText="Lämna blank för att inte använda timerfunktionen"
+          label="Timer"
+          type="number"
+        />
+      </ListItem>
 
       <List>
-        <Divider />
-        <ListItem>
+        <ListItem divider>
           <ListItemText
             className={classes.textCenter}
             primary="Svarsalternativ"
@@ -140,11 +147,9 @@ const SlideSettings: React.FC = () => {
           <Button>Lägg till svarsalternativ</Button>
         </ListItem>
       </List>
-      <Divider />
 
       <List>
-        <Divider />
-        <ListItem>
+        <ListItem divider>
           <ListItemText className={classes.textCenter} primary="Text" />
         </ListItem>
         {texts.map((text) => (
@@ -160,11 +165,9 @@ const SlideSettings: React.FC = () => {
           <Button>Lägg till text</Button>
         </ListItem>
       </List>
-      <Divider />
 
       <List>
-        <Divider />
-        <ListItem>
+        <ListItem divider>
           <ListItemText className={classes.textCenter} primary="Bilder" />
         </ListItem>
         {pictures.map((picture) => (
@@ -184,6 +187,15 @@ const SlideSettings: React.FC = () => {
           <Button>Lägg till bild</Button>
         </ListItem>
       </List>
+
+      <ListItem button>
+        <img
+          id="temp source, todo: add image source to elements of pictureList"
+          src="https://i1.wp.com/stickoutmedia.se/wp-content/uploads/2021/01/placeholder-3.png?ssl=1"
+          className={classes.importedImage}
+        />
+        <ListItemText className={classes.textCenter}>Välj bakgrundsbild ...</ListItemText>
+      </ListItem>
     </div>
   )
 }
