@@ -32,11 +32,12 @@ class AuthSignup(Resource):
         password = args.get("password")
         role_id = args.get("role_id")
         city_id = args.get("city_id")
+        name = args.get("name")
 
         if User.query.filter(User.email == email).count() > 0:
             api.abort(codes.BAD_REQUEST, "User already exists")
 
-        item_user = dbc.add.default(User(email, password, role_id, city_id))
+        item_user = dbc.add.user(email, password, role_id, city_id, name)
         if not item_user:
             api.abort(codes.BAD_REQUEST, "User could not be created")
 

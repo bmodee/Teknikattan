@@ -38,7 +38,6 @@ competition_parser = reqparse.RequestParser()
 competition_parser.add_argument("name", type=str)
 competition_parser.add_argument("year", type=int)
 competition_parser.add_argument("city_id", type=int)
-competition_parser.add_argument("style_id", type=int)
 
 
 ###SEARCH_COMPETITOIN####
@@ -46,7 +45,6 @@ competition_search_parser = search_parser.copy()
 competition_search_parser.add_argument("name", type=str, default=None, location="args")
 competition_search_parser.add_argument("year", type=str, default=None, location="args")
 competition_search_parser.add_argument("city_id", type=int, default=None, location="args")
-competition_search_parser.add_argument("style_id", type=int, default=None, location="args")
 
 
 ###SLIDER_PARSER####

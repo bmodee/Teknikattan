@@ -43,9 +43,7 @@ def search_user(email=None, name=None, city_id=None, role_id=None, page=0, page_
     return _search(query, order_column, page, page_size, order)
 
 
-def search_competitions(
-    name=None, year=None, city_id=None, style_id=None, page=0, page_size=15, order=1, order_by=None
-):
+def search_competitions(name=None, year=None, city_id=None, page=0, page_size=15, order=1, order_by=None):
     query = Competition.query
     if name:
         query = query.filter(Competition.name.like(f"%{name}%"))
@@ -53,8 +51,6 @@ def search_competitions(
         query = query.filter(Competition.year == year)
     if city_id:
         query = query.filter(Competition.city_id == city_id)
-    if style_id:
-        query = query.filter(Competition.style_id == style_id)
 
     order_column = Competition.year  # Default order_by
     if order_by:

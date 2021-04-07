@@ -24,13 +24,12 @@ class CompetitionsList(Resource):
         name = args.get("name")
         city_id = args.get("city_id")
         year = args.get("year")
-        style_id = args.get("style_id")
 
         # Add competition
-        item = dbc.add.default(Competition(name, year, style_id, city_id))
+        item = dbc.add.competition(name, year, city_id)
 
         # Add default slide
-        item_slide = dbc.add.slide(item)
+        dbc.add.slide(item)
 
         dbc.refresh(item)
         return item_response(schema.dump(item))
@@ -52,8 +51,7 @@ class Competitions(Resource):
         name = args.get("name")
         year = args.get("year")
         city_id = args.get("city_id")
-        style_id = args.get("style_id")
-        item = dbc.edit.competition(item, name, year, city_id, style_id)
+        item = dbc.edit.competition(item, name, year, city_id)
         return item_response(schema.dump(item))
 
     @jwt_required
@@ -71,11 +69,10 @@ class CompetitionSearch(Resource):
         name = args.get("name")
         year = args.get("year")
         city_id = args.get("city_id")
-        style_id = args.get("style_id")
         page = args.get("page", 0)
         page_size = args.get("page_size", 15)
         order = args.get("order", 1)
         order_by = args.get("order_by")
 
-        items, total = dbc.get.search_competitions(name, year, city_id, style_id, page, page_size, order, order_by)
+        items, total = dbc.get.search_competitions(name, year, city_id, page, page_size, order, order_by)
         return list_response(list_schema.dump(items), total)

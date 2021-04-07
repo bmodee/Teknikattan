@@ -43,7 +43,7 @@ def test_competition(client):
     headers = {"Authorization": "Bearer " + body["access_token"]}
 
     # Create competition
-    data = {"name": "c1", "year": 2020, "city_id": 1, "style_id": 1}
+    data = {"name": "c1", "year": 2020, "city_id": 1}
     response, body = post(client, "/api/competitions", data, headers=headers)
     assert response.status_code == 200
     assert body["name"] == "c1"

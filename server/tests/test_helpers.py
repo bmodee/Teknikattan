@@ -2,7 +2,7 @@ import json
 
 import app.core.controller as dbc
 from app.core import db
-from app.core.models import City, MediaType, QuestionType, Role, Style, User
+from app.core.models import City, MediaType, QuestionType, Role, User
 
 
 def add_default_values():
@@ -13,28 +13,23 @@ def add_default_values():
 
     # Add media types
     for item in media_types:
-        db.session.add(MediaType(item))
+        dbc.add.mediaType(item)
 
     # Add question types
     for item in question_types:
-        db.session.add(QuestionType(item))
+        dbc.add.questionType(item)
 
     # Add roles
     for item in roles:
-        db.session.add(Role(item))
-
+        dbc.add.role(item)
     # Add cities
     for item in cities:
-        db.session.add(City(item))
+        dbc.add.city(item)
 
-    # Add deafult style
-    db.session.add(Style("Main Style", ""))
-
-    # Commit changes to db
-    db.session.commit()
-
+    item_admin = Role.query.filter(Role.name == "Admin").one()
+    item_city = City.query.filter(City.name == "Linköping").one()
     # Add user with role and city
-    dbc.add.default(User("test@test.se", "password", 1, 1))
+    dbc.add.user("test@test.se", "password", item_admin.id, item_city.id)
 
 
 def get_body(response):

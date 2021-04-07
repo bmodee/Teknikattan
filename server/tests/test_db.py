@@ -1,4 +1,5 @@
-from app.core.models import City, Competition, Media, MediaType, Question, QuestionType, Role, Slide, Style, Team, User
+import app.core.controller as dbc
+from app.core.models import City, Competition, Media, MediaType, Question, QuestionType, Role, Slide, Team, User
 
 from tests import app, client, db
 from tests.test_helpers import add_default_values, assert_exists, assert_insert_fail
@@ -21,7 +22,7 @@ def test_user(client):
     assert len(item_city.users) == 1 and item_city.users[0].id == item_user.id
 
 
-def test_media_style(client):
+def test_media(client):
     add_default_values()
     item_user = User.query.filter_by(email="test@test.se").first()
 
@@ -38,19 +39,6 @@ def test_media_style(client):
     assert len(item_user.media) == 1
     assert item_media.upload_by.email == "test@test.se"
 
-    # Add style
-    db.session.add(Style("template", "hej", item_media.id))
-    db.session.commit()
-
-    # Assert style
-    item_style = Style.query.filter_by(name="template").first()
-    assert item_style is not None
-    assert len(item_media.styles) == 1
-    assert item_style.bg_image.filename == "bild.png"
-
-    # Assert lazy loading
-    assert item_user.media[0].styles[0].name == "template"
-
 
 def test_question(client):
     add_default_values()
@@ -64,33 +52,24 @@ def test_question(client):
     db.session.commit()
     item_media = Media.query.filter_by(filename="bild.png").first()
 
-    # Add style
-    db.session.add(Style("template", "hej", item_media.id))
-    db.session.commit()
-    item_style = Style.query.filter_by(name="template").first()
-
     # Add competition
     item_city = City.query.filter_by(name="Linköping").first()
-    db.session.add(Competition("teknik8", 2020, item_style.id, item_city.id))
-    db.session.add(Competition("teknik9", 2020, item_style.id, item_city.id))
-    db.session.commit()
+    dbc.add.competition("teknik8", 2020, item_city.id)
+    dbc.add.competition("teknik9", 2020, item_city.id)
     item_competition = Competition.query.filter_by(name="teknik8").first()
     item_competition_2 = Competition.query.filter_by(name="teknik9").first()
 
     assert item_competition is not None
     assert item_competition.id == 1
-    assert item_competition.style.name == "template"
     assert item_competition.city.name == "Linköping"
 
     # Add teams
-    db.session.add(Team("Lag1", item_competition.id))
-    db.session.add(Team("Lag2", item_competition.id))
-    db.session.commit()
+    dbc.add.team("Lag1", item_competition)
+    dbc.add.team("Lag2", item_competition)
 
     assert_insert_fail(Team, "Lag1", item_competition.id)
 
-    db.session.add(Team("Lag1", item_competition_2.id))
-    db.session.commit()
+    dbc.add.team("Lag1", item_competition_2)
 
     assert Team.query.filter((Team.competition_id == item_competition.id) & (Team.name == "Lag1")).count() == 1
     assert Team.query.filter((Team.competition_id == item_competition.id) & (Team.name == "Lag2")).count() == 1
@@ -100,18 +79,17 @@ def test_question(client):
     assert Team.query.count() == 3
 
     # Add slides
-    db.session.add(Slide(1, item_competition.id))
-    db.session.add(Slide(2, item_competition.id))
-    db.session.add(Slide(3, item_competition.id))
-    db.session.commit()
+    dbc.add.slide(item_competition)
+    dbc.add.slide(item_competition)
+    dbc.add.slide(item_competition)
 
     # Try add slide with same order
     assert_insert_fail(Slide, 1, item_competition.id)
     assert_exists(Slide, 1, order=1)
 
-    item_slide1 = Slide.query.filter_by(order=1).first()
-    item_slide2 = Slide.query.filter_by(order=2).first()
-    item_slide3 = Slide.query.filter_by(order=3).first()
+    item_slide1 = Slide.query.filter_by(order=0).first()
+    item_slide2 = Slide.query.filter_by(order=1).first()
+    item_slide3 = Slide.query.filter_by(order=2).first()
 
     assert item_slide1 is not None
     assert item_slide2 is not None
@@ -121,9 +99,8 @@ def test_question(client):
     question_type_bool = QuestionType.query.filter_by(name="Boolean").first()
     question_type_multiple = QuestionType.query.filter_by(name="Multiple").first()
 
-    db.session.add(Question("Fråga1", 0, question_type_bool.id, item_slide2.id))
-    db.session.add(Question("Fråga2", 1, question_type_multiple.id, item_slide3.id))
-    db.session.commit()
+    dbc.add.question("Fråga1", 10, question_type_bool.id, item_slide2)
+    dbc.add.question("Fråga2", 10, question_type_multiple.id, item_slide3)
 
     assert question_type_bool is not None
     assert question_type_multiple is not None

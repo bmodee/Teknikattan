@@ -52,16 +52,6 @@ class MediaSchema(BaseSchema):
     upload_by_id = ma.auto_field()
 
 
-class StyleSchema(BaseSchema):
-    class Meta(BaseSchema.Meta):
-        model = models.Style
-
-    id = ma.auto_field()
-    name = ma.auto_field()
-    css = ma.auto_field()
-    bg_image = fields.Nested(MediaSchema, many=False)
-
-
 class SlideSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = models.Slide

@@ -11,6 +11,7 @@ class Config:
     BUNDLE_ERRORS = True
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=2)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class DevelopmentConfig(Config):
@@ -21,7 +22,6 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///test.db"
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class ProductionConfig(Config):

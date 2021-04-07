@@ -1,12 +1,11 @@
 import app.core.controller as dbc
 import app.core.http_codes as codes
 from app.apis import admin_required, item_response, list_response
-from app.core import schemas
 from app.core.dto import SlideDTO
 from app.core.models import Competition, Slide
 from app.core.parsers import slide_parser
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from flask_restx import Namespace, Resource, reqparse
+from flask_jwt_extended import jwt_required
+from flask_restx import Resource
 
 api = SlideDTO.api
 schema = SlideDTO.schema

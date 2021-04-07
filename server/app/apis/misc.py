@@ -51,7 +51,7 @@ class CitiesList(Resource):
     @jwt_required
     def post(self):
         args = name_parser.parse_args(strict=True)
-        dbc.add.default(City(args["name"]))
+        dbc.add.city(args["name"])
         items = City.query.all()
         return list_response(city_schema.dump(items))
 

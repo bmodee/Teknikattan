@@ -31,15 +31,13 @@ def slide(item, title=None, timer=None):
     return item
 
 
-def competition(item, name=None, year=None, city_id=None, style_id=None):
+def competition(item, name=None, year=None, city_id=None):
     if name:
         item.name = name
     if year:
         item.year = year
     if city_id:
         item.city_id = city_id
-    if style_id:
-        item.style_id = style_id
 
     db.session.commit()
     db.session.refresh(item)

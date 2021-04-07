@@ -29,8 +29,9 @@ class TeamsList(Resource):
         parser.add_argument("name", type=str, location="json")
         args = parser.parse_args(strict=True)
 
-        dbc.add.default(Team(args["name"], CID))
         item_comp = get_comp(CID)
+        dbc.add.team(args["name"], item_comp)
+        dbc.refresh(item_comp)
         return list_response(list_schema.dump(item_comp.teams))
 
 

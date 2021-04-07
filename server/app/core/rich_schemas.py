@@ -31,7 +31,6 @@ class CompetitionSchemaRich(RichSchema):
     name = ma.auto_field()
     year = ma.auto_field()
     slides = fields.Nested(schemas.SlideSchema, many=True)
-    style = fields.Nested(schemas.RoleSchema, many=False)
     city = fields.Nested(schemas.CitySchema, many=False)
 
 
