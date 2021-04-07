@@ -19,6 +19,7 @@ import { logoutUser } from '../../actions/user'
 import { useAppDispatch } from '../../hooks'
 import CompetitionManager from './components/CompetitionManager'
 import Regions from './components/Regions'
+import UserManager from './components/UserManager'
 import { LeftDrawer } from './styled'
 
 const drawerWidth = 250
@@ -112,9 +113,7 @@ const AdminView: React.FC = () => {
             <Regions />
           </Route>
           <Route path={`${path}/användare`}>
-            <Typography variant="h1" noWrap>
-              Användare
-            </Typography>
+            <UserManager />
           </Route>
           <Route path={`${path}/tävlingshanterare`}>
             <CompetitionManager />

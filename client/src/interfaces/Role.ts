@@ -1,9 +1,4 @@
-import { City } from './City'
-
-export interface Competition {
-  name: string
-  city: City
-  style_id: number
-  year: number
+export interface Role {
   id: number
+  name: string
 }

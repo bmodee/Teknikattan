@@ -3,6 +3,8 @@
 import { combineReducers } from 'redux'
 import citiesReducer from './citiesReducer'
 import competitionsReducer from './competitionsReducer'
+import rolesReducer from './rolesReducer'
+import searchUserReducer from './searchUserReducer'
 import uiReducer from './uiReducer'
 import userReducer from './userReducer'
 
@@ -12,5 +14,7 @@ const allReducers = combineReducers({
   UI: uiReducer,
   competitions: competitionsReducer,
   cities: citiesReducer,
+  roles: rolesReducer,
+  searchUsers: searchUserReducer,
 })
 export default allReducers
