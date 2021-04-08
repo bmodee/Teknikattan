@@ -59,7 +59,6 @@ const AddCompetition: React.FC = (props: any) => {
       name: values.model.name,
       year: values.model.year,
       city_id: selectedCity?.id as number,
-      style_id: 1,
     }
     await axios
       .post<ServerResponse>('/competitions', params)

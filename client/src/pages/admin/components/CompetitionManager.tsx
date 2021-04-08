@@ -152,7 +152,7 @@ const CompetitionManager: React.FC = (props: any) => {
                       {row.name}
                     </Button>
                   </TableCell>
-                  <TableCell align="right">{cities.find((city) => city.id === row.city.id)?.name || ''}</TableCell>
+                  <TableCell align="right">{cities.find((city) => city.id === row.city_id)?.name || ''}</TableCell>
                   <TableCell align="right">{row.year}</TableCell>
                   <TableCell align="right">
                     <Button onClick={(event) => handleClick(event, row.id)}>

@@ -13,13 +13,13 @@ class AuthDTO:
 class UserDTO:
     api = Namespace("users")
     schema = rich_schemas.UserSchemaRich(many=False)
-    list_schema = rich_schemas.UserSchemaRich(many=True)
+    list_schema = schemas.UserSchema(many=True)
 
 
 class CompetitionDTO:
     api = Namespace("competitions")
     schema = rich_schemas.CompetitionSchemaRich(many=False)
-    list_schema = rich_schemas.CompetitionSchemaRich(many=True)
+    list_schema = schemas.CompetitionSchema(many=True)
 
 
 class SlideDTO:

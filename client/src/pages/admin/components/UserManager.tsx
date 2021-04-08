@@ -136,8 +136,8 @@ const UserManager: React.FC = (props: any) => {
               <MenuItem value={noFilterText} onClick={() => handleFilterChange({ ...filterParams, roleId: undefined })}>
                 {noFilterText}
               </MenuItem>
-              {cities &&
-                cities.map((role) => (
+              {roles &&
+                roles.map((role) => (
                   <MenuItem
                     key={role.name}
                     value={role.name}

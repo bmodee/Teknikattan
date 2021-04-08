@@ -1,7 +1,6 @@
 import app.core.models as models
 import app.core.schemas as schemas
 from app.core import ma
-from marshmallow import fields as fields2
 from marshmallow_sqlalchemy import fields
 
 
@@ -34,5 +33,3 @@ class CompetitionSchemaRich(RichSchema):
     city = fields.Nested(schemas.CitySchema, many=False)
 
 
-class UserListSchema(ma.Schema):
-    users = fields2.Nested(UserSchemaRich, many=False)

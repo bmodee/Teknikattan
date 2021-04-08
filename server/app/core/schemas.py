@@ -70,3 +70,24 @@ class TeamSchema(BaseSchema):
     id = ma.auto_field()
     name = ma.auto_field()
     competition_id = ma.auto_field()
+
+
+class UserSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.User
+
+    id = ma.auto_field()
+    name = ma.auto_field()
+    email = ma.auto_field()
+    role_id = ma.auto_field()
+    city_id = ma.auto_field()
+
+
+class CompetitionSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.Competition
+
+    id = ma.auto_field()
+    name = ma.auto_field()
+    year = ma.auto_field()
+    city_id = ma.auto_field()
