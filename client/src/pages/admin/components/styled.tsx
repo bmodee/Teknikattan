@@ -7,20 +7,20 @@ export const TopBar = styled.div`
   align-items: flex-end;
 `
 
-export const AddCompetitionButton = styled(Button)`
+export const AddButton = styled(Button)`
   margin-bottom: 8px;
 `
 
-export const AddCompetitionForm = styled.form`
+export const AddForm = styled.form`
   display: flex;
   flex-direction: column;
 `
 
-export const AddCompetitionContent = styled.div`
+export const AddContent = styled.div`
   padding: 15px;
 `
 
-export const RemoveCompetition = styled(MenuItem)`
+export const RemoveMenuItem = styled(MenuItem)`
   color: red;
 `
 

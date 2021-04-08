@@ -20,7 +20,7 @@ import { getCompetitions, setFilterParams } from '../../../actions/competitions'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { CompetitionFilterParams } from '../../../interfaces/CompetitionFilterParams'
 import AddCompetition from './AddCompetition'
-import { FilterContainer, RemoveCompetition, TopBar, YearFilterTextField } from './styled'
+import { FilterContainer, RemoveMenuItem, TopBar, YearFilterTextField } from './styled'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -178,7 +178,7 @@ const CompetitionManager: React.FC = (props: any) => {
       <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         <MenuItem onClick={handleClose}>Starta</MenuItem>
         <MenuItem onClick={handleClose}>Duplicera</MenuItem>
-        <RemoveCompetition onClick={handleDeleteCompetition}>Ta bort</RemoveCompetition>
+        <RemoveMenuItem onClick={handleDeleteCompetition}>Ta bort</RemoveMenuItem>
       </Menu>
     </div>
   )

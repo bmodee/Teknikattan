@@ -1,4 +1,5 @@
 import { Button, FormControl, InputLabel, MenuItem, Popover, TextField } from '@material-ui/core'
+import PersonAddIcon from '@material-ui/icons/PersonAdd'
 import { Alert, AlertTitle } from '@material-ui/lab'
 import axios from 'axios'
 import { Formik, FormikHelpers } from 'formik'
@@ -9,8 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { City } from '../../../interfaces/City'
 import { AddUserModel } from '../../../interfaces/models'
 import { Role } from '../../../interfaces/Role'
-import { AddCompetitionButton, AddCompetitionContent, AddCompetitionForm } from './styled'
-
+import { AddButton, AddContent, AddForm } from './styled'
 interface ServerResponse {
   code: number
   message: string
@@ -91,9 +91,9 @@ const AddUser: React.FC = (props: any) => {
   }
   return (
     <div>
-      <AddCompetitionButton color="secondary" variant="contained" onClick={handleClick}>
+      <AddButton color="default" variant="contained" onClick={handleClick} endIcon={<PersonAddIcon></PersonAddIcon>}>
         Ny Användare
-      </AddCompetitionButton>
+      </AddButton>
       <Popover
         id={id}
         open={open}
@@ -108,10 +108,10 @@ const AddUser: React.FC = (props: any) => {
           horizontal: 'center',
         }}
       >
-        <AddCompetitionContent>
+        <AddContent>
           <Formik initialValues={userInitialValues} validationSchema={userSchema} onSubmit={handleCompetitionSubmit}>
             {(formik) => (
-              <AddCompetitionForm onSubmit={formik.handleSubmit}>
+              <AddForm onSubmit={formik.handleSubmit}>
                 <TextField
                   label="Email"
                   name="model.email"
@@ -208,10 +208,10 @@ const AddUser: React.FC = (props: any) => {
                     {formik.errors.error}
                   </Alert>
                 )}
-              </AddCompetitionForm>
+              </AddForm>
             )}
           </Formik>
-        </AddCompetitionContent>
+        </AddContent>
       </Popover>
     </div>
   )

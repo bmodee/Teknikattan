@@ -1,5 +1,4 @@
-import { Button, Menu, TextField, Typography } from '@material-ui/core'
-import FormControl from '@material-ui/core/FormControl'
+import { Button, Menu, Typography } from '@material-ui/core'
 import Paper from '@material-ui/core/Paper'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
@@ -13,8 +12,8 @@ import axios from 'axios'
 import React, { useEffect } from 'react'
 import { getCities } from '../../../actions/cities'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
-import { RemoveCompetition, TopBar } from './styled'
-
+import AddRegion from './AddRegion'
+import { RemoveMenuItem, TopBar } from './styled'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     table: {
@@ -31,7 +30,7 @@ const UserManager: React.FC = (props: any) => {
   const [activeId, setActiveId] = React.useState<number | undefined>(undefined)
   const citiesTotal = useAppSelector((state) => state.cities.total)
   const cities = useAppSelector((state) => state.cities.cities)
-  const [newCity, setNewCity] = React.useState()
+  const [newCity, setNewCity] = React.useState<string>()
   const classes = useStyles()
   const dispatch = useAppDispatch()
   const handleClose = () => {
@@ -81,12 +80,7 @@ const UserManager: React.FC = (props: any) => {
   return (
     <div>
       <TopBar>
-        <FormControl className={classes.margin}>
-          <TextField className={classes.margin} value={newCity} onChange={handleChange} label="Region"></TextField>
-          <Button color="primary" variant="contained" onClick={handleAddCity}>
-            Lägg till
-          </Button>
-        </FormControl>
+        <AddRegion></AddRegion>
       </TopBar>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="simple table">
@@ -113,7 +107,7 @@ const UserManager: React.FC = (props: any) => {
         {(!cities || cities.length === 0) && <Typography>Inga regioner hittades</Typography>}
       </TableContainer>
       <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-        <RemoveCompetition onClick={handleDeleteCity}>Ta bort</RemoveCompetition>
+        <RemoveMenuItem onClick={handleDeleteCity}>Ta bort</RemoveMenuItem>
       </Menu>
     </div>
   )

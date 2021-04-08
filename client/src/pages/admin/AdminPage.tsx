@@ -12,7 +12,10 @@ import {
 } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import DashboardIcon from '@material-ui/icons/Dashboard'
-import MailIcon from '@material-ui/icons/Mail'
+import ExitToAppIcon from '@material-ui/icons/ExitToApp'
+import LocationCityIcon from '@material-ui/icons/LocationCity'
+import PeopleIcon from '@material-ui/icons/People'
+import SettingsOverscanIcon from '@material-ui/icons/SettingsOverscan'
 import React from 'react'
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom'
 import { logoutUser } from '../../actions/user'
@@ -21,9 +24,13 @@ import CompetitionManager from './components/CompetitionManager'
 import Regions from './components/Regions'
 import UserManager from './components/UserManager'
 import { LeftDrawer } from './styled'
-
 const drawerWidth = 250
-const menuItems = ['Startsida', 'Regioner', 'Användare', 'Tävlingshanterare']
+const menuItems = [
+  { text: 'Startsida', icon: DashboardIcon },
+  { text: 'Regioner', icon: LocationCityIcon },
+  { text: 'Användare', icon: PeopleIcon },
+  { text: 'Tävlingshanterare', icon: SettingsOverscanIcon },
+]
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,7 +68,7 @@ const AdminView: React.FC = () => {
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h5" noWrap>
-            {menuItems[openIndex]}
+            {menuItems[openIndex].text}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -77,24 +84,31 @@ const AdminView: React.FC = () => {
           <div className={classes.toolbar} />
           <Divider />
           <List>
-            {menuItems.map((text, index) => (
+            {menuItems.map((value, index) => (
               <ListItem
                 button
                 component={Link}
-                key={text}
-                to={`${url}/${text.toLowerCase()}`}
+                key={value.text}
+                to={`${url}/${value.text.toLowerCase()}`}
                 selected={index === openIndex}
                 onClick={() => setOpenIndex(index)}
               >
-                <ListItemIcon>{index === 0 ? <DashboardIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemIcon>{React.createElement(value.icon)}</ListItemIcon>
+                <ListItemText primary={value.text} />
               </ListItem>
             ))}
           </List>
           <Divider />
           <List>
             <ListItem>
-              <Button onClick={handleLogout} type="submit" fullWidth variant="contained" color="primary">
+              <Button
+                onClick={handleLogout}
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                endIcon={<ExitToAppIcon></ExitToAppIcon>}
+              >
                 Logga ut
               </Button>
             </ListItem>

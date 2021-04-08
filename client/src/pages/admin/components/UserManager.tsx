@@ -20,7 +20,7 @@ import { getSearchUsers, setFilterParams } from '../../../actions/searchUser'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { UserFilterParams } from '../../../interfaces/UserData'
 import AddUser from './AddUser'
-import { FilterContainer, RemoveCompetition, TopBar } from './styled'
+import { FilterContainer, RemoveMenuItem, TopBar } from './styled'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -192,7 +192,7 @@ const UserManager: React.FC = (props: any) => {
       <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         <MenuItem>Redigera</MenuItem>
         <MenuItem>Byt lösenord</MenuItem>
-        <RemoveCompetition onClick={handleDeleteUsers}>Ta bort</RemoveCompetition>
+        <RemoveMenuItem onClick={handleDeleteUsers}>Ta bort</RemoveMenuItem>
       </Menu>
     </div>
   )

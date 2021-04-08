@@ -8,8 +8,7 @@ import { getCompetitions } from '../../../actions/competitions'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { City } from '../../../interfaces/City'
 import { AddCompetitionModel } from '../../../interfaces/models'
-import { AddCompetitionButton, AddCompetitionContent, AddCompetitionForm } from './styled'
-
+import { AddButton, AddContent, AddForm } from './styled'
 interface ServerResponse {
   code: number
   message: string
@@ -84,9 +83,9 @@ const AddCompetition: React.FC = (props: any) => {
   }
   return (
     <div>
-      <AddCompetitionButton color="secondary" variant="contained" onClick={handleClick}>
+      <AddButton color="default" variant="contained" onClick={handleClick}>
         Ny Tävling
-      </AddCompetitionButton>
+      </AddButton>
       <Popover
         id={id}
         open={open}
@@ -101,14 +100,14 @@ const AddCompetition: React.FC = (props: any) => {
           horizontal: 'center',
         }}
       >
-        <AddCompetitionContent>
+        <AddContent>
           <Formik
             initialValues={competitionInitialValues}
             validationSchema={competitionSchema}
             onSubmit={handleCompetitionSubmit}
           >
             {(formik) => (
-              <AddCompetitionForm onSubmit={formik.handleSubmit}>
+              <AddForm onSubmit={formik.handleSubmit}>
                 <TextField
                   label="Namn"
                   name="model.name"
@@ -170,10 +169,10 @@ const AddCompetition: React.FC = (props: any) => {
                     {formik.errors.error}
                   </Alert>
                 )}
-              </AddCompetitionForm>
+              </AddForm>
             )}
           </Formik>
-        </AddCompetitionContent>
+        </AddContent>
       </Popover>
     </div>
   )
