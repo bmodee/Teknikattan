@@ -14,11 +14,9 @@ import TableRow from '@material-ui/core/TableRow'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import axios from 'axios'
 import React, { useEffect } from 'react'
-import { getCities } from '../../../actions/cities'
-import { getRoles } from '../../../actions/roles'
 import { getSearchUsers, setFilterParams } from '../../../actions/searchUser'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
-import { UserFilterParams } from '../../../interfaces/UserData'
+import { UserFilterParams } from '../../../interfaces/FilterParams'
 import AddUser from './AddUser'
 import { FilterContainer, RemoveMenuItem, TopBar } from './styled'
 
@@ -56,8 +54,6 @@ const UserManager: React.FC = (props: any) => {
   }
 
   useEffect(() => {
-    dispatch(getCities())
-    dispatch(getRoles())
     dispatch(getSearchUsers())
   }, [])
 

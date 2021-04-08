@@ -1,10 +1,10 @@
 import axios from 'axios'
 import { History } from 'history'
 import { AppDispatch } from '../store'
-import { AdminLoginData } from './../interfaces/AdminLoginData'
+import { AccountLoginModel } from './../interfaces/FormModels'
 import Types from './types'
 
-export const loginUser = (userData: AdminLoginData, history: History) => async (dispatch: AppDispatch) => {
+export const loginUser = (userData: AccountLoginModel, history: History) => async (dispatch: AppDispatch) => {
   dispatch({ type: Types.LOADING_UI })
   await axios
     .post('/auth/login', userData)

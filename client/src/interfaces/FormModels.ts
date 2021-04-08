@@ -1,16 +1,29 @@
+export interface ServerResponse {
+  code: number
+  message: string
+}
+export interface FormModel<T> {
+  model: T
+  error?: string
+}
+
+//#region LOGIN
 export interface AccountLoginModel {
   email: string
   password: string
 }
 
+export interface CompetitionLoginModel {
+  code: string
+}
+
+//#endregion
+
+////ADD////
 export interface AddCompetitionModel {
   name: string
   city: string
   year: number
-}
-
-export interface CompetitionLoginModel {
-  code: string
 }
 
 export interface AddUserModel {
@@ -21,6 +34,11 @@ export interface AddUserModel {
   name?: string
 }
 
+export interface AddCityModel {
+  name: string
+}
+
+////EDIT////
 export interface EditUserModel {
   email: string
   role: string

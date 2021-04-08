@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { CompetitionFilterParams } from '../interfaces/CompetitionFilterParams'
+import { CompetitionFilterParams } from '../interfaces/FilterParams'
 import { AppDispatch, RootState } from './../store'
 import Types from './types'
 

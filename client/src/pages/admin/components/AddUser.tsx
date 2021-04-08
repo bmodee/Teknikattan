@@ -7,24 +7,16 @@ import React from 'react'
 import * as Yup from 'yup'
 import { getSearchUsers } from '../../../actions/searchUser'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
-import { City } from '../../../interfaces/City'
-import { AddUserModel } from '../../../interfaces/models'
-import { Role } from '../../../interfaces/Role'
+import { City, Role } from '../../../interfaces/ApiModels'
+import { AddUserModel, FormModel } from '../../../interfaces/FormModels'
 import { AddButton, AddContent, AddForm } from './styled'
-interface ServerResponse {
-  code: number
-  message: string
-}
 
-interface AddUserFormModel {
-  model: AddUserModel
-  error?: string
-}
+type formType = FormModel<AddUserModel>
 
 const noRoleSelected = 'Välj roll'
 const noCitySelected = 'Välj stad'
 
-const userSchema: Yup.SchemaOf<AddUserFormModel> = Yup.object({
+const userSchema: Yup.SchemaOf<formType> = Yup.object({
   model: Yup.object()
     .shape({
       name: Yup.string(), //.required('Namn krävs'),
@@ -58,7 +50,7 @@ const AddUser: React.FC = (props: any) => {
   const open = Boolean(anchorEl)
   const dispatch = useAppDispatch()
   const id = open ? 'simple-popover' : undefined
-  const handleCompetitionSubmit = async (values: AddUserFormModel, actions: FormikHelpers<AddUserFormModel>) => {
+  const handleCompetitionSubmit = async (values: formType, actions: FormikHelpers<formType>) => {
     const params = {
       email: values.model.email,
       password: values.model.password,
@@ -67,7 +59,7 @@ const AddUser: React.FC = (props: any) => {
       role_id: selectedRole?.id as number,
     }
     await axios
-      .post<ServerResponse>('/auth/signup', params)
+      .post('/auth/signup', params)
       .then(() => {
         actions.resetForm()
         setAnchorEl(null)
@@ -86,7 +78,7 @@ const AddUser: React.FC = (props: any) => {
       })
   }
 
-  const userInitialValues: AddUserFormModel = {
+  const userInitialValues: formType = {
     model: { email: '', password: '', name: '', city: noCitySelected, role: noRoleSelected },
   }
   return (

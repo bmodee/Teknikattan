@@ -9,19 +9,8 @@ import React from 'react'
 import * as Yup from 'yup'
 import { getCities } from '../../../actions/cities'
 import { useAppDispatch } from '../../../hooks'
+import { AddCityModel, FormModel } from '../../../interfaces/FormModels'
 import { AddForm } from './styled'
-
-interface AddRegionModel {
-  city: ''
-}
-interface ServerResponse {
-  code: number
-  message: string
-}
-interface AddRegionFormModel {
-  model: AddRegionModel
-  error?: string
-}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,7 +28,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const schema: Yup.SchemaOf<AddRegionFormModel> = Yup.object({
+type formType = FormModel<AddCityModel>
+
+const schema: Yup.SchemaOf<formType> = Yup.object({
   model: Yup.object()
     .shape({
       city: Yup.string()
@@ -55,12 +46,12 @@ const AddRegion: React.FC = (props: any) => {
   const classes = useStyles()
   const dispatch = useAppDispatch()
 
-  const handleSubmit = async (values: AddRegionFormModel, actions: FormikHelpers<AddRegionFormModel>) => {
+  const handleSubmit = async (values: formType, actions: FormikHelpers<formType>) => {
     const params = {
-      name: values.model.city,
+      name: values.model.name,
     }
     await axios
-      .post<ServerResponse>('/misc/cities', params)
+      .post('/misc/cities', params)
       .then(() => {
         actions.resetForm()
         dispatch(getCities())
@@ -76,8 +67,8 @@ const AddRegion: React.FC = (props: any) => {
       })
   }
 
-  const initValues: AddRegionFormModel = {
-    model: { city: '' },
+  const initValues: formType = {
+    model: { name: '' },
   }
 
   return (
@@ -88,8 +79,8 @@ const AddRegion: React.FC = (props: any) => {
             <Grid container={true}>
               <TextField
                 className={classes.margin}
-                helperText={formik.touched.model?.city ? formik.errors.model?.city : ''}
-                error={Boolean(formik.touched.model?.city && formik.errors.model?.city)}
+                helperText={formik.touched.model?.name ? formik.errors.model?.name : ''}
+                error={Boolean(formik.touched.model?.name && formik.errors.model?.name)}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 name="model.city"

@@ -16,8 +16,10 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import LocationCityIcon from '@material-ui/icons/LocationCity'
 import PeopleIcon from '@material-ui/icons/People'
 import SettingsOverscanIcon from '@material-ui/icons/SettingsOverscan'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom'
+import { getCities } from '../../actions/cities'
+import { getRoles } from '../../actions/roles'
 import { logoutUser } from '../../actions/user'
 import { useAppDispatch } from '../../hooks'
 import CompetitionManager from './components/CompetitionManager'
@@ -62,6 +64,12 @@ const AdminView: React.FC = () => {
     dispatch(logoutUser())
   }
   const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(getCities())
+    dispatch(getRoles())
+  }, [])
+
   return (
     <div className={classes.root}>
       <CssBaseline />

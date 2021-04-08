@@ -4,7 +4,7 @@ import axios from 'axios'
 import { Formik, FormikHelpers } from 'formik'
 import React from 'react'
 import * as Yup from 'yup'
-import { CompetitionLoginModel } from '../../../interfaces/models'
+import { CompetitionLoginModel } from '../../../interfaces/FormModels'
 import { LoginForm } from './styled'
 
 interface CompetitionLoginFormModel {

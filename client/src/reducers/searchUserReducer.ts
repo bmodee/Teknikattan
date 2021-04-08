@@ -1,9 +1,10 @@
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
-import { UserData, UserFilterParams } from '../interfaces/UserData'
+import { User } from '../interfaces/ApiModels'
+import { UserFilterParams } from '../interfaces/FilterParams'
 
 interface SearchUserState {
-  users: UserData[]
+  users: User[]
   total: number
   count: number
   filterParams: UserFilterParams
@@ -21,7 +22,7 @@ export default function (state = initialState, action: AnyAction) {
     case Types.SET_SEARCH_USERS:
       return {
         ...state,
-        users: action.payload as UserData[],
+        users: action.payload as User[],
       }
     case Types.SET_SEARCH_USERS_FILTER_PARAMS:
       return {

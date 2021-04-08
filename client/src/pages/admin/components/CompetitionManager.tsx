@@ -15,10 +15,9 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import axios from 'axios'
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { getCities } from '../../../actions/cities'
 import { getCompetitions, setFilterParams } from '../../../actions/competitions'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
-import { CompetitionFilterParams } from '../../../interfaces/CompetitionFilterParams'
+import { CompetitionFilterParams } from '../../../interfaces/FilterParams'
 import AddCompetition from './AddCompetition'
 import { FilterContainer, RemoveMenuItem, TopBar, YearFilterTextField } from './styled'
 
@@ -55,7 +54,6 @@ const CompetitionManager: React.FC = (props: any) => {
   }
 
   useEffect(() => {
-    dispatch(getCities())
     dispatch(getCompetitions())
   }, [])
 

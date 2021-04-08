@@ -1,6 +1,6 @@
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
-import { City } from '../interfaces/City'
+import { City } from '../interfaces/ApiModels'
 
 interface CityState {
   cities: City[]

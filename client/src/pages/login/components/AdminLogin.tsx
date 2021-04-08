@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom'
 import * as Yup from 'yup'
 import { loginUser } from '../../../actions/user'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
-import { AccountLoginModel } from '../../../interfaces/models'
+import { AccountLoginModel } from '../../../interfaces/FormModels'
 import { CenteredCircularProgress, LoginForm } from './styled'
 
 interface AccountLoginFormModel {

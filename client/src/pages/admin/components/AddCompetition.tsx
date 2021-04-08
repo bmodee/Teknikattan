@@ -6,21 +6,15 @@ import React from 'react'
 import * as Yup from 'yup'
 import { getCompetitions } from '../../../actions/competitions'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
-import { City } from '../../../interfaces/City'
-import { AddCompetitionModel } from '../../../interfaces/models'
+import { City } from '../../../interfaces/ApiModels'
+import { AddCompetitionModel, FormModel } from '../../../interfaces/FormModels'
 import { AddButton, AddContent, AddForm } from './styled'
-interface ServerResponse {
-  code: number
-  message: string
-}
 
-interface AddCompetitionFormModel {
-  model: AddCompetitionModel
-  error?: string
-}
+type formType = FormModel<AddCompetitionModel>
+
 const noCitySelected = 'Välj stad'
 
-const competitionSchema: Yup.SchemaOf<AddCompetitionFormModel> = Yup.object({
+const competitionSchema: Yup.SchemaOf<formType> = Yup.object({
   model: Yup.object()
     .shape({
       name: Yup.string().required('Namn krävs'),
@@ -50,17 +44,14 @@ const AddCompetition: React.FC = (props: any) => {
   const dispatch = useAppDispatch()
   const id = open ? 'simple-popover' : undefined
   const currentYear = new Date().getFullYear()
-  const handleCompetitionSubmit = async (
-    values: AddCompetitionFormModel,
-    actions: FormikHelpers<AddCompetitionFormModel>
-  ) => {
+  const handleCompetitionSubmit = async (values: formType, actions: FormikHelpers<formType>) => {
     const params = {
       name: values.model.name,
       year: values.model.year,
       city_id: selectedCity?.id as number,
     }
     await axios
-      .post<ServerResponse>('/competitions', params)
+      .post('/competitions', params)
       .then(() => {
         actions.resetForm()
         setAnchorEl(null)
@@ -78,7 +69,7 @@ const AddCompetition: React.FC = (props: any) => {
       })
   }
 
-  const competitionInitialValues: AddCompetitionFormModel = {
+  const competitionInitialValues: formType = {
     model: { name: '', city: userCity?.name ? userCity.name : noCitySelected, year: currentYear },
   }
   return (

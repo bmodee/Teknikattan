@@ -1,7 +1,6 @@
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
-import { City } from '../interfaces/City'
-import { Competition } from './../interfaces/Competition'
+import { City, Competition } from '../interfaces/ApiModels'
 
 interface UserInfo {
   name: string

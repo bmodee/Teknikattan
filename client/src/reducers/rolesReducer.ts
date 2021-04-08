@@ -1,6 +1,6 @@
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
-import { Role } from '../interfaces/Role'
+import { Role } from '../interfaces/ApiModels'
 
 interface RoleState {
   roles: Role[]

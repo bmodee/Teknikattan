@@ -1,7 +1,7 @@
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
-import { Competition } from '../interfaces/Competition'
-import { CompetitionFilterParams } from './../interfaces/CompetitionFilterParams'
+import { Competition } from '../interfaces/ApiModels'
+import { CompetitionFilterParams } from './../interfaces/FilterParams'
 
 interface CompetitionState {
   competitions: Competition[]

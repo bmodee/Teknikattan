@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { UserFilterParams } from '../interfaces/UserData'
+import { UserFilterParams } from '../interfaces/FilterParams'
 import { AppDispatch, RootState } from './../store'
 import Types from './types'
 
