@@ -1,7 +1,8 @@
 import React from 'react'
+import SlideDisplay from './components/SlideDisplay'
 
 const ParticipantViewPage: React.FC = () => {
-  return <div>Deltagare</div>
+  return <SlideDisplay />
 }
 
 export default ParticipantViewPage

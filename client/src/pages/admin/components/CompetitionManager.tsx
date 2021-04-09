@@ -14,7 +14,7 @@ import TableRow from '@material-ui/core/TableRow'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import axios from 'axios'
 import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { getCompetitions, setFilterParams } from '../../../actions/competitions'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { CompetitionFilterParams } from '../../../interfaces/FilterParams'
@@ -43,6 +43,7 @@ const CompetitionManager: React.FC = (props: any) => {
   const classes = useStyles()
   const noFilterText = 'Alla'
   const dispatch = useAppDispatch()
+  const history = useHistory()
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, id: number) => {
     setAnchorEl(event.currentTarget)
     setActiveId(id)
@@ -174,7 +175,7 @@ const CompetitionManager: React.FC = (props: any) => {
         onChangePage={(event, newPage) => handleFilterChange({ ...filterParams, page: newPage })}
       />
       <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-        <MenuItem onClick={handleClose}>Starta</MenuItem>
+        <MenuItem onClick={() => history.push(`/presenter/id=${activeId}&code=123123`)}>Starta</MenuItem>
         <MenuItem onClick={handleClose}>Duplicera</MenuItem>
         <RemoveMenuItem onClick={handleDeleteCompetition}>Ta bort</RemoveMenuItem>
       </Menu>

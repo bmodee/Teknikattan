@@ -1,13 +1,13 @@
 import { render } from '@testing-library/react'
 import React from 'react'
 import { Provider } from 'react-redux'
-import store from '../../store'
-import ParticipantViewPage from './ParticipantViewPage'
+import store from '../../../store'
+import SlideDisplay from './SlideDisplay'
 
-it('renders participant view page', () => {
+it('renders slide display', () => {
   render(
     <Provider store={store}>
-      <ParticipantViewPage />
+      <SlideDisplay />
     </Provider>
   )
 })

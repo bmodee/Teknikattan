@@ -4,9 +4,9 @@ import React from 'react'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import store from '../../store'
-import JudgeViewPage from './JudgeViewPage'
+import PresenterViewPage from './PresenterViewPage'
 
-it('renders judge view page', () => {
+it('renders presenter view page', () => {
   const compRes: any = {
     data: {
       slides: [{ id: 0, title: '' }],
@@ -36,7 +36,7 @@ it('renders judge view page', () => {
   render(
     <BrowserRouter>
       <Provider store={store}>
-        <JudgeViewPage />
+        <PresenterViewPage />
       </Provider>
     </BrowserRouter>
   )

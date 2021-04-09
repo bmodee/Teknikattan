@@ -1,4 +1,22 @@
+import { AppBar, Button, Drawer, Toolbar, Typography } from '@material-ui/core'
 import styled from 'styled-components'
+
+export const JudgeAppBar = styled(AppBar)`
+  z-index: 9000;
+`
+
+export const JudgeToolbar = styled(Toolbar)`
+  display: flex;
+  justify-content: space-between;
+`
+
+export const JudgeQuestionsLabel = styled(Typography)`
+  margin-left: 15px;
+`
+
+export const JudgeAnswersLabel = styled(Typography)`
+  margin-right: 160px;
+`
 
 export const ViewSelectContainer = styled.div`
   display: flex;
@@ -15,4 +33,58 @@ export const ViewSelectButtonGroup = styled.div`
   height: 140px;
   margin-left: auto;
   margin-right: auto;
+`
+
+export const PresenterHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  width: 100%;
+`
+
+export const PresenterFooter = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
+export const PresenterButton = styled(Button)`
+  width: 100px;
+  height: 100px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+`
+
+export const PresenterContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+`
+
+interface DrawerProps {
+  width: number
+}
+
+export const LeftDrawer = styled(Drawer)<DrawerProps>`
+  flex-shrink: 0;
+  position: 'relative';
+  z-index: -5;
+  width: ${(props) => (props ? props.width : 150)};
+`
+
+export const RightDrawer = styled(Drawer)<DrawerProps>`
+  width: ${(props) => (props ? props.width : 150)};
+  flex-shrink: 0;
+  z-index: 1;
+`
+
+interface ContentProps {
+  leftDrawerWidth: number
+  rightDrawerWidth: number
+}
+
+export const Content = styled.div<ContentProps>`
+  margin-left: ${(props) => (props ? props.leftDrawerWidth : 0)}px;
+  margin-right: ${(props) => (props ? props.rightDrawerWidth : 0)}px;
+  width: calc(100% - ${(props) => (props ? props.leftDrawerWidth + props.rightDrawerWidth : 0)}px);
 `

@@ -6,6 +6,7 @@ import PresentationEditorPage from './pages/presentationEditor/PresentationEdito
 import AudienceViewPage from './pages/views/AudienceViewPage'
 import JudgeViewPage from './pages/views/JudgeViewPage'
 import ParticipantViewPage from './pages/views/ParticipantViewPage'
+import PresenterViewPage from './pages/views/PresenterViewPage'
 import ViewSelectPage from './pages/views/ViewSelectPage'
 import SecureRoute from './utils/SecureRoute'
 
@@ -17,9 +18,10 @@ const Main: React.FC = () => {
         <SecureRoute path="/admin" component={AdminPage} />
         <SecureRoute path="/editor/competition-id=:id" component={PresentationEditorPage} />
         <Route exact path="/view" component={ViewSelectPage} />
-        <Route exact path="/view/participant" component={ParticipantViewPage} />
-        <Route exact path="/view/judge" component={JudgeViewPage} />
-        <Route exact path="/view/audience" component={AudienceViewPage} />
+        <Route exact path="/participant/id=:id&code=:code" component={ParticipantViewPage} />
+        <SecureRoute exact path="/presenter/id=:id&code=:code" component={PresenterViewPage} />
+        <Route exact path="/judge/id=:id&code=:code" component={JudgeViewPage} />
+        <Route exact path="/audience/id=:id&code=:code" component={AudienceViewPage} />
       </Switch>
     </BrowserRouter>
   )
