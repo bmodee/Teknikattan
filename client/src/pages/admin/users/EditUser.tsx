@@ -1,28 +1,53 @@
-import { Button, FormControl, InputLabel, MenuItem, Popover, TextField } from '@material-ui/core'
-import PersonAddIcon from '@material-ui/icons/PersonAdd'
+import {
+  Button,
+  createStyles,
+  FormControl,
+  InputLabel,
+  makeStyles,
+  MenuItem,
+  Popover,
+  TextField,
+  Theme,
+} from '@material-ui/core'
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { Alert, AlertTitle } from '@material-ui/lab'
 import axios from 'axios'
 import { Formik, FormikHelpers } from 'formik'
-import React from 'react'
+import React, { useEffect } from 'react'
 import * as Yup from 'yup'
 import { getSearchUsers } from '../../../actions/searchUser'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
-import { City, Role } from '../../../interfaces/ApiModels'
-import { AddUserModel, FormModel } from '../../../interfaces/FormModels'
-import { AddButton, AddContent, AddForm } from './styled'
+import { City, Role, User } from '../../../interfaces/ApiModels'
+import { EditUserModel, FormModel } from '../../../interfaces/FormModels'
+import { AddContent, AddForm } from '../styledComp'
 
-type formType = FormModel<AddUserModel>
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    textField: {
+      marginBottom: '10px',
+    },
+    editButton: {
+      marginTop: '20px',
+      paddingTop: '10px',
+      paddingBottom: '10px',
+    },
+    deleteButton: {
+      marginTop: '40px',
+    },
+  })
+)
 
-const noRoleSelected = 'Välj roll'
-const noCitySelected = 'Välj stad'
+type formType = FormModel<EditUserModel>
+
+const noRoleSelected = 'Admin'
+const noCitySelected = 'Linköping'
 
 const userSchema: Yup.SchemaOf<formType> = Yup.object({
   model: Yup.object()
     .shape({
-      name: Yup.string(), //.required('Namn krävs'),
+      name: Yup.string(),
       email: Yup.string().email().required('Email krävs'),
       password: Yup.string()
-        .required('Lösenord krävs.')
         .min(6, 'Lösenord måste vara minst 6 tecken.')
         .matches(/[a-zA-Z]/, 'Lösenord får enbart innehålla a-z, A-Z.'),
       role: Yup.string().required('Roll krävs').notOneOf([noCitySelected], 'Välj en roll'),
@@ -32,13 +57,31 @@ const userSchema: Yup.SchemaOf<formType> = Yup.object({
   error: Yup.string().optional(),
 })
 
-const AddUser: React.FC = (props: any) => {
+type UserIdProps = {
+  user: User
+}
+
+const EditUser = ({ user }: UserIdProps) => {
+  const dispatch = useAppDispatch()
+  const classes = useStyles()
+
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
   const [selectedRole, setSelectedRole] = React.useState<Role | undefined>()
   const roles = useAppSelector((state) => state.roles.roles)
 
   const [selectedCity, setSelectedCity] = React.useState<City | undefined>()
   const cities = useAppSelector((state) => state.cities.cities)
+
+  const startRole = roles.find((x) => x.id == user.role_id)
+  const startCity = cities.find((x) => x.id == user.city_id)
+
+  const open = Boolean(anchorEl)
+  const id = open ? 'simple-popover' : undefined
+
+  useEffect(() => {
+    setSelectedCity(startCity)
+    setSelectedRole(startRole)
+  }, [])
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -47,25 +90,45 @@ const AddUser: React.FC = (props: any) => {
     setAnchorEl(null)
   }
 
-  const open = Boolean(anchorEl)
-  const dispatch = useAppDispatch()
-  const id = open ? 'simple-popover' : undefined
-  const handleCompetitionSubmit = async (values: formType, actions: FormikHelpers<formType>) => {
+  const handleDeleteUsers = async () => {
+    if (confirm('Are u sure?')) {
+      await axios
+        .delete(`/auth/delete/${user.id}`)
+        .then(() => {
+          setAnchorEl(null)
+          dispatch(getSearchUsers())
+        })
+        .catch(({ response }) => {
+          console.warn(response.data)
+        })
+    }
+  }
+
+  const handleSubmit = async (values: formType, actions: FormikHelpers<formType>) => {
     const params = {
       email: values.model.email,
-      password: values.model.password,
-      //name: values.model.name,
+      name: values.model.name,
       city_id: selectedCity?.id as number,
       role_id: selectedRole?.id as number,
     }
+    const req: any = {}
+    if (params.email !== user.email) {
+      req['email'] = params.email
+    }
+    if (params.name !== user.name) {
+      req['name'] = params.name
+    }
+    if (params.city_id !== user.city_id) {
+      req['city_id'] = params.city_id
+    }
+    if (params.role_id !== user.role_id) {
+      req['role_id'] = params.role_id
+    }
     await axios
-      .post('/auth/signup', params)
-      .then(() => {
-        actions.resetForm()
+      .put('/users/' + user.id, req)
+      .then((res) => {
         setAnchorEl(null)
         dispatch(getSearchUsers())
-        setSelectedCity(undefined)
-        setSelectedRole(undefined)
       })
       .catch(({ response }) => {
         console.warn(response.data)
@@ -79,13 +142,18 @@ const AddUser: React.FC = (props: any) => {
   }
 
   const userInitialValues: formType = {
-    model: { email: '', password: '', name: '', city: noCitySelected, role: noRoleSelected },
+    model: {
+      email: user.email as string,
+      name: user.name as string,
+      city: startCity?.name as string,
+      role: startRole?.name as string,
+    },
   }
   return (
     <div>
-      <AddButton color="default" variant="contained" onClick={handleClick} endIcon={<PersonAddIcon></PersonAddIcon>}>
-        Ny Användare
-      </AddButton>
+      <Button onClick={handleClick}>
+        <MoreHorizIcon />
+      </Button>
       <Popover
         id={id}
         open={open}
@@ -101,34 +169,29 @@ const AddUser: React.FC = (props: any) => {
         }}
       >
         <AddContent>
-          <Formik initialValues={userInitialValues} validationSchema={userSchema} onSubmit={handleCompetitionSubmit}>
+          <Formik initialValues={userInitialValues} validationSchema={userSchema} onSubmit={handleSubmit}>
             {(formik) => (
               <AddForm onSubmit={formik.handleSubmit}>
                 <TextField
+                  className={classes.textField}
                   label="Email"
                   name="model.email"
                   helperText={formik.touched.model?.email ? formik.errors.model?.email : ''}
                   error={Boolean(formik.touched.model?.email && formik.errors.model?.email)}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  defaultValue={user.email}
                   margin="normal"
                 />
                 <TextField
-                  label="Lösenord"
-                  name="model.password"
-                  helperText={formik.touched.model?.password ? formik.errors.model?.password : ''}
-                  error={Boolean(formik.touched.model?.password && formik.errors.model?.password)}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  margin="normal"
-                />
-                <TextField
+                  className={classes.textField}
                   label="Namn"
                   name="model.name"
                   helperText={formik.touched.model?.name ? formik.errors.model?.name : ''}
                   error={Boolean(formik.touched.model?.name && formik.errors.model?.name)}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  defaultValue={user.name}
                   margin="normal"
                 />
                 <FormControl>
@@ -136,6 +199,7 @@ const AddUser: React.FC = (props: any) => {
                     Region
                   </InputLabel>
                   <TextField
+                    className={classes.textField}
                     select
                     name="model.city"
                     id="standard-select-currency"
@@ -146,9 +210,6 @@ const AddUser: React.FC = (props: any) => {
                     helperText={formik.touched.model?.city && formik.errors.model?.city}
                     margin="normal"
                   >
-                    <MenuItem value={noCitySelected} onClick={() => setSelectedCity(undefined)}>
-                      {noCitySelected}
-                    </MenuItem>
                     {cities &&
                       cities.map((city) => (
                         <MenuItem key={city.name} value={city.name} onClick={() => setSelectedCity(city)}>
@@ -163,6 +224,7 @@ const AddUser: React.FC = (props: any) => {
                     Roll
                   </InputLabel>
                   <TextField
+                    className={classes.textField}
                     select
                     name="model.role"
                     id="standard-select-currency"
@@ -173,9 +235,6 @@ const AddUser: React.FC = (props: any) => {
                     helperText={formik.touched.model?.role && formik.errors.model?.role}
                     margin="normal"
                   >
-                    <MenuItem value={noRoleSelected} onClick={() => setSelectedRole(undefined)}>
-                      {noRoleSelected}
-                    </MenuItem>
                     {roles &&
                       roles.map((role) => (
                         <MenuItem key={role.name} value={role.name} onClick={() => setSelectedRole(role)}>
@@ -185,15 +244,44 @@ const AddUser: React.FC = (props: any) => {
                   </TextField>
                 </FormControl>
 
+                <FormControl>
+                  <InputLabel shrink id="demo-customized-select-native">
+                    Password
+                  </InputLabel>
+                  <TextField
+                    className={classes.textField}
+                    label="Lösenord"
+                    name="model.password"
+                    helperText={formik.touched.model?.password ? formik.errors.model?.password : ''}
+                    error={Boolean(formik.touched.model?.password && formik.errors.model?.password)}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    defaultValue=""
+                    margin="normal"
+                    type="password"
+                  />
+                </FormControl>
+
                 <Button
+                  className={classes.editButton}
                   type="submit"
                   fullWidth
                   variant="contained"
-                  color="secondary"
-                  disabled={!formik.isValid || !formik.values.model?.name || !formik.values.model?.city}
+                  color="primary"
+                  disabled={!formik.isValid || !formik.values.model?.role || !formik.values.model?.city}
                 >
-                  Lägg till
+                  Ändra
                 </Button>
+                <Button
+                  onClick={handleDeleteUsers}
+                  className={classes.deleteButton}
+                  fullWidth
+                  variant="contained"
+                  color="secondary"
+                >
+                  Ta bort
+                </Button>
+
                 {formik.errors.error && (
                   <Alert severity="error">
                     <AlertTitle>Error</AlertTitle>
@@ -209,4 +297,4 @@ const AddUser: React.FC = (props: any) => {
   )
 }
 
-export default AddUser
+export default EditUser

@@ -21,18 +21,12 @@ import { Link, Route, Switch, useRouteMatch } from 'react-router-dom'
 import { getCities } from '../../actions/cities'
 import { getRoles } from '../../actions/roles'
 import { logoutUser } from '../../actions/user'
-import { useAppDispatch } from '../../hooks'
-import CompetitionManager from './components/CompetitionManager'
-import Regions from './components/Regions'
-import UserManager from './components/UserManager'
+import { useAppDispatch, useAppSelector } from '../../hooks'
+import CompetitionManager from './competitions/CompetitionManager'
+import RegionManager from './regions/Regions'
 import { LeftDrawer } from './styled'
+import UserManager from './users/UserManager'
 const drawerWidth = 250
-const menuItems = [
-  { text: 'Startsida', icon: DashboardIcon },
-  { text: 'Regioner', icon: LocationCityIcon },
-  { text: 'Användare', icon: PeopleIcon },
-  { text: 'Tävlingshanterare', icon: SettingsOverscanIcon },
-]
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -64,6 +58,37 @@ const AdminView: React.FC = () => {
     dispatch(logoutUser())
   }
   const dispatch = useAppDispatch()
+  const currentUser = useAppSelector((state) => state.user.userInfo)
+  const isAdmin = () => currentUser && currentUser.role.name === 'Admin'
+
+  const menuAdminItems = [
+    { text: 'Startsida', icon: DashboardIcon },
+    { text: 'Regioner', icon: LocationCityIcon },
+    { text: 'Användare', icon: PeopleIcon },
+    { text: 'Tävlingshanterare', icon: SettingsOverscanIcon },
+  ]
+
+  const menuEditorItems = [
+    { text: 'Startsida', icon: DashboardIcon },
+    { text: 'Tävlingshanterare', icon: SettingsOverscanIcon },
+  ]
+
+  const renderItems = () => {
+    const menuItems = isAdmin() ? menuAdminItems : menuEditorItems
+    return menuItems.map((value, index) => (
+      <ListItem
+        button
+        component={Link}
+        key={value.text}
+        to={`${url}/${value.text.toLowerCase()}`}
+        selected={index === openIndex}
+        onClick={() => setOpenIndex(index)}
+      >
+        <ListItemIcon>{React.createElement(value.icon)}</ListItemIcon>
+        <ListItemText primary={value.text} />
+      </ListItem>
+    ))
+  }
 
   useEffect(() => {
     dispatch(getCities())
@@ -76,7 +101,7 @@ const AdminView: React.FC = () => {
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h5" noWrap>
-            {menuItems[openIndex].text}
+            {isAdmin() ? menuAdminItems[openIndex].text : menuEditorItems[openIndex].text}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -91,21 +116,7 @@ const AdminView: React.FC = () => {
         <div>
           <div className={classes.toolbar} />
           <Divider />
-          <List>
-            {menuItems.map((value, index) => (
-              <ListItem
-                button
-                component={Link}
-                key={value.text}
-                to={`${url}/${value.text.toLowerCase()}`}
-                selected={index === openIndex}
-                onClick={() => setOpenIndex(index)}
-              >
-                <ListItemIcon>{React.createElement(value.icon)}</ListItemIcon>
-                <ListItemText primary={value.text} />
-              </ListItem>
-            ))}
-          </List>
+          <List>{renderItems()}</List>
           <Divider />
           <List>
             <ListItem>
@@ -132,7 +143,7 @@ const AdminView: React.FC = () => {
             </Typography>
           </Route>
           <Route path={`${path}/regioner`}>
-            <Regions />
+            <RegionManager />
           </Route>
           <Route path={`${path}/användare`}>
             <UserManager />

@@ -8,7 +8,7 @@ import { getCompetitions } from '../../../actions/competitions'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { City } from '../../../interfaces/ApiModels'
 import { AddCompetitionModel, FormModel } from '../../../interfaces/FormModels'
-import { AddButton, AddContent, AddForm } from './styled'
+import { AddButton, AddContent, AddForm } from '../styledComp'
 
 type formType = FormModel<AddCompetitionModel>
 
@@ -74,7 +74,12 @@ const AddCompetition: React.FC = (props: any) => {
   }
   return (
     <div>
-      <AddButton color="default" variant="contained" onClick={handleClick}>
+      <AddButton
+        style={{ backgroundColor: '#4caf50', color: '#fcfcfc' }}
+        color="default"
+        variant="contained"
+        onClick={handleClick}
+      >
         Ny Tävling
       </AddButton>
       <Popover

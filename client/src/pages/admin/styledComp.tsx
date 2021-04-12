@@ -17,7 +17,9 @@ export const AddForm = styled.form`
 `
 
 export const AddContent = styled.div`
-  padding: 15px;
+  padding: 25px;
+  padding-bottom: 40px;
+  width: 300px;
 `
 
 export const RemoveMenuItem = styled(MenuItem)`

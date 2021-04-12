@@ -1,4 +1,4 @@
-import { Button, Grid, TextField } from '@material-ui/core'
+import { Grid, TextField } from '@material-ui/core'
 import FormControl from '@material-ui/core/FormControl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import AddIcon from '@material-ui/icons/Add'
@@ -10,7 +10,7 @@ import * as Yup from 'yup'
 import { getCities } from '../../../actions/cities'
 import { useAppDispatch } from '../../../hooks'
 import { AddCityModel, FormModel } from '../../../interfaces/FormModels'
-import { AddForm } from './styled'
+import { AddButton, AddForm } from '../styledComp'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,7 +33,7 @@ type formType = FormModel<AddCityModel>
 const schema: Yup.SchemaOf<formType> = Yup.object({
   model: Yup.object()
     .shape({
-      city: Yup.string()
+      name: Yup.string()
         .required('Minst två bokstäver krävs')
         .min(2)
         .matches(/[a-zA-Z]/, 'Namnet får enbart innehålla a-z, A-Z.'),
@@ -83,12 +83,18 @@ const AddRegion: React.FC = (props: any) => {
                 error={Boolean(formik.touched.model?.name && formik.errors.model?.name)}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                name="model.city"
+                name="model.name"
                 label="Region"
               ></TextField>
-              <Button className={classes.button} color="default" variant="contained" type="submit">
+              <AddButton
+                style={{ backgroundColor: '#4caf50', color: '#fcfcfc' }}
+                className={classes.button}
+                color="default"
+                variant="contained"
+                type="submit"
+              >
                 <AddIcon></AddIcon>
-              </Button>
+              </AddButton>
             </Grid>
           </FormControl>
           {formik.errors.error && (

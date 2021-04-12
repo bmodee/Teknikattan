@@ -1,4 +1,4 @@
-import { Button, Menu, TablePagination, TextField, Typography } from '@material-ui/core'
+import { TablePagination, TextField, Typography } from '@material-ui/core'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -11,14 +11,14 @@ import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
-import axios from 'axios'
 import React, { useEffect } from 'react'
 import { getSearchUsers, setFilterParams } from '../../../actions/searchUser'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
+import { User } from '../../../interfaces/ApiModels'
 import { UserFilterParams } from '../../../interfaces/FilterParams'
+import { FilterContainer, TopBar } from '../styledComp'
 import AddUser from './AddUser'
-import { FilterContainer, RemoveMenuItem, TopBar } from './styled'
+import EditUser from './EditUser'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,8 +32,10 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const UserManager: React.FC = (props: any) => {
+  const [editAnchorEl, setEditAnchorEl] = React.useState<null | HTMLElement>(null)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  const [activeId, setActiveId] = React.useState<number | undefined>(undefined)
+
+  const [selectedUser, setSelectedUser] = React.useState<User | undefined>(undefined)
   const [timerHandle, setTimerHandle] = React.useState<number | undefined>(undefined)
   const users = useAppSelector((state) => state.searchUsers.users)
   const filterParams = useAppSelector((state) => state.searchUsers.filterParams)
@@ -43,19 +45,35 @@ const UserManager: React.FC = (props: any) => {
   const classes = useStyles()
   const noFilterText = 'Alla'
   const dispatch = useAppDispatch()
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, id: number) => {
+
+  const open = Boolean(anchorEl)
+  const id = open ? 'simple-popover' : undefined
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, user: User) => {
     setAnchorEl(event.currentTarget)
-    setActiveId(id)
+    setSelectedUser(user)
   }
 
   const handleClose = () => {
     setAnchorEl(null)
-    setActiveId(undefined)
+    setSelectedUser(undefined)
+    console.log('close')
+  }
+
+  const handleEditClose = () => {
+    setEditAnchorEl(null)
+    console.log('edit close')
   }
 
   useEffect(() => {
     dispatch(getSearchUsers())
   }, [])
+
+  useEffect(() => {
+    console.log('asd')
+    setEditAnchorEl(null)
+    setAnchorEl(null)
+  }, [users])
 
   const onSearchChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     if (timerHandle) {
@@ -67,23 +85,14 @@ const UserManager: React.FC = (props: any) => {
     dispatch(setFilterParams({ ...filterParams, email: event.target.value }))
   }
 
-  const handleDeleteUsers = async () => {
-    if (activeId) {
-      await axios
-        .delete(`/auth/delete/${activeId}`)
-        .then(() => {
-          setAnchorEl(null)
-          dispatch(getSearchUsers())
-        })
-        .catch(({ response }) => {
-          console.warn(response.data)
-        })
-    }
-  }
-
   const handleFilterChange = (newParams: UserFilterParams) => {
     dispatch(setFilterParams(newParams))
     dispatch(getSearchUsers())
+  }
+
+  const handleStateClick = () => {
+    setEditAnchorEl(anchorEl)
+    setAnchorEl(null)
   }
 
   return (
@@ -167,9 +176,7 @@ const UserManager: React.FC = (props: any) => {
                   <TableCell>{cities.find((city) => city.id === row.city_id)?.name || ''}</TableCell>
                   <TableCell>{roles.find((role) => role.id === row.role_id)?.name || ''}</TableCell>
                   <TableCell align="right">
-                    <Button onClick={(event) => handleClick(event, row.id)}>
-                      <MoreHorizIcon />
-                    </Button>
+                    <EditUser user={row}></EditUser>
                   </TableCell>
                 </TableRow>
               ))}
@@ -185,11 +192,6 @@ const UserManager: React.FC = (props: any) => {
         page={filterParams.page}
         onChangePage={(event, newPage) => handleFilterChange({ ...filterParams, page: newPage })}
       />
-      <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-        <MenuItem>Redigera</MenuItem>
-        <MenuItem>Byt lösenord</MenuItem>
-        <RemoveMenuItem onClick={handleDeleteUsers}>Ta bort</RemoveMenuItem>
-      </Menu>
     </div>
   )
 }

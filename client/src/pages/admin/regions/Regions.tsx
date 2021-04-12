@@ -12,8 +12,8 @@ import axios from 'axios'
 import React, { useEffect } from 'react'
 import { getCities } from '../../../actions/cities'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
+import { RemoveMenuItem, TopBar } from '../styledComp'
 import AddRegion from './AddRegion'
-import { RemoveMenuItem, TopBar } from './styled'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     table: {
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const UserManager: React.FC = (props: any) => {
+const RegionManager: React.FC = (props: any) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [activeId, setActiveId] = React.useState<number | undefined>(undefined)
   const citiesTotal = useAppSelector((state) => state.cities.total)
@@ -113,4 +113,4 @@ const UserManager: React.FC = (props: any) => {
   )
 }
 
-export default UserManager
+export default RegionManager

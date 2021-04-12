@@ -44,4 +44,5 @@ export interface EditUserModel {
   role: string
   city: string
   name?: string
+  password?: string
 }

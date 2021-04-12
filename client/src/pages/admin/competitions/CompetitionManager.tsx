@@ -18,8 +18,8 @@ import { Link, useHistory } from 'react-router-dom'
 import { getCompetitions, setFilterParams } from '../../../actions/competitions'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { CompetitionFilterParams } from '../../../interfaces/FilterParams'
+import { FilterContainer, RemoveMenuItem, TopBar, YearFilterTextField } from '../styledComp'
 import AddCompetition from './AddCompetition'
-import { FilterContainer, RemoveMenuItem, TopBar, YearFilterTextField } from './styled'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
