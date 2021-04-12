@@ -29,15 +29,12 @@ class AuthSignup(Resource):
     def post(self):
         args = create_user_parser.parse_args(strict=True)
         email = args.get("email")
-        password = args.get("password")
-        role_id = args.get("role_id")
-        city_id = args.get("city_id")
-        name = args.get("name")
 
         if User.query.filter(User.email == email).count() > 0:
             api.abort(codes.BAD_REQUEST, "User already exists")
 
-        item_user = dbc.add.user(email, password, role_id, city_id, name)
+        item_user = dbc.add.user(**args)
+        # TODO: Clarify when this case is needed or add it to a test
         if not item_user:
             api.abort(codes.BAD_REQUEST, "User could not be created")
 
@@ -50,8 +47,12 @@ class AuthDelete(Resource):
     @jwt_required
     def delete(self, ID):
         item_user = User.query.filter(User.id == ID).first()
+
+        if not item_user:
+            api.abort(codes.NOT_FOUND, f"Could not find user with id {ID}.")
+
         dbc.delete.default(item_user)
-        if ID == get_jwt_identity():
+        if int(ID) == get_jwt_identity():
             jti = get_raw_jwt()["jti"]
             dbc.add.blacklist(jti)
         return text_response(f"User {ID} deleted")

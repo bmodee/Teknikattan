@@ -40,3 +40,9 @@ class MiscDTO:
     question_type_schema = schemas.QuestionTypeSchema(many=True)
     media_type_schema = schemas.MediaTypeSchema(many=True)
     city_schema = schemas.CitySchema(many=True)
+
+
+class QuestionDTO:
+    api = Namespace("questions")
+    schema = rich_schemas.QuestionSchemaRich(many=False)
+    list_schema = schemas.QuestionSchema(many=True)

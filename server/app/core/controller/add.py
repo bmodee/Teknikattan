@@ -25,13 +25,13 @@ def slide(item_competition):
 
 
 @db_add
-def user(email, plaintext_password, role_id, city_id, name=None):
-    return User(email, plaintext_password, role_id, city_id, name)
+def user(email, password, role_id, city_id, name=None):
+    return User(email, password, role_id, city_id, name)
 
 
 @db_add
-def question(name, order, type_id, item_slide):
-    return Question(name, order, type_id, item_slide.id)
+def question(name, total_score, type_id, item_slide):
+    return Question(name, total_score, type_id, item_slide.id)
 
 
 @db_add

@@ -21,42 +21,32 @@ class CompetitionsList(Resource):
     def post(self):
         args = competition_parser.parse_args(strict=True)
 
-        name = args.get("name")
-        city_id = args.get("city_id")
-        year = args.get("year")
-
         # Add competition
-        item = dbc.add.competition(name, year, city_id)
+        item = dbc.add.competition(**args)
 
         # Add default slide
         dbc.add.slide(item)
-
-        dbc.refresh(item)
         return item_response(schema.dump(item))
 
 
-@api.route("/<ID>")
-@api.param("ID")
+@api.route("/<CID>")
+@api.param("CID")
 class Competitions(Resource):
     @jwt_required
-    def get(self, ID):
-        item = get_comp(ID)
+    def get(self, CID):
+        item = get_comp(CID)
         return item_response(schema.dump(item))
 
     @jwt_required
-    def put(self, ID):
+    def put(self, CID):
         args = competition_parser.parse_args(strict=True)
-
-        item = get_comp(ID)
-        name = args.get("name")
-        year = args.get("year")
-        city_id = args.get("city_id")
-        item = dbc.edit.competition(item, name, year, city_id)
+        item = get_comp(CID)
+        item = dbc.edit.competition(item, **args)
         return item_response(schema.dump(item))
 
     @jwt_required
-    def delete(self, ID):
-        item = get_comp(ID)
+    def delete(self, CID):
+        item = get_comp(CID)
         dbc.delete.competition(item)
         return "deleted"
 
@@ -66,13 +56,5 @@ class CompetitionSearch(Resource):
     @jwt_required
     def get(self):
         args = competition_search_parser.parse_args(strict=True)
-        name = args.get("name")
-        year = args.get("year")
-        city_id = args.get("city_id")
-        page = args.get("page", 0)
-        page_size = args.get("page_size", 15)
-        order = args.get("order", 1)
-        order_by = args.get("order_by")
-
-        items, total = dbc.get.search_competitions(name, year, city_id, page, page_size, order, order_by)
+        items, total = dbc.get.search_competitions(**args)
         return list_response(list_schema.dump(items), total)

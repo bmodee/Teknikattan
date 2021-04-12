@@ -54,8 +54,11 @@ class Slides(Resource):
     @jwt_required
     def delete(self, CID, SID):
         item_slide = dbc.get.slide(CID, SID)
+        if not item_slide:
+            return {"response": "No content found"}, codes.NOT_FOUND
+
         dbc.delete.slide(item_slide)
-        return "deleted"
+        return {}, codes.NO_CONTENT
 
 
 @api.route("/<SID>/order")

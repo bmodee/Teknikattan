@@ -31,6 +31,17 @@ def slide(item, title=None, timer=None):
     return item
 
 
+def team(item_team, name=None, competition_id=None):
+    if name:
+        item_team.name = name
+    if competition_id:
+        item_team.competition_id = competition_id
+
+    db.session.commit()
+    db.session.refresh(item_team)
+    return item_team
+
+
 def competition(item, name=None, year=None, city_id=None):
     if name:
         item.name = name
@@ -61,3 +72,23 @@ def user(item, name=None, email=None, city_id=None, role_id=None):
     db.session.commit()
     db.session.refresh(item)
     return item
+
+
+def question(item_question, name=None, total_score=None, type_id=None, slide_id=None):
+
+    if name:
+        item_question.name = name
+
+    if total_score:
+        item_question.total_score = total_score
+
+    if type_id:
+        item_question.type_id = type_id
+
+    if slide_id:
+        item_question.slide_id = slide_id
+
+    db.session.commit()
+    db.session.refresh(item_question)
+
+    return item_question

@@ -60,7 +60,7 @@ def test_question(client):
     item_competition_2 = Competition.query.filter_by(name="teknik9").first()
 
     assert item_competition is not None
-    assert item_competition.id == 1
+    assert item_competition.id == 4
     assert item_competition.city.name == "Linköping"
 
     # Add teams
@@ -85,7 +85,7 @@ def test_question(client):
 
     # Try add slide with same order
     assert_insert_fail(Slide, 1, item_competition.id)
-    assert_exists(Slide, 1, order=1)
+    assert_exists(Slide, 3, order=1)
 
     item_slide1 = Slide.query.filter_by(order=0).first()
     item_slide2 = Slide.query.filter_by(order=1).first()
@@ -109,3 +109,62 @@ def test_question(client):
     item_q2 = Question.query.filter_by(name="Fråga2").first()
     assert item_q1.type.name == "Boolean"
     assert item_q2.type.name == "Multiple"
+
+    # Get question
+    CID = 3
+    QID = 4
+    item_q1 = dbc.get.question(CID, QID)
+    assert item_q1.id == QID
+    item_slide = dbc.get.slide(CID, item_q1.slide_id)
+    assert item_q1.slide_id == item_slide.id
+
+    # Edit question
+    print(item_q1.type_id)
+    print(item_q1.slide_id)
+    name = "Nytt namn"
+    total_score = 44
+    type_id = 2
+    slide_id = 4
+    dbc.edit.question(item_q1, name=name, total_score=total_score, type_id=type_id, slide_id=slide_id)
+    item_q1 = Question.query.filter_by(name=name).first()
+    assert item_q1.name == name
+    assert item_q1.total_score == total_score
+    assert item_q1.type_id == type_id
+    assert item_q1.slide_id == slide_id
+
+    # Search for question
+    item_q2, _ = dbc.get.search_questions(
+        name=name, total_score=total_score, type_id=type_id, slide_id=slide_id, competition_id=CID
+    )
+    assert item_q1 == item_q2[0]
+
+
+def test_slide(client):
+    add_default_values()
+
+    # Get all slides
+    slides = Slide.query.all()
+    item_slides = dbc.get.search_slide()
+    assert slides == item_slides[0]
+
+    # Search using all parameters
+    item_comp = Competition.query.filter(Competition.name == "Tävling 1").first()
+    aux = dbc.get.search_slide(slide_order=1, title="Title 1", body="Body 1", competition_id=item_comp.id)
+    item_slide = aux[0][0]
+    assert item_comp.slides[1] == item_slide
+
+    # Edit all parameters of a slide
+    title = "Ändrad titel"
+    timer = 42
+    slide_id = item_slide.id
+    dbc.edit.slide(item_slide, title=title, timer=timer)
+    aux = dbc.get.search_slide(slide_order=1, title=title, body="Body 1", competition_id=item_comp.id)
+    item_slide = aux[0][0]
+    assert item_slide.id == slide_id
+    assert item_slide.title == title
+    assert item_slide.timer == timer
+
+    # Delete slide
+    aux = dbc.get.search_slide(slide_order=1, competition_id=item_comp.id)
+    item_slide = aux[0][0]
+    dbc.delete.slide(item_slide)

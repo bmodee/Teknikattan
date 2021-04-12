@@ -22,6 +22,17 @@ class UserSchemaRich(RichSchema):
     city = fields.Nested(schemas.CitySchema, many=False)
 
 
+class QuestionSchemaRich(RichSchema):
+    class Meta(RichSchema.Meta):
+        model = models.Question
+
+    id = ma.auto_field()
+    name = ma.auto_field()
+    total_score = ma.auto_field()
+    type = fields.Nested(schemas.QuestionTypeSchema, many=False)
+    slide = fields.Nested(schemas.SlideSchema, many=False)
+
+
 class CompetitionSchemaRich(RichSchema):
     class Meta(RichSchema.Meta):
         model = models.Competition
@@ -31,5 +42,3 @@ class CompetitionSchemaRich(RichSchema):
     year = ma.auto_field()
     slides = fields.Nested(schemas.SlideSchema, many=True)
     city = fields.Nested(schemas.CitySchema, many=False)
-
-

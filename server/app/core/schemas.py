@@ -18,6 +18,17 @@ class QuestionTypeSchema(BaseSchema):
     name = ma.auto_field()
 
 
+class QuestionSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.Question
+
+    id = ma.auto_field()
+    name = ma.auto_field()
+    total_score = ma.auto_field()
+    type_id = ma.auto_field()
+    slide_id = ma.auto_field()
+
+
 class MediaTypeSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = models.MediaType
