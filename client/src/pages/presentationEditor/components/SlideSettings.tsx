@@ -137,7 +137,7 @@ const SlideSettings: React.FC = () => {
         {answers.map((answer) => (
           <div key={answer.id}>
             <ListItem divider>
-              <TextField className={classes.textInput} id="outlined-basic" label={answer.name} variant="outlined" />
+              <TextField className={classes.textInput} label={answer.name} variant="outlined" />
               <Checkbox color="default" />
               <CloseIcon className={classes.clickableIcon} onClick={() => handleCloseAnswerClick(answer.id)} />
             </ListItem>
@@ -155,7 +155,7 @@ const SlideSettings: React.FC = () => {
         {texts.map((text) => (
           <div key={text.id}>
             <ListItem divider>
-              <TextField className={classes.textInput} id="outlined-basic" label={text.name} variant="outlined" />
+              <TextField className={classes.textInput} label={text.name} variant="outlined" />
               <MoreHorizOutlinedIcon className={classes.clickableIcon} />
               <CloseIcon className={classes.clickableIcon} onClick={() => handleCloseTextClick(text.id)} />
             </ListItem>

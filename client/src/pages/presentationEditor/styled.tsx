@@ -19,3 +19,7 @@ export const SlideListItem = styled(ListItem)`
   text-align: center;
   height: 60px;
 `
+
+export const PresentationEditorContainer = styled.div`
+  height: 100%;
+`

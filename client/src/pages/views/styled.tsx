@@ -87,4 +87,5 @@ export const Content = styled.div<ContentProps>`
   margin-left: ${(props) => (props ? props.leftDrawerWidth : 0)}px;
   margin-right: ${(props) => (props ? props.rightDrawerWidth : 0)}px;
   width: calc(100% - ${(props) => (props ? props.leftDrawerWidth + props.rightDrawerWidth : 0)}px);
+  height: calc(100% - 64px);
 `

@@ -7,8 +7,10 @@ import ListItemText from '@material-ui/core/ListItemText'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useParams } from 'react-router-dom'
+import { Content } from '../views/styled'
 import SettingsPanel from './components/SettingsPanel'
-import { SlideListItem, ToolBarContainer, ViewButton, ViewButtonGroup } from './styled'
+import SlideEditor from './components/SlideEditor'
+import { PresentationEditorContainer, SlideListItem, ToolBarContainer, ViewButton, ViewButtonGroup } from './styled'
 
 function createSlide(name: string) {
   return { name }
@@ -28,9 +30,6 @@ const rightDrawerWidth = 390
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      display: 'flex',
-    },
     appBar: {
       width: `calc(100% - ${rightDrawerWidth}px)`,
       marginLeft: leftDrawerWidth,
@@ -71,7 +70,7 @@ const PresentationEditorPage: React.FC = () => {
   const classes = useStyles()
   const params: CompetitionParams = useParams()
   return (
-    <div className={classes.root}>
+    <PresentationEditorContainer>
       <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
         <ToolBarContainer>
@@ -120,7 +119,11 @@ const PresentationEditorPage: React.FC = () => {
       >
         <SettingsPanel></SettingsPanel>
       </Drawer>
-    </div>
+
+      <Content leftDrawerWidth={leftDrawerWidth} rightDrawerWidth={rightDrawerWidth}>
+        <SlideEditor />
+      </Content>
+    </PresentationEditorContainer>
   )
 }
 

@@ -48,9 +48,9 @@ const CompetitionSettings: React.FC = () => {
   return (
     <div className={classes.textInputContainer}>
       <form noValidate autoComplete="off">
-        <TextField className={classes.textInput} id="outlined-basic" label="Tävlingsnamn" variant="outlined" />
+        <TextField className={classes.textInput} label="Tävlingsnamn" variant="outlined" />
         <Divider />
-        <TextField className={classes.textInput} id="outlined-basic" label="Stad" variant="outlined" />
+        <TextField className={classes.textInput} label="Stad" variant="outlined" />
       </form>
 
       <List>

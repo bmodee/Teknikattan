@@ -7,6 +7,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.tox-edit-area__iframe,
+.tox-edit-area {
+  background: transparent !important;
+}
+
+.tox-notifications-container {
+  display: none;
+}
+
 html,
 #root {
   height: 100%;
