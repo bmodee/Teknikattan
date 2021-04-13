@@ -70,7 +70,6 @@ const UserManager: React.FC = (props: any) => {
   }, [])
 
   useEffect(() => {
-    console.log('asd')
     setEditAnchorEl(null)
     setAnchorEl(null)
   }, [users])

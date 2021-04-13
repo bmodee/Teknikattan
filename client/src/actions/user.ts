@@ -17,10 +17,10 @@ export const loginUser = (userData: AccountLoginModel, history: History) => asyn
       history.push('/admin') //redirecting to admin page after login success
     })
     .catch((err) => {
-      console.error(err)
+      console.log(err)
       dispatch({
         type: Types.SET_ERRORS,
-        payload: err.response.data,
+        payload: err && err.response && err.response.data,
       })
     })
 }
@@ -30,7 +30,6 @@ export const getUserData = () => async (dispatch: AppDispatch) => {
   await axios
     .get('/users')
     .then((res) => {
-      console.log(res.data)
       dispatch({
         type: Types.SET_USER,
         payload: res.data,

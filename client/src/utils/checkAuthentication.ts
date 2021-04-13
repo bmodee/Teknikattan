@@ -15,7 +15,6 @@ export const CheckAuthentication = async () => {
     if (decodedToken.exp * 1000 >= Date.now()) {
       axios.defaults.headers.common['Authorization'] = authToken
       store.dispatch({ type: Types.LOADING_USER })
-      console.log('loading user')
       await axios
         .get('/users')
         .then((res) => {
@@ -26,7 +25,7 @@ export const CheckAuthentication = async () => {
           })
         })
         .catch((error) => {
-          console.error(error)
+          console.log(error)
           UnAuthorized()
         })
     } else {
