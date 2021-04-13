@@ -1,6 +1,6 @@
-import app.core.controller as dbc
+import app.database.controller as dbc
 from app.core import db
-from app.core.models import Blacklist, City, Competition, Role, Slide, User
+from app.database.models import Blacklist, City, Competition, Role, Slide, User
 
 
 def default(item):
@@ -17,7 +17,7 @@ def slide(item_slide):
     default(item_slide)
 
     # Update slide order for all slides after the deleted slide
-    slides_in_same_competition, _ = dbc.get.search_slide(competition_id=deleted_slide_competition_id)
+    slides_in_same_competition = dbc.get.slide_list(deleted_slide_competition_id)
     for other_slide in slides_in_same_competition:
         if other_slide.order > deleted_slide_order:
             other_slide.order -= 1

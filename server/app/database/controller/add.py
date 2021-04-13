@@ -1,5 +1,18 @@
+import app.core.http_codes as codes
 from app.core import db
-from app.core.models import Blacklist, City, Competition, MediaType, Question, QuestionType, Role, Slide, Team, User
+from app.database.models import (
+    Blacklist,
+    City,
+    Competition,
+    MediaType,
+    Question,
+    QuestionType,
+    Role,
+    Slide,
+    Team,
+    User,
+)
+from flask_restx import abort
 
 
 def db_add(func):
@@ -8,6 +21,10 @@ def db_add(func):
         db.session.add(item)
         db.session.commit()
         db.session.refresh(item)
+
+        if not item:
+            abort(codes.BAD_REQUEST, f"Object could not be created")
+
         return item
 
     return wrapper

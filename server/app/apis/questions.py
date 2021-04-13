@@ -1,12 +1,11 @@
-import app.core.controller as dbc
 import app.core.http_codes as codes
+import app.database.controller as dbc
 from app.apis import admin_required, item_response, list_response
-from app.core.controller.add import competition
 from app.core.dto import QuestionDTO
-from app.core.models import Question
 from app.core.parsers import question_parser
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from flask_restx import Namespace, Resource
+from app.database.models import Question
+from flask_jwt_extended import jwt_required
+from flask_restx import Resource
 
 api = QuestionDTO.api
 schema = QuestionDTO.schema
@@ -18,8 +17,8 @@ list_schema = QuestionDTO.list_schema
 class QuestionsList(Resource):
     @jwt_required
     def get(self, CID):
-        items, total = dbc.get.search_questions(competition_id=CID)
-        return list_response(list_schema.dump(items), total)
+        items = dbc.get.question_list(CID)
+        return list_response(list_schema.dump(items))
 
     @jwt_required
     def post(self, CID):
@@ -41,25 +40,14 @@ class QuestionsList(Resource):
 class Questions(Resource):
     @jwt_required
     def get(self, CID, QID):
-        item_question = Question.query.filter(Question.id == QID).first()
-
-        if item_question is None:
-            api.abort(codes.NOT_FOUND, f"Could not find question with id {QID}.")
-
-        if item_question.slide.competition.id != int(CID):
-            api.abort(codes.NOT_FOUND, f"Could not find question with id {QID} in competition with id {CID}.")
-
+        item_question = dbc.get.question(CID, QID)
         return item_response(schema.dump(item_question))
 
     @jwt_required
     def put(self, CID, QID):
         args = question_parser.parse_args(strict=True)
-        print(f"questions 54: {args=}")
 
-        item_question = Question.query.filter(Question.id == QID).first()
-        if item_question.slide.competition.id != int(CID):
-            api.abort(codes.NOT_FOUND, f"Could not find question with id {QID} in competition with id {CID}.")
-
+        item_question = dbc.get.question(CID, QID)
         item_question = dbc.edit.question(item_question, **args)
 
         return item_response(schema.dump(item_question))
@@ -67,8 +55,5 @@ class Questions(Resource):
     @jwt_required
     def delete(self, CID, QID):
         item_question = dbc.get.question(CID, QID)
-        if not item_question:
-            return {"response": "No content found"}, codes.NOT_FOUND
-
         dbc.delete.question(item_question)
         return {}, codes.NO_CONTENT

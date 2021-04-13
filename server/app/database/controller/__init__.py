@@ -1,6 +1,6 @@
 # import add, get
 from app.core import db
-from app.core.controller import add, delete, edit, get
+from app.database.controller import add, delete, edit, get, search
 
 
 def commit_and_refresh(item):

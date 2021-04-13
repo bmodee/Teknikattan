@@ -1,6 +1,6 @@
 from flask import Flask, redirect, request
 
-import app.core.models as models
+import app.database.models as models
 from app.core import bcrypt, db, jwt, ma
 
 

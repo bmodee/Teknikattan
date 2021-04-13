@@ -1,4 +1,4 @@
-import app.core.models as models
+import app.database.models as models
 from app.core import ma
 from marshmallow_sqlalchemy import fields
 
@@ -27,6 +27,17 @@ class QuestionSchema(BaseSchema):
     total_score = ma.auto_field()
     type_id = ma.auto_field()
     slide_id = ma.auto_field()
+
+
+class QuestionAnswerSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.QuestionAnswer
+
+    id = ma.auto_field()
+    data = ma.auto_field()
+    score = ma.auto_field()
+    question_id = ma.auto_field()
+    team_id = ma.auto_field()
 
 
 class MediaTypeSchema(BaseSchema):

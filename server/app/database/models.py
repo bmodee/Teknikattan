@@ -123,8 +123,6 @@ class Slide(db.Model):
     settings = db.Column(db.Text, nullable=False, default="{}")
     competition_id = db.Column(db.Integer, db.ForeignKey("competition.id"), nullable=False)
 
-    questions = db.relationship("Question", backref="slide")
-
     def __init__(self, order, competition_id):
         self.order = order
         self.competition_id = competition_id
@@ -138,6 +136,7 @@ class Question(db.Model):
     type_id = db.Column(db.Integer, db.ForeignKey("question_type.id"), nullable=False)
     slide_id = db.Column(db.Integer, db.ForeignKey("slide.id"), nullable=False)
 
+    slide = db.relationship("Slide", backref="questions")
     question_answers = db.relationship("QuestionAnswer", backref="question")
     alternatives = db.relationship("QuestionAlternative", backref="question")
 

@@ -1,7 +1,7 @@
-import app.core.controller as dbc
+import app.database.controller as dbc
 from app.apis import admin_required, item_response, list_response
 from app.core.dto import MiscDTO
-from app.core.models import City, MediaType, QuestionType, Role
+from app.database.models import City, MediaType, QuestionType, Role
 from flask_jwt_extended import jwt_required
 from flask_restx import Resource, reqparse
 

@@ -1,8 +1,9 @@
 import app.core.http_codes as codes
-from app.core.models import Slide
+from app.database.models import Slide
 
 from tests import app, client, db
-from tests.test_helpers import add_default_values, change_order_test, delete, get, post, put
+from tests.test_helpers import (add_default_values, change_order_test, delete,
+                                get, post, put)
 
 
 def test_misc_api(client):
@@ -301,7 +302,7 @@ def test_slide_api(client):
     SID = body["items"][i]["id"]
     order = body["items"][i]["order"]
     response, _ = put(client, f"/api/competitions/{CID}/slides/{SID}/order", {"order": order}, headers=headers)
-    assert response.status_code == codes.BAD_REQUEST
+    assert response.status_code == codes.OK
 
     # Changes the order
     change_order_test(client, CID, SID, order + 1, headers)
@@ -330,6 +331,7 @@ def test_question_api(client):
     num_questions = 3
     response, body = get(client, f"/api/competitions/{CID}/questions", headers=headers)
     assert response.status_code == codes.OK
+    print(body)
     assert body["count"] == num_questions
 
     # # Get specific question
@@ -368,7 +370,7 @@ def test_question_api(client):
     assert item_question["name"] == name
     # # assert item_question["total_score"] == total_score
     assert item_question["type"]["id"] == type_id
-    assert item_question["slide"]["id"] == slide_id
+    assert item_question["slide_id"] == slide_id
     # Checks number of questions
     response, body = get(client, f"/api/competitions/{CID}/questions", headers=headers)
     assert response.status_code == codes.OK
@@ -413,7 +415,7 @@ def test_question_api(client):
     assert item_question["name"] != name
     # assert item_question["total_score"] != total_score
     assert item_question["type"]["id"] != type_id
-    assert item_question["slide"]["id"] != slide_id
+    assert item_question["slide_id"] != slide_id
     response, item_question = put(
         client,
         f"/api/competitions/{CID}/questions/{QID}",
@@ -425,7 +427,7 @@ def test_question_api(client):
     assert item_question["name"] == name
     # # assert item_question["total_score"] == total_score
     assert item_question["type"]["id"] == type_id
-    assert item_question["slide"]["id"] == slide_id
+    assert item_question["slide_id"] == slide_id
     # Checks number of questions
     response, body = get(client, f"/api/competitions/{CID}/questions", headers=headers)
     assert response.status_code == codes.OK

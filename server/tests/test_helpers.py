@@ -1,9 +1,9 @@
 import json
 
-import app.core.controller as dbc
 import app.core.http_codes as codes
+import app.database.controller as dbc
 from app.core import db
-from app.core.models import City, Role
+from app.database.models import City, Role
 
 
 def add_default_values():
