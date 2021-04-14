@@ -1,5 +1,6 @@
 from app.core import bcrypt, db
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
+from sqlalchemy.orm import backref
 
 STRING_SIZE = 254
 
@@ -90,9 +91,12 @@ class Competition(db.Model):
     year = db.Column(db.Integer, nullable=False, default=2020)
 
     city_id = db.Column(db.Integer, db.ForeignKey("city.id"), nullable=False)
+    background_image_id = db.Column(db.Integer, db.ForeignKey("media.id"), nullable=True)
 
     slides = db.relationship("Slide", backref="competition")
     teams = db.relationship("Team", backref="competition")
+
+    background_image = db.relationship("Media", uselist=False)
 
     def __init__(self, name, year, city_id):
         self.name = name
@@ -122,6 +126,9 @@ class Slide(db.Model):
     timer = db.Column(db.Integer, nullable=False, default=0)
     settings = db.Column(db.Text, nullable=False, default="{}")
     competition_id = db.Column(db.Integer, db.ForeignKey("competition.id"), nullable=False)
+
+    background_image_id = db.Column(db.Integer, db.ForeignKey("media.id"), nullable=True)
+    background_image = db.relationship("Media", uselist=False)
 
     def __init__(self, order, competition_id):
         self.order = order

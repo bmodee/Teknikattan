@@ -2,6 +2,14 @@ import app.core.rich_schemas as rich_schemas
 import app.core.schemas as schemas
 import marshmallow as ma
 from flask_restx import Namespace, fields
+from flask_uploads import IMAGES, UploadSet
+
+
+class MediaDTO:
+    api = Namespace("media")
+    image_set = UploadSet("photos", IMAGES)
+    schema = schemas.MediaSchema(many=False)
+    list_schema = schemas.MediaSchema(many=True)
 
 
 class AuthDTO:

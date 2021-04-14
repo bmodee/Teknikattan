@@ -1,4 +1,12 @@
-from app.database.models import Competition, Question, Slide, Team, User
+from app.database.models import Competition, Media, Question, Slide, Team, User
+
+
+def image(filename, page=0, page_size=15, order=1, order_by=None):
+    query = Media.query.filter(Media.type_id == 1)
+    if filename:
+        query = query.filter(Media.filename.like(f"%{filename}%"))
+
+    return query.pagination(page, page_size, None, None)
 
 
 def user(email=None, name=None, city_id=None, role_id=None, page=0, page_size=15, order=1, order_by=None):
@@ -74,10 +82,7 @@ def questions(
     if slide_id:
         query = query.filter(Question.slide_id == slide_id)
     if competition_id:
-        slide_ids = set(
-            [x.id for x in Slide.query.filter(Slide.competition_id == competition_id).all()]
-        )  # TODO: Filter using database instead of creating a set of slide_ids
-        query = query.filter(Question.slide_id.in_(slide_ids))
+        query = query.join(Slide, (Slide.competition_id == competition_id) & (Slide.id == Question.slide_id))
 
     order_column = Question.id  # Default order_by
     if order_by:

@@ -44,6 +44,7 @@ from flask_restx import Api
 
 from .auth import api as auth_ns
 from .competitions import api as comp_ns
+from .media import api as media_ns
 from .misc import api as misc_ns
 from .questions import api as question_ns
 from .slides import api as slide_ns
@@ -51,6 +52,7 @@ from .teams import api as team_ns
 from .users import api as user_ns
 
 flask_api = Api()
+flask_api.add_namespace(media_ns, path="/api/media")
 flask_api.add_namespace(misc_ns, path="/api/misc")
 flask_api.add_namespace(user_ns, path="/api/users")
 flask_api.add_namespace(auth_ns, path="/api/auth")
@@ -58,4 +60,4 @@ flask_api.add_namespace(comp_ns, path="/api/competitions")
 flask_api.add_namespace(slide_ns, path="/api/competitions/<CID>/slides")
 flask_api.add_namespace(team_ns, path="/api/competitions/<CID>/teams")
 flask_api.add_namespace(question_ns, path="/api/competitions/<CID>/questions")
-#flask_api.add_namespace(question_ns, path="/api/competitions/<CID>/slides/<SID>/question")
+# flask_api.add_namespace(question_ns, path="/api/competitions/<CID>/slides/<SID>/question")

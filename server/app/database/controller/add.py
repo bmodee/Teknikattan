@@ -4,6 +4,7 @@ from app.database.models import (
     Blacklist,
     City,
     Competition,
+    Media,
     MediaType,
     Question,
     QuestionType,
@@ -33,6 +34,11 @@ def db_add(func):
 @db_add
 def blacklist(jti):
     return Blacklist(jti)
+
+
+@db_add
+def image(filename, user_id):
+    return Media(filename, 1, user_id)
 
 
 @db_add

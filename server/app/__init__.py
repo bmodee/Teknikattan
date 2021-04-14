@@ -1,7 +1,9 @@
 from flask import Flask, redirect, request
+from flask_uploads import IMAGES, UploadSet, configure_uploads
 
 import app.database.models as models
 from app.core import bcrypt, db, jwt, ma
+from app.core.dto import MediaDTO
 
 
 def create_app(config_name="configmodule.DevelopmentConfig"):
@@ -14,6 +16,7 @@ def create_app(config_name="configmodule.DevelopmentConfig"):
         jwt.init_app(app)
         db.init_app(app)
         ma.init_app(app)
+        configure_uploads(app, (MediaDTO.image_set,))
 
         from app.apis import flask_api
 

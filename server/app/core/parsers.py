@@ -64,3 +64,7 @@ question_parser.add_argument("type_id", type=int, default=None, location="json")
 ###TEAM####
 team_parser = reqparse.RequestParser()
 team_parser.add_argument("name", type=str, location="json")
+
+###SEARCH_COMPETITION####
+media_parser_search = search_parser.copy()
+media_parser_search.add_argument("filename", type=str, default=None, location="args")
