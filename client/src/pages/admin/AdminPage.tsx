@@ -23,6 +23,7 @@ import { getRoles } from '../../actions/roles'
 import { logoutUser } from '../../actions/user'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import CompetitionManager from './competitions/CompetitionManager'
+import Dashboard from './dashboard/Dashboard'
 import RegionManager from './regions/Regions'
 import { LeftDrawer } from './styled'
 import UserManager from './users/UserManager'
@@ -45,7 +46,9 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       flexGrow: 1,
       backgroundColor: theme.palette.background.default,
-      paddingLeft: theme.spacing(31),
+      paddingTop: theme.spacing(2),
+      paddingLeft: theme.spacing(35),
+      paddingRight: theme.spacing(5),
     },
   })
 )
@@ -138,9 +141,7 @@ const AdminView: React.FC = () => {
         <div className={classes.toolbar} />
         <Switch>
           <Route exact path={[path, `${path}/startsida`]}>
-            <Typography variant="h1" noWrap>
-              Startsida
-            </Typography>
+            <Dashboard />
           </Route>
           <Route path={`${path}/regioner`}>
             <RegionManager />
