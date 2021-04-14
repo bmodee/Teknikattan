@@ -1,8 +1,8 @@
 from sqlalchemy.sql.expression import true
 
-import app.core.controller as dbc
+import app.database.controller as dbc
 from app import create_app, db
-from app.core.models import City, Competition, MediaType, QuestionType, Role
+from app.database.models import City, Competition, MediaType, QuestionType, Role
 
 
 def _add_items():
