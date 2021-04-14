@@ -1,5 +1,5 @@
 client:setup:
-  image: node:10
+  image: node
   stage: setup
   only:
     refs:
@@ -9,14 +9,14 @@ client:setup:
     - cd client
     - npm install
   artifacts:
-    name: "artifacts"
+    name: 'artifacts'
     untracked: true
     expire_in: 15 mins
     paths:
       - client/.npm/
       - client/node_modules/
   cache:
-    key: "$CI_COMMIT_REF_SLUG"
+    key: '$CI_COMMIT_REF_SLUG'
     paths:
       - client/.npm/
       - client/node_modules/
@@ -24,7 +24,7 @@ client:setup:
 client:linting:
   image: node:10
   stage: test
-  needs: ["client:setup"]
+  needs: ['client:setup']
   allow_failure: true
   only:
     refs:
@@ -39,7 +39,7 @@ client:linting:
 client:test:
   image: node:10
   stage: test
-  needs: ["client:setup"]
+  needs: ['client:setup']
   only:
     refs:
       - dev
@@ -56,7 +56,7 @@ client:test:
 client:report:
   image: python
   stage: report
-  needs: ["client:test"]
+  needs: ['client:test']
   only:
     refs:
       - merge_requests
