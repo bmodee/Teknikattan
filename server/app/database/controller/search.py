@@ -19,7 +19,7 @@ def user(email=None, name=None, city_id=None, role_id=None, page=0, page_size=15
     return query.pagination(page, page_size, order_column, order)
 
 
-def competitions(name=None, year=None, city_id=None, page=0, page_size=15, order=1, order_by=None):
+def competition(name=None, year=None, city_id=None, page=0, page_size=15, order=1, order_by=None):
     query = Competition.query
     if name:
         query = query.filter(Competition.name.like(f"%{name}%"))

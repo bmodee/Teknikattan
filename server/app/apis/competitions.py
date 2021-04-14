@@ -54,5 +54,5 @@ class CompetitionSearch(Resource):
     @jwt_required
     def get(self):
         args = competition_search_parser.parse_args(strict=True)
-        items, total = dbc.search.user(**args)
+        items, total = dbc.search.competition(**args)
         return list_response(list_schema.dump(items), total)
