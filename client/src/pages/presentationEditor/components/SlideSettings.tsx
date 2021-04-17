@@ -10,10 +10,17 @@ import {
   Select,
   TextField,
 } from '@material-ui/core'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { CheckboxProps } from '@material-ui/core/Checkbox'
+import { green, grey } from '@material-ui/core/colors'
+import { createStyles, makeStyles, Theme, withStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import MoreHorizOutlinedIcon from '@material-ui/icons/MoreHorizOutlined'
+import axios from 'axios'
 import React, { useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { getEditorCompetition } from '../../../actions/editor'
+import { useAppDispatch, useAppSelector } from '../../../hooks'
+import { HiddenInput } from './styled'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,22 +65,33 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+interface CompetitionParams {
+  id: string
+}
+
 const SlideSettings: React.FC = () => {
   const classes = useStyles()
-
-  const [slideTypeSelected, selectSlideType] = React.useState('')
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    selectSlideType(event.target.value as string)
+  const { id }: CompetitionParams = useParams()
+  const dispatch = useAppDispatch()
+  const competition = useAppSelector((state) => state.editor.competition)
+  let currentSlide = competition.slides[0]
+  // Init currentSlide if slides are not in order
+  for (const slide of competition.slides) {
+    if (slide.order === 1) {
+      currentSlide = slide
+      break
+    }
   }
 
-  const answerList = [
-    { id: 'answer1', name: 'Svar 1' },
-    { id: 'answer2', name: 'Svar 2' },
-  ]
-  const handleCloseAnswerClick = (id: string) => {
-    setAnswers(answers.filter((item) => item.id !== id)) //Will not be done like this when api is used
+  const handleCloseAnswerClick = async (alternative: number) => {
+    await axios
+      // TODO: implementera API för att kunnata bort svarsalternativ
+      .delete(`/competitions/${id}/slide/question/alternative/${alternative}`)
+      .then(() => {
+        dispatch(getEditorCompetition(id))
+      })
+      .catch(console.log)
   }
-  const [answers, setAnswers] = useState(answerList)
 
   const textList = [
     { id: 'text1', name: 'Text 1' },
@@ -93,22 +111,75 @@ const SlideSettings: React.FC = () => {
   }
   const [pictures, setPictures] = useState(pictureList)
 
+  const updateSlideType = async (event: React.ChangeEvent<{ value: unknown }>) => {
+    await axios
+      // TODO: implementera API för att kunna ändra i questions->type_id
+      .put(`/competitions/${id}/slides/${currentSlide?.id}`, { type_id: event.target.value })
+      .then(() => {
+        dispatch(getEditorCompetition(id))
+      })
+      .catch(console.log)
+  }
+
+  const updateAlternativeValue = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Wheter the alternative is true or false
+    await axios
+      // TODO: implementera API för att kunna ändra i alternatives->value
+      .put(`/competitions/${id}/slides/${currentSlide?.id}`, { value: event.target.value })
+      .then(() => {
+        dispatch(getEditorCompetition(id))
+      })
+      .catch(console.log)
+  }
+
+  const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    if (e.target.files !== null && e.target.files[0]) {
+      const files = Array.from(e.target.files)
+      const file = files[0]
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = function () {
+        console.log(reader.result)
+        // TODO: Send image to back-end (remove console.log)
+      }
+      reader.onerror = function (error) {
+        console.log('Error: ', error)
+      }
+    }
+  }
+
+  const handleAddText = async () => {
+    console.log('Add text component')
+    // TODO: post the new text]
+    setTexts([...texts, { id: 'newText', name: 'New Text' }])
+  }
+
+  const GreenCheckbox = withStyles({
+    root: {
+      color: grey[900],
+      '&$checked': {
+        color: green[600],
+      },
+    },
+    checked: {},
+  })((props: CheckboxProps) => <Checkbox color="default" {...props} />)
+
   return (
     <div className={classes.textInputContainer}>
       <div className={classes.whiteBackground}>
         <FormControl variant="outlined" className={classes.dropDown}>
           <InputLabel id="slide-type-selection-label">Sidtyp</InputLabel>
-          <Select value={slideTypeSelected} label="Sidtyp" defaultValue="informationSlide" onChange={handleChange}>
-            <MenuItem value="informationSlide">
+          <Select value={currentSlide?.questions[0].type_id || 0} label="Sidtyp" onChange={updateSlideType}>
+            <MenuItem value={0}>
               <Button>Informationssida</Button>
             </MenuItem>
-            <MenuItem value="textQuestion">
+            <MenuItem value={1}>
               <Button>Skriftlig fråga</Button>
             </MenuItem>
-            <MenuItem value="practicalQuestion">
+            <MenuItem value={2}>
               <Button>Praktisk fråga</Button>
             </MenuItem>
-            <MenuItem value="multipleChoiceQuestion">
+            <MenuItem value={3}>
               <Button>Flervalsfråga</Button>
             </MenuItem>
           </Select>
@@ -123,6 +194,7 @@ const SlideSettings: React.FC = () => {
           helperText="Lämna blank för att inte använda timerfunktionen"
           label="Timer"
           type="number"
+          value={currentSlide?.timer}
         />
       </ListItem>
 
@@ -134,12 +206,18 @@ const SlideSettings: React.FC = () => {
             secondary="(Fyll i rutan höger om textfältet för att markera korrekt svar)"
           />
         </ListItem>
-        {answers.map((answer) => (
-          <div key={answer.id}>
+        {(currentSlide?.questions[0].question_alternatives || []).map((alt) => (
+          <div key={alt.id}>
             <ListItem divider>
-              <TextField className={classes.textInput} label={answer.name} variant="outlined" />
-              <Checkbox color="default" />
-              <CloseIcon className={classes.clickableIcon} onClick={() => handleCloseAnswerClick(answer.id)} />
+              <TextField
+                className={classes.textInput}
+                id="outlined-basic"
+                label={`Svar ${alt.id}`}
+                value={alt.text}
+                variant="outlined"
+              />
+              <GreenCheckbox checked={alt.value} onChange={updateAlternativeValue} />
+              <CloseIcon className={classes.clickableIcon} onClick={() => handleCloseAnswerClick(alt.id)} />
             </ListItem>
           </div>
         ))}
@@ -161,7 +239,7 @@ const SlideSettings: React.FC = () => {
             </ListItem>
           </div>
         ))}
-        <ListItem className={classes.center} button>
+        <ListItem className={classes.center} button onClick={handleAddText}>
           <Button>Lägg till text</Button>
         </ListItem>
       </List>
@@ -184,7 +262,11 @@ const SlideSettings: React.FC = () => {
           </div>
         ))}
         <ListItem className={classes.center} button>
-          <Button>Lägg till bild</Button>
+          <HiddenInput accept="image/*" id="contained-button-file" multiple type="file" onChange={handleFileSelected} />
+
+          <label htmlFor="contained-button-file">
+            <Button component="span">Lägg till bild</Button>
+          </label>
         </ListItem>
       </List>
 

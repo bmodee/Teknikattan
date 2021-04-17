@@ -7,10 +7,7 @@ const initialState = {
   competition: {
     name: '',
     id: 0,
-    city: {
-      id: 0,
-      name: '',
-    },
+    city_id: 0,
     slides: [],
     year: 0,
     teams: [],

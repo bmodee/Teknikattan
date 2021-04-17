@@ -5,8 +5,11 @@ import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
 import ListItemText from '@material-ui/core/ListItemText'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { getCities } from '../../actions/cities'
+import { getEditorCompetition } from '../../actions/editor'
+import { useAppDispatch, useAppSelector } from '../../hooks'
 import { Content } from '../views/styled'
 import SettingsPanel from './components/SettingsPanel'
 import SlideEditor from './components/SlideEditor'
@@ -16,15 +19,6 @@ function createSlide(name: string) {
   return { name }
 }
 
-const slides = [
-  createSlide('Sida 1'),
-  createSlide('Sida 2'),
-  createSlide('Sida 3'),
-  createSlide('Sida 4'),
-  createSlide('Sida 5'),
-  createSlide('Sida 6'),
-  createSlide('Sida 7'),
-]
 const leftDrawerWidth = 150
 const rightDrawerWidth = 390
 
@@ -68,14 +62,21 @@ interface CompetitionParams {
 
 const PresentationEditorPage: React.FC = () => {
   const classes = useStyles()
-  const params: CompetitionParams = useParams()
+  const { id }: CompetitionParams = useParams()
+  const dispatch = useAppDispatch()
+  const competition = useAppSelector((state) => state.editor.competition)
+  // TODO: wait for dispatch to finish
+  useEffect(() => {
+    dispatch(getEditorCompetition(id))
+    dispatch(getCities())
+  }, [])
   return (
     <PresentationEditorContainer>
       <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
         <ToolBarContainer>
           <Typography variant="h6" noWrap>
-            Tävling nr: {params.id}
+            Tävlingsnamn: {competition.name}
           </Typography>
           <ViewButtonGroup>
             <ViewButton variant="contained" color="secondary">
@@ -101,9 +102,9 @@ const PresentationEditorPage: React.FC = () => {
         <div className={classes.toolbar} />
         <Divider />
         <List>
-          {slides.map((slide) => (
-            <SlideListItem divider button key={slide.name}>
-              <ListItemText primary={slide.name} />
+          {competition.slides.map((slide) => (
+            <SlideListItem divider button key={slide.title}>
+              <ListItemText primary={slide.title} />
             </SlideListItem>
           ))}
         </List>

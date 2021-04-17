@@ -1,7 +1,23 @@
-import { Button, Divider, List, ListItem, ListItemText, TextField } from '@material-ui/core'
+import {
+  Button,
+  Divider,
+  FormControl,
+  InputLabel,
+  List,
+  ListItem,
+  ListItemText,
+  MenuItem,
+  Select,
+  TextField,
+} from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
-import React, { useState } from 'react'
+import axios from 'axios'
+import React from 'react'
+import { useParams } from 'react-router-dom'
+import { getEditorCompetition } from '../../../actions/editor'
+import { useAppDispatch, useAppSelector } from '../../../hooks'
+import { City } from '../../../interfaces/ApiModels'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,33 +47,94 @@ const useStyles = makeStyles((theme: Theme) =>
       height: 50,
       background: 'white',
     },
+    dropDown: {
+      margin: theme.spacing(2),
+      width: '87%',
+      background: 'white',
+    },
   })
 )
 
+interface CompetitionParams {
+  id: string
+}
+
 const CompetitionSettings: React.FC = () => {
   const classes = useStyles()
-  const initialList = [
-    { id: '1', name: 'Lag1' },
-    { id: '2', name: 'Lag2' },
-    { id: '3', name: 'Lag3' },
-  ]
-  const handleClick = (id: string) => {
-    setTeams(teams.filter((item) => item.id !== id)) //Will not be done like this when api is used
+  const { id }: CompetitionParams = useParams()
+  const dispatch = useAppDispatch()
+  const competition = useAppSelector((state) => state.editor.competition)
+
+  const updateCompetitionName = async (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    await axios
+      .put(`/competitions/${id}`, { name: event.target.value })
+      .then(() => {
+        dispatch(getEditorCompetition(id))
+      })
+      .catch(console.log)
   }
-  const [teams, setTeams] = useState(initialList)
+
+  const handleClick = async (tid: number) => {
+    await axios
+      .delete(`/competitions/${id}/teams/${tid}`)
+      .then(() => {
+        dispatch(getEditorCompetition(id))
+      })
+      .catch(console.log)
+  }
+
+  const cities = useAppSelector((state) => state.cities.cities)
+  const updateCompetitionCity = async (city: City) => {
+    await axios
+      .put(`/competitions/${id}`, { city_id: city.id })
+      .then(() => {
+        dispatch(getEditorCompetition(id))
+      })
+      .catch(console.log)
+  }
+
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    cities.forEach((city) => {
+      if (event.target.value === city.name) {
+        updateCompetitionCity(city)
+      }
+    })
+  }
+
   return (
     <div className={classes.textInputContainer}>
       <form noValidate autoComplete="off">
-        <TextField className={classes.textInput} label="Tävlingsnamn" variant="outlined" />
+        <TextField
+          className={classes.textInput}
+          id="outlined-basic"
+          label={'Tävlingsnamn'}
+          defaultValue={competition.name}
+          onChange={updateCompetitionName}
+          variant="outlined"
+        />
         <Divider />
-        <TextField className={classes.textInput} label="Stad" variant="outlined" />
+        <FormControl variant="outlined" className={classes.dropDown}>
+          <InputLabel id="region-selection-label">Region</InputLabel>
+          {/*TODO: fixa så cities laddar in i statet likt i CompetitionManager*/}
+          <Select
+            value={cities.find((city) => city.id === competition.city_id)?.name || ''}
+            label="RegionSelect"
+            onChange={handleChange}
+          >
+            {cities.map((city) => (
+              <MenuItem value={city.name} key={city.name}>
+                <Button>{city.name}</Button>
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </form>
 
       <List>
         <ListItem>
           <ListItemText className={classes.textCenter} primary="Lag" />
         </ListItem>
-        {teams.map((team) => (
+        {competition.teams.map((team) => (
           <div key={team.id}>
             <ListItem divider button>
               <ListItemText primary={team.name} />

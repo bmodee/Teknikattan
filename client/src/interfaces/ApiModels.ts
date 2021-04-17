@@ -3,8 +3,9 @@ export interface NameID {
   name: string
 }
 export interface City extends NameID {}
+
 export interface Role extends NameID {}
-export interface MediaType extends NameID {}
+
 export interface QuestionType extends NameID {}
 export interface ComponentType extends NameID {}
 export interface ViewType extends NameID {}
@@ -22,6 +23,8 @@ export interface Media {
   mediatype_id: number
   user_id: number
 }
+
+export interface MediaType extends NameID {}
 
 export interface User extends NameID {
   email: string
@@ -54,7 +57,7 @@ export interface QuestionAlternative {
 export interface QuestionAnswer {
   id: number
   question_id: number
-  team_id: string
+  team_id: number
   data: string
   score: number
 }

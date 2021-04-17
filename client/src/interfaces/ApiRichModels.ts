@@ -1,10 +1,11 @@
-import { City, Component, Media, QuestionAnswer, QuestionType } from './ApiModels'
+import { Component } from 'react'
+import { Media, QuestionAlternative, QuestionAnswer, QuestionType } from './ApiModels'
 
 export interface RichCompetition {
   name: string
   id: number
   year: number
-  city: City
+  city_id: number
   slides: RichSlide[]
   teams: RichTeam[]
 }
@@ -15,9 +16,9 @@ export interface RichSlide {
   timer: number
   title: string
   competition_id: number
-  question: RichQuestion[]
   components: Component[]
   medias: Media[]
+  questions: RichQuestion[]
 }
 
 export interface RichTeam {
@@ -34,4 +35,6 @@ export interface RichQuestion {
   title: string
   total_score: number
   question_type: QuestionType
+  type_id: number
+  question_alternatives: QuestionAlternative[]
 }
