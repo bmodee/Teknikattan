@@ -20,6 +20,7 @@ import React, { useEffect } from 'react'
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom'
 import { getCities } from '../../actions/cities'
 import { getRoles } from '../../actions/roles'
+import { getTypes } from '../../actions/typesAction'
 import { logoutUser } from '../../actions/user'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import CompetitionManager from './competitions/CompetitionManager'
@@ -57,12 +58,17 @@ const AdminView: React.FC = () => {
   const classes = useStyles()
   const [openIndex, setOpenIndex] = React.useState(0)
   const { path, url } = useRouteMatch()
+  const currentUser = useAppSelector((state) => state.user.userInfo)
+  const isAdmin = () => currentUser && currentUser.role.name === 'Admin'
+  const dispatch = useAppDispatch()
   const handleLogout = () => {
     dispatch(logoutUser())
   }
-  const dispatch = useAppDispatch()
-  const currentUser = useAppSelector((state) => state.user.userInfo)
-  const isAdmin = () => currentUser && currentUser.role.name === 'Admin'
+  useEffect(() => {
+    dispatch(getCities())
+    dispatch(getRoles())
+    dispatch(getTypes())
+  }, [])
 
   const menuAdminItems = [
     { text: 'Startsida', icon: DashboardIcon },
@@ -92,11 +98,6 @@ const AdminView: React.FC = () => {
       </ListItem>
     ))
   }
-
-  useEffect(() => {
-    dispatch(getCities())
-    dispatch(getRoles())
-  }, [])
 
   return (
     <div className={classes.root}>

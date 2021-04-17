@@ -12,7 +12,7 @@ schema = QuestionDTO.schema
 list_schema = QuestionDTO.list_schema
 
 
-@api.route("/")
+@api.route("/questions")
 @api.param("CID")
 class QuestionsList(Resource):
     @jwt_required
@@ -20,40 +20,40 @@ class QuestionsList(Resource):
         items = dbc.get.question_list(CID)
         return list_response(list_schema.dump(items))
 
+
+@api.route("/slides/<SID>/questions")
+@api.param("CID, SID")
+class QuestionsList(Resource):
     @jwt_required
-    def post(self, CID):
+    def post(self, SID, CID):
         args = question_parser.parse_args(strict=True)
+        del args["slide_id"]
 
-        name = args.get("name")
-        total_score = args.get("total_score")
-        type_id = args.get("type_id")
-        slide_id = args.get("slide_id")
-
-        item_slide = dbc.get.slide(CID, slide_id)
-        item = dbc.add.question(name, total_score, type_id, item_slide)
+        item_slide = dbc.get.slide(CID, SID)
+        item = dbc.add.question(item_slide=item_slide, **args)
 
         return item_response(schema.dump(item))
 
 
-@api.route("/<QID>")
-@api.param("CID,QID")
+@api.route("/slides/<SID>/questions/<QID>")
+@api.param("CID, SID, QID")
 class Questions(Resource):
     @jwt_required
-    def get(self, CID, QID):
-        item_question = dbc.get.question(CID, QID)
+    def get(self, CID, SID, QID):
+        item_question = dbc.get.question(CID, SID, QID)
         return item_response(schema.dump(item_question))
 
     @jwt_required
-    def put(self, CID, QID):
+    def put(self, CID, SID, QID):
         args = question_parser.parse_args(strict=True)
 
-        item_question = dbc.get.question(CID, QID)
+        item_question = dbc.get.question(CID, SID, QID)
         item_question = dbc.edit.question(item_question, **args)
 
         return item_response(schema.dump(item_question))
 
     @jwt_required
-    def delete(self, CID, QID):
-        item_question = dbc.get.question(CID, QID)
+    def delete(self, CID, SID, QID):
+        item_question = dbc.get.question(CID, SID, QID)
         dbc.delete.question(item_question)
         return {}, codes.NO_CONTENT

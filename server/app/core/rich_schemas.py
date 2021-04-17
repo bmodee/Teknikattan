@@ -43,6 +43,16 @@ class TeamSchemaRich(RichSchema):
     question_answers = fields.Nested(schemas.QuestionAnswerSchema, many=True)
 
 
+class CodeSchemaRich(RichSchema):
+    class Meta(RichSchema.Meta):
+        model = models.Code
+
+    id = ma.auto_field()
+    code = ma.auto_field()
+    pointer = ma.auto_field()
+    view_type = fields.Nested(schemas.ViewTypeSchema, many=False)
+
+
 class SlideSchemaRich(RichSchema):
     class Meta(RichSchema.Meta):
         model = models.Slide
@@ -53,6 +63,7 @@ class SlideSchemaRich(RichSchema):
     timer = ma.auto_field()
     competition_id = ma.auto_field()
     questions = fields.Nested(QuestionSchemaRich, many=True)
+    components = fields.Nested(schemas.ComponentSchema, many=True)
 
 
 class CompetitionSchemaRich(RichSchema):

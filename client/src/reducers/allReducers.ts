@@ -6,6 +6,7 @@ import competitionsReducer from './competitionsReducer'
 import presentationReducer from './presentationReducer'
 import rolesReducer from './rolesReducer'
 import searchUserReducer from './searchUserReducer'
+import typesReducer from './typesReducer'
 import uiReducer from './uiReducer'
 import userReducer from './userReducer'
 
@@ -18,5 +19,6 @@ const allReducers = combineReducers({
   presentation: presentationReducer,
   roles: rolesReducer,
   searchUsers: searchUserReducer,
+  types: typesReducer,
 })
 export default allReducers

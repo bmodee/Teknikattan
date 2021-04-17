@@ -20,6 +20,23 @@ def switch_order(item1, item2):
     return item1
 
 
+def component(item, x, y, w, h, data):
+    if x:
+        item.x = x
+    if y:
+        item.y = y
+    if w:
+        item.w = w
+    if h:
+        item.h = h
+    if data:
+        item.data = data
+
+    db.session.commit()
+    db.session.refresh(item)
+    return item
+
+
 def slide(item, title=None, timer=None):
     if title:
         item.title = title

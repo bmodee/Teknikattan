@@ -8,18 +8,30 @@ def default(item):
     db.session.commit()
 
 
-def slide(item_slide):
+def component(item_component):
+    default(item_component)
+
+
+def _slide(item_slide):
     for item_question in item_slide.questions:
         question(item_question)
 
-    deleted_slide_competition_id = item_slide.competition_id
-    deleted_slide_order = item_slide.order
+    for item_component in item_slide.components:
+        default(item_component)
+
     default(item_slide)
 
+
+def slide(item_slide):
+    competition_id = item_slide.competition_id
+    slide_order = item_slide.order
+
+    _slide(item_slide)
+
     # Update slide order for all slides after the deleted slide
-    slides_in_same_competition = dbc.get.slide_list(deleted_slide_competition_id)
+    slides_in_same_competition = dbc.get.slide_list(competition_id)
     for other_slide in slides_in_same_competition:
-        if other_slide.order > deleted_slide_order:
+        if other_slide.order > slide_order:
             other_slide.order -= 1
 
     db.session.commit()
@@ -49,7 +61,9 @@ def question_answers(item_question_answers):
 
 def competition(item_competition):
     for item_slide in item_competition.slides:
-        slide(item_slide)
+        _slide(item_slide)
     for item_team in item_competition.teams:
         team(item_team)
+
+    # TODO codes
     default(item_competition)

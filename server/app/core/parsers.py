@@ -57,8 +57,13 @@ slide_parser.add_argument("timer", type=int, default=None, location="json")
 question_parser = reqparse.RequestParser()
 question_parser.add_argument("name", type=str, default=None, location="json")
 question_parser.add_argument("total_score", type=int, default=None, location="json")
-question_parser.add_argument("slide_id", type=int, default=None, location="json")
 question_parser.add_argument("type_id", type=int, default=None, location="json")
+question_parser.add_argument("slide_id", type=int, location="json")
+
+###QUESTION####
+code_parser = reqparse.RequestParser()
+code_parser.add_argument("pointer", type=str, default=None, location="json")
+code_parser.add_argument("view_type_id", type=int, default=None, location="json")
 
 
 ###TEAM####
@@ -68,3 +73,16 @@ team_parser.add_argument("name", type=str, location="json")
 ###SEARCH_COMPETITION####
 media_parser_search = search_parser.copy()
 media_parser_search.add_argument("filename", type=str, default=None, location="args")
+
+
+###COMPONENT###
+component_parser = reqparse.RequestParser()
+component_parser.add_argument("x", type=str, default=None, location="json")
+component_parser.add_argument("y", type=int, default=None, location="json")
+component_parser.add_argument("w", type=int, default=None, location="json")
+component_parser.add_argument("h", type=int, default=None, location="json")
+component_parser.add_argument("data", type=dict, default=None, location="json")
+
+component_create_parser = component_parser.copy()
+component_create_parser.replace_argument("data", type=dict, required=True, location="json")
+component_create_parser.add_argument("type_id", type=int, required=True, location="json")

@@ -1,7 +1,6 @@
 from app.core import bcrypt, db
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
-from sqlalchemy.orm import backref
-
+from app.database import Dictionary
 STRING_SIZE = 254
 
 
@@ -130,6 +129,8 @@ class Slide(db.Model):
     background_image_id = db.Column(db.Integer, db.ForeignKey("media.id"), nullable=True)
     background_image = db.relationship("Media", uselist=False)
 
+    components = db.relationship("Component", backref="slide")
+
     def __init__(self, order, competition_id):
         self.order = order
         self.competition_id = competition_id
@@ -179,6 +180,61 @@ class QuestionAnswer(db.Model):
         self.score = score
         self.question_id = question_id
         self.team_id = team_id
+
+
+
+
+
+class Component(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    x = db.Column(db.Integer, nullable=False, default=0)
+    y = db.Column(db.Integer, nullable=False, default=0)
+    w = db.Column(db.Integer, nullable=False, default=1)
+    h = db.Column(db.Integer, nullable=False, default=1)
+    data = db.Column(Dictionary())
+    slide_id = db.Column(db.Integer, db.ForeignKey("slide.id"), nullable=False)
+    type_id = db.Column(db.Integer, db.ForeignKey("component_type.id"), nullable=False)
+
+    def __init__(self, slide_id, type_id, data, x=0, y=0, w=1, h=1):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.data = data
+        self.slide_id = slide_id
+        self.type_id = type_id
+
+
+class Code(db.Model):
+    table_args = (db.UniqueConstraint("pointer", "type"),)
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.Text, unique=True)
+    pointer = db.Column(db.Integer, nullable=False)
+
+    view_type_id = db.Column(db.Integer, db.ForeignKey("view_type.id"), nullable=False)
+
+    def __init__(self, code, pointer, view_type_id):
+        self.code = code
+        self.pointer = pointer
+        self.view_type_id = view_type_id
+
+
+class ViewType(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(STRING_SIZE), unique=True)
+    codes = db.relationship("Code", backref="view_type")
+
+    def __init__(self, name):
+        self.name = name
+
+
+class ComponentType(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(STRING_SIZE), unique=True)
+    components = db.relationship("Component", backref="component_type")
+
+    def __init__(self, name):
+        self.name = name
 
 
 class MediaType(db.Model):

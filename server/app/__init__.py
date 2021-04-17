@@ -1,5 +1,5 @@
 from flask import Flask, redirect, request
-from flask_uploads import IMAGES, UploadSet, configure_uploads
+from flask_uploads import configure_uploads
 
 import app.database.models as models
 from app.core import bcrypt, db, jwt, ma

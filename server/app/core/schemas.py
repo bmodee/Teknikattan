@@ -10,12 +10,40 @@ class BaseSchema(ma.SQLAlchemySchema):
         include_relationships = False
 
 
-class QuestionTypeSchema(BaseSchema):
+class IdNameSchema(BaseSchema):
+
+    id = fields.fields.Integer()
+    name = fields.fields.String()
+
+
+class QuestionTypeSchema(IdNameSchema):
     class Meta(BaseSchema.Meta):
         model = models.QuestionType
 
+
+class MediaTypeSchema(IdNameSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.MediaType
+
+
+class ComponentTypeSchema(IdNameSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.ComponentType
+
+
+class CodeSchema(IdNameSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.Code
+
     id = ma.auto_field()
-    name = ma.auto_field()
+    code = ma.auto_field()
+    pointer = ma.auto_field()
+    view_type_id = ma.auto_field()
+
+
+class ViewTypeSchema(IdNameSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.ViewType
 
 
 class QuestionSchema(BaseSchema):
@@ -38,14 +66,6 @@ class QuestionAnswerSchema(BaseSchema):
     score = ma.auto_field()
     question_id = ma.auto_field()
     team_id = ma.auto_field()
-
-
-class MediaTypeSchema(BaseSchema):
-    class Meta(BaseSchema.Meta):
-        model = models.MediaType
-
-    id = ma.auto_field()
-    name = ma.auto_field()
 
 
 class RoleSchema(BaseSchema):
@@ -113,3 +133,17 @@ class CompetitionSchema(BaseSchema):
     name = ma.auto_field()
     year = ma.auto_field()
     city_id = ma.auto_field()
+
+
+class ComponentSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.Component
+
+    id = ma.auto_field()
+    x = ma.auto_field()
+    y = ma.auto_field()
+    w = ma.auto_field()
+    h = ma.auto_field()
+    data = ma.Function(lambda obj: obj.data)
+    slide_id = ma.auto_field()
+    type_id = ma.auto_field()

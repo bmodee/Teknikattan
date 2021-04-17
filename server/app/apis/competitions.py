@@ -30,20 +30,20 @@ class CompetitionsList(Resource):
 class Competitions(Resource):
     @jwt_required
     def get(self, CID):
-        item = dbc.get.competition(CID)
+        item = dbc.get.one(Competition, CID)
         return item_response(schema.dump(item))
 
     @jwt_required
     def put(self, CID):
         args = competition_parser.parse_args(strict=True)
-        item = dbc.get.competition(CID)
+        item = dbc.get.one(Competition, CID)
         item = dbc.edit.competition(item, **args)
 
         return item_response(schema.dump(item))
 
     @jwt_required
     def delete(self, CID):
-        item = dbc.get.competition(CID)
+        item = dbc.get.one(Competition, CID)
         dbc.delete.competition(item)
 
         return "deleted"

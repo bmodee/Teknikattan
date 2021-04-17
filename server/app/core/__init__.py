@@ -1,4 +1,4 @@
-from app.database.base import Base, ExtendedQuery
+from app.database import Base, ExtendedQuery
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended.jwt_manager import JWTManager
 from flask_marshmallow import Marshmallow

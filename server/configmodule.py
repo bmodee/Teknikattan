@@ -15,12 +15,13 @@ class Config:
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     UPLOADED_PHOTOS_DEST = "static/images"  # os.getcwd()
     SECRET_KEY = os.urandom(24)
+    SQLALCHEMY_ECHO = False
 
 
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///database.db"
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
 
 
 class TestingConfig(Config):

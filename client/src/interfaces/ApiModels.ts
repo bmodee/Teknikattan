@@ -1,4 +1,4 @@
-interface NameID {
+export interface NameID {
   id: number
   name: string
 }
@@ -6,6 +6,15 @@ export interface City extends NameID {}
 export interface Role extends NameID {}
 export interface MediaType extends NameID {}
 export interface QuestionType extends NameID {}
+export interface ComponentType extends NameID {}
+export interface ViewType extends NameID {}
+
+export interface AllTypes {
+  media_types: MediaType[]
+  question_types: QuestionType[]
+  component_types: ComponentType[]
+  view_types: ViewType[]
+}
 
 export interface Media {
   id: number

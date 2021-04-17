@@ -1,7 +1,8 @@
 import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.apis import admin_required, item_response, text_response
-from app.core.dto import AuthDTO
+from app.core.codes import verify_code
+from app.core.dto import AuthDTO, CodeDTO
 from app.core.parsers import create_user_parser, login_parser
 from app.database.models import User
 from flask_jwt_extended import (
@@ -67,6 +68,20 @@ class AuthLogin(Resource):
 
         response = {"id": item_user.id, "access_token": access_token, "refresh_token": refresh_token}
         return response
+
+
+@api.route("/login/<code>")
+@api.param("code")
+class AuthLogin(Resource):
+    def post(self, code):
+        if not verify_code(code):
+            api.abort(codes.BAD_REQUEST, "Invalid code")
+
+        item_code = dbc.get.code_by_code(code)
+        if not item_code:
+            api.abort(codes.UNAUTHORIZED, "A presentation with that code does not exist")
+
+        return item_response(CodeDTO.schema.dump(item_code)), codes.OK
 
 
 @api.route("/logout")

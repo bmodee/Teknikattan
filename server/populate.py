@@ -1,28 +1,35 @@
-from sqlalchemy.sql.expression import true
-
 import app.database.controller as dbc
 from app import create_app, db
-from app.database.models import City, Competition, MediaType, QuestionType, Role
+from app.database.models import City, Competition, QuestionType, Role
 
 
 def _add_items():
     media_types = ["Image", "Video"]
     question_types = ["Boolean", "Multiple", "Text"]
+    component_types = ["Text", "Image"]
+    view_types = ["Team", "Judge", "Audience"]
+
     roles = ["Admin", "Editor"]
     cities = ["Linköping", "Stockholm", "Norrköping", "Örkelljunga"]
     teams = ["Gymnasieskola A", "Gymnasieskola B", "Gymnasieskola C"]
 
-    for team_name in media_types:
-        dbc.add.mediaType(team_name)
+    for name in media_types:
+        dbc.add.mediaType(name)
 
-    for team_name in question_types:
-        dbc.add.questionType(team_name)
+    for name in question_types:
+        dbc.add.questionType(name)
 
-    for team_name in roles:
-        dbc.add.role(team_name)
+    for name in component_types:
+        dbc.add.componentType(name)
 
-    for team_name in cities:
-        dbc.add.city(team_name)
+    for name in view_types:
+        dbc.add.viewType(name)
+
+    for name in roles:
+        dbc.add.role(name)
+
+    for name in cities:
+        dbc.add.city(name)
 
     admin_id = Role.query.filter(Role.name == "Admin").one().id
     editor_id = Role.query.filter(Role.name == "Editor").one().id
@@ -40,14 +47,11 @@ def _add_items():
         dbc.add.competition(f"Test{i+1}", 1971, city_id)
 
     item_comps = Competition.query.all()
-    # Add
-    for item_comp in item_comps:
-        for i in range(3):
-            # Add slide to competition
-            item_slide = dbc.add.slide(item_comp)
 
-            # Add question to competition
-            dbc.add.question(f"Q{i+1}", i + 1, text_id, item_slide)
+    for item_comp in item_comps:
+        for item_slide in item_comp.slides:
+            for i in range(3):
+                dbc.add.question(f"Q{i+1}", i + 1, text_id, item_slide)
 
         # Add teams to competition
         for team_name in teams:

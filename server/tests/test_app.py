@@ -2,8 +2,7 @@ import app.core.http_codes as codes
 from app.database.models import Slide
 
 from tests import app, client, db
-from tests.test_helpers import (add_default_values, change_order_test, delete,
-                                get, post, put)
+from tests.test_helpers import add_default_values, change_order_test, delete, get, post, put
 
 
 def test_misc_api(client):
@@ -14,6 +13,14 @@ def test_misc_api(client):
     assert response.status_code == codes.OK
     headers = {"Authorization": "Bearer " + body["access_token"]}
 
+    # Get types
+    response, body = get(client, "/api/misc/types", headers=headers)
+    assert response.status_code == codes.OK
+    assert len(body["media_types"]) >= 2
+    assert len(body["question_types"]) >= 3
+    assert len(body["component_types"]) >= 2
+    assert len(body["view_types"]) >= 2
+
     ## Get misc
     response, body = get(client, "/api/misc/roles", headers=headers)
     assert response.status_code == codes.OK
@@ -21,44 +28,33 @@ def test_misc_api(client):
 
     response, body = get(client, "/api/misc/cities", headers=headers)
     assert response.status_code == codes.OK
-    assert body["count"] == 2
-    assert body["items"][0]["name"] == "Linköping"
-    assert body["items"][1]["name"] == "Testköping"
-
-    response, body = get(client, "/api/misc/media_types", headers=headers)
-    assert response.status_code == codes.OK
     assert body["count"] >= 2
-
-    response, body = get(client, "/api/misc/question_types", headers=headers)
-    assert response.status_code == codes.OK
-    assert body["count"] >= 3
+    assert body["items"][0]["name"] == "Linköping" and body["items"][1]["name"] == "Testköping"
 
     ## Cities
     response, body = post(client, "/api/misc/cities", {"name": "Göteborg"}, headers=headers)
     assert response.status_code == codes.OK
-    assert body["count"] >= 2
-    assert body["items"][2]["name"] == "Göteborg"
+    assert body["count"] >= 2 and body["items"][2]["name"] == "Göteborg"
 
     # Rename city
     response, body = put(client, "/api/misc/cities/3", {"name": "Gbg"}, headers=headers)
     assert response.status_code == codes.OK
-    assert body["count"] >= 2
-    assert body["items"][2]["name"] == "Gbg"
+    assert body["count"] >= 2 and body["items"][2]["name"] == "Gbg"
 
     # Delete city
     # First checks current cities
     response, body = get(client, "/api/misc/cities", headers=headers)
     assert response.status_code == codes.OK
-    assert body["count"] == 3
+    assert body["count"] >= 3
     assert body["items"][0]["name"] == "Linköping"
     assert body["items"][1]["name"] == "Testköping"
     assert body["items"][2]["name"] == "Gbg"
+
     # Deletes city
     response, body = delete(client, "/api/misc/cities/3", headers=headers)
     assert response.status_code == codes.OK
-    assert body["count"] == 2
-    assert body["items"][0]["name"] == "Linköping"
-    assert body["items"][1]["name"] == "Testköping"
+    assert body["count"] >= 2
+    assert body["items"][0]["name"] == "Linköping" and body["items"][1]["name"] == "Testköping"
 
 
 def test_competition_api(client):
@@ -76,9 +72,6 @@ def test_competition_api(client):
     assert body["name"] == "c1"
     competition_id = body["id"]
 
-    # Save number of slides
-    num_slides = len(Slide.query.all())
-
     # Get competition
     response, body = get(client, f"/api/competitions/{competition_id}", headers=headers)
     assert response.status_code == codes.OK
@@ -89,11 +82,9 @@ def test_competition_api(client):
 
     response, body = get(client, f"/api/competitions/{competition_id}/slides", headers=headers)
     assert response.status_code == codes.OK
-    assert len(body["items"]) == 2
+    assert len(body["items"]) == 3
 
-    response, body = put(
-        client, f"/api/competitions/{competition_id}/slides/{num_slides}/order", {"order": 1}, headers=headers
-    )
+    response, body = put(client, f"/api/competitions/{competition_id}/slides/{2}/order", {"order": 1}, headers=headers)
     assert response.status_code == codes.OK
 
     response, body = post(client, f"/api/competitions/{competition_id}/teams", {"name": "t1"}, headers=headers)
@@ -152,8 +143,7 @@ def test_auth_and_user_api(client):
     response, body = put(client, "/api/users", {"name": "carl carlsson", "city_id": 2, "role_id": 1}, headers=headers)
     assert response.status_code == codes.OK
     assert body["name"] == "Carl Carlsson"
-    assert body["city"]["id"] == 2
-    assert body["role"]["id"] == 1
+    assert body["city"]["id"] == 2 and body["role"]["id"] == 1
 
     # Find other user
     response, body = get(
@@ -240,26 +230,26 @@ def test_slide_api(client):
     CID = 1
     response, body = get(client, f"/api/competitions/{CID}/slides", headers=headers)
     assert response.status_code == codes.OK
-    assert body["count"] == 0
+    assert body["count"] == 1
 
     # Get slides
     CID = 2
-    num_slides = 3
     response, body = get(client, f"/api/competitions/{CID}/slides", headers=headers)
     assert response.status_code == codes.OK
-    assert body["count"] == num_slides
+    assert body["count"] == 3
 
     # Add slide
     response, body = post(client, f"/api/competitions/{CID}/slides", headers=headers)
-    num_slides += 1
     assert response.status_code == codes.OK
-    assert body["count"] == num_slides
+    assert body["count"] == 4
+    # Add another slide
+    response, body = post(client, f"/api/competitions/{CID}/slides", headers=headers)
 
     # Get slide
-    SID = 1
-    response, item_slide = get(client, f"/api/competitions/{CID}/slides/{SID}", headers=headers)
+    slide_order = 1
+    response, item_slide = get(client, f"/api/competitions/{CID}/slides/{slide_order}", headers=headers)
     assert response.status_code == codes.OK
-    assert item_slide["id"] == SID
+    assert item_slide["order"] == slide_order
 
     # Edit slide
     order = 6
@@ -272,7 +262,7 @@ def test_slide_api(client):
     assert item_slide["timer"] != timer
     response, item_slide = put(
         client,
-        f"/api/competitions/{CID}/slides/{SID}",
+        f"/api/competitions/{CID}/slides/{slide_order}",
         # TODO: Implement so these commented lines can be edited
         # {"order": order, "title": title, "body": body, "timer": timer},
         {"title": title, "timer": timer},
@@ -285,31 +275,26 @@ def test_slide_api(client):
     assert item_slide["timer"] == timer
 
     # Delete slide
-    response, _ = delete(client, f"/api/competitions/{CID}/slides/{SID}", headers=headers)
-    num_slides -= 1
+    response, _ = delete(client, f"/api/competitions/{CID}/slides/{slide_order}", headers=headers)
     assert response.status_code == codes.NO_CONTENT
     # Checks that there are fewer slides
     response, body = get(client, f"/api/competitions/{CID}/slides", headers=headers)
     assert response.status_code == codes.OK
-    assert body["count"] == num_slides
+    assert body["count"] == 4
 
-    # Tries to delete slide again
-    response, _ = delete(client, f"/api/competitions/{CID}/slides/{SID}", headers=headers)
-    assert response.status_code == codes.NOT_FOUND
+    # Tries to delete slide again, should work since the order is now changed
+    response, _ = delete(client, f"/api/competitions/{CID}/slides/{slide_order}", headers=headers)
+    assert response.status_code == codes.NO_CONTENT
 
     # Changes the order to the same order
-    i = 0
-    SID = body["items"][i]["id"]
-    order = body["items"][i]["order"]
-    response, _ = put(client, f"/api/competitions/{CID}/slides/{SID}/order", {"order": order}, headers=headers)
+    slide_order = body["items"][0]["order"]
+    response, _ = put(
+        client, f"/api/competitions/{CID}/slides/{slide_order}/order", {"order": slide_order}, headers=headers
+    )
     assert response.status_code == codes.OK
 
     # Changes the order
-    change_order_test(client, CID, SID, order + 1, headers)
-
-    # Changes order to 0
-    SID = 7
-    change_order_test(client, CID, SID, -1, headers)
+    change_order_test(client, CID, slide_order, slide_order + 1, headers)
 
 
 def test_question_api(client):
@@ -322,6 +307,7 @@ def test_question_api(client):
 
     # Get questions from empty competition
     CID = 1  # TODO: Fix api-calls so that the ones not using CID don't require one
+    slide_order = 1
     response, body = get(client, f"/api/competitions/{CID}/questions", headers=headers)
     assert response.status_code == codes.OK
     assert body["count"] == 0
@@ -331,110 +317,30 @@ def test_question_api(client):
     num_questions = 3
     response, body = get(client, f"/api/competitions/{CID}/questions", headers=headers)
     assert response.status_code == codes.OK
-    print(body)
     assert body["count"] == num_questions
-
-    # # Get specific question
-    # name = "Q2"
-    # # total_score = 2
-    # type_id = 5
-    # slide_id = 5
-    # response, body = get(
-    #     client,
-    #     f"/api/competitions/{CID}/questions/",
-    #     headers=headers,
-    # )
-    # # print(f"357: {body['items']}")
-    # assert response.status_code == codes.OK
-    # assert body["count"] == 1
-    # item_question = body["items"][0]
-    # # print(f"338: {item_question}")
-    # assert item_question["name"] == name
-    # # assert item_question["total_score"] == total_score
-    # assert item_question["type_id"] == type_id
-    # assert item_question["slide_id"] == slide_id
 
     # Add question
     name = "Nytt namn"
-    # total_score = 2
     type_id = 2
-    slide_id = 5
+    slide_order = 1
     response, item_question = post(
         client,
-        f"/api/competitions/{CID}/questions",
-        {"name": name, "type_id": type_id, "slide_id": slide_id},
+        f"/api/competitions/{CID}/slides/{slide_order}/questions",
+        {"name": name, "type_id": type_id},
         headers=headers,
     )
-    num_questions += 1
+    num_questions = 4
     assert response.status_code == codes.OK
     assert item_question["name"] == name
-    # # assert item_question["total_score"] == total_score
     assert item_question["type"]["id"] == type_id
-    assert item_question["slide_id"] == slide_id
+
     # Checks number of questions
     response, body = get(client, f"/api/competitions/{CID}/questions", headers=headers)
     assert response.status_code == codes.OK
     assert body["count"] == num_questions
-
-    # Try to get question in another competition
-    QID = 1
-    response, item_question = get(client, f"/api/competitions/{CID}/questions/{QID}", headers=headers)
-    assert response.status_code == codes.NOT_FOUND
-
-    # Get question
-    QID = 4
-    response, item_question = get(client, f"/api/competitions/{CID}/questions/{QID}", headers=headers)
-    assert response.status_code == codes.OK
-    assert item_question["id"] == QID
-
-    # Try to edit question in another competition
-    name = "Nyare namn"
-    # total_score = 2
-    type_id = 3
-    slide_id = 1
-    QID = 1
-    response, _ = put(
-        client,
-        f"/api/competitions/{CID}/questions/{QID}",
-        # {"name": name, "total_score": total_score, "type_id": type_id, "slide_id": slide_id},
-        {"name": name, "type_id": type_id, "slide_id": slide_id},
-        headers=headers,
-    )
-    assert response.status_code == codes.NOT_FOUND
-    # Checks number of questions
-    response, body = get(client, f"/api/competitions/{CID}/questions", headers=headers)
-    assert response.status_code == codes.OK
-    assert body["count"] == num_questions
-
-    # Edit question
-    name = "Nyare namn"
-    # total_score = 2
-    type_id = 3
-    slide_id = 5
-    QID = 4
-    assert item_question["name"] != name
-    # assert item_question["total_score"] != total_score
-    assert item_question["type"]["id"] != type_id
-    assert item_question["slide_id"] != slide_id
-    response, item_question = put(
-        client,
-        f"/api/competitions/{CID}/questions/{QID}",
-        # {"name": name, "total_score": total_score, "type_id": type_id, "slide_id": slide_id},
-        {"name": name, "type_id": type_id, "slide_id": slide_id},
-        headers=headers,
-    )
-    assert response.status_code == codes.OK
-    assert item_question["name"] == name
-    # # assert item_question["total_score"] == total_score
-    assert item_question["type"]["id"] == type_id
-    assert item_question["slide_id"] == slide_id
-    # Checks number of questions
-    response, body = get(client, f"/api/competitions/{CID}/questions", headers=headers)
-    assert response.status_code == codes.OK
-    assert body["count"] == num_questions
-
+    """
     # Delete question
-    response, _ = delete(client, f"/api/competitions/{CID}/questions/{QID}", headers=headers)
+    response, _ = delete(client, f"/api/competitions/{CID}/slides/{slide_order}/questions/{QID}", headers=headers)
     num_questions -= 1
     assert response.status_code == codes.NO_CONTENT
 
@@ -444,5 +350,6 @@ def test_question_api(client):
     assert body["count"] == num_questions
 
     # Tries to delete question again
-    response, _ = delete(client, f"/api/competitions/{CID}/questions/{QID}", headers=headers)
+    response, _ = delete(client, f"/api/competitions/{CID}/slides/{NEW_slide_order}/questions/{QID}", headers=headers)
     assert response.status_code == codes.NOT_FOUND
+    """

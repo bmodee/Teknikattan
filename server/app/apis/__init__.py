@@ -23,7 +23,7 @@ def admin_required():
 
 
 def text_response(message, code=codes.OK):
-    return {"message": message}, codes.OK
+    return {"message": message}, code
 
 
 def list_response(items, total=None, code=codes.OK):
@@ -43,7 +43,9 @@ def item_response(item, code=codes.OK):
 from flask_restx import Api
 
 from .auth import api as auth_ns
+from .codes import api as code_ns
 from .competitions import api as comp_ns
+from .components import api as component_ns
 from .media import api as media_ns
 from .misc import api as misc_ns
 from .questions import api as question_ns
@@ -59,5 +61,6 @@ flask_api.add_namespace(auth_ns, path="/api/auth")
 flask_api.add_namespace(comp_ns, path="/api/competitions")
 flask_api.add_namespace(slide_ns, path="/api/competitions/<CID>/slides")
 flask_api.add_namespace(team_ns, path="/api/competitions/<CID>/teams")
-flask_api.add_namespace(question_ns, path="/api/competitions/<CID>/questions")
-# flask_api.add_namespace(question_ns, path="/api/competitions/<CID>/slides/<SID>/question")
+flask_api.add_namespace(code_ns, path="/api/competitions/<CID>/codes")
+flask_api.add_namespace(question_ns, path="/api/competitions/<CID>")
+flask_api.add_namespace(component_ns, path="/api/competitions/<CID>/slides/<SOrder>/components")
