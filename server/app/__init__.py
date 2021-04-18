@@ -15,8 +15,13 @@ def create_app(config_name="configmodule.DevelopmentConfig"):
         bcrypt.init_app(app)
         jwt.init_app(app)
         db.init_app(app)
+        db.create_all()
         ma.init_app(app)
         configure_uploads(app, (MediaDTO.image_set,))
+
+        from app.core.sockets import sio
+
+        sio.init_app(app)
 
         from app.apis import flask_api
 
@@ -34,7 +39,7 @@ def create_app(config_name="configmodule.DevelopmentConfig"):
             header["Access-Control-Allow-Origin"] = "*"
             return response
 
-        return app
+    return app, sio
 
 
 def identity(payload):

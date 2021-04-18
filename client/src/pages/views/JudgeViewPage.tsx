@@ -2,7 +2,12 @@ import { Divider, List, ListItemText } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { getPresentationCompetition, getPresentationTeams, setCurrentSlide } from '../../actions/presentation'
+import {
+  getPresentationCompetition,
+  getPresentationTeams,
+  setCurrentSlide,
+  setPresentationCode,
+} from '../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { ViewParams } from '../../interfaces/ViewParams'
 import { SlideListItem } from '../presentationEditor/styled'
@@ -41,6 +46,7 @@ const JudgeViewPage: React.FC = () => {
   useEffect(() => {
     dispatch(getPresentationCompetition(id))
     dispatch(getPresentationTeams(id))
+    dispatch(setPresentationCode(code))
   }, [])
   const teams = useAppSelector((state) => state.presentation.teams)
   const slides = useAppSelector((state) => state.presentation.competition.slides)

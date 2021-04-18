@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Slide } from '../interfaces/Slide'
-import { AppDispatch } from './../store'
+import { Timer } from '../interfaces/Timer'
+import store, { AppDispatch } from './../store'
 import Types from './types'
 
 export const getPresentationCompetition = (id: string) => async (dispatch: AppDispatch) => {
@@ -41,4 +42,26 @@ export const setCurrentSlidePrevious = () => (dispatch: AppDispatch) => {
 
 export const setCurrentSlideNext = () => (dispatch: AppDispatch) => {
   dispatch({ type: Types.SET_PRESENTATION_SLIDE_NEXT })
+}
+
+export const setCurrentSlideByOrder = (order: number) => (dispatch: AppDispatch) => {
+  dispatch({ type: Types.SET_PRESENTATION_SLIDE_BY_ORDER, payload: order })
+}
+
+export const setPresentationCode = (code: string) => (dispatch: AppDispatch) => {
+  dispatch({ type: Types.SET_PRESENTATION_CODE, payload: code })
+}
+
+export const setPresentationTimer = (timer: Timer) => (dispatch: AppDispatch) => {
+  dispatch({ type: Types.SET_PRESENTATION_TIMER, payload: timer })
+}
+
+export const setPresentationTimerDecrement = () => (dispatch: AppDispatch) => {
+  dispatch({
+    type: Types.SET_PRESENTATION_TIMER,
+    payload: {
+      enabled: store.getState().presentation.timer.enabled,
+      value: store.getState().presentation.timer.value - 1,
+    },
+  })
 }

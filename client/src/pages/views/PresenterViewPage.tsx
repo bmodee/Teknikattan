@@ -2,15 +2,12 @@ import { List, ListItem, Popover } from '@material-ui/core'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import React, { useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import {
-  getPresentationCompetition,
-  getPresentationTeams,
-  setCurrentSlideNext,
-  setCurrentSlidePrevious,
-} from '../../actions/presentation'
+import { getPresentationCompetition, getPresentationTeams, setPresentationCode } from '../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { ViewParams } from '../../interfaces/ViewParams'
 import SlideDisplay from './components/SlideDisplay'
+import SocketTest from './components/SocketTest'
+import Timer from './components/Timer'
 import { PresenterButton, PresenterContainer, PresenterFooter, PresenterHeader } from './styled'
 
 const PresenterViewPage: React.FC = () => {
@@ -22,6 +19,7 @@ const PresenterViewPage: React.FC = () => {
   useEffect(() => {
     dispatch(getPresentationCompetition(id))
     dispatch(getPresentationTeams(id))
+    dispatch(setPresentationCode(code))
   }, [])
   const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -29,6 +27,15 @@ const PresenterViewPage: React.FC = () => {
   const handleClose = () => {
     setAnchorEl(null)
   }
+  const handleNextSlidePressed = () => {
+    // dispatch(setCurrentSlideNext())
+    // syncSlide()
+  }
+  const handlePreviousSlidePressed = () => {
+    // dispatch(setCurrentSlidePrevious())
+    // syncSlide()
+  }
+
   return (
     <PresenterContainer>
       <PresenterHeader>
@@ -41,10 +48,12 @@ const PresenterViewPage: React.FC = () => {
       </PresenterHeader>
       <SlideDisplay />
       <PresenterFooter>
-        <PresenterButton onClick={() => dispatch(setCurrentSlidePrevious())} variant="contained">
+        <PresenterButton onClick={handlePreviousSlidePressed} variant="contained">
           <ChevronRightIcon fontSize="large" />
         </PresenterButton>
-        <PresenterButton onClick={() => dispatch(setCurrentSlideNext())} variant="contained">
+        <SocketTest></SocketTest>
+        <Timer></Timer>
+        <PresenterButton onClick={handleNextSlidePressed} variant="contained">
           <ChevronRightIcon fontSize="large" />
         </PresenterButton>
       </PresenterFooter>

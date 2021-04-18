@@ -20,6 +20,11 @@ const initialState = {
     title: '',
   },
   teams: [],
+  code: '',
+  timer: {
+    enabled: false,
+    value: 0,
+  },
 }
 
 it('should return the initial state', () => {
@@ -46,7 +51,9 @@ it('should handle SET_PRESENTATION_COMPETITION', () => {
   ).toEqual({
     competition: testCompetition,
     slide: testCompetition.slides[0],
-    teams: [],
+    teams: initialState.teams,
+    code: initialState.code,
+    timer: initialState.timer,
   })
 })
 
@@ -70,6 +77,8 @@ it('should handle SET_PRESENTATION_TEAMS', () => {
     competition: initialState.competition,
     slide: initialState.slide,
     teams: testTeams,
+    code: initialState.code,
+    timer: initialState.timer,
   })
 })
 
@@ -92,6 +101,8 @@ it('should handle SET_PRESENTATION_SLIDE', () => {
     competition: initialState.competition,
     slide: testSlide,
     teams: initialState.teams,
+    code: initialState.code,
+    timer: initialState.timer,
   })
 })
 
@@ -107,6 +118,8 @@ describe('should handle SET_PRESENTATION_SLIDE_PREVIOUS', () => {
       },
       teams: initialState.teams,
       slide: { competition_id: 0, order: 1 } as Slide,
+      code: initialState.code,
+      timer: initialState.timer,
     }
     expect(
       presentationReducer(testPresentationState, {
@@ -116,6 +129,8 @@ describe('should handle SET_PRESENTATION_SLIDE_PREVIOUS', () => {
       competition: testPresentationState.competition,
       slide: testPresentationState.competition.slides[0],
       teams: testPresentationState.teams,
+      code: initialState.code,
+      timer: initialState.timer,
     })
   })
   it('by not changing slide if there is no previous one', () => {
@@ -129,6 +144,8 @@ describe('should handle SET_PRESENTATION_SLIDE_PREVIOUS', () => {
       },
       teams: initialState.teams,
       slide: { competition_id: 0, order: 0 } as Slide,
+      code: initialState.code,
+      timer: initialState.timer,
     }
     expect(
       presentationReducer(testPresentationState, {
@@ -138,6 +155,8 @@ describe('should handle SET_PRESENTATION_SLIDE_PREVIOUS', () => {
       competition: testPresentationState.competition,
       slide: testPresentationState.competition.slides[0],
       teams: testPresentationState.teams,
+      code: initialState.code,
+      timer: initialState.timer,
     })
   })
 })

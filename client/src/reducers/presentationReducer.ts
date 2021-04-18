@@ -1,5 +1,6 @@
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
+import { Timer } from '../interfaces/Timer'
 import { RichCompetition } from './../interfaces/ApiRichModels'
 import { Slide } from './../interfaces/Slide'
 import { Team } from './../interfaces/Team'
@@ -8,6 +9,8 @@ interface PresentationState {
   competition: RichCompetition
   slide: Slide
   teams: Team[]
+  code: string
+  timer: Timer
 }
 
 const initialState: PresentationState = {
@@ -27,6 +30,11 @@ const initialState: PresentationState = {
     title: '',
   },
   teams: [],
+  code: '',
+  timer: {
+    enabled: false,
+    value: 0,
+  },
 }
 
 export default function (state = initialState, action: AnyAction) {
@@ -41,6 +49,11 @@ export default function (state = initialState, action: AnyAction) {
       return {
         ...state,
         teams: action.payload as Team[],
+      }
+    case Types.SET_PRESENTATION_CODE:
+      return {
+        ...state,
+        code: action.payload,
       }
     case Types.SET_PRESENTATION_SLIDE:
       return {
@@ -63,6 +76,21 @@ export default function (state = initialState, action: AnyAction) {
         }
       }
       return state
+    case Types.SET_PRESENTATION_SLIDE_BY_ORDER:
+      if (0 <= action.payload && action.payload < state.competition.slides.length)
+        return {
+          ...state,
+          slide: state.competition.slides[action.payload],
+        }
+      return state
+    case Types.SET_PRESENTATION_TIMER:
+      if (action.payload.value == 0) {
+        action.payload.enabled = false
+      }
+      return {
+        ...state,
+        timer: action.payload,
+      }
     default:
       return state
   }
