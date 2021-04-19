@@ -4,7 +4,7 @@ import { useAppSelector } from '../../../hooks'
 import { ImageComponent, TextComponent } from '../../../interfaces/ApiModels'
 import CheckboxComponent from './CheckboxComponent'
 import ImageComponentDisplay from './ImageComponentDisplay'
-import { SlideEditorContainer } from './styled'
+import { SlideEditorContainer, SlideEditorContainerRatio, SlideEditorPaper } from './styled'
 import TextComponentDisplay from './TextComponentDisplay'
 
 const SlideEditor: React.FC = () => {
@@ -14,19 +14,23 @@ const SlideEditor: React.FC = () => {
   )
   return (
     <SlideEditorContainer>
-      {components &&
-        components.map((component) => {
-          switch (component.type_id) {
-            case ComponentTypes.Checkbox:
-              return <CheckboxComponent key={component.id} component={component} />
-            case ComponentTypes.Text:
-              return <TextComponentDisplay key={component.id} component={component as TextComponent} />
-            case ComponentTypes.Image:
-              return <ImageComponentDisplay key={component.id} component={component as ImageComponent} />
-            default:
-              break
-          }
-        })}
+      <SlideEditorContainerRatio>
+        <SlideEditorPaper>
+          {components &&
+            components.map((component) => {
+              switch (component.type_id) {
+                case ComponentTypes.Checkbox:
+                  return <CheckboxComponent key={component.id} component={component} />
+                case ComponentTypes.Text:
+                  return <TextComponentDisplay key={component.id} component={component as TextComponent} />
+                case ComponentTypes.Image:
+                  return <ImageComponentDisplay key={component.id} component={component as ImageComponent} />
+                default:
+                  break
+              }
+            })}
+        </SlideEditorPaper>
+      </SlideEditorContainerRatio>
     </SlideEditorContainer>
   )
 }
