@@ -1,23 +1,23 @@
 import { Box, Typography } from '@material-ui/core'
 import React, { useEffect } from 'react'
-import { getSearchUsers } from '../../../../actions/searchUser'
+import { getCompetitions } from '../../../../actions/competitions'
 import { useAppDispatch, useAppSelector } from '../../../../hooks'
 
 const NumberOfCompetitions: React.FC = () => {
-  const cities = useAppSelector((state) => state.cities.cities)
+  const competitions = useAppSelector((state) => state.competitions.competitions)
   const dispatch = useAppDispatch()
 
   const handleCount = () => {
-    if (cities.length >= 1000000) {
-      ;<div>{cities.length / 1000000 + 'M'}</div>
-    } else if (cities.length >= 1000) {
-      ;<div>{cities.length / 1000 + 'K'}</div>
+    if (competitions.length >= 1000000) {
+      ;<div>{competitions.length / 1000000 + 'M'}</div>
+    } else if (competitions.length >= 1000) {
+      ;<div>{competitions.length / 1000 + 'K'}</div>
     }
-    return <div>{cities.length}</div>
+    return <div>{competitions.length}</div>
   }
 
   useEffect(() => {
-    dispatch(getSearchUsers())
+    dispatch(getCompetitions())
   }, [])
   return (
     <div>

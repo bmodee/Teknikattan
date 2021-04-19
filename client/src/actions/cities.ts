@@ -11,11 +11,11 @@ export const getCities = () => async (dispatch: AppDispatch) => {
         payload: res.data.items,
       })
       dispatch({
-        type: Types.SET_COMPETITIONS_TOTAL,
+        type: Types.SET_CITIES_COUNT,
         payload: res.data.total_count,
       })
       dispatch({
-        type: Types.SET_COMPETITIONS_COUNT,
+        type: Types.SET_CITIES_TOTAL,
         payload: res.data.count,
       })
     })
