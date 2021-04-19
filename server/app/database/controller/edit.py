@@ -1,7 +1,13 @@
+"""
+This file contains functionality to get data from the database.
+"""
+
 from app.core import db
 
 
 def switch_order(item1, item2):
+    """ Switches order between two slides. """
+
     old_order = item1.order
     new_order = item2.order
 
@@ -21,6 +27,8 @@ def switch_order(item1, item2):
 
 
 def component(item, x, y, w, h, data):
+    """ Edits position, size and content of the provided component. """
+
     if x:
         item.x = x
     if y:
@@ -38,6 +46,8 @@ def component(item, x, y, w, h, data):
 
 
 def slide(item, title=None, timer=None):
+    """ Edits the title and timer of the slide. """
+
     if title:
         item.title = title
     if timer:
@@ -49,6 +59,8 @@ def slide(item, title=None, timer=None):
 
 
 def team(item_team, name=None, competition_id=None):
+    """ Edits the name and competition of the team. """
+
     if name:
         item_team.name = name
     if competition_id:
@@ -60,6 +72,8 @@ def team(item_team, name=None, competition_id=None):
 
 
 def competition(item, name=None, year=None, city_id=None):
+    """ Edits the name and year of the competition. """
+
     if name:
         item.name = name
     if year:
@@ -73,6 +87,7 @@ def competition(item, name=None, year=None, city_id=None):
 
 
 def user(item, name=None, email=None, city_id=None, role_id=None):
+    """ Edits the name, email, city and role of the user. """
 
     if name:
         item.name = name.title()
@@ -92,6 +107,7 @@ def user(item, name=None, email=None, city_id=None, role_id=None):
 
 
 def question(item_question, name=None, total_score=None, type_id=None, slide_id=None):
+    """ Edits the name, score, type and slide of the question. """
 
     if name:
         item_question.name = name
