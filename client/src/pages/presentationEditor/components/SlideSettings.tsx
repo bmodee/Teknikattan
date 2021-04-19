@@ -20,6 +20,7 @@ import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getEditorCompetition } from '../../../actions/editor'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
+import { TextComponent } from '../../../interfaces/ApiModels'
 import { HiddenInput } from './styled'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -93,14 +94,12 @@ const SlideSettings: React.FC = () => {
       .catch(console.log)
   }
 
-  const textList = [
-    { id: 'text1', name: 'Text 1' },
-    { id: 'text2', name: 'Text 2' },
-  ]
-  const handleCloseTextClick = (id: string) => {
-    setTexts(texts.filter((item) => item.id !== id)) //Will not be done like this when api is used
-  }
-  const [texts, setTexts] = useState(textList)
+  const texts = useAppSelector(
+    (state) =>
+      state.editor.competition.slides
+        .find((slide) => slide.id === state.editor.activeSlideId)
+        ?.components.filter((component) => component.type_id === 1) as TextComponent[]
+  )
 
   const pictureList = [
     { id: 'picture1', name: 'Picture1.jpeg' },
@@ -151,7 +150,7 @@ const SlideSettings: React.FC = () => {
   const handleAddText = async () => {
     console.log('Add text component')
     // TODO: post the new text]
-    setTexts([...texts, { id: 'newText', name: 'New Text' }])
+    // setTexts([...texts, { id: 'newText', name: 'New Text' }])
   }
 
   const GreenCheckbox = withStyles({
@@ -206,21 +205,24 @@ const SlideSettings: React.FC = () => {
             secondary="(Fyll i rutan höger om textfältet för att markera korrekt svar)"
           />
         </ListItem>
-        {(currentSlide?.questions[0].question_alternatives || []).map((alt) => (
-          <div key={alt.id}>
-            <ListItem divider>
-              <TextField
-                className={classes.textInput}
-                id="outlined-basic"
-                label={`Svar ${alt.id}`}
-                value={alt.text}
-                variant="outlined"
-              />
-              <GreenCheckbox checked={alt.value} onChange={updateAlternativeValue} />
-              <CloseIcon className={classes.clickableIcon} onClick={() => handleCloseAnswerClick(alt.id)} />
-            </ListItem>
-          </div>
-        ))}
+        {currentSlide &&
+          currentSlide.questions[0] &&
+          currentSlide.questions[0].question_alternatives &&
+          currentSlide.questions[0].question_alternatives.map((alt) => (
+            <div key={alt.id}>
+              <ListItem divider>
+                <TextField
+                  className={classes.textInput}
+                  id="outlined-basic"
+                  label={`Svar ${alt.id}`}
+                  value={alt.text}
+                  variant="outlined"
+                />
+                <GreenCheckbox checked={alt.value} onChange={updateAlternativeValue} />
+                <CloseIcon className={classes.clickableIcon} onClick={() => handleCloseAnswerClick(alt.id)} />
+              </ListItem>
+            </div>
+          ))}
         <ListItem className={classes.center} button>
           <Button>Lägg till svarsalternativ</Button>
         </ListItem>
@@ -230,15 +232,16 @@ const SlideSettings: React.FC = () => {
         <ListItem divider>
           <ListItemText className={classes.textCenter} primary="Text" />
         </ListItem>
-        {texts.map((text) => (
-          <div key={text.id}>
-            <ListItem divider>
-              <TextField className={classes.textInput} label={text.name} variant="outlined" />
-              <MoreHorizOutlinedIcon className={classes.clickableIcon} />
-              <CloseIcon className={classes.clickableIcon} onClick={() => handleCloseTextClick(text.id)} />
-            </ListItem>
-          </div>
-        ))}
+        {texts &&
+          texts.map((text) => (
+            <div key={text.id}>
+              <ListItem divider>
+                <TextField className={classes.textInput} label={text.data.text} variant="outlined" />
+                <MoreHorizOutlinedIcon className={classes.clickableIcon} />
+                <CloseIcon className={classes.clickableIcon} />
+              </ListItem>
+            </div>
+          ))}
         <ListItem className={classes.center} button onClick={handleAddText}>
           <Button>Lägg till text</Button>
         </ListItem>

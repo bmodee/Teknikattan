@@ -24,7 +24,8 @@ class ComponentByID(Resource):
     @jwt_required
     def put(self, CID, SOrder, component_id):
         args = component_parser.parse_args()
-        item = dbc.edit.component(**args)
+        item = dbc.get.one(Component, component_id)
+        item = dbc.edit.component(item,**args)
         return item_response(schema.dump(item))
 
     @jwt_required

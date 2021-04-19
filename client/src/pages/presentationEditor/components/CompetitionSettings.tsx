@@ -134,14 +134,15 @@ const CompetitionSettings: React.FC = () => {
         <ListItem>
           <ListItemText className={classes.textCenter} primary="Lag" />
         </ListItem>
-        {competition.teams.map((team) => (
-          <div key={team.id}>
-            <ListItem divider button>
-              <ListItemText primary={team.name} />
-              <CloseIcon onClick={() => handleClick(team.id)} />
-            </ListItem>
-          </div>
-        ))}
+        {competition.teams &&
+          competition.teams.map((team) => (
+            <div key={team.id}>
+              <ListItem divider button>
+                <ListItemText primary={team.name} />
+                <CloseIcon onClick={() => handleClick(team.id)} />
+              </ListItem>
+            </div>
+          ))}
         <ListItem className={classes.center} button>
           <Button>Lägg till lag</Button>
         </ListItem>

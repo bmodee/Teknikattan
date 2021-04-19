@@ -68,16 +68,20 @@ export interface Component {
   y: number
   w: number
   h: number
-  type: number
+  type_id: number
 }
 
 export interface ImageComponent extends Component {
-  media_id: number
+  data: {
+    media_id: number
+  }
 }
 
 export interface TextComponent extends Component {
-  text: string
-  font: string
+  data: {
+    text: string
+    font: string
+  }
 }
 
 export interface QuestionAlternativeComponent extends Component {

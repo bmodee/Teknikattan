@@ -8,7 +8,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { getCities } from '../../actions/cities'
-import { getEditorCompetition } from '../../actions/editor'
+import { getEditorCompetition, setEditorSlideId } from '../../actions/editor'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { Content } from '../views/styled'
 import SettingsPanel from './components/SettingsPanel'
@@ -64,12 +64,18 @@ const PresentationEditorPage: React.FC = () => {
   const classes = useStyles()
   const { id }: CompetitionParams = useParams()
   const dispatch = useAppDispatch()
+  const activeSlideId = useAppSelector((state) => state.editor.activeSlideId)
   const competition = useAppSelector((state) => state.editor.competition)
   // TODO: wait for dispatch to finish
   useEffect(() => {
     dispatch(getEditorCompetition(id))
     dispatch(getCities())
   }, [])
+
+  const setActiveSlideId = (id: number) => {
+    dispatch(setEditorSlideId(id))
+  }
+
   return (
     <PresentationEditorContainer>
       <CssBaseline />
@@ -102,11 +108,18 @@ const PresentationEditorPage: React.FC = () => {
         <div className={classes.toolbar} />
         <Divider />
         <List>
-          {competition.slides.map((slide) => (
-            <SlideListItem divider button key={slide.title}>
-              <ListItemText primary={slide.title} />
-            </SlideListItem>
-          ))}
+          {competition.slides &&
+            competition.slides.map((slide) => (
+              <SlideListItem
+                divider
+                button
+                key={slide.id}
+                selected={slide.id === activeSlideId}
+                onClick={() => setActiveSlideId(slide.id)}
+              >
+                <ListItemText primary={slide.title} />
+              </SlideListItem>
+            ))}
         </List>
       </Drawer>
       <div className={classes.toolbar} />

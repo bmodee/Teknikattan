@@ -1,5 +1,4 @@
-import { Component } from 'react'
-import { Media, QuestionAlternative, QuestionAnswer, QuestionType } from './ApiModels'
+import { Component, Media, QuestionAlternative, QuestionAnswer, QuestionType } from './ApiModels'
 
 export interface RichCompetition {
   name: string

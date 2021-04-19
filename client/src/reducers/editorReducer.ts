@@ -4,6 +4,7 @@ import { RichCompetition } from '../interfaces/ApiRichModels'
 
 interface EditorState {
   competition: RichCompetition
+  activeSlideId: number
 }
 
 const initialState: EditorState = {
@@ -15,14 +16,20 @@ const initialState: EditorState = {
     slides: [],
     teams: [],
   },
+  activeSlideId: 0,
 }
 
 export default function (state = initialState, action: AnyAction) {
   switch (action.type) {
     case Types.SET_EDITOR_COMPETITION:
       return {
-        ...state,
         competition: action.payload as RichCompetition,
+        activeSlideId: action.payload.slides[0].id as number,
+      }
+    case Types.SET_EDITOR_SLIDE_ID:
+      return {
+        ...state,
+        activeSlideId: action.payload as number,
       }
     default:
       return state
