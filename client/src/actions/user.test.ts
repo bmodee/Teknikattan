@@ -39,6 +39,9 @@ it('dispatches correct actions when logging in user', async () => {
 })
 
 it('dispatches correct action when logging out user', async () => {
+  ;(mockedAxios.post as jest.Mock).mockImplementation((path: string, params?: any) => {
+    return Promise.resolve({ data: {} })
+  })
   const store = mockStore({})
   await logoutUser()(store.dispatch)
   expect(store.getActions()).toEqual([{ type: Types.SET_UNAUTHENTICATED }])

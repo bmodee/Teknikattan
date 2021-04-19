@@ -40,11 +40,13 @@ export const getUserData = () => async (dispatch: AppDispatch) => {
     })
 }
 
-export const logoutUser = () => (dispatch: AppDispatch) => {
-  localStorage.removeItem('token')
-  delete axios.defaults.headers.common['Authorization']
-  dispatch({
-    type: Types.SET_UNAUTHENTICATED,
+export const logoutUser = () => async (dispatch: AppDispatch) => {
+  await axios.post('/auth/logout').then(() => {
+    localStorage.removeItem('token')
+    delete axios.defaults.headers.common['Authorization']
+    dispatch({
+      type: Types.SET_UNAUTHENTICATED,
+    })
+    window.location.href = '/' //redirect to login page
   })
-  window.location.href = '/' //redirect to login page
 }

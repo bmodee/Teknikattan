@@ -4,8 +4,8 @@ import Types from '../actions/types'
 import { logoutUser } from '../actions/user'
 import store from '../store'
 
-const UnAuthorized = () => {
-  logoutUser()(store.dispatch)
+const UnAuthorized = async () => {
+  await logoutUser()(store.dispatch)
 }
 
 export const CheckAuthentication = async () => {
@@ -29,7 +29,7 @@ export const CheckAuthentication = async () => {
           UnAuthorized()
         })
     } else {
-      UnAuthorized()
+      await UnAuthorized()
     }
   }
 }
