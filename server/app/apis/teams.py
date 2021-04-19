@@ -23,7 +23,7 @@ class TeamsList(Resource):
     @jwt_required
     def post(self, CID):
         args = team_parser.parse_args(strict=True)
-        item_comp = dbc.get.one(Competition,CID)
+        item_comp = dbc.get.one(Competition, CID)
         item_team = dbc.add.team(args["name"], item_comp)
         return item_response(schema.dump(item_team))
 
