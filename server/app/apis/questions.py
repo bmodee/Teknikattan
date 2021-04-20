@@ -1,6 +1,6 @@
 import app.core.http_codes as codes
 import app.database.controller as dbc
-from app.apis import admin_required, item_response, list_response
+from app.apis import check_jwt, item_response, list_response
 from app.core.dto import QuestionDTO
 from app.core.parsers import question_parser
 from app.database.models import Question
@@ -15,7 +15,7 @@ list_schema = QuestionDTO.list_schema
 @api.route("/questions")
 @api.param("CID")
 class QuestionsList(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def get(self, CID):
         items = dbc.get.question_list(CID)
         return list_response(list_schema.dump(items))
@@ -24,7 +24,7 @@ class QuestionsList(Resource):
 @api.route("/slides/<SID>/questions")
 @api.param("CID, SID")
 class QuestionsList(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def post(self, SID, CID):
         args = question_parser.parse_args(strict=True)
         del args["slide_id"]
@@ -38,12 +38,12 @@ class QuestionsList(Resource):
 @api.route("/slides/<SID>/questions/<QID>")
 @api.param("CID, SID, QID")
 class Questions(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def get(self, CID, SID, QID):
         item_question = dbc.get.question(CID, SID, QID)
         return item_response(schema.dump(item_question))
 
-    @jwt_required
+    @check_jwt(editor=True)
     def put(self, CID, SID, QID):
         args = question_parser.parse_args(strict=True)
 
@@ -52,7 +52,7 @@ class Questions(Resource):
 
         return item_response(schema.dump(item_question))
 
-    @jwt_required
+    @check_jwt(editor=True)
     def delete(self, CID, SID, QID):
         item_question = dbc.get.question(CID, SID, QID)
         dbc.delete.question(item_question)

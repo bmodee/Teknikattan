@@ -1,6 +1,7 @@
 from app.core import bcrypt, db
-from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from app.database import Dictionary
+from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
+
 STRING_SIZE = 254
 
 
@@ -88,7 +89,7 @@ class Competition(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(STRING_SIZE), unique=True)
     year = db.Column(db.Integer, nullable=False, default=2020)
-
+    font = db.Column(db.String(STRING_SIZE), nullable=False)
     city_id = db.Column(db.Integer, db.ForeignKey("city.id"), nullable=False)
     background_image_id = db.Column(db.Integer, db.ForeignKey("media.id"), nullable=True)
 
@@ -101,6 +102,7 @@ class Competition(db.Model):
         self.name = name
         self.year = year
         self.city_id = city_id
+        self.font = "Calibri"
 
 
 class Team(db.Model):
@@ -130,6 +132,7 @@ class Slide(db.Model):
     background_image = db.relationship("Media", uselist=False)
 
     components = db.relationship("Component", backref="slide")
+    questions = db.relationship("Question", backref="questions")
 
     def __init__(self, order, competition_id):
         self.order = order
@@ -144,7 +147,6 @@ class Question(db.Model):
     type_id = db.Column(db.Integer, db.ForeignKey("question_type.id"), nullable=False)
     slide_id = db.Column(db.Integer, db.ForeignKey("slide.id"), nullable=False)
 
-    slide = db.relationship("Slide", backref="questions")
     question_answers = db.relationship("QuestionAnswer", backref="question")
     alternatives = db.relationship("QuestionAlternative", backref="question")
 
@@ -180,9 +182,6 @@ class QuestionAnswer(db.Model):
         self.score = score
         self.question_id = question_id
         self.team_id = team_id
-
-
-
 
 
 class Component(db.Model):

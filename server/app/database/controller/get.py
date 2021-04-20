@@ -3,6 +3,7 @@ This file contains functionality to get data from the database.
 """
 
 from app.core import db
+from app.core import http_codes as codes
 from app.database.models import (
     City,
     Code,
@@ -18,16 +19,17 @@ from app.database.models import (
     User,
     ViewType,
 )
+from sqlalchemy.orm import contains_eager, joinedload, subqueryload
 
 
 def all(db_type):
-    """ Gets all elements in the provided table. """
+    """ Gets lazy db-item in the provided table. """
 
     return db_type.query.all()
 
 
 def one(db_type, id, required=True, error_msg=None):
-    """ Gets the element in the table that has the same id. """
+    """ Get lazy db-item in the table that has the same id. """
 
     return db_type.query.filter(db_type.id == id).first_extended(required, error_msg)
 
@@ -38,10 +40,10 @@ def user_exists(email):
     return User.query.filter(User.email == email).count() > 0
 
 
-def code_by_code(code):
+def code_by_code(code, required=True, error_msg=None):
     """ Gets the code object associated with the provided code. """
 
-    return Code.query.filter(Code.code == code.upper()).first()
+    return Code.query.filter(Code.code == code.upper()).first_extended(required, error_msg, codes.UNAUTHORIZED)
 
 
 def user(UID, required=True, error_msg=None):
@@ -74,6 +76,16 @@ def question(CID, SOrder, QID, required=True, error_msg=None):
 
     join_filters = (Slide.competition_id == CID) & (Slide.order == SOrder) & (Slide.id == Question.slide_id)
     return Question.query.join(Slide, join_filters).filter(Question.id == QID).first_extended(required, error_msg)
+
+
+def competition(CID):
+    """ Get Competition and all it's sub-entities """
+    """ HOT PATH """
+
+    os1 = joinedload(Competition.slides).joinedload(Slide.components)
+    os2 = joinedload(Competition.slides).joinedload(Slide.questions).joinedload(Question.alternatives)
+    ot = joinedload(Competition.teams).joinedload(Team.question_answers)
+    return Competition.query.filter(Competition.id == CID).options(os1).options(os2).options(ot).first()
 
 
 def code_list(competition_id):

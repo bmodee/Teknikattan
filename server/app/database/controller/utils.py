@@ -29,7 +29,6 @@ def refresh(item):
     db.session.refresh(item)
 
 
-def commit(item):
+def commit():
     """ Commits. """
-
     db.session.commit()

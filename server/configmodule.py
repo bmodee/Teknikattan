@@ -13,14 +13,21 @@ class Config:
     JWT_BLACKLIST_TOKEN_CHECKS = ["access", "refresh"]
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=2)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
-    UPLOADED_PHOTOS_DEST = "static/images"  # os.getcwd()
+    UPLOADED_PHOTOS_DEST = os.path.join(os.getcwd(), "app/static/images")
+    THUMBNAIL_SIZE = (120, 120)
     SECRET_KEY = os.urandom(24)
     SQLALCHEMY_ECHO = False
 
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///database.db"
+    # HOST = "localhost"
+    # PORT = 5432
+    # USER = "postgres"
+    # PASSWORD = "password"
+    # DATABASE = "teknik8"
+    # SQLALCHEMY_DATABASE_URI = "sqlite:///database.db"
+    # SQLALCHEMY_DATABASE_URI = "postgresql://" + USER + ":" + PASSWORD + "@" + HOST + ":" + str(PORT) + "/" + DATABASE
     SQLALCHEMY_ECHO = False
 
 
@@ -33,7 +40,7 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = "sqlite:///database.db"
     # HOST = 'postgresql'
     # PORT = 5432
-    # USER = 'asd'
-    # PASSWORD = 'asd'
-    # DATABASE = 'asd'
-    # DATABASE_URI = 'postgresql://'+USER+":"+PASSWORD+"@"+HOST+":"+str(PORT)+"/"+DATABASE
+    # USER = 'postgres'
+    # PASSWORD = 'password'
+    # DATABASE = 'teknik8'
+    # SQLALCHEMY_DATABASE_URI = 'postgresql://'+USER+":"+PASSWORD+"@"+HOST+":"+str(PORT)+"/"+DATABASE

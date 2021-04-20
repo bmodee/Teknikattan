@@ -1,5 +1,8 @@
+import time
+
 import app.database.controller as dbc
-from app.apis import admin_required, item_response, list_response
+from app.apis import check_jwt, item_response, list_response
+from app.core import rich_schemas
 from app.core.dto import CompetitionDTO
 from app.core.parsers import competition_parser, competition_search_parser
 from app.database.models import Competition
@@ -8,12 +11,13 @@ from flask_restx import Resource
 
 api = CompetitionDTO.api
 schema = CompetitionDTO.schema
+rich_schema = CompetitionDTO.rich_schema
 list_schema = CompetitionDTO.list_schema
 
 
 @api.route("/")
 class CompetitionsList(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def post(self):
         args = competition_parser.parse_args(strict=True)
 
@@ -28,12 +32,13 @@ class CompetitionsList(Resource):
 @api.route("/<CID>")
 @api.param("CID")
 class Competitions(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def get(self, CID):
-        item = dbc.get.one(Competition, CID)
-        return item_response(schema.dump(item))
+        item = dbc.get.competition(CID)
 
-    @jwt_required
+        return item_response(rich_schema.dump(item))
+
+    @check_jwt(editor=True)
     def put(self, CID):
         args = competition_parser.parse_args(strict=True)
         item = dbc.get.one(Competition, CID)
@@ -41,7 +46,7 @@ class Competitions(Resource):
 
         return item_response(schema.dump(item))
 
-    @jwt_required
+    @check_jwt(editor=True)
     def delete(self, CID):
         item = dbc.get.one(Competition, CID)
         dbc.delete.competition(item)
@@ -51,7 +56,7 @@ class Competitions(Resource):
 
 @api.route("/search")
 class CompetitionSearch(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def get(self):
         args = competition_search_parser.parse_args(strict=True)
         items, total = dbc.search.competition(**args)

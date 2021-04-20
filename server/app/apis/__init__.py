@@ -1,42 +1,55 @@
 from functools import wraps
 
-import app.core.http_codes as codes
+import app.core.http_codes as http_codes
 from flask_jwt_extended import verify_jwt_in_request
 from flask_jwt_extended.utils import get_jwt_claims
 from flask_restx.errors import abort
 
 
-def admin_required():
+def validate_editor(db_item, *views):
+    claims = get_jwt_claims()
+    city_id = int(claims.get("city_id"))
+    if db_item.city_id != city_id:
+        abort(http_codes.UNAUTHORIZED)
+
+
+def check_jwt(editor=False, *views):
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):
             verify_jwt_in_request()
             claims = get_jwt_claims()
-            if claims["role"] == "Admin":
+            role = claims.get("role")
+            view = claims.get("view")
+            if role == "Admin":
+                return fn(*args, **kwargs)
+            elif editor and role == "Editor":
+                return fn(*args, **kwargs)
+            elif view in views:
                 return fn(*args, **kwargs)
             else:
-                return {"message:": "Admins only"}, codes.FORBIDDEN
+                abort(http_codes.UNAUTHORIZED)
 
         return decorator
 
     return wrapper
 
 
-def text_response(message, code=codes.OK):
+def text_response(message, code=http_codes.OK):
     return {"message": message}, code
 
 
-def list_response(items, total=None, code=codes.OK):
+def list_response(items, total=None, code=http_codes.OK):
     if type(items) is not list:
-        abort(codes.INTERNAL_SERVER_ERROR)
+        abort(http_codes.INTERNAL_SERVER_ERROR)
     if not total:
         total = len(items)
     return {"items": items, "count": len(items), "total_count": total}, code
 
 
-def item_response(item, code=codes.OK):
+def item_response(item, code=http_codes.OK):
     if isinstance(item, list):
-        abort(codes.INTERNAL_SERVER_ERROR)
+        abort(http_codes.INTERNAL_SERVER_ERROR)
     return item, code
 
 

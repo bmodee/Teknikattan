@@ -86,3 +86,6 @@ component_parser.add_argument("data", type=dict, default=None, location="json")
 component_create_parser = component_parser.copy()
 component_create_parser.replace_argument("data", type=dict, required=True, location="json")
 component_create_parser.add_argument("type_id", type=int, required=True, location="json")
+
+login_code_parser = reqparse.RequestParser()
+login_code_parser.add_argument("code", type=str, location="json")

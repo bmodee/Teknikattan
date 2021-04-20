@@ -41,7 +41,7 @@ class ExtendedQuery(BaseQuery):
 
 class Dictionary(TypeDecorator):
 
-    impl = Text(1024)
+    impl = Text
 
     def process_bind_param(self, value, dialect):
         if value is not None:

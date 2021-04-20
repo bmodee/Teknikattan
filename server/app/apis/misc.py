@@ -1,8 +1,7 @@
 import app.database.controller as dbc
-from app.apis import admin_required, item_response, list_response
+from app.apis import check_jwt, item_response, list_response
 from app.core.dto import MiscDTO
 from app.database.models import City, ComponentType, MediaType, QuestionType, Role, ViewType
-from flask_jwt_extended import jwt_required
 from flask_restx import Resource, reqparse
 
 api = MiscDTO.api
@@ -22,7 +21,7 @@ name_parser.add_argument("name", type=str, required=True, location="json")
 
 @api.route("/types")
 class TypesList(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def get(self):
         result = {}
         result["media_types"] = media_type_schema.dump(dbc.get.all(MediaType))
@@ -34,7 +33,7 @@ class TypesList(Resource):
 
 @api.route("/roles")
 class RoleList(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def get(self):
         items = dbc.get.all(Role)
         return list_response(role_schema.dump(items))
@@ -42,12 +41,12 @@ class RoleList(Resource):
 
 @api.route("/cities")
 class CitiesList(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def get(self):
         items = dbc.get.all(City)
         return list_response(city_schema.dump(items))
 
-    @jwt_required
+    @check_jwt(editor=False)
     def post(self):
         args = name_parser.parse_args(strict=True)
         dbc.add.city(args["name"])
@@ -58,7 +57,7 @@ class CitiesList(Resource):
 @api.route("/cities/<ID>")
 @api.param("ID")
 class Cities(Resource):
-    @jwt_required
+    @check_jwt(editor=False)
     def put(self, ID):
         item = dbc.get.one(City, ID)
         args = name_parser.parse_args(strict=True)
@@ -67,7 +66,7 @@ class Cities(Resource):
         items = dbc.get.all(City)
         return list_response(city_schema.dump(items))
 
-    @jwt_required
+    @check_jwt(editor=False)
     def delete(self, ID):
         item = dbc.get.one(City, ID)
         dbc.delete.default(item)

@@ -1,6 +1,6 @@
 import app.core.http_codes as codes
 import app.database.controller as dbc
-from app.apis import admin_required, item_response, list_response
+from app.apis import check_jwt, item_response, list_response
 from app.core.dto import SlideDTO
 from app.core.parsers import slide_parser
 from app.database.models import Competition, Slide
@@ -15,12 +15,12 @@ list_schema = SlideDTO.list_schema
 @api.route("/")
 @api.param("CID")
 class SlidesList(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def get(self, CID):
         items = dbc.get.slide_list(CID)
         return list_response(list_schema.dump(items))
 
-    @jwt_required
+    @check_jwt(editor=True)
     def post(self, CID):
         item_comp = dbc.get.one(Competition, CID)
         item_slide = dbc.add.slide(item_comp)
@@ -32,12 +32,12 @@ class SlidesList(Resource):
 @api.route("/<SOrder>")
 @api.param("CID,SOrder")
 class Slides(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def get(self, CID, SOrder):
         item_slide = dbc.get.slide(CID, SOrder)
         return item_response(schema.dump(item_slide))
 
-    @jwt_required
+    @check_jwt(editor=True)
     def put(self, CID, SOrder):
         args = slide_parser.parse_args(strict=True)
         title = args.get("title")
@@ -48,7 +48,7 @@ class Slides(Resource):
 
         return item_response(schema.dump(item_slide))
 
-    @jwt_required
+    @check_jwt(editor=True)
     def delete(self, CID, SOrder):
         item_slide = dbc.get.slide(CID, SOrder)
 
@@ -59,7 +59,7 @@ class Slides(Resource):
 @api.route("/<SOrder>/order")
 @api.param("CID,SOrder")
 class SlidesOrder(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def put(self, CID, SOrder):
         args = slide_parser.parse_args(strict=True)
         order = args.get("order")

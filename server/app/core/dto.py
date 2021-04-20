@@ -19,25 +19,26 @@ class MediaDTO:
 
 class AuthDTO:
     api = Namespace("auth")
-    schema = rich_schemas.UserSchemaRich(many=False)
-    list_schema = rich_schemas.UserSchemaRich(many=True)
+    schema = schemas.UserSchema(many=False)
+    list_schema = schemas.UserSchema(many=True)
 
 
 class UserDTO:
     api = Namespace("users")
-    schema = rich_schemas.UserSchemaRich(many=False)
+    schema = schemas.UserSchema(many=False)
     list_schema = schemas.UserSchema(many=True)
 
 
 class CompetitionDTO:
     api = Namespace("competitions")
-    schema = rich_schemas.CompetitionSchemaRich(many=False)
+    schema = schemas.CompetitionSchema(many=False)
     list_schema = schemas.CompetitionSchema(many=True)
+    rich_schema = rich_schemas.CompetitionSchemaRich(many=False)
 
 
 class CodeDTO:
     api = Namespace("codes")
-    schema = rich_schemas.CodeSchemaRich(many=False)
+    schema = schemas.CodeSchema(many=False)
     list_schema = schemas.CodeSchema(many=True)
 
 
@@ -65,5 +66,5 @@ class MiscDTO:
 
 class QuestionDTO:
     api = Namespace("questions")
-    schema = rich_schemas.QuestionSchemaRich(many=False)
+    schema = schemas.QuestionSchema(many=False)
     list_schema = schemas.QuestionSchema(many=True)

@@ -68,6 +68,16 @@ class QuestionAnswerSchema(BaseSchema):
     team_id = ma.auto_field()
 
 
+class QuestionAlternative(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.QuestionAlternative
+
+    id = ma.auto_field()
+    text = ma.auto_field()
+    value = ma.auto_field()
+    question_id = ma.auto_field()
+
+
 class RoleSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = models.Role
