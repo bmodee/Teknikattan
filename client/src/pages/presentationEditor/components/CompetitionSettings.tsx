@@ -117,7 +117,7 @@ const CompetitionSettings: React.FC = () => {
           {/*TODO: fixa så cities laddar in i statet likt i CompetitionManager*/}
           <Select
             value={cities.find((city) => city.id === competition.city_id)?.name || ''}
-            label="RegionSelect"
+            label="Region"
             onChange={handleChange}
           >
             {cities.map((city) => (
