@@ -50,7 +50,7 @@ def _add_items():
 
     for item_comp in item_comps:
         for item_slide in item_comp.slides:
-            dbc.edit.slide(item_slide, timer=5)
+            dbc.edit.slide(item_slide, timer=5, title="test-slide-title")
 
             for i in range(3):
                 dbc.add.question(f"Q{i+1}", i + 1, text_id, item_slide)
