@@ -76,7 +76,9 @@ const AdminLogin: React.FC = () => {
             fullWidth
             variant="contained"
             color="secondary"
-            disabled={!formik.isValid || !formik.touched.model?.email || !formik.touched.model?.email || loading}
+            disabled={
+              !formik.isValid || formik.values.model?.email === '' || formik.values.model?.email === '' || loading
+            }
           >
             Logga in
           </Button>
