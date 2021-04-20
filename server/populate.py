@@ -1,6 +1,8 @@
+import random
+
 import app.database.controller as dbc
 from app import create_app, db
-from app.database.models import City, Competition, QuestionType, Role
+from app.database.models import City, QuestionType, Role
 
 
 def _add_items():
@@ -36,28 +38,58 @@ def _add_items():
 
     city_id = City.query.filter(City.name == "Linköping").one().id
 
-    text_id = QuestionType.query.filter(QuestionType.name == "Text").one().id
-
     # Add users
     dbc.add.user("admin@test.se", "password", admin_id, city_id)
     dbc.add.user("test@test.se", "password", editor_id, city_id)
 
-    # Add competitions to db
-    for i in range(3):
-        dbc.add.competition(f"Test{i+1}", 1971, city_id)
+    question_types_items = dbc.get.all(QuestionType)
 
-    item_comps = Competition.query.all()
+    # Add competitions
+    for i in range(len(question_types_items)):
+        item_comp = dbc.add.competition(f"Tävling {i}", 2000 + i, city_id)
+        dbc.edit.slide(item_comp.slides[0], timer=5, title="test-slide-title")
 
-    for item_comp in item_comps:
-        for item_slide in item_comp.slides:
-            dbc.edit.slide(item_slide, timer=5, title="test-slide-title")
+        # Add two more slides to competition
+        dbc.add.slide(item_comp)
+        dbc.add.slide(item_comp)
 
-            for i in range(3):
-                dbc.add.question(f"Q{i+1}", i + 1, text_id, item_slide)
+        # Add slides
+        for j, item_slide in enumerate(item_comp.slides):
+            # Populate slide with data
+            item_slide.title = f"Slide {j}"
+            item_slide.body = f"Body {j}"
+            item_slide.timer = 100 + j
+            # item_slide.settings = "{}"
+            dbc.utils.commit_and_refresh(item_slide)
 
-        # Add teams to competition
-        for team_name in teams:
-            dbc.add.team(team_name, item_comp)
+            # Add question to competition
+            dbc.add.question(
+                name=f"Question {j}: {question_types_items[j].name}",
+                total_score=j,
+                type_id=question_types_items[j].id,
+                item_slide=item_slide,
+            )
+
+            # Add text components
+            # TODO: Add images as components
+            for k in range(3):
+                x = random.randrange(1, 500)
+                y = random.randrange(1, 500)
+                w = random.randrange(150, 400)
+                h = random.randrange(150, 400)
+                dbc.add.component(1, item_slide, {"text": f"hej{k}"}, x, y, w, h)
+
+        # TODO: Remove comments when slide without questions is fixed
+        # item_slide = dbc.add.slide(item_comp)
+        # item_slide.title = f"Slide {len(item_comp.slides)}"
+        # item_slide.body = f"Body {len(item_comp.slides)}"
+        # item_slide.timer = 100 + j
+        # # item_slide.settings = "{}"
+        # dbc.utils.commit_and_refresh(item_slide)
+
+        # Add teams
+        for name in teams:
+            dbc.add.team(f"{name}{i}", item_comp)
 
 
 if __name__ == "__main__":
