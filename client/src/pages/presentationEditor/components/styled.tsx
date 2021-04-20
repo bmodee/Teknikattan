@@ -35,3 +35,12 @@ export const SlideEditorPaper = styled.div`
 export const HiddenInput = styled.input`
   display: none;
 `
+
+export const SettingsContainer = styled.div`
+  overflow-x: hidden;
+`
+
+export const ToolbarPadding = styled.div`
+  height: 0;
+  padding-top: 55px;
+`
