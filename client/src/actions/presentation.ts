@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Slide } from '../interfaces/ApiModels'
-import { AppDispatch } from './../store'
+import { Timer } from '../interfaces/Timer'
+import store, { AppDispatch } from './../store'
 import Types from './types'
 
 export const getPresentationCompetition = (id: string) => async (dispatch: AppDispatch) => {

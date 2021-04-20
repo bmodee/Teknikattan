@@ -36,6 +36,7 @@ const CompetitionManager: React.FC = (props: any) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [activeId, setActiveId] = React.useState<number | undefined>(undefined)
   const [timerHandle, setTimerHandle] = React.useState<number | undefined>(undefined)
+  const loading = useAppSelector((state) => state.user.userInfo === null)
   const competitions = useAppSelector((state) => state.competitions.competitions)
   const filterParams = useAppSelector((state) => state.competitions.filterParams)
   const competitionTotal = useAppSelector((state) => state.competitions.total)
@@ -125,12 +126,12 @@ const CompetitionManager: React.FC = (props: any) => {
             label="År"
             name="model.year"
             type="number"
-            value={filterParams.year || new Date().getFullYear()}
+            value={filterParams.year || ''}
             onChange={(event) => handleFilterChange({ ...filterParams, year: +event.target.value })}
             margin="normal"
           />
         </FilterContainer>
-        <AddCompetition />
+        {!loading && <AddCompetition />}
       </TopBar>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="simple table">

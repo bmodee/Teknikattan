@@ -59,7 +59,9 @@ const AdminView: React.FC = () => {
   const [openIndex, setOpenIndex] = React.useState(0)
   const { path, url } = useRouteMatch()
   const currentUser = useAppSelector((state) => state.user.userInfo)
-  const isAdmin = useAppSelector((state) => Boolean(state.roles.roles.find((x) => x.id === currentUser?.role_id)))
+  const isAdmin = useAppSelector(
+    (state) => state.roles.roles.find((x) => x.id === currentUser?.role_id)?.name === 'Admin'
+  )
   const dispatch = useAppDispatch()
   const handleLogout = () => {
     dispatch(logoutUser())

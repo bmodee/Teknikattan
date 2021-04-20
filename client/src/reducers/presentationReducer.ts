@@ -1,6 +1,7 @@
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
 import { Slide, Team } from '../interfaces/ApiModels'
+import { Timer } from '../interfaces/Timer'
 import { RichCompetition } from './../interfaces/ApiRichModels'
 
 interface PresentationState {
