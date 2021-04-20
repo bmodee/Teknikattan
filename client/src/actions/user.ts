@@ -41,8 +41,8 @@ export const getUserData = () => async (dispatch: AppDispatch) => {
 }
 
 export const logoutUser = () => async (dispatch: AppDispatch) => {
+  localStorage.removeItem('token')
   await axios.post('/auth/logout').then(() => {
-    localStorage.removeItem('token')
     delete axios.defaults.headers.common['Authorization']
     dispatch({
       type: Types.SET_UNAUTHENTICATED,
