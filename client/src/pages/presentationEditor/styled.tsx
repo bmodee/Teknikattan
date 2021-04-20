@@ -4,6 +4,7 @@ import styled from 'styled-components'
 export const ToolBarContainer = styled(Toolbar)`
   display: flex;
   justify-content: space-between;
+  padding-left: 0;
 `
 
 export const ViewButton = styled(Button)`
@@ -29,4 +30,8 @@ export const CenteredSpinnerContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
+`
+
+export const HomeIcon = styled.img`
+  height: 64px;
 `

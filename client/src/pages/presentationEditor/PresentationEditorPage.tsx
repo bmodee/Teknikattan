@@ -1,4 +1,4 @@
-import { CircularProgress, Divider, Typography } from '@material-ui/core'
+import { Button, CircularProgress, Divider, Typography } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Drawer from '@material-ui/core/Drawer'
@@ -6,7 +6,7 @@ import List from '@material-ui/core/List'
 import ListItemText from '@material-ui/core/ListItemText'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { getCities } from '../../actions/cities'
 import { getEditorCompetition, setEditorSlideId } from '../../actions/editor'
 import { getTypes } from '../../actions/typesAction'
@@ -16,6 +16,7 @@ import SettingsPanel from './components/SettingsPanel'
 import SlideEditor from './components/SlideEditor'
 import {
   CenteredSpinnerContainer,
+  HomeIcon,
   PresentationEditorContainer,
   SlideListItem,
   ToolBarContainer,
@@ -91,8 +92,11 @@ const PresentationEditorPage: React.FC = () => {
       <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
         <ToolBarContainer>
+          <Button component={Link} to="/admin/tävlingshanterare" style={{ padding: 0 }}>
+            <HomeIcon src="/t8.png" />
+          </Button>
           <Typography variant="h6" noWrap>
-            Tävlingsnamn: {competition.name}
+            {competition.name}
           </Typography>
           <ViewButtonGroup>
             <ViewButton variant="contained" color="secondary">
