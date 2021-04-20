@@ -5,12 +5,17 @@ import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
 import ListItemText from '@material-ui/core/ListItemText'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import BuildOutlinedIcon from '@material-ui/icons/BuildOutlined'
+import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined'
+import DnsOutlinedIcon from '@material-ui/icons/DnsOutlined'
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 import React, { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getCities } from '../../actions/cities'
 import { getEditorCompetition, setEditorSlideId } from '../../actions/editor'
 import { getTypes } from '../../actions/typesAction'
 import { useAppDispatch, useAppSelector } from '../../hooks'
+import { RichSlide } from '../../interfaces/ApiRichModels'
 import { Content } from '../views/styled'
 import SettingsPanel from './components/SettingsPanel'
 import SlideEditor from './components/SlideEditor'
@@ -87,6 +92,19 @@ const PresentationEditorPage: React.FC = () => {
     dispatch(setEditorSlideId(id))
   }
 
+  const renderSlideIcon = (slide: RichSlide) => {
+    switch (slide.questions[0].type_id) {
+      case 0:
+        return <InfoOutlinedIcon></InfoOutlinedIcon> // information slide
+      case 1:
+        return <CreateOutlinedIcon></CreateOutlinedIcon> // text question
+      case 2:
+        return <BuildOutlinedIcon></BuildOutlinedIcon> // practical qustion
+      case 3:
+        return <DnsOutlinedIcon></DnsOutlinedIcon> // multiple choice question
+    }
+  }
+
   return (
     <PresentationEditorContainer>
       <CssBaseline />
@@ -131,6 +149,7 @@ const PresentationEditorPage: React.FC = () => {
                 selected={slide.id === activeSlideId}
                 onClick={() => setActiveSlideId(slide.id)}
               >
+                {renderSlideIcon(slide)}
                 <ListItemText primary={slide.title} />
               </SlideListItem>
             ))}
