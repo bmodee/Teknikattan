@@ -64,7 +64,6 @@ const CompetitionSettings: React.FC = () => {
   const { id }: CompetitionParams = useParams()
   const dispatch = useAppDispatch()
   const competition = useAppSelector((state) => state.editor.competition)
-
   const updateCompetitionName = async (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     await axios
       .put(`/competitions/${id}`, { name: event.target.value })

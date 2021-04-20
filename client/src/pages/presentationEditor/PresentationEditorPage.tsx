@@ -1,4 +1,4 @@
-import { Divider, Typography } from '@material-ui/core'
+import { CircularProgress, Divider, Typography } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Drawer from '@material-ui/core/Drawer'
@@ -13,7 +13,14 @@ import { useAppDispatch, useAppSelector } from '../../hooks'
 import { Content } from '../views/styled'
 import SettingsPanel from './components/SettingsPanel'
 import SlideEditor from './components/SlideEditor'
-import { PresentationEditorContainer, SlideListItem, ToolBarContainer, ViewButton, ViewButtonGroup } from './styled'
+import {
+  CenteredSpinnerContainer,
+  PresentationEditorContainer,
+  SlideListItem,
+  ToolBarContainer,
+  ViewButton,
+  ViewButtonGroup,
+} from './styled'
 
 function createSlide(name: string) {
   return { name }
@@ -66,6 +73,7 @@ const PresentationEditorPage: React.FC = () => {
   const dispatch = useAppDispatch()
   const activeSlideId = useAppSelector((state) => state.editor.activeSlideId)
   const competition = useAppSelector((state) => state.editor.competition)
+  const competitionLoading = useAppSelector((state) => state.editor.loading)
   // TODO: wait for dispatch to finish
   useEffect(() => {
     dispatch(getEditorCompetition(id))
@@ -131,7 +139,13 @@ const PresentationEditorPage: React.FC = () => {
         }}
         anchor="right"
       >
-        <SettingsPanel></SettingsPanel>
+        {!competitionLoading ? (
+          <SettingsPanel />
+        ) : (
+          <CenteredSpinnerContainer>
+            <CircularProgress />
+          </CenteredSpinnerContainer>
+        )}
       </Drawer>
 
       <Content leftDrawerWidth={leftDrawerWidth} rightDrawerWidth={rightDrawerWidth}>
