@@ -1,12 +1,11 @@
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
-import { City, Role } from '../interfaces/ApiModels'
 
 interface UserInfo {
   name: string
   email: string
-  role: Role
-  city: City
+  role_id: number
+  city_id: number
   id: number
 }
 

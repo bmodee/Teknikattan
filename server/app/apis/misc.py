@@ -1,7 +1,8 @@
 import app.database.controller as dbc
 from app.apis import admin_required, item_response, list_response
 from app.core.dto import MiscDTO
-from app.database.models import City, ComponentType, MediaType, QuestionType, Role, ViewType
+from app.database.models import (City, ComponentType, MediaType, QuestionType,
+                                 Role, ViewType)
 from flask_jwt_extended import jwt_required
 from flask_restx import Resource, reqparse
 
@@ -22,7 +23,6 @@ name_parser.add_argument("name", type=str, required=True, location="json")
 
 @api.route("/types")
 class TypesList(Resource):
-    @jwt_required
     def get(self):
         result = {}
         result["media_types"] = media_type_schema.dump(dbc.get.all(MediaType))

@@ -32,9 +32,19 @@ export interface User extends NameID {
   city_id: number
 }
 
+export interface Slide {
+  competition_id: number
+  id: number
+  order: number
+  timer: number
+  title: string
+}
+
 export interface Competition extends NameID {
+  font: string
   city_id: number
   year: number
+  background_image_id: number
 }
 
 export interface Team extends NameID {

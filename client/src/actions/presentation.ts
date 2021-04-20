@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Slide } from '../interfaces/Slide'
+import { Slide } from '../interfaces/ApiModels'
 import { AppDispatch } from './../store'
 import Types from './types'
 

@@ -7,4 +7,4 @@ htmlcov
 .pytest_cache
 /.idea
 .vs/
-*/static
+/server/app/static/

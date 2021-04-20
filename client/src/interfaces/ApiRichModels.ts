@@ -1,5 +1,4 @@
-import { Component } from 'react'
-import { Media, QuestionAlternative, QuestionAnswer, QuestionType } from './ApiModels'
+import { Component, QuestionAlternative, QuestionAnswer, QuestionType } from './ApiModels'
 
 export interface RichCompetition {
   name: string
@@ -17,7 +16,6 @@ export interface RichSlide {
   title: string
   competition_id: number
   components: Component[]
-  medias: Media[]
   questions: RichQuestion[]
 }
 

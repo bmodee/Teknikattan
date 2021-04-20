@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { getTypes } from './actions/typesAction'
+import { useAppDispatch } from './hooks'
 import AdminPage from './pages/admin/AdminPage'
 import LoginPage from './pages/login/LoginPage'
 import PresentationEditorPage from './pages/presentationEditor/PresentationEditorPage'
@@ -11,6 +13,10 @@ import ViewSelectPage from './pages/views/ViewSelectPage'
 import SecureRoute from './utils/SecureRoute'
 
 const Main: React.FC = () => {
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    dispatch(getTypes())
+  }, [])
   return (
     <BrowserRouter>
       <Switch>

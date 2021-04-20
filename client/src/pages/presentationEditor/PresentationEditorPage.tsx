@@ -9,6 +9,7 @@ import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { getCities } from '../../actions/cities'
 import { getEditorCompetition } from '../../actions/editor'
+import { getTypes } from '../../actions/typesAction'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { Content } from '../views/styled'
 import SettingsPanel from './components/SettingsPanel'
@@ -69,6 +70,7 @@ const PresentationEditorPage: React.FC = () => {
   useEffect(() => {
     dispatch(getEditorCompetition(id))
     dispatch(getCities())
+    dispatch(getTypes())
   }, [])
   return (
     <PresentationEditorContainer>

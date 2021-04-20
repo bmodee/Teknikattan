@@ -1,8 +1,7 @@
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
+import { Slide, Team } from '../interfaces/ApiModels'
 import { RichCompetition } from './../interfaces/ApiRichModels'
-import { Slide } from './../interfaces/Slide'
-import { Team } from './../interfaces/Team'
 
 interface PresentationState {
   competition: RichCompetition

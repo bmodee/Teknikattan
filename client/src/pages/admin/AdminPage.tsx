@@ -59,11 +59,12 @@ const AdminView: React.FC = () => {
   const [openIndex, setOpenIndex] = React.useState(0)
   const { path, url } = useRouteMatch()
   const currentUser = useAppSelector((state) => state.user.userInfo)
-  const isAdmin = () => currentUser && currentUser.role.name === 'Admin'
+  const isAdmin = useAppSelector((state) => Boolean(state.roles.roles.find((x) => x.id === currentUser?.role_id)))
   const dispatch = useAppDispatch()
   const handleLogout = () => {
     dispatch(logoutUser())
   }
+
   useEffect(() => {
     dispatch(getCities())
     dispatch(getRoles())
@@ -83,7 +84,7 @@ const AdminView: React.FC = () => {
   ]
 
   const renderItems = () => {
-    const menuItems = isAdmin() ? menuAdminItems : menuEditorItems
+    const menuItems = isAdmin ? menuAdminItems : menuEditorItems
     return menuItems.map((value, index) => (
       <ListItem
         button
@@ -105,7 +106,7 @@ const AdminView: React.FC = () => {
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h5" noWrap>
-            {isAdmin() ? menuAdminItems[openIndex].text : menuEditorItems[openIndex].text}
+            {isAdmin ? menuAdminItems[openIndex].text : menuEditorItems[openIndex].text}
           </Typography>
         </Toolbar>
       </AppBar>
