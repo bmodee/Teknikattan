@@ -1,6 +1,8 @@
 import { Editor } from '@tinymce/tinymce-react'
+import axios from 'axios'
 import React, { useState } from 'react'
 import { Rnd } from 'react-rnd'
+import { useAppSelector } from '../../../hooks'
 import { TextComponent } from '../../../interfaces/ApiModels'
 import { Position, Size } from '../../../interfaces/Components'
 
@@ -11,9 +13,26 @@ type ImageComponentProps = {
 const TextComponentDisplay = ({ component }: ImageComponentProps) => {
   const [currentPos, setCurrentPos] = useState<Position>({ x: component.x, y: component.y })
   const [currentSize, setCurrentSize] = useState<Size>({ w: component.w, h: component.h })
+  const competitionId = useAppSelector((state) => state.editor.competition.id)
+  const slideId = useAppSelector((state) => state.editor.activeSlideId)
+  if (component.id === 1) console.log(component)
   const handleEditorChange = (e: any) => {
     console.log('Content was updated:', e.target.getContent())
-    //TODO: axios.post
+    axios.put(`/competitions/${competitionId}/slides/${slideId}/components/${component.id}`, {
+      data: { ...component.data, text: e.target.getContent() },
+    })
+  }
+  const handleUpdatePos = (pos: Position) => {
+    axios.put(`/competitions/${competitionId}/slides/${slideId}/components/${component.id}`, {
+      x: pos.x,
+      y: pos.y,
+    })
+  }
+  const handleUpdateSize = () => {
+    axios.put(`/competitions/${competitionId}/slides/${slideId}/components/${component.id}`, {
+      w: currentSize.w,
+      h: currentSize.h,
+    })
   }
   return (
     <Rnd
@@ -22,6 +41,7 @@ const TextComponentDisplay = ({ component }: ImageComponentProps) => {
       bounds="parent"
       onDragStop={(e, d) => {
         setCurrentPos({ x: d.x, y: d.y })
+        handleUpdatePos(d)
       }}
       size={{ width: currentSize.w, height: currentSize.h }}
       position={{ x: currentPos.x, y: currentPos.y }}
@@ -32,15 +52,12 @@ const TextComponentDisplay = ({ component }: ImageComponentProps) => {
         })
         setCurrentPos(position)
       }}
-      onResizeStop={() => {
-        console.log('skickar till server')
-      }}
+      onResizeStop={handleUpdateSize}
     >
       <div style={{ height: '100%', width: '100%' }}>
         <Editor
-          initialValue={component.text}
+          initialValue={component.data.text}
           init={{
-            body_class: 'mceBlackBody',
             height: '100%',
             menubar: false,
             plugins: [

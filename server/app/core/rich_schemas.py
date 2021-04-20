@@ -11,17 +11,6 @@ class RichSchema(ma.SQLAlchemySchema):
         include_relationships = True
 
 
-class UserSchemaRich(RichSchema):
-    class Meta(RichSchema.Meta):
-        model = models.User
-
-    id = ma.auto_field()
-    name = ma.auto_field()
-    email = ma.auto_field()
-    role = fields.Nested(schemas.RoleSchema, many=False)
-    city = fields.Nested(schemas.CitySchema, many=False)
-
-
 class QuestionSchemaRich(RichSchema):
     class Meta(RichSchema.Meta):
         model = models.Question
@@ -30,7 +19,8 @@ class QuestionSchemaRich(RichSchema):
     name = ma.auto_field()
     total_score = ma.auto_field()
     slide_id = ma.auto_field()
-    type = fields.Nested(schemas.QuestionTypeSchema, many=False)
+    type_id = ma.auto_field()
+    alternatives = fields.Nested(schemas.QuestionAlternative, many=True)
 
 
 class TeamSchemaRich(RichSchema):
@@ -41,16 +31,6 @@ class TeamSchemaRich(RichSchema):
     name = ma.auto_field()
     competition_id = ma.auto_field()
     question_answers = fields.Nested(schemas.QuestionAnswerSchema, many=True)
-
-
-class CodeSchemaRich(RichSchema):
-    class Meta(RichSchema.Meta):
-        model = models.Code
-
-    id = ma.auto_field()
-    code = ma.auto_field()
-    pointer = ma.auto_field()
-    view_type = fields.Nested(schemas.ViewTypeSchema, many=False)
 
 
 class SlideSchemaRich(RichSchema):
@@ -73,7 +53,7 @@ class CompetitionSchemaRich(RichSchema):
     id = ma.auto_field()
     name = ma.auto_field()
     year = ma.auto_field()
-    city = fields.Nested(schemas.CitySchema, many=False)
+    city_id = ma.auto_field()
     slides = fields.Nested(
         SlideSchemaRich,
         many=True,

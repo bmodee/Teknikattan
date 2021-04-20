@@ -7,7 +7,7 @@ def _add_items():
     media_types = ["Image", "Video"]
     question_types = ["Boolean", "Multiple", "Text"]
     component_types = ["Text", "Image"]
-    view_types = ["Team", "Judge", "Audience"]
+    view_types = ["Team", "Judge", "Audience", "Operator"]
 
     roles = ["Admin", "Editor"]
     cities = ["Linköping", "Stockholm", "Norrköping", "Örkelljunga"]
@@ -50,6 +50,8 @@ def _add_items():
 
     for item_comp in item_comps:
         for item_slide in item_comp.slides:
+            dbc.edit.slide(item_slide, timer=5, title="test-slide-title")
+
             for i in range(3):
                 dbc.add.question(f"Q{i+1}", i + 1, text_id, item_slide)
 
@@ -59,7 +61,7 @@ def _add_items():
 
 
 if __name__ == "__main__":
-    app = create_app("configmodule.DevelopmentConfig")
+    app, _ = create_app("configmodule.DevelopmentConfig")
 
     with app.app_context():
         db.drop_all()

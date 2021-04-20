@@ -1,6 +1,6 @@
 import app.core.http_codes as codes
 import app.database.controller as dbc
-from app.apis import admin_required, item_response, list_response
+from app.apis import check_jwt, item_response, list_response
 from app.core.dto import UserDTO
 from app.core.parsers import user_parser, user_search_parser
 from app.database.models import User
@@ -24,12 +24,12 @@ def edit_user(item_user, args):
 
 @api.route("/")
 class UsersList(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def get(self):
         item = dbc.get.user(get_jwt_identity())
         return item_response(schema.dump(item))
 
-    @jwt_required
+    @check_jwt(editor=True)
     def put(self):
         args = user_parser.parse_args(strict=True)
         item = dbc.get.user(get_jwt_identity())
@@ -40,12 +40,12 @@ class UsersList(Resource):
 @api.route("/<ID>")
 @api.param("ID")
 class Users(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def get(self, ID):
         item = dbc.get.user(ID)
         return item_response(schema.dump(item))
 
-    @jwt_required
+    @check_jwt(editor=False)
     def put(self, ID):
         args = user_parser.parse_args(strict=True)
         item = dbc.get.user(ID)
@@ -55,7 +55,7 @@ class Users(Resource):
 
 @api.route("/search")
 class UserSearch(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def get(self):
         args = user_search_parser.parse_args(strict=True)
         items, total = dbc.search.user(**args)

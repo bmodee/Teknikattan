@@ -1,7 +1,13 @@
+"""
+This file contains functionality to find data to the database.
+"""
+
 from app.database.models import Competition, Media, Question, Slide, Team, User
 
 
 def image(filename, page=0, page_size=15, order=1, order_by=None):
+    """ Finds and returns an image from the file name. """
+
     query = Media.query.filter(Media.type_id == 1)
     if filename:
         query = query.filter(Media.filename.like(f"%{filename}%"))
@@ -9,7 +15,18 @@ def image(filename, page=0, page_size=15, order=1, order_by=None):
     return query.pagination(page, page_size, None, None)
 
 
-def user(email=None, name=None, city_id=None, role_id=None, page=0, page_size=15, order=1, order_by=None):
+def user(
+    email=None,
+    name=None,
+    city_id=None,
+    role_id=None,
+    page=0,
+    page_size=15,
+    order=1,
+    order_by=None,
+):
+    """ Finds and returns a user from the provided parameters. """
+
     query = User.query
     if name:
         query = query.filter(User.name.like(f"%{name}%"))
@@ -27,7 +44,17 @@ def user(email=None, name=None, city_id=None, role_id=None, page=0, page_size=15
     return query.pagination(page, page_size, order_column, order)
 
 
-def competition(name=None, year=None, city_id=None, page=0, page_size=15, order=1, order_by=None):
+def competition(
+    name=None,
+    year=None,
+    city_id=None,
+    page=0,
+    page_size=15,
+    order=1,
+    order_by=None,
+):
+    """ Finds and returns a competition from the provided parameters. """
+
     query = Competition.query
     if name:
         query = query.filter(Competition.name.like(f"%{name}%"))
@@ -43,7 +70,18 @@ def competition(name=None, year=None, city_id=None, page=0, page_size=15, order=
     return query.pagination(page, page_size, order_column, order)
 
 
-def slide(slide_order=None, title=None, body=None, competition_id=None, page=0, page_size=15, order=1, order_by=None):
+def slide(
+    slide_order=None,
+    title=None,
+    body=None,
+    competition_id=None,
+    page=0,
+    page_size=15,
+    order=1,
+    order_by=None,
+):
+    """ Finds and returns a slide from the provided parameters. """
+
     query = Slide.query
     if slide_order:
         query = query.filter(Slide.order == slide_order)
@@ -72,6 +110,8 @@ def questions(
     order=1,
     order_by=None,
 ):
+    """ Finds and returns a question from the provided parameters. """
+
     query = Question.query
     if name:
         query = query.filter(Question.name.like(f"%{name}%"))
@@ -82,7 +122,10 @@ def questions(
     if slide_id:
         query = query.filter(Question.slide_id == slide_id)
     if competition_id:
-        query = query.join(Slide, (Slide.competition_id == competition_id) & (Slide.id == Question.slide_id))
+        query = query.join(
+            Slide,
+            (Slide.competition_id == competition_id) & (Slide.id == Question.slide_id),
+        )
 
     order_column = Question.id  # Default order_by
     if order_by:

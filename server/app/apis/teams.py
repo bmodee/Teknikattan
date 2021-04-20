@@ -1,6 +1,6 @@
 import app.core.http_codes as codes
 import app.database.controller as dbc
-from app.apis import admin_required, item_response, list_response
+from app.apis import check_jwt, item_response, list_response
 from app.core.dto import TeamDTO
 from app.core.parsers import team_parser
 from app.database.models import Competition, Team
@@ -15,15 +15,15 @@ list_schema = TeamDTO.list_schema
 @api.route("/")
 @api.param("CID")
 class TeamsList(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def get(self, CID):
         items = dbc.get.team_list(CID)
         return list_response(list_schema.dump(items))
 
-    @jwt_required
+    @check_jwt(editor=True)
     def post(self, CID):
         args = team_parser.parse_args(strict=True)
-        item_comp = dbc.get.one(Competition,CID)
+        item_comp = dbc.get.one(Competition, CID)
         item_team = dbc.add.team(args["name"], item_comp)
         return item_response(schema.dump(item_team))
 
@@ -32,11 +32,13 @@ class TeamsList(Resource):
 @api.param("CID,TID")
 class Teams(Resource):
     @jwt_required
+    @check_jwt(editor=True)
     def get(self, CID, TID):
         item = dbc.get.team(CID, TID)
         return item_response(schema.dump(item))
 
     @jwt_required
+    @check_jwt(editor=True)
     def delete(self, CID, TID):
         item_team = dbc.get.team(CID, TID)
 
@@ -44,6 +46,7 @@ class Teams(Resource):
         return {}, codes.NO_CONTENT
 
     @jwt_required
+    @check_jwt(editor=True)
     def put(self, CID, TID):
         args = team_parser.parse_args(strict=True)
         name = args.get("name")

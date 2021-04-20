@@ -1,5 +1,5 @@
 export enum ComponentTypes {
-  Text,
+  Text = 1,
   Checkbox,
   Image,
 }

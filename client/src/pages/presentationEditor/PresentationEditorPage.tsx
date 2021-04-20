@@ -1,4 +1,4 @@
-import { Divider, Typography } from '@material-ui/core'
+import { CircularProgress, Divider, Typography } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Drawer from '@material-ui/core/Drawer'
@@ -14,7 +14,14 @@ import { useAppDispatch, useAppSelector } from '../../hooks'
 import { Content } from '../views/styled'
 import SettingsPanel from './components/SettingsPanel'
 import SlideEditor from './components/SlideEditor'
-import { PresentationEditorContainer, SlideListItem, ToolBarContainer, ViewButton, ViewButtonGroup } from './styled'
+import {
+  CenteredSpinnerContainer,
+  PresentationEditorContainer,
+  SlideListItem,
+  ToolBarContainer,
+  ViewButton,
+  ViewButtonGroup,
+} from './styled'
 
 function createSlide(name: string) {
   return { name }
@@ -65,13 +72,20 @@ const PresentationEditorPage: React.FC = () => {
   const classes = useStyles()
   const { id }: CompetitionParams = useParams()
   const dispatch = useAppDispatch()
+  const activeSlideId = useAppSelector((state) => state.editor.activeSlideId)
   const competition = useAppSelector((state) => state.editor.competition)
+  const competitionLoading = useAppSelector((state) => state.editor.loading)
   // TODO: wait for dispatch to finish
   useEffect(() => {
     dispatch(getEditorCompetition(id))
     dispatch(getCities())
     dispatch(getTypes())
   }, [])
+
+  const setActiveSlideId = (id: number) => {
+    dispatch(setEditorSlideId(id))
+  }
+
   return (
     <PresentationEditorContainer>
       <CssBaseline />
@@ -104,11 +118,18 @@ const PresentationEditorPage: React.FC = () => {
         <div className={classes.toolbar} />
         <Divider />
         <List>
-          {competition.slides.map((slide) => (
-            <SlideListItem divider button key={slide.title}>
-              <ListItemText primary={slide.title} />
-            </SlideListItem>
-          ))}
+          {competition.slides &&
+            competition.slides.map((slide) => (
+              <SlideListItem
+                divider
+                button
+                key={slide.id}
+                selected={slide.id === activeSlideId}
+                onClick={() => setActiveSlideId(slide.id)}
+              >
+                <ListItemText primary={slide.title} />
+              </SlideListItem>
+            ))}
         </List>
       </Drawer>
       <div className={classes.toolbar} />
@@ -120,7 +141,13 @@ const PresentationEditorPage: React.FC = () => {
         }}
         anchor="right"
       >
-        <SettingsPanel></SettingsPanel>
+        {!competitionLoading ? (
+          <SettingsPanel />
+        ) : (
+          <CenteredSpinnerContainer>
+            <CircularProgress />
+          </CenteredSpinnerContainer>
+        )}
       </Drawer>
 
       <Content leftDrawerWidth={leftDrawerWidth} rightDrawerWidth={rightDrawerWidth}>

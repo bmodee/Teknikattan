@@ -23,3 +23,10 @@ export const SlideListItem = styled(ListItem)`
 export const PresentationEditorContainer = styled.div`
   height: 100%;
 `
+
+export const CenteredSpinnerContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`

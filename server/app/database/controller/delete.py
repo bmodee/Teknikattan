@@ -1,18 +1,28 @@
+"""
+This file contains functionality to delete data to the database.
+"""
+
 import app.database.controller as dbc
 from app.core import db
 from app.database.models import Blacklist, City, Competition, Role, Slide, User
 
 
 def default(item):
+    """ Deletes item and commits. """
+
     db.session.delete(item)
     db.session.commit()
 
 
 def component(item_component):
+    """ Deletes component. """
+
     default(item_component)
 
 
 def _slide(item_slide):
+    """ Internal delete for slide. """
+
     for item_question in item_slide.questions:
         question(item_question)
 
@@ -23,6 +33,8 @@ def _slide(item_slide):
 
 
 def slide(item_slide):
+    """ Deletes slide and updates order of other slides if neccesary. """
+
     competition_id = item_slide.competition_id
     slide_order = item_slide.order
 
@@ -38,12 +50,16 @@ def slide(item_slide):
 
 
 def team(item_team):
+    """ Deletes team and its question answers. """
+
     for item_question_answer in item_team.question_answers:
         question_answers(item_question_answer)
     default(item_team)
 
 
 def question(item_question):
+    """ Deletes question and its alternatives and answers. """
+
     for item_question_answer in item_question.question_answers:
         question_answers(item_question_answer)
     for item_alternative in item_question.alternatives:
@@ -52,14 +68,20 @@ def question(item_question):
 
 
 def alternatives(item_alternatives):
+    """ Deletes question alternative. """
+
     default(item_alternatives)
 
 
 def question_answers(item_question_answers):
+    """ Deletes question answer. """
+
     default(item_question_answers)
 
 
 def competition(item_competition):
+    """ Deletes competition and its slides and teams. """
+
     for item_slide in item_competition.slides:
         _slide(item_slide)
     for item_team in item_competition.teams:

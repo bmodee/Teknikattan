@@ -3,7 +3,7 @@ import AppBar from '@material-ui/core/AppBar'
 import React from 'react'
 import CompetitionSettings from './CompetitionSettings'
 import SlideSettings from './SlideSettings'
-import { SettingsTab } from './styled'
+import { SettingsContainer, SettingsTab, ToolbarPadding } from './styled'
 
 interface TabPanelProps {
   activeTab: number
@@ -20,15 +20,16 @@ function TabContent(props: TabPanelProps) {
 const SettingsPanel: React.FC = () => {
   const [activeTab, setActiveTab] = React.useState(0)
   return (
-    <div>
-      <AppBar position="static">
+    <SettingsContainer>
+      <AppBar position="static" style={{ position: 'absolute' }}>
         <Tabs value={activeTab} onChange={(event, val) => setActiveTab(val)} aria-label="simple tabs example">
           <SettingsTab label="Tävling" />
           <SettingsTab label="Sida" />
         </Tabs>
       </AppBar>
+      <ToolbarPadding />
       <TabContent activeTab={activeTab} />
-    </div>
+    </SettingsContainer>
   )
 }
 

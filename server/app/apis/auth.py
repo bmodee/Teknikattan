@@ -1,9 +1,9 @@
 import app.core.http_codes as codes
 import app.database.controller as dbc
-from app.apis import admin_required, item_response, text_response
+from app.apis import check_jwt, item_response, text_response
 from app.core.codes import verify_code
 from app.core.dto import AuthDTO, CodeDTO
-from app.core.parsers import create_user_parser, login_parser
+from app.core.parsers import create_user_parser, login_code_parser, login_parser
 from app.database.models import User
 from flask_jwt_extended import (
     create_access_token,
@@ -21,12 +21,12 @@ list_schema = AuthDTO.list_schema
 
 
 def get_user_claims(item_user):
-    return {"role": item_user.role.name, "city": item_user.city.name}
+    return {"role": item_user.role.name, "city_id": item_user.city_id}
 
 
 @api.route("/signup")
 class AuthSignup(Resource):
-    @jwt_required
+    @check_jwt(editor=False)
     def post(self):
         args = create_user_parser.parse_args(strict=True)
         email = args.get("email")
@@ -41,7 +41,7 @@ class AuthSignup(Resource):
 @api.route("/delete/<ID>")
 @api.param("ID")
 class AuthDelete(Resource):
-    @jwt_required
+    @check_jwt(editor=False)
     def delete(self, ID):
         item_user = dbc.get.user(ID)
 
@@ -70,23 +70,22 @@ class AuthLogin(Resource):
         return response
 
 
-@api.route("/login/<code>")
-@api.param("code")
-class AuthLogin(Resource):
-    def post(self, code):
+@api.route("/login/code")
+class AuthLoginCode(Resource):
+    def post(self):
+        args = login_code_parser.parse_args()
+        code = args["code"]
+
         if not verify_code(code):
             api.abort(codes.BAD_REQUEST, "Invalid code")
 
-        item_code = dbc.get.code_by_code(code)
-        if not item_code:
-            api.abort(codes.UNAUTHORIZED, "A presentation with that code does not exist")
-
+        item_code = dbc.get.code_by_code(code, True, "A presentation with that code does not exist")
         return item_response(CodeDTO.schema.dump(item_code)), codes.OK
 
 
 @api.route("/logout")
 class AuthLogout(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def post(self):
         jti = get_raw_jwt()["jti"]
         dbc.add.blacklist(jti)
@@ -95,7 +94,7 @@ class AuthLogout(Resource):
 
 @api.route("/refresh")
 class AuthRefresh(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     @jwt_refresh_token_required
     def post(self):
         old_jti = get_raw_jwt()["jti"]

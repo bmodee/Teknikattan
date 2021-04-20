@@ -181,7 +181,7 @@ const UserManager: React.FC = (props: any) => {
               ))}
           </TableBody>
         </Table>
-        {(!users || users.length === 0) && <Typography>Inga tävlingar hittades med nuvarande filter</Typography>}
+        {(!users || users.length === 0) && <Typography>Inga användare hittades med nuvarande filter</Typography>}
       </TableContainer>
       <TablePagination
         component="div"

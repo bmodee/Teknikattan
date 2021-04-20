@@ -1,6 +1,6 @@
 import app.core.http_codes as codes
 import app.database.controller as dbc
-from app.apis import admin_required, item_response, list_response
+from app.apis import check_jwt, item_response, list_response
 from app.core.dto import ComponentDTO
 from app.core.parsers import component_create_parser, component_parser
 from app.database.models import Competition, Component
@@ -16,18 +16,19 @@ list_schema = ComponentDTO.list_schema
 @api.route("/<component_id>")
 @api.param("CID, SOrder, component_id")
 class ComponentByID(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def get(self, CID, SOrder, component_id):
         item = dbc.get.one(Component, component_id)
         return item_response(schema.dump(item))
 
-    @jwt_required
+    @check_jwt(editor=True)
     def put(self, CID, SOrder, component_id):
         args = component_parser.parse_args()
-        item = dbc.edit.component(**args)
+        item = dbc.get.one(Component, component_id)
+        item = dbc.edit.component(item, **args)
         return item_response(schema.dump(item))
 
-    @jwt_required
+    @check_jwt(editor=True)
     def delete(self, CID, SOrder, component_id):
         item = dbc.get.one(Component, component_id)
         dbc.delete.component(item)
@@ -37,12 +38,12 @@ class ComponentByID(Resource):
 @api.route("/")
 @api.param("CID, SOrder")
 class ComponentList(Resource):
-    @jwt_required
+    @check_jwt(editor=True)
     def get(self, CID, SOrder):
-        items = dbc.get.component_list(SOrder)
+        items = dbc.get.component_list(CID, SOrder)
         return list_response(list_schema.dump(items))
 
-    @jwt_required
+    @check_jwt(editor=True)
     def post(self, CID, SOrder):
         args = component_create_parser.parse_args()
         item_slide = dbc.get.slide(CID, SOrder)
