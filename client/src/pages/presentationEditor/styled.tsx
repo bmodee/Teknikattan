@@ -1,4 +1,4 @@
-import { Button, ListItem, Toolbar } from '@material-ui/core'
+import { Button, List, ListItem, Toolbar } from '@material-ui/core'
 import styled from 'styled-components'
 
 export const ToolBarContainer = styled(Toolbar)`
@@ -14,6 +14,14 @@ export const ViewButton = styled(Button)`
 export const ViewButtonGroup = styled.div`
   display: flex;
   flex-direction: row;
+`
+
+export const SlideList = styled(List)`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0px;
 `
 
 export const SlideListItem = styled(ListItem)`
