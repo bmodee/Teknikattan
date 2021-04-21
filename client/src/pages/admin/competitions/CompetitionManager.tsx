@@ -83,6 +83,20 @@ const CompetitionManager: React.FC = (props: any) => {
     }
   }
 
+  const handleDuplicateCompetition = async () => {
+    if (activeId) {
+      await axios
+        .post(`/competitions/${activeId}/copy`)
+        .then(() => {
+          setAnchorEl(null)
+          dispatch(getCompetitions())
+        })
+        .catch(({ response }) => {
+          console.warn(response.data)
+        })
+    }
+  }
+
   const handleFilterChange = (newParams: CompetitionFilterParams) => {
     dispatch(setFilterParams(newParams))
     dispatch(getCompetitions())
@@ -177,7 +191,7 @@ const CompetitionManager: React.FC = (props: any) => {
       />
       <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         <MenuItem onClick={() => history.push(`/presenter/id=${activeId}&code=123123`)}>Starta</MenuItem>
-        <MenuItem onClick={handleClose}>Duplicera</MenuItem>
+        <MenuItem onClick={handleDuplicateCompetition}>Duplicera</MenuItem>
         <RemoveMenuItem onClick={handleDeleteCompetition}>Ta bort</RemoveMenuItem>
       </Menu>
     </div>

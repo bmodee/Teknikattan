@@ -128,16 +128,13 @@ const PresentationEditorPage: React.FC = () => {
   }
 
   const handleDuplicateSlide = async () => {
-    const response = await axios.post(`/competitions/${id}/slides`)
-    const newOrder = response.data.items[response.data.total_count - 1].order
-    const oldSlide = competition.slides.find((slide) => slide.order === contextState.slideOrder)
-    await axios.put(`/competitions/${id}/slides/${newOrder}`, { timer: oldSlide?.timer, title: oldSlide?.title })
+    await axios.post(`/competitions/${id}/slides/${contextState.slideOrder}/copy`)
     dispatch(getEditorCompetition(id))
     setContextState(initialState)
   }
 
   const renderSlideIcon = (slide: RichSlide) => {
-    switch (slide.questions[0].type_id) {
+    switch (slide.questions && slide.questions[0].type_id) {
       case 0:
         return <InfoOutlinedIcon></InfoOutlinedIcon> // information slide
       case 1:
