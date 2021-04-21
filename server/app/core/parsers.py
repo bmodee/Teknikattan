@@ -60,7 +60,24 @@ question_parser.add_argument("total_score", type=int, default=None, location="js
 question_parser.add_argument("type_id", type=int, default=None, location="json")
 question_parser.add_argument("slide_id", type=int, location="json")
 
-###QUESTION####
+
+###QUESTION ALTERNATIVES####
+question_alternative_parser = reqparse.RequestParser()
+question_alternative_parser.add_argument("text", type=str, default=None, location="json")
+question_alternative_parser.add_argument("value", type=int, default=None, location="json")
+
+###QUESTION ANSWERS####
+question_answer_parser = reqparse.RequestParser()
+question_answer_parser.add_argument("data", type=dict, required=True, location="json")
+question_answer_parser.add_argument("score", type=int, required=True, location="json")
+question_answer_parser.add_argument("question_id", type=int, required=True, location="json")
+
+###QUESTION ANSWERS EDIT####
+question_answer_edit_parser = reqparse.RequestParser()
+question_answer_edit_parser.add_argument("data", type=dict, default=None, location="json")
+question_answer_edit_parser.add_argument("score", type=int, default=None, location="json")
+
+###CODE####
 code_parser = reqparse.RequestParser()
 code_parser.add_argument("pointer", type=str, default=None, location="json")
 code_parser.add_argument("view_type_id", type=int, default=None, location="json")

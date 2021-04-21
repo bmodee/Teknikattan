@@ -63,12 +63,15 @@ def _add_items():
             dbc.utils.commit_and_refresh(item_slide)
 
             # Add question to competition
-            dbc.add.question(
+            item_question = dbc.add.question(
                 name=f"Question {j}: {question_types_items[j].name}",
                 total_score=j,
                 type_id=question_types_items[j].id,
                 item_slide=item_slide,
             )
+
+            for i in range(3):
+                dbc.add.question_alternative(f"Alternative {i}", 0, item_question.id)
 
             # Add text components
             # TODO: Add images as components

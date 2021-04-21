@@ -68,3 +68,15 @@ class QuestionDTO:
     api = Namespace("questions")
     schema = schemas.QuestionSchema(many=False)
     list_schema = schemas.QuestionSchema(many=True)
+
+
+class QuestionAlternativeDTO:
+    api = Namespace("alternatives")
+    schema = schemas.QuestionAlternativeSchema(many=False)
+    list_schema = schemas.QuestionAlternativeSchema(many=True)
+
+
+class QuestionAnswerDTO:
+    api = Namespace("answers")
+    schema = schemas.QuestionAnswerSchema(many=False)
+    list_schema = schemas.QuestionAnswerSchema(many=True)

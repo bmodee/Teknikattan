@@ -80,9 +80,11 @@ def check_slides_copy(item_slide_original, item_slide_copy, num_slides, order):
     assert item_slide_copy.settings == item_slide_original.settings
 
     # Checks that all components were correctly copied
-    assert len(item_slide_copy.components) == len(item_slide_original.components)
-    for i, c1 in enumerate(item_slide_original.components):
-        c2 = item_slide_copy.components[i]
+    components = item_slide_original.components
+    components_copy = item_slide_copy.components
+    assert len(components) == len(components_copy)
+
+    for c1, c2 in zip(components, components_copy):
         assert c1 != c2
         assert c1.x == c2.x
         assert c1.y == c2.y
@@ -94,16 +96,28 @@ def check_slides_copy(item_slide_original, item_slide_copy, num_slides, order):
         assert c1.type_id == c2.type_id
 
     # Checks that all questions were correctly copied
-    assert len(item_slide_copy.questions) == len(item_slide_original.questions)
-    for i, q1 in enumerate(item_slide_original.questions):
-        q2 = item_slide_copy.questions[i]
+    questions = item_slide_original.questions
+    questions_copy = item_slide_copy.questions
+    assert len(questions) == len(questions_copy)
+
+    for q1, q2 in zip(questions, questions_copy):
         assert q1 != q2
         assert q1.name == q2.name
         assert q1.total_score == q2.total_score
         assert q1.type_id == q2.type_id
         assert q1.slide_id == item_slide_original.id
         assert q2.slide_id == item_slide_copy.id
-        # TODO: Assert alternatives
+
+        # Assert alternatives
+        alternatives = q1.alternatives
+        alternatives_copy = q2.alternatives
+        assert len(alternatives) == len(alternatives_copy)
+
+        for a1, a2 in zip(alternatives, alternatives_copy):
+            assert a1.text == a2.text
+            assert a1.value == a2.value
+            assert a1.quesiton_id == q1.id
+            assert a2.quesiton_id == q2.id
 
     # Checks that the copy put the slide in the database
     item_slides, total = dbc.search.slide(

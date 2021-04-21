@@ -15,6 +15,8 @@ from app.database.models import (
     Media,
     MediaType,
     Question,
+    QuestionAlternative,
+    QuestionAnswer,
     QuestionType,
     Role,
     Slide,
@@ -112,6 +114,14 @@ def question(name, total_score, type_id, item_slide):
     """
 
     return db_add(Question(name, total_score, type_id, item_slide.id))
+
+
+def question_alternative(text, value, question_id):
+    return db_add(QuestionAlternative(text, value, question_id))
+
+
+def question_answer(data, score, question_id, team_id):
+    return db_add(QuestionAnswer(data, score, question_id, team_id))
 
 
 def code(pointer, view_type_id):

@@ -125,3 +125,31 @@ def question(item_question, name=None, total_score=None, type_id=None, slide_id=
     db.session.refresh(item_question)
 
     return item_question
+
+
+def question_alternative(item, text=None, value=None):
+
+    if text:
+        item.text = text
+
+    if value:
+        item.value = value
+
+    db.session.commit()
+    db.session.refresh(item)
+
+    return item
+
+
+def question_answer(item, data=None, score=None):
+
+    if data:
+        item.data = data
+
+    if score:
+        item.score = score
+
+    db.session.commit()
+    db.session.refresh(item)
+
+    return item

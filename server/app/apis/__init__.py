@@ -55,6 +55,8 @@ def item_response(item, code=http_codes.OK):
 
 from flask_restx import Api
 
+from .alternatives import api as alternative_ns
+from .answers import api as answer_ns
 from .auth import api as auth_ns
 from .codes import api as code_ns
 from .competitions import api as comp_ns
@@ -73,6 +75,8 @@ flask_api.add_namespace(user_ns, path="/api/users")
 flask_api.add_namespace(auth_ns, path="/api/auth")
 flask_api.add_namespace(comp_ns, path="/api/competitions")
 flask_api.add_namespace(slide_ns, path="/api/competitions/<CID>/slides")
+flask_api.add_namespace(alternative_ns, path="/api/competitions/<CID>/slides/<SOrder>/questions/<QID>/alternatives")
+flask_api.add_namespace(answer_ns, path="/api/competitions/<CID>/teams/<TID>/answers")
 flask_api.add_namespace(team_ns, path="/api/competitions/<CID>/teams")
 flask_api.add_namespace(code_ns, path="/api/competitions/<CID>/codes")
 flask_api.add_namespace(question_ns, path="/api/competitions/<CID>")

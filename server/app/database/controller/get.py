@@ -12,6 +12,8 @@ from app.database.models import (
     ComponentType,
     MediaType,
     Question,
+    QuestionAlternative,
+    QuestionAnswer,
     QuestionType,
     Role,
     Slide,
@@ -76,6 +78,16 @@ def question(CID, SOrder, QID, required=True, error_msg=None):
 
     join_filters = (Slide.competition_id == CID) & (Slide.order == SOrder) & (Slide.id == Question.slide_id)
     return Question.query.join(Slide, join_filters).filter(Question.id == QID).first_extended(required, error_msg)
+
+
+def question_alternatives(QID):
+    # join_filters = (Slide.competition_id == CID) & (Slide.order == SOrder)
+    return QuestionAlternative.query.filter(QuestionAlternative.question_id == QID).all()
+
+
+def question_answers(TID):
+    # join_filters = (Slide.competition_id == CID) & (Slide.order == SOrder)
+    return QuestionAnswer.query.filter(QuestionAnswer.team_id == TID).all()
 
 
 def competition(CID):

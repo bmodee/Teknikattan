@@ -160,7 +160,7 @@ class Question(db.Model):
 class QuestionAlternative(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(STRING_SIZE), nullable=False)
-    value = db.Column(db.Boolean, nullable=False)
+    value = db.Column(db.Integer, nullable=False)
     question_id = db.Column(db.Integer, db.ForeignKey("question.id"), nullable=False)
 
     def __init__(self, text, value, question_id):
@@ -172,8 +172,9 @@ class QuestionAlternative(db.Model):
 class QuestionAnswer(db.Model):
     __table_args__ = (db.UniqueConstraint("question_id", "team_id"),)
     id = db.Column(db.Integer, primary_key=True)
-    data = db.Column(db.Text, nullable=False)
+    data = db.Column(Dictionary(), nullable=False)
     score = db.Column(db.Integer, nullable=False, default=0)
+
     question_id = db.Column(db.Integer, db.ForeignKey("question.id"), nullable=False)
     team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
 

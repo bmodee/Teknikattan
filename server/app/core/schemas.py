@@ -62,13 +62,13 @@ class QuestionAnswerSchema(BaseSchema):
         model = models.QuestionAnswer
 
     id = ma.auto_field()
-    data = ma.auto_field()
+    data = ma.Function(lambda obj: obj.data)
     score = ma.auto_field()
     question_id = ma.auto_field()
     team_id = ma.auto_field()
 
 
-class QuestionAlternative(BaseSchema):
+class QuestionAlternativeSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = models.QuestionAlternative
 

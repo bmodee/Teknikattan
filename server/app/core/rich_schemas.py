@@ -20,7 +20,7 @@ class QuestionSchemaRich(RichSchema):
     total_score = ma.auto_field()
     slide_id = ma.auto_field()
     type_id = ma.auto_field()
-    alternatives = fields.Nested(schemas.QuestionAlternative, many=True)
+    alternatives = fields.Nested(schemas.QuestionAlternativeSchema, many=True)
 
 
 class TeamSchemaRich(RichSchema):

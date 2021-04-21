@@ -14,7 +14,7 @@ list_schema = QuestionDTO.list_schema
 
 @api.route("/questions")
 @api.param("CID")
-class QuestionsList(Resource):
+class QuestionList(Resource):
     @check_jwt(editor=True)
     def get(self, CID):
         items = dbc.get.question_list(CID)
@@ -23,7 +23,7 @@ class QuestionsList(Resource):
 
 @api.route("/slides/<SID>/questions")
 @api.param("CID, SID")
-class QuestionsList(Resource):
+class QuestionListForSlide(Resource):
     @check_jwt(editor=True)
     def post(self, SID, CID):
         args = question_parser.parse_args(strict=True)
@@ -37,7 +37,7 @@ class QuestionsList(Resource):
 
 @api.route("/slides/<SID>/questions/<QID>")
 @api.param("CID, SID, QID")
-class Questions(Resource):
+class QuestionById(Resource):
     @check_jwt(editor=True)
     def get(self, CID, SID, QID):
         item_question = dbc.get.question(CID, SID, QID)

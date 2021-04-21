@@ -6,10 +6,15 @@ from app.database.controller import add, get, search, utils
 from app.database.models import Question
 
 
+def _alternative(item_old, question_id):
+    """Internal function. Makes a copy of the provided question alternative"""
+    return add.question_alternative(item_old.text, item_old.value, question_id)
+
+
 def _question(item_question_old, slide_id):
     """
     Internal function. Makes a copy of the provided question item to the
-    specified slide. Does not copy team, question answers or alternatives.
+    specified slide. Does not copy team, question answers.
     """
 
     item_question_new = add.db_add(
@@ -21,9 +26,8 @@ def _question(item_question_old, slide_id):
         )
     )
 
-    # TODO: Add question alternatives
-    # for item_alternatives in item_question_old.alternatives:
-    #     dbc.add.alternatives()
+    for item_alternative in item_question_old.alternatives:
+        _alternative(item_alternative, item_question_new.id)
 
     return item_question_new
 
@@ -48,7 +52,7 @@ def _component(item_component, item_slide_new):
 def slide(item_slide_old):
     """
     Deep copies a slide to the same competition.
-    Does not copy team, question answers or alternatives.
+    Does not copy team, question answers.
     """
 
     item_competition = get.competition(item_slide_old.competition_id)
@@ -59,7 +63,7 @@ def slide(item_slide_old):
 def slide_to_competition(item_slide_old, item_competition):
     """
     Deep copies a slide to the provided competition.
-    Does not copy team, question answers or alternatives.
+    Does not copy team, question answers.
     """
 
     item_slide_new = add.slide(item_competition)
@@ -85,7 +89,7 @@ def slide_to_competition(item_slide_old, item_competition):
 def competition(item_competition_old):
     """
     Adds a deep-copy of the provided competition.
-    Will not copy teams, question answers or alternatives.
+    Will not copy teams, question answers.
     """
 
     name = "Kopia av " + item_competition_old.name
