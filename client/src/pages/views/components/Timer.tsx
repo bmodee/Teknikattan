@@ -38,8 +38,7 @@ const Timer: React.FC = (props: any) => {
 
   return (
     <>
-      <div>Timer: {props.timer.value}</div>
-      <div>Enabled: {props.timer.enabled.toString()}</div>
+      <div>{props.timer.value}</div>
     </>
   )
 }

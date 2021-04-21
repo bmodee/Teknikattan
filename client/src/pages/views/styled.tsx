@@ -50,8 +50,15 @@ export const PresenterFooter = styled.div`
 export const PresenterButton = styled(Button)`
   width: 100px;
   height: 100px;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  margin-left: 16px;
+  margin-right: 16px;
+  margin-top: 16px;
+`
+
+export const SlideCounter = styled(Button)`
+  margin-left: 16px;
+  margin-right: 16px;
+  margin-top: 16px;
 `
 
 export const PresenterContainer = styled.div`
@@ -59,6 +66,18 @@ export const PresenterContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+`
+
+export const ToolBarContainer = styled.div`
+  align-self: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 100%;
+  width: auto;
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 20px;
 `
 
 interface DrawerProps {

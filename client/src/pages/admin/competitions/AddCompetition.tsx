@@ -10,10 +10,17 @@ import { City } from '../../../interfaces/ApiModels'
 import { AddCompetitionModel, FormModel } from '../../../interfaces/FormModels'
 import { AddButton, AddContent, AddForm } from '../styledComp'
 
+/**
+ * Component description:
+ * This component handles the functionality when adding a competition to the system
+ * This component is a child component to CompetitionManager.tsx
+ */
+
 type formType = FormModel<AddCompetitionModel>
 
 const noCitySelected = 'Välj stad'
 
+//Description of the form and what is required
 const competitionSchema: Yup.SchemaOf<formType> = Yup.object({
   model: Yup.object()
     .shape({
@@ -45,20 +52,25 @@ const AddCompetition: React.FC = (props: any) => {
   const dispatch = useAppDispatch()
   const id = open ? 'simple-popover' : undefined
   const currentYear = new Date().getFullYear()
+
+  // Handles the actual submition to the database
   const handleCompetitionSubmit = async (values: formType, actions: FormikHelpers<formType>) => {
+    // The parameters sent
     const params = {
       name: values.model.name,
       year: values.model.year,
       city_id: selectedCity?.id as number,
     }
+
     await axios
-      .post('/competitions', params)
+      .post('/competitions', params) // send to database
       .then(() => {
-        actions.resetForm()
+        actions.resetForm() // reset the form
         setAnchorEl(null)
-        dispatch(getCompetitions())
+        dispatch(getCompetitions()) // refresh competitions
         setSelectedCity(undefined)
       })
+      // if the post request fails
       .catch(({ response }) => {
         console.warn(response.data)
         if (response.data && response.data.message)
@@ -83,6 +95,12 @@ const AddCompetition: React.FC = (props: any) => {
       >
         Ny Tävling
       </AddButton>
+
+      {/**
+       *  The "pop up" menu for adding a competition
+       *  contains 3 fields; Name, Region and Year
+       *
+       */}
       <Popover
         id={id}
         open={open}

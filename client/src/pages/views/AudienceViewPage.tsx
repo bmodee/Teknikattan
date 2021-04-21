@@ -1,7 +1,8 @@
 import React from 'react'
+import SlideDisplay from './components/SlideDisplay'
 
 const AudienceViewPage: React.FC = () => {
-  return <div>Publik</div>
+  return <SlideDisplay />
 }
 
 export default AudienceViewPage

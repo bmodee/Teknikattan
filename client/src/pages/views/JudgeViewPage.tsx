@@ -1,4 +1,4 @@
-import { Divider, List, ListItemText } from '@material-ui/core'
+import { Divider, List, ListItemText, Typography } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -10,6 +10,7 @@ import {
 } from '../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { ViewParams } from '../../interfaces/ViewParams'
+import { socket_connect } from '../../sockets'
 import { SlideListItem } from '../presentationEditor/styled'
 import JudgeScoreDisplay from './components/JudgeScoreDisplay'
 import SlideDisplay from './components/SlideDisplay'
@@ -43,17 +44,20 @@ const JudgeViewPage: React.FC = () => {
   const { id, code }: ViewParams = useParams()
   const dispatch = useAppDispatch()
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0)
-  useEffect(() => {
-    dispatch(getPresentationCompetition(id))
-    dispatch(getPresentationTeams(id))
-    dispatch(setPresentationCode(code))
-  }, [])
   const teams = useAppSelector((state) => state.presentation.teams)
   const slides = useAppSelector((state) => state.presentation.competition.slides)
   const handleSelectSlide = (index: number) => {
     setActiveSlideIndex(index)
     dispatch(setCurrentSlide(slides[index]))
   }
+
+  useEffect(() => {
+    socket_connect()
+    dispatch(getPresentationCompetition(id))
+    dispatch(getPresentationTeams(id))
+    dispatch(setPresentationCode(code))
+  }, [])
+
   return (
     <div>
       <JudgeAppBar position="fixed">
@@ -80,6 +84,7 @@ const JudgeViewPage: React.FC = () => {
               button
               key={slide.id}
             >
+              <Typography variant="h6">Slide ID: {slide.id} </Typography>
               <ListItemText primary={slide.title} />
             </SlideListItem>
           ))}
@@ -103,7 +108,6 @@ const JudgeViewPage: React.FC = () => {
           ))}
         </List>
       </RightDrawer>
-      aaa
       <Content leftDrawerWidth={leftDrawerWidth} rightDrawerWidth={rightDrawerWidth}>
         <div className={classes.toolbar} />
         <SlideDisplay />

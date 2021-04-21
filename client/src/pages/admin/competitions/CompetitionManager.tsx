@@ -21,6 +21,13 @@ import { CompetitionFilterParams } from '../../../interfaces/FilterParams'
 import { FilterContainer, RemoveMenuItem, TopBar, YearFilterTextField } from '../styledComp'
 import AddCompetition from './AddCompetition'
 
+/**
+ * Component description:
+ * This component shows a list of all the competitions which a user can search through
+ * We can also start, duplicate or delete a competition
+ */
+
+// Use defined styling
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     table: {
@@ -41,6 +48,7 @@ const CompetitionManager: React.FC = (props: any) => {
   const filterParams = useAppSelector((state) => state.competitions.filterParams)
   const competitionTotal = useAppSelector((state) => state.competitions.total)
   const cities = useAppSelector((state) => state.cities.cities)
+
   const classes = useStyles()
   const noFilterText = 'Alla'
   const dispatch = useAppDispatch()
@@ -59,6 +67,7 @@ const CompetitionManager: React.FC = (props: any) => {
     dispatch(getCompetitions())
   }, [])
 
+  // Search funtion to search for a specific string
   const onSearchChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     if (timerHandle) {
       clearTimeout(timerHandle)
@@ -69,13 +78,14 @@ const CompetitionManager: React.FC = (props: any) => {
     dispatch(setFilterParams({ ...filterParams, name: event.target.value }))
   }
 
+  // Function to remove a competition from the systems database
   const handleDeleteCompetition = async () => {
     if (activeId) {
       await axios
         .delete(`/competitions/${activeId}`)
         .then(() => {
           setAnchorEl(null)
-          dispatch(getCompetitions())
+          dispatch(getCompetitions()) // refresh the competition list
         })
         .catch(({ response }) => {
           console.warn(response.data)
@@ -177,6 +187,7 @@ const CompetitionManager: React.FC = (props: any) => {
               ))}
           </TableBody>
         </Table>
+        {/** We can't find any competitions at all or with a specific filter */}
         {(!competitions || competitions.length === 0) && (
           <Typography>Inga tävlingar hittades med nuvarande filter</Typography>
         )}
