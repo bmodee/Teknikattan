@@ -48,7 +48,7 @@ class QuestionById(Resource):
         args = question_parser.parse_args(strict=True)
 
         item_question = dbc.get.question(CID, SID, QID)
-        item_question = dbc.edit.question(item_question, **args)
+        item_question = dbc.edit.default(item_question, **args)
 
         return item_response(schema.dump(item_question))
 

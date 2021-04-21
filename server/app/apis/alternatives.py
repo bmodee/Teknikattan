@@ -37,7 +37,7 @@ class QuestionAlternatives(Resource):
     def put(self, CID, SOrder, QID, AID):
         args = question_alternative_parser.parse_args(strict=True)
         item = dbc.get.one(QuestionAlternative, AID)
-        item = dbc.edit.question_alternative(item, **args)
+        item = dbc.edit.default(item, **args)
         return item_response(schema.dump(item))
 
     @check_jwt(editor=True)

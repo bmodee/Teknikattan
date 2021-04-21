@@ -37,5 +37,5 @@ class QuestionAnswers(Resource):
     def put(self, CID, TID, AID):
         args = question_answer_edit_parser.parse_args(strict=True)
         item = dbc.get.one(QuestionAnswer, AID)
-        item = dbc.edit.question_answer(item, **args)
+        item = dbc.edit.default(item, **args)
         return item_response(schema.dump(item))

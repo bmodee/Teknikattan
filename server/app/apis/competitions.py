@@ -42,7 +42,7 @@ class Competitions(Resource):
     def put(self, CID):
         args = competition_parser.parse_args(strict=True)
         item = dbc.get.one(Competition, CID)
-        item = dbc.edit.competition(item, **args)
+        item = dbc.edit.default(item, **args)
 
         return item_response(schema.dump(item))
 

@@ -19,7 +19,12 @@ def edit_user(item_user, args):
         if User.query.filter(User.email == args["email"]).count() > 0:
             api.abort(codes.BAD_REQUEST, "Email is already in use")
 
-    return dbc.edit.user(item_user, **args)
+    try:
+        args["name"] = args.get("name").title()
+    except Exception:
+        pass
+
+    return dbc.edit.default(item_user, **args)
 
 
 @api.route("/")

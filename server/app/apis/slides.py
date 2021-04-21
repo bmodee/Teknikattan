@@ -44,7 +44,7 @@ class Slides(Resource):
         timer = args.get("timer")
 
         item_slide = dbc.get.slide(CID, SOrder)
-        item_slide = dbc.edit.slide(item_slide, title, timer)
+        item_slide = dbc.edit.default(item_slide, title=title, timer=timer)
 
         return item_response(schema.dump(item_slide))
 

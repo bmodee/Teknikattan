@@ -53,5 +53,5 @@ class Teams(Resource):
 
         item_team = dbc.get.team(CID, TID)
 
-        item_team = dbc.edit.team(item_team, name=name, competition_id=CID)
+        item_team = dbc.edit.default(item_team, name=name, competition_id=CID)
         return item_response(schema.dump(item_team))

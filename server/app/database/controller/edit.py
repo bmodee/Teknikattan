@@ -26,130 +26,28 @@ def switch_order(item1, item2):
     return item1
 
 
-def component(item, x, y, w, h, data):
-    """ Edits position, size and content of the provided component. """
+def default(item, **kwargs):
+    """
+    For every keyword argument, set that attribute on item to the given value.
+    Raise error if item doesn't already have that attribute. Do nothing if the
+    value for a given key is None. Works for any type of item.
 
-    if x:
-        item.x = x
-    if y:
-        item.y = y
-    if w:
-        item.w = w
-    if h:
-        item.h = h
-    if data:
-        item.data = data
+    Example:
+    >>> user = default(user, name="Karl Karlsson")  # Change name
+    >>> user.name
+    Karl Karlsson
+    >>> user = default(user, efternamn="Jönsson")   # Try to set attribute that doesn't exist
+    AttributeError: Item of type <class 'app.database.models.User'> has no attribute 'efternamn'
+    >>> user = default(user, name=None)             # Nothing happens if value is None
+    >>> user.name
+    Karl Karlsson
+    """
 
+    for key, value in kwargs.items():
+        if not hasattr(item, key):
+            raise AttributeError(f"Item of type {type(item)} has no attribute '{key}'")
+        if value is not None:
+            setattr(item, key, value)
     db.session.commit()
     db.session.refresh(item)
-    return item
-
-
-def slide(item, title=None, timer=None):
-    """ Edits the title and timer of the slide. """
-
-    if title:
-        item.title = title
-    if timer:
-        item.timer = timer
-
-    db.session.commit()
-    db.session.refresh(item)
-    return item
-
-
-def team(item_team, name=None, competition_id=None):
-    """ Edits the name and competition of the team. """
-
-    if name:
-        item_team.name = name
-    if competition_id:
-        item_team.competition_id = competition_id
-
-    db.session.commit()
-    db.session.refresh(item_team)
-    return item_team
-
-
-def competition(item, name=None, year=None, city_id=None):
-    """ Edits the name and year of the competition. """
-
-    if name:
-        item.name = name
-    if year:
-        item.year = year
-    if city_id:
-        item.city_id = city_id
-
-    db.session.commit()
-    db.session.refresh(item)
-    return item
-
-
-def user(item, name=None, email=None, city_id=None, role_id=None):
-    """ Edits the name, email, city and role of the user. """
-
-    if name:
-        item.name = name.title()
-
-    if email:
-        item.email = email
-
-    if city_id:
-        item.city_id = city_id
-
-    if role_id:
-        item.role_id = role_id
-
-    db.session.commit()
-    db.session.refresh(item)
-    return item
-
-
-def question(item_question, name=None, total_score=None, type_id=None, slide_id=None):
-    """ Edits the name, score, type and slide of the question. """
-
-    if name:
-        item_question.name = name
-
-    if total_score:
-        item_question.total_score = total_score
-
-    if type_id:
-        item_question.type_id = type_id
-
-    if slide_id:
-        item_question.slide_id = slide_id
-
-    db.session.commit()
-    db.session.refresh(item_question)
-
-    return item_question
-
-
-def question_alternative(item, text=None, value=None):
-
-    if text:
-        item.text = text
-
-    if value:
-        item.value = value
-
-    db.session.commit()
-    db.session.refresh(item)
-
-    return item
-
-
-def question_answer(item, data=None, score=None):
-
-    if data:
-        item.data = data
-
-    if score:
-        item.score = score
-
-    db.session.commit()
-    db.session.refresh(item)
-
     return item
