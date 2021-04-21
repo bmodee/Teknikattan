@@ -47,17 +47,19 @@ def add_default_values():
         dbc.add.slide(item_comp)
 
         # Add slides
-        i = 1
-        for item_slide in item_comp.slides:
+        for i, item_slide in enumerate(item_comp.slides):
             # Populate slide with data
-            item_slide.title = f"Title {i}"
-            item_slide.body = f"Body {i}"
-            item_slide.timer = 100 + i
+            item_slide.title = f"Title {i+1}"
+            item_slide.body = f"Body {i+1}"
+            item_slide.timer = 100 + i + 1
             # item_slide.settings = "{}"
             dbc.utils.commit_and_refresh(item_slide)
+
             # Add question to competition
-            dbc.add.question(name=f"Q{i}", total_score=i, type_id=1, item_slide=item_slide)
-            i += 1
+            dbc.add.question(name=f"Q{i+1}", total_score=i + 1, type_id=1, item_slide=item_slide)
+
+            # Add text component
+            dbc.add.component(1, item_slide, {"text": "Text"}, i, 2 * i, 3 * i, 4 * i)
 
 
 def get_body(response):

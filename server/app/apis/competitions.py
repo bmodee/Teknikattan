@@ -61,3 +61,15 @@ class CompetitionSearch(Resource):
         args = competition_search_parser.parse_args(strict=True)
         items, total = dbc.search.competition(**args)
         return list_response(list_schema.dump(items), total)
+
+
+@api.route("/<CID>/copy")
+@api.param("CID")
+class SlidesOrder(Resource):
+    @check_jwt(editor=True)
+    def post(self, CID):
+        item_competition = dbc.get.competition(CID)
+
+        item_competition_copy = dbc.copy.competition(item_competition)
+
+        return item_response(schema.dump(item_competition_copy))

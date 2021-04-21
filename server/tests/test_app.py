@@ -98,6 +98,16 @@ def test_competition_api(client):
     response, body = delete(client, f"/api/competitions/{competition_id}", headers=headers)
     assert response.status_code == codes.OK
 
+    # Get competition
+    competition_id = 2
+    response, body = get(client, f"/api/competitions/{competition_id}", headers=headers)
+    assert response.status_code == codes.OK
+
+    # Copies competition
+    for _ in range(10):
+        response, _ = post(client, f"/api/competitions/{competition_id}/copy", headers=headers)
+        assert response.status_code == codes.OK
+
 
 def test_auth_and_user_api(client):
     add_default_values()
@@ -300,6 +310,11 @@ def test_slide_api(client):
 
     # Changes the order
     change_order_test(client, CID, slide_order, slide_order + 1, headers)
+
+    # Copies slide
+    for _ in range(10):
+        response, _ = post(client, f"/api/competitions/{CID}/slides/{slide_order}/copy", headers=headers)
+        assert response.status_code == codes.OK
 
 
 def test_question_api(client):

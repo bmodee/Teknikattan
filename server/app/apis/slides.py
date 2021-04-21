@@ -83,3 +83,15 @@ class SlidesOrder(Resource):
         item_slide = dbc.edit.switch_order(item_slide, item_slide_order)
 
         return item_response(schema.dump(item_slide))
+
+
+@api.route("/<SOrder>/copy")
+@api.param("CID,SOrder")
+class SlidesOrder(Resource):
+    @check_jwt(editor=True)
+    def post(self, CID, SOrder):
+        item_slide = dbc.get.slide(CID, SOrder)
+
+        item_slide_copy = dbc.copy.slide(item_slide)
+
+        return item_response(schema.dump(item_slide_copy))

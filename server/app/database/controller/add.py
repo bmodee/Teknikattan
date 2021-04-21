@@ -140,20 +140,36 @@ def slide(item_competition):
 
 
 def competition(name, year, city_id):
-    """ Adds a competition to the database using the provided arguments. """
+    """
+    Adds a competition to the database using the
+    provided arguments. Also adds slide and codes.
+    """
 
-    item_competition = db_add(Competition(name, year, city_id))
+    item_competition = _competition(name, year, city_id)
 
     # Add one slide for the competition
     slide(item_competition)
+
+    # TODO: Add two teams
+
+    return item_competition
+
+
+def _competition(name, year, city_id, font=None):
+    """
+    Internal function. Adds a competition to the database
+    using the provided arguments. Also adds codes.
+    """
+
+    item_competition = db_add(Competition(name, year, city_id))
+    if font:
+        item_competition.font = font
 
     # Add code for Judge view
     code(item_competition.id, 2)
 
     # Add code for Audience view
     code(item_competition.id, 3)
-
-    # TODO: Add two teams
 
     utils.refresh(item_competition)
     return item_competition
