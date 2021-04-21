@@ -1,6 +1,11 @@
 import {
   Button,
   createStyles,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControl,
   InputLabel,
   makeStyles,
@@ -8,6 +13,8 @@ import {
   Popover,
   TextField,
   Theme,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { Alert, AlertTitle } from '@material-ui/lab'
@@ -62,6 +69,11 @@ type UserIdProps = {
 }
 
 const EditUser = ({ user }: UserIdProps) => {
+  // for dialog alert
+  const [openAlert, setOpen] = React.useState(false)
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+
   const dispatch = useAppDispatch()
   const classes = useStyles()
 
@@ -87,21 +99,25 @@ const EditUser = ({ user }: UserIdProps) => {
     setAnchorEl(event.currentTarget)
   }
   const handleClose = () => {
+    setOpen(false)
     setAnchorEl(null)
   }
 
+  const handleVerifyDelete = () => {
+    setOpen(true)
+  }
+
   const handleDeleteUsers = async () => {
-    if (confirm('Are u sure?')) {
-      await axios
-        .delete(`/auth/delete/${user.id}`)
-        .then(() => {
-          setAnchorEl(null)
-          dispatch(getSearchUsers())
-        })
-        .catch(({ response }) => {
-          console.warn(response.data)
-        })
-    }
+    setOpen(false)
+    await axios
+      .delete(`/auth/delete/${user.id}`)
+      .then(() => {
+        setAnchorEl(null)
+        dispatch(getSearchUsers())
+      })
+      .catch(({ response }) => {
+        console.warn(response.data)
+      })
   }
 
   const handleSubmit = async (values: formType, actions: FormikHelpers<formType>) => {
@@ -273,7 +289,7 @@ const EditUser = ({ user }: UserIdProps) => {
                   Ändra
                 </Button>
                 <Button
-                  onClick={handleDeleteUsers}
+                  onClick={handleVerifyDelete}
                   className={classes.deleteButton}
                   fullWidth
                   variant="contained"
@@ -281,6 +297,27 @@ const EditUser = ({ user }: UserIdProps) => {
                 >
                   Ta bort
                 </Button>
+                <Dialog
+                  fullScreen={fullScreen}
+                  open={openAlert}
+                  onClose={handleClose}
+                  aria-labelledby="responsive-dialog-title"
+                >
+                  <DialogTitle id="responsive-dialog-title">{'Ta bort användare?'}</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Är du säker på att du vill ta bort användaren och all dess information från systemet?
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button autoFocus onClick={handleClose} color="primary">
+                      Avbryt
+                    </Button>
+                    <Button onClick={handleDeleteUsers} color="primary" autoFocus>
+                      Ta bort
+                    </Button>
+                  </DialogActions>
+                </Dialog>
 
                 {formik.errors.error && (
                   <Alert severity="error">

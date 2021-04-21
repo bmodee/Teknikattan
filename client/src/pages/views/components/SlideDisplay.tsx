@@ -1,12 +1,10 @@
 import { Typography } from '@material-ui/core'
-import React, { useEffect } from 'react'
-import { useAppDispatch, useAppSelector } from '../../../hooks'
+import React from 'react'
+import { useAppSelector } from '../../../hooks'
 import { SlideContainer } from './styled'
 
 const SlideDisplay: React.FC = () => {
   const currentSlide = useAppSelector((state) => state.presentation.slide)
-  const dispatch = useAppDispatch()
-  useEffect(() => {}, [])
 
   return (
     <div>

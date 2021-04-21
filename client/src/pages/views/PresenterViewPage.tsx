@@ -1,4 +1,18 @@
-import { List, ListItem, Popover, Tooltip, Typography } from '@material-ui/core'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  List,
+  ListItem,
+  Popover,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@material-ui/core'
 import AssignmentIcon from '@material-ui/icons/Assignment'
 import BackspaceIcon from '@material-ui/icons/Backspace'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
@@ -31,6 +45,11 @@ import {
 } from './styled'
 
 const PresenterViewPage: React.FC = () => {
+  // for dialog alert
+  const [openAlert, setOpen] = React.useState(false)
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+
   const teams = useAppSelector((state) => state.presentation.teams)
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
   const { id, code }: ViewParams = useParams()
@@ -50,7 +69,12 @@ const PresenterViewPage: React.FC = () => {
     setAnchorEl(event.currentTarget)
   }
   const handleClose = () => {
+    setOpen(false)
     setAnchorEl(null)
+  }
+
+  const handleVerifyExit = () => {
+    setOpen(true)
   }
 
   const startCompetition = () => {
@@ -61,22 +85,42 @@ const PresenterViewPage: React.FC = () => {
   }
 
   const endCompetition = () => {
-    if (confirm('Är du säker på att du vill avsluta tävlingen för alla?')) {
-      const haveStarted = false
-      socketEndPresentation()
-      history.push('/admin')
-      window.location.reload(false) // TODO: fix this ugly hack, we "need" to refresh site to be able to run the competition correctly again
-    }
+    setOpen(false)
+    const haveStarted = false
+    socketEndPresentation()
+    history.push('/admin')
+    window.location.reload(false) // TODO: fix this ugly hack, we "need" to refresh site to be able to run the competition correctly again
   }
 
   return (
     <PresenterContainer>
       <PresenterHeader>
         <Tooltip title="Avsluta tävling" arrow>
-          <PresenterButton onClick={endCompetition} variant="contained" color="secondary">
+          <PresenterButton onClick={handleVerifyExit} variant="contained" color="secondary">
             <BackspaceIcon fontSize="large" />
           </PresenterButton>
         </Tooltip>
+        <Dialog
+          fullScreen={fullScreen}
+          open={openAlert}
+          onClose={handleClose}
+          aria-labelledby="responsive-dialog-title"
+        >
+          <DialogTitle id="responsive-dialog-title">{'Vill du avsluta tävlingen?'}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Genom att avsluta tävlingen kommer den avslutas för alla. Du kommer gå tillbaka till startsidan.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus onClick={handleClose} color="primary">
+              Avbryt
+            </Button>
+            <Button onClick={endCompetition} color="primary" autoFocus>
+              Avsluta tävling
+            </Button>
+          </DialogActions>
+        </Dialog>
         <SlideCounter>
           <Typography variant="h3">
             {presentation.slide.id} / {presentation.competition.slides.length}
