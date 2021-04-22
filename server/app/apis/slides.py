@@ -24,7 +24,6 @@ class SlidesList(Resource):
     def post(self, CID):
         item_comp = dbc.get.one(Competition, CID)
         item_slide = dbc.add.slide(item_comp)
-        dbc.add.question(f"Fråga {item_slide.order + 1}", 10, 0, item_slide)
         dbc.utils.refresh(item_comp)
         return list_response(list_schema.dump(item_comp.slides))
 

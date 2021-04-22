@@ -61,7 +61,7 @@ export interface Question extends NameID {
 export interface QuestionAlternative {
   id: number
   text: string
-  value: boolean
+  value: number
   question_id: number
 }
 export interface QuestionAnswer {

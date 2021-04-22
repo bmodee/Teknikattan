@@ -34,5 +34,5 @@ export interface RichQuestion {
   total_score: number
   question_type: QuestionType
   type_id: number
-  question_alternatives: QuestionAlternative[]
+  alternatives: QuestionAlternative[]
 }

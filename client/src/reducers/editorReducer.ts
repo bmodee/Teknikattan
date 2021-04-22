@@ -17,7 +17,7 @@ const initialState: EditorState = {
     slides: [],
     teams: [],
   },
-  activeSlideId: 0,
+  activeSlideId: -1,
   loading: true,
 }
 
@@ -25,8 +25,8 @@ export default function (state = initialState, action: AnyAction) {
   switch (action.type) {
     case Types.SET_EDITOR_COMPETITION:
       return {
+        ...state,
         competition: action.payload as RichCompetition,
-        activeSlideId: action.payload.slides[0].id as number,
         loading: false,
       }
     case Types.SET_EDITOR_SLIDE_ID:

@@ -1,16 +1,17 @@
-import { Button, CircularProgress, Divider, Menu, MenuItem, Typography } from '@material-ui/core'
+import { Button, Checkbox, CircularProgress, Divider, Menu, MenuItem, Typography } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
+import { CheckboxProps } from '@material-ui/core/Checkbox'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Drawer from '@material-ui/core/Drawer'
 import ListItemText from '@material-ui/core/ListItemText'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { createStyles, makeStyles, Theme, withStyles } from '@material-ui/core/styles'
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined'
 import BuildOutlinedIcon from '@material-ui/icons/BuildOutlined'
 import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined'
 import DnsOutlinedIcon from '@material-ui/icons/DnsOutlined'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 import axios from 'axios'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getCities } from '../../actions/cities'
 import { getEditorCompetition, setEditorSlideId } from '../../actions/editor'
@@ -72,6 +73,12 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.background.default,
       padding: theme.spacing(3),
     },
+    alignCheckboxText: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingRight: 20,
+    },
   })
 )
 
@@ -86,7 +93,6 @@ const PresentationEditorPage: React.FC = () => {
   const activeSlideId = useAppSelector((state) => state.editor.activeSlideId)
   const competition = useAppSelector((state) => state.editor.competition)
   const competitionLoading = useAppSelector((state) => state.editor.loading)
-  // TODO: wait for dispatch to finish
   useEffect(() => {
     dispatch(getEditorCompetition(id))
     dispatch(getCities())
@@ -134,17 +140,30 @@ const PresentationEditorPage: React.FC = () => {
   }
 
   const renderSlideIcon = (slide: RichSlide) => {
-    switch (slide.questions && slide.questions[0].type_id) {
-      case 0:
-        return <InfoOutlinedIcon></InfoOutlinedIcon> // information slide
-      case 1:
-        return <CreateOutlinedIcon></CreateOutlinedIcon> // text question
-      case 2:
-        return <BuildOutlinedIcon></BuildOutlinedIcon> // practical qustion
-      case 3:
-        return <DnsOutlinedIcon></DnsOutlinedIcon> // multiple choice question
+    if (slide.questions && slide.questions[0] && slide.questions[0].type_id) {
+      switch (slide.questions[0].type_id) {
+        case 1:
+          return <CreateOutlinedIcon /> // text question
+        case 2:
+          return <BuildOutlinedIcon /> // practical qustion
+        case 3:
+          return <DnsOutlinedIcon /> // multiple choice question
+      }
+    } else {
+      return <InfoOutlinedIcon /> // information slide
     }
   }
+
+  const GreenCheckbox = withStyles({
+    root: {
+      color: '#FFFFFF',
+      '&$checked': {
+        color: '#FFFFFF',
+      },
+    },
+    checked: {},
+  })((props: CheckboxProps) => <Checkbox color="default" {...props} />)
+  const [checkbox, setCheckbox] = useState(false)
 
   return (
     <PresentationEditorContainer>
@@ -157,7 +176,12 @@ const PresentationEditorPage: React.FC = () => {
           <Typography variant="h6" noWrap>
             {competition.name}
           </Typography>
+
           <ViewButtonGroup>
+            <GreenCheckbox checked={checkbox} onChange={(event) => setCheckbox(event.target.checked)} />
+            <Typography className={classes.alignCheckboxText} variant="button">
+              Applicera ändringar på samtliga vyer
+            </Typography>
             <ViewButton variant="contained" color="secondary">
               Åskådarvy
             </ViewButton>

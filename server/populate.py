@@ -82,13 +82,12 @@ def _add_items():
                 h = random.randrange(150, 400)
                 dbc.add.component(1, item_slide, {"text": f"hej{k}"}, x, y, w, h)
 
-        # TODO: Remove comments when slide without questions is fixed
-        # item_slide = dbc.add.slide(item_comp)
-        # item_slide.title = f"Slide {len(item_comp.slides)}"
-        # item_slide.body = f"Body {len(item_comp.slides)}"
-        # item_slide.timer = 100 + j
-        # # item_slide.settings = "{}"
-        # dbc.utils.commit_and_refresh(item_slide)
+        item_slide = dbc.add.slide(item_comp)
+        item_slide.title = f"Slide {len(item_comp.slides)}"
+        item_slide.body = f"Body {len(item_comp.slides)}"
+        item_slide.timer = 100 + j
+        # item_slide.settings = "{}"
+        dbc.utils.commit_and_refresh(item_slide)
 
         # Add teams
         for name in teams:

@@ -1,5 +1,10 @@
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   FormControl,
   InputLabel,
@@ -9,11 +14,12 @@ import {
   MenuItem,
   Select,
   TextField,
+  Typography,
 } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import axios from 'axios'
-import React from 'react'
+import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getEditorCompetition } from '../../../actions/editor'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
@@ -35,7 +41,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     textCenter: {
       textAlign: 'center',
-      background: 'white',
     },
     center: {
       display: 'flex',
@@ -52,6 +57,12 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '87%',
       background: 'white',
     },
+    addButtons: {
+      padding: 5,
+    },
+    panelList: {
+      padding: 0,
+    },
   })
 )
 
@@ -67,15 +78,6 @@ const CompetitionSettings: React.FC = () => {
   const updateCompetitionName = async (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     await axios
       .put(`/competitions/${id}`, { name: event.target.value })
-      .then(() => {
-        dispatch(getEditorCompetition(id))
-      })
-      .catch(console.log)
-  }
-
-  const handleClick = async (tid: number) => {
-    await axios
-      .delete(`/competitions/${id}/teams/${tid}`)
       .then(() => {
         dispatch(getEditorCompetition(id))
       })
@@ -100,6 +102,36 @@ const CompetitionSettings: React.FC = () => {
     })
   }
 
+  const removeTeam = async (tid: number) => {
+    await axios
+      .delete(`/competitions/${id}/teams/${tid}`)
+      .then(() => {
+        dispatch(getEditorCompetition(id))
+      })
+      .catch(console.log)
+  }
+  const addTeam = async () => {
+    setAddTeamOpen(false)
+    await axios
+      .post(`/competitions/${id}/teams`, { name: selectedTeamName })
+      .then(() => {
+        dispatch(getEditorCompetition(id))
+      })
+      .catch(console.log)
+  }
+  // For "add team" dialog
+  const [addTeamOpen, setAddTeamOpen] = useState(false)
+  const openAddTeam = () => {
+    setAddTeamOpen(true)
+  }
+  const closeAddTeam = () => {
+    setAddTeamOpen(false)
+  }
+  let selectedTeamName = ''
+  const updateSelectedTeamName = (event: React.ChangeEvent<{ value: string }>) => {
+    selectedTeamName = event.target.value
+  }
+
   return (
     <div className={classes.textInputContainer}>
       <form noValidate autoComplete="off">
@@ -113,8 +145,7 @@ const CompetitionSettings: React.FC = () => {
         />
         <Divider />
         <FormControl variant="outlined" className={classes.dropDown}>
-          <InputLabel id="region-selection-label">Region</InputLabel>
-          {/*TODO: fixa så cities laddar in i statet likt i CompetitionManager*/}
+          <InputLabel>Region</InputLabel>
           <Select
             value={cities.find((city) => city.id === competition.city_id)?.name || ''}
             label="Region"
@@ -129,7 +160,7 @@ const CompetitionSettings: React.FC = () => {
         </FormControl>
       </form>
 
-      <List>
+      <List className={classes.panelList}>
         <ListItem>
           <ListItemText className={classes.textCenter} primary="Lag" />
         </ListItem>
@@ -138,13 +169,31 @@ const CompetitionSettings: React.FC = () => {
             <div key={team.id}>
               <ListItem divider button>
                 <ListItemText primary={team.name} />
-                <CloseIcon onClick={() => handleClick(team.id)} />
+                <CloseIcon onClick={() => removeTeam(team.id)} />
               </ListItem>
             </div>
           ))}
-        <ListItem className={classes.center} button>
-          <Button>Lägg till lag</Button>
+
+        <ListItem className={classes.center} button onClick={openAddTeam}>
+          <Typography className={classes.addButtons} variant="button">
+            Lägg till lag
+          </Typography>
         </ListItem>
+        <Dialog open={addTeamOpen} onClose={closeAddTeam}>
+          <DialogTitle className={classes.center}>Lägg till lag</DialogTitle>
+          <DialogContent>
+            <DialogContentText>Skriv namnet på laget och klicka sedan på bekräfta.</DialogContentText>
+            <TextField autoFocus margin="dense" label="Lagnamn" fullWidth onChange={updateSelectedTeamName} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeAddTeam} color="secondary">
+              Avbryt
+            </Button>
+            <Button onClick={addTeam} color="primary">
+              Bekräfta
+            </Button>
+          </DialogActions>
+        </Dialog>
       </List>
 
       <ListItem button>
@@ -153,7 +202,7 @@ const CompetitionSettings: React.FC = () => {
           src="https://i1.wp.com/stickoutmedia.se/wp-content/uploads/2021/01/placeholder-3.png?ssl=1"
           className={classes.importedImage}
         />
-        <ListItemText className={classes.textCenter} primary="Välj bakgrundsbild ..." />
+        <ListItemText className={classes.textCenter}>Välj bakgrundsbild ...</ListItemText>
       </ListItem>
     </div>
   )

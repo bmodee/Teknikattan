@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { AppDispatch } from './../store'
+import { AppDispatch, RootState } from './../store'
 import Types from './types'
 
-export const getEditorCompetition = (id: string) => async (dispatch: AppDispatch) => {
+export const getEditorCompetition = (id: string) => async (dispatch: AppDispatch, getState: () => RootState) => {
   await axios
     .get(`/competitions/${id}`)
     .then((res) => {
@@ -10,6 +10,9 @@ export const getEditorCompetition = (id: string) => async (dispatch: AppDispatch
         type: Types.SET_EDITOR_COMPETITION,
         payload: res.data,
       })
+      if (getState().editor.activeSlideId === -1 && res.data.slides[0]) {
+        setEditorSlideId(res.data.slides[0].id)(dispatch)
+      }
     })
     .catch((err) => {
       console.log(err)
