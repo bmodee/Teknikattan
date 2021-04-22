@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
   FormControl,
   InputLabel,
   List,
@@ -26,7 +27,8 @@ import { useParams } from 'react-router-dom'
 import { getEditorCompetition } from '../../../actions/editor'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { QuestionAlternative, TextComponent } from '../../../interfaces/ApiModels'
-import { HiddenInput } from './styled'
+import { HiddenInput, TextCard } from './styled'
+import TextComponentEdit from './TextComponentEdit'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -234,9 +236,15 @@ const SlideSettings: React.FC = () => {
   }
 
   const handleAddText = async () => {
-    console.log('Add text component')
-    // TODO: post the new text]
-    // setTexts([...texts, { id: 'newText', name: 'New Text' }])
+    if (activeSlide) {
+      await axios.post(`/competitions/${id}/slides/${activeSlide?.order}/components`, {
+        type_id: 1,
+        data: { text: 'Ny text' },
+        w: 315,
+        h: 50,
+      })
+      dispatch(getEditorCompetition(id))
+    }
   }
 
   const GreenCheckbox = withStyles({
@@ -338,9 +346,8 @@ const SlideSettings: React.FC = () => {
           helperText="Lämna blank för att inte använda timerfunktionen"
           label="Timer"
           type="number"
-          defaultValue={activeSlide?.timer || 0}
           onChange={updateTimer}
-          value={timer}
+          value={timer || ''}
         />
       </ListItem>
 
@@ -383,13 +390,13 @@ const SlideSettings: React.FC = () => {
         </ListItem>
         {texts &&
           texts.map((text) => (
-            <div key={text.id}>
-              <ListItem divider>
-                <TextField className={classes.textInput} label={text.data.text} variant="outlined" />
-                <CloseIcon className={classes.clickableIcon} />
-              </ListItem>
-            </div>
+            <TextCard elevation={4} key={text.id}>
+              <TextComponentEdit component={text} />
+
+              <Divider />
+            </TextCard>
           ))}
+
         <ListItem className={classes.center} button onClick={handleAddText}>
           <Typography className={classes.addButtons} variant="button">
             Lägg till text

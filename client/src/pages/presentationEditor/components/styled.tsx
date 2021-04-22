@@ -1,4 +1,4 @@
-import { Tab } from '@material-ui/core'
+import { Button, Card, Tab } from '@material-ui/core'
 import styled from 'styled-components'
 
 export const SettingsTab = styled(Tab)`
@@ -43,4 +43,24 @@ export const SettingsContainer = styled.div`
 export const ToolbarPadding = styled.div`
   height: 0;
   padding-top: 55px;
+`
+
+export const TextCard = styled(Card)`
+  margin-bottom: 15px;
+  margin-top: 10px;
+`
+
+export const DeleteTextButton = styled(Button)`
+  width: 100%;
+  margin-bottom: 7px;
+`
+
+interface TextComponentContainerProps {
+  hover: boolean
+}
+
+export const TextComponentContainer = styled.div<TextComponentContainerProps>`
+  height: 100%;
+  width: 100%;
+  border: solid ${(props) => (props.hover ? 1 : 0)}px;
 `

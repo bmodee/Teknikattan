@@ -67,7 +67,7 @@ const PresenterViewPage: React.FC = () => {
     socket_connect()
     socketSetSlide // Behövs denna?
     setTimeout(startCompetition, 500) // Ghetto, wait for everything to load
-    console.log(id)
+    // console.log(id)
   }, [])
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {

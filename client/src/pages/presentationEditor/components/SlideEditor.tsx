@@ -1,11 +1,7 @@
 import React from 'react'
-import { ComponentTypes } from '../../../enum/ComponentTypes'
 import { useAppSelector } from '../../../hooks'
-import { ImageComponent, TextComponent } from '../../../interfaces/ApiModels'
-import CheckboxComponent from './CheckboxComponent'
-import ImageComponentDisplay from './ImageComponentDisplay'
+import RndComponent from './RndComponent'
 import { SlideEditorContainer, SlideEditorContainerRatio, SlideEditorPaper } from './styled'
-import TextComponentDisplay from './TextComponentDisplay'
 
 const SlideEditor: React.FC = () => {
   const components = useAppSelector(
@@ -16,19 +12,7 @@ const SlideEditor: React.FC = () => {
     <SlideEditorContainer>
       <SlideEditorContainerRatio>
         <SlideEditorPaper>
-          {components &&
-            components.map((component) => {
-              switch (component.type_id) {
-                case ComponentTypes.Checkbox:
-                  return <CheckboxComponent key={component.id} component={component} />
-                case ComponentTypes.Text:
-                  return <TextComponentDisplay key={component.id} component={component as TextComponent} />
-                case ComponentTypes.Image:
-                  return <ImageComponentDisplay key={component.id} component={component as ImageComponent} />
-                default:
-                  break
-              }
-            })}
+          {components && components.map((component) => <RndComponent key={component.id} component={component} />)}
         </SlideEditorPaper>
       </SlideEditorContainerRatio>
     </SlideEditorContainer>
