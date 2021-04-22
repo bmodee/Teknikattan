@@ -36,7 +36,7 @@ import {
 const initialState = {
   mouseX: null,
   mouseY: null,
-  slideOrder: null,
+  slideId: null,
 }
 
 const leftDrawerWidth = 150
@@ -111,15 +111,15 @@ const PresentationEditorPage: React.FC = () => {
   const [contextState, setContextState] = React.useState<{
     mouseX: null | number
     mouseY: null | number
-    slideOrder: null | number
+    slideId: null | number
   }>(initialState)
 
-  const handleRightClick = (event: React.MouseEvent<HTMLDivElement>, slideOrder: number) => {
+  const handleRightClick = (event: React.MouseEvent<HTMLDivElement>, slideId: number) => {
     event.preventDefault()
     setContextState({
       mouseX: event.clientX - 2,
       mouseY: event.clientY - 4,
-      slideOrder: slideOrder,
+      slideId: slideId,
     })
   }
 
@@ -128,13 +128,13 @@ const PresentationEditorPage: React.FC = () => {
   }
 
   const handleRemoveSlide = async () => {
-    await axios.delete(`/competitions/${id}/slides/${contextState.slideOrder}`)
+    await axios.delete(`/competitions/${id}/slides/${contextState.slideId}`)
     dispatch(getEditorCompetition(id))
     setContextState(initialState)
   }
 
   const handleDuplicateSlide = async () => {
-    await axios.post(`/competitions/${id}/slides/${contextState.slideOrder}/copy`)
+    await axios.post(`/competitions/${id}/slides/${contextState.slideId}/copy`)
     dispatch(getEditorCompetition(id))
     setContextState(initialState)
   }
@@ -214,7 +214,7 @@ const PresentationEditorPage: React.FC = () => {
                   key={slide.id}
                   selected={slide.id === activeSlideId}
                   onClick={() => setActiveSlideId(slide.id)}
-                  onContextMenu={(event) => handleRightClick(event, slide.order)}
+                  onContextMenu={(event) => handleRightClick(event, slide.id)}
                 >
                   {renderSlideIcon(slide)}
                   <ListItemText primary={`Sida ${slide.order + 1}`} />

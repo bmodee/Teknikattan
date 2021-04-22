@@ -13,45 +13,41 @@ list_schema = TeamDTO.list_schema
 
 
 @api.route("/")
-@api.param("CID")
+@api.param("competition_id")
 class TeamsList(Resource):
     @check_jwt(editor=True)
-    def get(self, CID):
-        items = dbc.get.team_list(CID)
+    def get(self, competition_id):
+        items = dbc.get.team_list(competition_id)
         return list_response(list_schema.dump(items))
 
     @check_jwt(editor=True)
-    def post(self, CID):
+    def post(self, competition_id):
         args = team_parser.parse_args(strict=True)
-        item_comp = dbc.get.one(Competition, CID)
-        item_team = dbc.add.team(args["name"], item_comp)
+        item_team = dbc.add.team(args["name"], competition_id)
         return item_response(schema.dump(item_team))
 
 
-@api.route("/<TID>")
-@api.param("CID,TID")
+@api.route("/<team_id>")
+@api.param("competition_id,team_id")
 class Teams(Resource):
-    @jwt_required
     @check_jwt(editor=True)
-    def get(self, CID, TID):
-        item = dbc.get.team(CID, TID)
+    def get(self, competition_id, team_id):
+        item = dbc.get.team(competition_id, team_id)
         return item_response(schema.dump(item))
 
-    @jwt_required
     @check_jwt(editor=True)
-    def delete(self, CID, TID):
-        item_team = dbc.get.team(CID, TID)
+    def delete(self, competition_id, team_id):
+        item_team = dbc.get.team(competition_id, team_id)
 
         dbc.delete.team(item_team)
         return {}, codes.NO_CONTENT
 
-    @jwt_required
     @check_jwt(editor=True)
-    def put(self, CID, TID):
+    def put(self, competition_id, team_id):
         args = team_parser.parse_args(strict=True)
         name = args.get("name")
 
-        item_team = dbc.get.team(CID, TID)
+        item_team = dbc.get.team(competition_id, team_id)
 
-        item_team = dbc.edit.default(item_team, name=name, competition_id=CID)
+        item_team = dbc.edit.default(item_team, name=name, competition_id=competition_id)
         return item_response(schema.dump(item_team))

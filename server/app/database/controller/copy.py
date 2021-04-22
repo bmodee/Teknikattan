@@ -40,7 +40,7 @@ def _component(item_component, item_slide_new):
 
     add.component(
         item_component.type_id,
-        item_slide_new,
+        item_slide_new.id,
         item_component.data,
         item_component.x,
         item_component.y,
@@ -66,7 +66,7 @@ def slide_to_competition(item_slide_old, item_competition):
     Does not copy team, question answers.
     """
 
-    item_slide_new = add.slide(item_competition)
+    item_slide_new = add.slide_without_question(item_competition.id)
 
     # Copy all fields
     item_slide_new.title = item_slide_old.title
@@ -98,7 +98,7 @@ def competition(item_competition_old):
         print(f"{item_competition[total-1].name}, {total=}")
         name = "Kopia av " + item_competition[total - 1].name
 
-    item_competition_new = add._competition(
+    item_competition_new = add._competition_no_slides(
         name,
         item_competition_old.year,
         item_competition_old.city_id,

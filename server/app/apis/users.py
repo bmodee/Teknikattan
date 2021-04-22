@@ -15,14 +15,14 @@ list_schema = UserDTO.list_schema
 
 def edit_user(item_user, args):
     email = args.get("email")
+    name = args.get("name")
+
     if email:
-        if User.query.filter(User.email == args["email"]).count() > 0:
+        if dbc.get.user_exists(email):
             api.abort(codes.BAD_REQUEST, "Email is already in use")
 
-    try:
-        args["name"] = args.get("name").title()
-    except Exception:
-        pass
+    if name:
+        args["name"] = args["name"].title()
 
     return dbc.edit.default(item_user, **args)
 

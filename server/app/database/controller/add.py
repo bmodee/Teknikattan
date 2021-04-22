@@ -2,6 +2,7 @@
 This file contains functionality to add data to the database.
 """
 
+from sqlalchemy.orm.session import sessionmaker
 import app.core.http_codes as codes
 from app.core import db
 from app.database.controller import utils
@@ -25,6 +26,7 @@ from app.database.models import (
     ViewType,
 )
 from flask_restx import abort
+from sqlalchemy import exc
 
 
 def db_add(item):
@@ -32,13 +34,18 @@ def db_add(item):
     Internal function. Adds item to the database
     and handles comitting and refreshing.
     """
-
-    db.session.add(item)
-    db.session.commit()
-    db.session.refresh(item)
-
-    if not item:
-        abort(codes.BAD_REQUEST, f"Object could not be created")
+    try:
+        db.session.add(item)
+        db.session.commit()
+        db.session.refresh(item)
+    except (exc.SQLAlchemyError, exc.DBAPIError):
+        db.session.rollback()
+        # SQL errors such as item already exists
+        abort(codes.INTERNAL_SERVER_ERROR, f"Item of type {type(item)} could not be created")
+    except:
+        db.session.rollback()
+        # Catching other errors
+        abort(codes.INTERNAL_SERVER_ERROR, f"Something went wrong when creating {type(item)}")
 
     return item
 
@@ -85,13 +92,13 @@ def city(name):
     return db_add(City(name))
 
 
-def component(type_id, item_slide, data, x=0, y=0, w=0, h=0):
+def component(type_id, slide_id, data, x=0, y=0, w=0, h=0):
     """
     Adds a component to the slide at the specified coordinates with the
     provided size and data .
     """
 
-    return db_add(Component(item_slide.id, type_id, data, x, y, w, h))
+    return db_add(Component(slide_id, type_id, data, x, y, w, h))
 
 
 def image(filename, user_id):
@@ -108,12 +115,12 @@ def user(email, password, role_id, city_id, name=None):
     return db_add(User(email, password, role_id, city_id, name))
 
 
-def question(name, total_score, type_id, item_slide):
+def question(name, total_score, type_id, slide_id):
     """
     Adds a question to the specified slide using the provided arguments.
     """
 
-    return db_add(Question(name, total_score, type_id, item_slide.id))
+    return db_add(Question(name, total_score, type_id, slide_id))
 
 
 def question_alternative(text, value, question_id):
@@ -131,10 +138,10 @@ def code(pointer, view_type_id):
     return db_add(Code(code_string, pointer, view_type_id))
 
 
-def team(name, item_competition):
+def team(name, competition_id):
     """ Adds a team with the specified name to the provided competition. """
 
-    item = db_add(Team(name, item_competition.id))
+    item = db_add(Team(name, competition_id))
 
     # Add code for the team
     code(item.id, 1)
@@ -142,11 +149,33 @@ def team(name, item_competition):
     return item
 
 
-def slide(item_competition):
+def slide(competition_id):
     """ Adds a slide to the provided competition. """
 
-    order = Slide.query.filter(Slide.competition_id == item_competition.id).count()  # first element has index 0
-    return db_add(Slide(order, item_competition.id))
+    # Get the last order from given competition
+    order = Slide.query.filter(Slide.competition_id == competition_id).count()
+
+    # Add slide
+    item_slide = db_add(Slide(order, competition_id))
+
+    # Add default question
+    question(f"Fråga {item_slide.order + 1}", 10, 0, item_slide.id)
+
+    item_slide = utils.refresh(item_slide)
+    return item_slide
+
+
+def slide_without_question(competition_id):
+    """ Adds a slide to the provided competition. """
+
+    # Get the last order from given competition
+    order = Slide.query.filter(Slide.competition_id == competition_id).count()
+
+    # Add slide
+    item_slide = db_add(Slide(order, competition_id))
+
+    item_slide = utils.refresh(item_slide)
+    return item_slide
 
 
 def competition(name, year, city_id):
@@ -154,18 +183,22 @@ def competition(name, year, city_id):
     Adds a competition to the database using the
     provided arguments. Also adds slide and codes.
     """
+    item_competition = db_add(Competition(name, year, city_id))
 
-    item_competition = _competition(name, year, city_id)
+    # Add default slide
+    slide(item_competition.id)
 
-    # Add one slide for the competition
-    slide(item_competition)
+    # Add code for Judge view
+    code(item_competition.id, 2)
 
-    # TODO: Add two teams
+    # Add code for Audience view
+    code(item_competition.id, 3)
 
+    item_competition = utils.refresh(item_competition)
     return item_competition
 
 
-def _competition(name, year, city_id, font=None):
+def _competition_no_slides(name, year, city_id, font=None):
     """
     Internal function. Adds a competition to the database
     using the provided arguments. Also adds codes.
@@ -181,5 +214,5 @@ def _competition(name, year, city_id, font=None):
     # Add code for Audience view
     code(item_competition.id, 3)
 
-    utils.refresh(item_competition)
+    item_competition = utils.refresh(item_competition)
     return item_competition

@@ -47,11 +47,11 @@ def _add_items():
     # Add competitions
     for i in range(len(question_types_items)):
         item_comp = dbc.add.competition(f"Tävling {i}", 2000 + i, city_id)
-        dbc.edit.slide(item_comp.slides[0], timer=5, title="test-slide-title")
+        dbc.edit.default(item_comp.slides[0], timer=5, title="test-slide-title")
 
         # Add two more slides to competition
-        dbc.add.slide(item_comp)
-        dbc.add.slide(item_comp)
+        dbc.add.slide(item_comp.id)
+        dbc.add.slide(item_comp.id)
 
         # Add slides
         for j, item_slide in enumerate(item_comp.slides):
@@ -63,15 +63,17 @@ def _add_items():
             dbc.utils.commit_and_refresh(item_slide)
 
             # Add question to competition
+            """
             item_question = dbc.add.question(
                 name=f"Question {j}: {question_types_items[j].name}",
                 total_score=j,
                 type_id=question_types_items[j].id,
-                item_slide=item_slide,
+                slide_id=item_slide.id,
             )
+            """
 
             for i in range(3):
-                dbc.add.question_alternative(f"Alternative {i}", 0, item_question.id)
+                dbc.add.question_alternative(f"Alternative {i}", 0, item_slide.questions[0].id)
 
             # Add text components
             # TODO: Add images as components
@@ -80,18 +82,18 @@ def _add_items():
                 y = random.randrange(1, 500)
                 w = random.randrange(150, 400)
                 h = random.randrange(150, 400)
-                dbc.add.component(1, item_slide, {"text": f"hej{k}"}, x, y, w, h)
+                dbc.add.component(1, item_slide.id, {"text": f"hej{k}"}, x, y, w, h)
 
-        item_slide = dbc.add.slide(item_comp)
-        item_slide.title = f"Slide {len(item_comp.slides)}"
-        item_slide.body = f"Body {len(item_comp.slides)}"
-        item_slide.timer = 100 + j
+        # item_slide = dbc.add.slide(item_comp)
+        # item_slide.title = f"Slide {len(item_comp.slides)}"
+        # item_slide.body = f"Body {len(item_comp.slides)}"
+        # item_slide.timer = 100 + j
         # item_slide.settings = "{}"
-        dbc.utils.commit_and_refresh(item_slide)
+        # dbc.utils.commit_and_refresh(item_slide)
 
         # Add teams
         for name in teams:
-            dbc.add.team(f"{name}{i}", item_comp)
+            dbc.add.team(f"{name}{i}", item_comp.id)
 
 
 if __name__ == "__main__":

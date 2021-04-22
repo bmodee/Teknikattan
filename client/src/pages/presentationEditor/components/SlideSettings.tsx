@@ -133,7 +133,7 @@ const SlideSettings: React.FC = () => {
         if (selectedSlideType === 0) {
           // Change slide type from a question type to information
           await axios
-            .delete(`/competitions/${id}/slides/${activeSlide.order}/questions/${activeSlide.questions[0].id}`)
+            .delete(`/competitions/${id}/slides/${activeSlide.id}/questions/${activeSlide.questions[0].id}`)
             .then(() => {
               dispatch(getEditorCompetition(id))
             })
@@ -141,10 +141,10 @@ const SlideSettings: React.FC = () => {
         } else {
           // Change slide type from question type to another question type
           await axios
-            .delete(`/competitions/${id}/slides/${activeSlide.order}/questions/${activeSlide.questions[0].id}`)
+            .delete(`/competitions/${id}/slides/${activeSlide.id}/questions/${activeSlide.questions[0].id}`)
             .catch(console.log)
           await axios
-            .post(`/competitions/${id}/slides/${activeSlide.order}/questions`, {
+            .post(`/competitions/${id}/slides/${activeSlide.id}/questions`, {
               name: 'Ny fråga',
               total_score: 0,
               type_id: selectedSlideType,
@@ -158,7 +158,7 @@ const SlideSettings: React.FC = () => {
       } else if (selectedSlideType !== 0) {
         // Change slide type from information to a question type
         await axios
-          .post(`/competitions/${id}/slides/${activeSlide.order}/questions`, {
+          .post(`/competitions/${id}/slides/${activeSlide.id}/questions`, {
             name: 'Ny fråga',
             total_score: 0,
             type_id: selectedSlideType,
@@ -208,10 +208,10 @@ const SlideSettings: React.FC = () => {
   const addAlternative = async () => {
     if (activeSlide && activeSlide.questions[0]) {
       await axios
-        .post(
-          `/competitions/${id}/slides/${activeSlide?.order}/questions/${activeSlide?.questions[0].id}/alternatives`,
-          { text: '', value: 0 }
-        )
+        .post(`/competitions/${id}/slides/${activeSlide?.id}/questions/${activeSlide?.questions[0].id}/alternatives`, {
+          text: '',
+          value: 0,
+        })
         .then(() => {
           dispatch(getEditorCompetition(id))
         })
@@ -237,7 +237,7 @@ const SlideSettings: React.FC = () => {
 
   const handleAddText = async () => {
     if (activeSlide) {
-      await axios.post(`/competitions/${id}/slides/${activeSlide?.order}/components`, {
+      await axios.post(`/competitions/${id}/slides/${activeSlide?.id}/components`, {
         type_id: 1,
         data: { text: 'Ny text' },
         w: 315,
@@ -261,7 +261,7 @@ const SlideSettings: React.FC = () => {
     setTimer(+event.target.value)
     if (activeSlide) {
       await axios
-        .put(`/competitions/${id}/slides/${activeSlide.order}`, { timer: event.target.value })
+        .put(`/competitions/${id}/slides/${activeSlide.id}`, { timer: event.target.value })
         .then(() => {
           dispatch(getEditorCompetition(id))
         })

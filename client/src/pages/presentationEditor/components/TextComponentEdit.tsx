@@ -20,6 +20,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
   const competitionId = useAppSelector((state) => state.editor.competition.id)
   const [content, setContent] = useState('')
   const [timerHandle, setTimerHandle] = React.useState<number | undefined>(undefined)
+  const activeSlideId = useAppSelector((state) => state.editor.activeSlideId)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -36,7 +37,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
     setTimerHandle(
       window.setTimeout(async () => {
         console.log('Content was updated on server. id: ', component.id)
-        await axios.put(`/competitions/${competitionId}/slides/0/components/${component.id}`, {
+        await axios.put(`/competitions/${competitionId}/slides/${activeSlideId}/components/${component.id}`, {
           data: { ...component.data, text: a },
         })
         dispatch(getEditorCompetition(id))
@@ -45,7 +46,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
   }
 
   const handleDeleteText = async (componentId: number) => {
-    await axios.delete(`/competitions/${id}/slides/0/components/${componentId}`)
+    await axios.delete(`/competitions/${id}/slides/${activeSlideId}/components/${componentId}`)
     dispatch(getEditorCompetition(id))
   }
 

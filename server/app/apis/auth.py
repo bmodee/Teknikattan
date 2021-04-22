@@ -58,7 +58,7 @@ class AuthLogin(Resource):
         args = login_parser.parse_args(strict=True)
         email = args.get("email")
         password = args.get("password")
-        item_user = dbc.get.user_by_email(email, required=False)
+        item_user = dbc.get.user_by_email(email)
 
         if not item_user or not item_user.is_correct_password(password):
             api.abort(codes.UNAUTHORIZED, "Invalid email or password")

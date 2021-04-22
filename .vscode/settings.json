@@ -1,51 +1,44 @@
 {
-    //editor
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": false,
-    "editor.tabCompletion": "on",
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true,
-        "source.organizeImports": true
-    },
-    //python
-    "python.venvPath": "${workspaceFolder}\\server",
-    "python.analysis.extraPaths": [
-        "server"
-    ],
-    "python.terminal.activateEnvironment": true,
-    "python.formatting.provider": "black",
-    "python.formatting.blackPath": "server\\env\\Scripts\\black.exe",
-    "python.formatting.blackArgs": [
-        "--line-length",
-        "119"
-    ],
-    //eslint
-    "eslint.workingDirectories": [
-        "./client"
-    ],
-    "eslint.options": {
-        "configFile": "./.eslintrc"
-    },
-    "prettier.configPath": "./client/.prettierrc",
-    //git
-    "git.ignoreLimitWarning": true,
-    //language specific
-    "[typescript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[typescriptreact]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "files.exclude": {
-        "**/__pycache__": true,
-        "**/.pytest_cache": true,
-        "**/env/Include": true,
-        "**/env/Lib": true
-    },
-    "files.watcherExclude": {
-        "**/env/Lib/**": true
-    },
-    "search.exclude": {
-        "**/env": true
-    },
+  //editor
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "editor.tabCompletion": "on",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": false
+  },
+  //python
+  "python.venvPath": "${workspaceFolder}\\server",
+  "python.analysis.extraPaths": ["server"],
+  "python.terminal.activateEnvironment": true,
+  "python.formatting.provider": "black",
+  "python.formatting.blackPath": "server\\env\\Scripts\\black.exe",
+  "python.formatting.blackArgs": ["--line-length", "119"],
+  //eslint
+  "eslint.workingDirectories": ["./client"],
+  "eslint.options": {
+    "configFile": "./.eslintrc"
+  },
+  "prettier.configPath": "./client/.prettierrc",
+  //git
+  "git.ignoreLimitWarning": true,
+  //language specific
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/env/Include": true,
+    "**/env/Lib": true
+  },
+  "files.watcherExclude": {
+    "**/env/Lib/**": true
+  },
+  "search.exclude": {
+    "**/env": true
+  }
 }

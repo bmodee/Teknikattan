@@ -13,83 +13,79 @@ list_schema = SlideDTO.list_schema
 
 
 @api.route("/")
-@api.param("CID")
+@api.param("competition_id")
 class SlidesList(Resource):
     @check_jwt(editor=True)
-    def get(self, CID):
-        items = dbc.get.slide_list(CID)
+    def get(self, competition_id):
+        items = dbc.get.slide_list(competition_id)
         return list_response(list_schema.dump(items))
 
     @check_jwt(editor=True)
-    def post(self, CID):
-        item_comp = dbc.get.one(Competition, CID)
-        item_slide = dbc.add.slide(item_comp)
-        dbc.utils.refresh(item_comp)
-        return list_response(list_schema.dump(item_comp.slides))
+    def post(self, competition_id):
+        item_slide = dbc.add.slide(competition_id)
+        return item_response(schema.dump(item_slide))
 
 
-@api.route("/<SOrder>")
-@api.param("CID,SOrder")
+@api.route("/<slide_id>")
+@api.param("competition_id,slide_id")
 class Slides(Resource):
     @check_jwt(editor=True)
-    def get(self, CID, SOrder):
-        item_slide = dbc.get.slide(CID, SOrder)
+    def get(self, competition_id, slide_id):
+        item_slide = dbc.get.slide(competition_id, slide_id)
         return item_response(schema.dump(item_slide))
 
     @check_jwt(editor=True)
-    def put(self, CID, SOrder):
+    def put(self, competition_id, slide_id):
         args = slide_parser.parse_args(strict=True)
-        title = args.get("title")
-        timer = args.get("timer")
 
-        item_slide = dbc.get.slide(CID, SOrder)
-        item_slide = dbc.edit.default(item_slide, title=title, timer=timer)
+        item_slide = dbc.get.slide(competition_id, slide_id)
+        item_slide = dbc.edit.default(item_slide, **args)
 
         return item_response(schema.dump(item_slide))
 
     @check_jwt(editor=True)
-    def delete(self, CID, SOrder):
-        item_slide = dbc.get.slide(CID, SOrder)
+    def delete(self, competition_id, slide_id):
+        item_slide = dbc.get.slide(competition_id, slide_id)
 
         dbc.delete.slide(item_slide)
         return {}, codes.NO_CONTENT
 
 
-@api.route("/<SOrder>/order")
-@api.param("CID,SOrder")
-class SlidesOrder(Resource):
+@api.route("/<slide_id>/order")
+@api.param("competition_id,slide_id")
+class SlideOrder(Resource):
     @check_jwt(editor=True)
-    def put(self, CID, SOrder):
+    def put(self, competition_id, slide_id):
         args = slide_parser.parse_args(strict=True)
         order = args.get("order")
 
-        item_slide = dbc.get.slide(CID, SOrder)
+        item_slide = dbc.get.slide(competition_id, slide_id)
 
         if order == item_slide.order:
             return item_response(schema.dump(item_slide))
 
         # clamp order between 0 and max
-        order_count = dbc.get.slide_count(CID)
+        order_count = dbc.get.slide_count(competition_id)
         if order < 0:
             order = 0
         elif order >= order_count - 1:
             order = order_count - 1
 
         # get slide at the requested order
-        item_slide_order = dbc.get.slide(CID, order)
+        item_slide_id = dbc.get.slide(competition_id, order)
 
         # switch place between them
-        item_slide = dbc.edit.switch_order(item_slide, item_slide_order)
+        item_slide = dbc.edit.switch_order(item_slide, item_slide_id)
 
         return item_response(schema.dump(item_slide))
 
 
-@api.route("/<SOrder>/copy")
-@api.param("CID,SOrder")
-class SlidesOrder(Resource):
+@api.route("/<slide_id>/copy")
+@api.param("competition_id,slide_id")
+class SlideCopy(Resource):
     @check_jwt(editor=True)
-    def post(self, CID, SOrder):
-        item_slide = dbc.get.slide(CID, SOrder)
+    def post(self, competition_id, slide_id):
+        item_slide = dbc.get.slide(competition_id, slide_id)
 
         item_slide_copy = dbc.copy.slide(item_slide)
 

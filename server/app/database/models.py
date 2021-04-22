@@ -140,7 +140,6 @@ class Slide(db.Model):
 
 
 class Question(db.Model):
-    __table_args__ = (db.UniqueConstraint("slide_id", "name"),)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(STRING_SIZE), nullable=False)
     total_score = db.Column(db.Integer, nullable=False, default=1)

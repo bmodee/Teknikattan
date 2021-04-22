@@ -20,15 +20,13 @@ const RndComponent = ({ component }: ImageComponentProps) => {
   const competitionId = useAppSelector((state) => state.editor.competition.id)
   const slideId = useAppSelector((state) => state.editor.activeSlideId)
   const handleUpdatePos = (pos: Position) => {
-    // TODO: change path to /slides/${slideId}
-    axios.put(`/competitions/${competitionId}/slides/0/components/${component.id}`, {
+    axios.put(`/competitions/${competitionId}/slides/${slideId}/components/${component.id}`, {
       x: pos.x,
       y: pos.y,
     })
   }
   const handleUpdateSize = (size: Size) => {
-    // TODO: change path to /slides/${slideId}
-    axios.put(`/competitions/${competitionId}/slides/0/components/${component.id}`, {
+    axios.put(`/competitions/${competitionId}/slides/${slideId}/components/${component.id}`, {
       w: size.w,
       h: size.h,
     })

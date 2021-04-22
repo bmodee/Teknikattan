@@ -25,30 +25,30 @@ class CompetitionsList(Resource):
         item = dbc.add.competition(**args)
 
         # Add default slide
-        dbc.add.slide(item)
+        # dbc.add.slide(item.id)
         return item_response(schema.dump(item))
 
 
-@api.route("/<CID>")
-@api.param("CID")
+@api.route("/<competition_id>")
+@api.param("competition_id")
 class Competitions(Resource):
     @check_jwt(editor=True)
-    def get(self, CID):
-        item = dbc.get.competition(CID)
+    def get(self, competition_id):
+        item = dbc.get.competition(competition_id)
 
         return item_response(rich_schema.dump(item))
 
     @check_jwt(editor=True)
-    def put(self, CID):
+    def put(self, competition_id):
         args = competition_parser.parse_args(strict=True)
-        item = dbc.get.one(Competition, CID)
+        item = dbc.get.one(Competition, competition_id)
         item = dbc.edit.default(item, **args)
 
         return item_response(schema.dump(item))
 
     @check_jwt(editor=True)
-    def delete(self, CID):
-        item = dbc.get.one(Competition, CID)
+    def delete(self, competition_id):
+        item = dbc.get.one(Competition, competition_id)
         dbc.delete.competition(item)
 
         return "deleted"
@@ -63,12 +63,12 @@ class CompetitionSearch(Resource):
         return list_response(list_schema.dump(items), total)
 
 
-@api.route("/<CID>/copy")
-@api.param("CID")
+@api.route("/<competition_id>/copy")
+@api.param("competition_id")
 class SlidesOrder(Resource):
     @check_jwt(editor=True)
-    def post(self, CID):
-        item_competition = dbc.get.competition(CID)
+    def post(self, competition_id):
+        item_competition = dbc.get.competition(competition_id)
 
         item_competition_copy = dbc.copy.competition(item_competition)
 

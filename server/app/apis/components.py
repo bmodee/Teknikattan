@@ -14,38 +14,37 @@ list_schema = ComponentDTO.list_schema
 
 
 @api.route("/<component_id>")
-@api.param("CID, SOrder, component_id")
+@api.param("competition_id, slide_id, component_id")
 class ComponentByID(Resource):
     @check_jwt(editor=True)
-    def get(self, CID, SOrder, component_id):
-        item = dbc.get.one(Component, component_id)
+    def get(self, competition_id, slide_id, component_id):
+        item = dbc.get.component(competition_id, slide_id, component_id)
         return item_response(schema.dump(item))
 
     @check_jwt(editor=True)
-    def put(self, CID, SOrder, component_id):
+    def put(self, competition_id, slide_id, component_id):
         args = component_parser.parse_args()
-        item = dbc.get.one(Component, component_id)
+        item = dbc.get.component(competition_id, slide_id, component_id)
         item = dbc.edit.default(item, **args)
         return item_response(schema.dump(item))
 
     @check_jwt(editor=True)
-    def delete(self, CID, SOrder, component_id):
-        item = dbc.get.one(Component, component_id)
+    def delete(self, competition_id, slide_id, component_id):
+        item = dbc.get.component(competition_id, slide_id, component_id)
         dbc.delete.component(item)
         return {}, codes.NO_CONTENT
 
 
 @api.route("/")
-@api.param("CID, SOrder")
+@api.param("competition_id, slide_id")
 class ComponentList(Resource):
     @check_jwt(editor=True)
-    def get(self, CID, SOrder):
-        items = dbc.get.component_list(CID, SOrder)
+    def get(self, competition_id, slide_id):
+        items = dbc.get.component_list(competition_id, slide_id)
         return list_response(list_schema.dump(items))
 
     @check_jwt(editor=True)
-    def post(self, CID, SOrder):
+    def post(self, competition_id, slide_id):
         args = component_create_parser.parse_args()
-        item_slide = dbc.get.slide(CID, SOrder)
-        item = dbc.add.component(item_slide=item_slide, **args)
+        item = dbc.add.component(slide_id=slide_id, **args)
         return item_response(schema.dump(item))

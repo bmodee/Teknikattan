@@ -21,6 +21,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    SQLALCHEMY_ECHO = False
     # HOST = "localhost"
     # PORT = 5432
     # USER = "postgres"
@@ -28,7 +29,6 @@ class DevelopmentConfig(Config):
     # DATABASE = "teknik8"
     # SQLALCHEMY_DATABASE_URI = "sqlite:///database.db"
     # SQLALCHEMY_DATABASE_URI = "postgresql://" + USER + ":" + PASSWORD + "@" + HOST + ":" + str(PORT) + "/" + DATABASE
-    SQLALCHEMY_ECHO = False
 
 
 class TestingConfig(Config):
@@ -38,9 +38,10 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = "sqlite:///database.db"
-    # HOST = 'postgresql'
+    # HOST = "localhost"
     # PORT = 5432
-    # USER = 'postgres'
-    # PASSWORD = 'password'
-    # DATABASE = 'teknik8'
-    # SQLALCHEMY_DATABASE_URI = 'postgresql://'+USER+":"+PASSWORD+"@"+HOST+":"+str(PORT)+"/"+DATABASE
+    # USER = "postgres"
+    # PASSWORD = "password"
+    # DATABASE = "teknik8"
+    # SQLALCHEMY_DATABASE_URI = "sqlite:///database.db"
+    # SQLALCHEMY_DATABASE_URI = "postgresql://" + USER + ":" + PASSWORD + "@" + HOST + ":" + str(PORT) + "/" + DATABASE

@@ -13,47 +13,48 @@ list_schema = QuestionDTO.list_schema
 
 
 @api.route("/questions")
-@api.param("CID")
+@api.param("competition_id")
 class QuestionList(Resource):
     @check_jwt(editor=True)
-    def get(self, CID):
-        items = dbc.get.question_list(CID)
+    def get(self, competition_id):
+        items = dbc.get.question_list_for_competition(competition_id)
         return list_response(list_schema.dump(items))
 
 
-@api.route("/slides/<SID>/questions")
-@api.param("CID, SID")
+@api.route("/slides/<slide_id>/questions")
+@api.param("competition_id, slide_id")
 class QuestionListForSlide(Resource):
     @check_jwt(editor=True)
-    def post(self, SID, CID):
+    def get(self, competition_id, slide_id):
+        items = dbc.get.question_list(competition_id, slide_id)
+        return list_response(list_schema.dump(items))
+
+    @check_jwt(editor=True)
+    def post(self, competition_id, slide_id):
         args = question_parser.parse_args(strict=True)
-        del args["slide_id"]
-
-        item_slide = dbc.get.slide(CID, SID)
-        item = dbc.add.question(item_slide=item_slide, **args)
-
+        item = dbc.add.question(slide_id=slide_id, **args)
         return item_response(schema.dump(item))
 
 
-@api.route("/slides/<SID>/questions/<QID>")
-@api.param("CID, SID, QID")
+@api.route("/slides/<slide_id>/questions/<question_id>")
+@api.param("competition_id, slide_id, question_id")
 class QuestionById(Resource):
     @check_jwt(editor=True)
-    def get(self, CID, SID, QID):
-        item_question = dbc.get.question(CID, SID, QID)
+    def get(self, competition_id, slide_id, question_id):
+        item_question = dbc.get.question(competition_id, slide_id, question_id)
         return item_response(schema.dump(item_question))
 
     @check_jwt(editor=True)
-    def put(self, CID, SID, QID):
+    def put(self, competition_id, slide_id, question_id):
         args = question_parser.parse_args(strict=True)
 
-        item_question = dbc.get.question(CID, SID, QID)
+        item_question = dbc.get.question(competition_id, slide_id, question_id)
         item_question = dbc.edit.default(item_question, **args)
 
         return item_response(schema.dump(item_question))
 
     @check_jwt(editor=True)
-    def delete(self, CID, SID, QID):
-        item_question = dbc.get.question(CID, SID, QID)
+    def delete(self, competition_id, slide_id, question_id):
+        item_question = dbc.get.question(competition_id, slide_id, question_id)
         dbc.delete.question(item_question)
         return {}, codes.NO_CONTENT

@@ -2,16 +2,22 @@
 This file contains functionality to delete data to the database.
 """
 
+import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.core import db
 from app.database.models import Blacklist, City, Competition, Role, Slide, User
+from flask_restx import abort
+from sqlalchemy import exc
 
 
 def default(item):
     """ Deletes item and commits. """
-
-    db.session.delete(item)
-    db.session.commit()
+    try:
+        db.session.delete(item)
+        db.session.commit()
+    except:
+        db.session.rollback()
+        abort(codes.INTERNAL_SERVER_ERROR, f"Item of type {type(item)} could not be deleted")
 
 
 def component(item_component):

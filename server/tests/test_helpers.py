@@ -43,8 +43,8 @@ def add_default_values():
     for j in range(2):
         item_comp = dbc.add.competition(f"Tävling {j}", 2012, item_city.id)
         # Add two more slides to competition
-        dbc.add.slide(item_comp)
-        dbc.add.slide(item_comp)
+        dbc.add.slide(item_comp.id)
+        dbc.add.slide(item_comp.id)
 
         # Add slides
         for i, item_slide in enumerate(item_comp.slides):
@@ -56,10 +56,10 @@ def add_default_values():
             dbc.utils.commit_and_refresh(item_slide)
 
             # Add question to competition
-            dbc.add.question(name=f"Q{i+1}", total_score=i + 1, type_id=1, item_slide=item_slide)
+            # dbc.add.question(name=f"Q{i+1}", total_score=i + 1, type_id=1, slide_id=item_slide.id)
 
             # Add text component
-            dbc.add.component(1, item_slide, {"text": "Text"}, i, 2 * i, 3 * i, 4 * i)
+            dbc.add.component(1, item_slide.id, {"text": "Text"}, i, 2 * i, 3 * i, 4 * i)
 
 
 def get_body(response):
@@ -128,12 +128,14 @@ def assert_object_values(obj, values):
 
 
 # Changes order of slides
-def change_order_test(client, cid, order, new_order, h):
-    response, new_order_body = get(client, f"/api/competitions/{cid}/slides/{new_order}", headers=h)
+def change_order_test(client, cid, slide_id, new_slide_id, h):
+    response, new_order_body = get(client, f"/api/competitions/{cid}/slides/{new_slide_id}", headers=h)
     assert response.status_code == codes.OK
-    response, order_body = get(client, f"/api/competitions/{cid}/slides/{order}", headers=h)
+    response, order_body = get(client, f"/api/competitions/{cid}/slides/{slide_id}", headers=h)
     assert response.status_code == codes.OK
 
+    new_order = new_order_body["order"]
+
     # Changes order
-    response, _ = put(client, f"/api/competitions/{cid}/slides/{order}/order", {"order": new_order}, headers=h)
+    response, _ = put(client, f"/api/competitions/{cid}/slides/{slide_id}/order", {"order": new_order}, headers=h)
     assert response.status_code == codes.OK

@@ -58,7 +58,6 @@ question_parser = reqparse.RequestParser()
 question_parser.add_argument("name", type=str, default=None, location="json")
 question_parser.add_argument("total_score", type=int, default=None, location="json")
 question_parser.add_argument("type_id", type=int, default=None, location="json")
-question_parser.add_argument("slide_id", type=int, location="json")
 
 
 ###QUESTION ALTERNATIVES####
