@@ -67,7 +67,7 @@ const CompetitionManager: React.FC = (props: any) => {
     dispatch(getCompetitions())
   }, [])
 
-  // Search funtion to search for a specific string
+  // Searchfuntion to search for a specific string
   const onSearchChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     if (timerHandle) {
       clearTimeout(timerHandle)
@@ -91,6 +91,11 @@ const CompetitionManager: React.FC = (props: any) => {
           console.warn(response.data)
         })
     }
+  }
+
+  const handleStartCompetition = () => {
+    history.push(`/presenter/id=${activeId}&code=123123`)
+    console.log('GLHF!')
   }
 
   const handleDuplicateCompetition = async () => {
@@ -201,7 +206,7 @@ const CompetitionManager: React.FC = (props: any) => {
         onChangePage={(event, newPage) => handleFilterChange({ ...filterParams, page: newPage })}
       />
       <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-        <MenuItem onClick={() => history.push(`/presenter/id=${activeId}&code=123123`)}>Starta</MenuItem>
+        <MenuItem onClick={handleStartCompetition}>Starta</MenuItem>
         <MenuItem onClick={handleDuplicateCompetition}>Duplicera</MenuItem>
         <RemoveMenuItem onClick={handleDeleteCompetition}>Ta bort</RemoveMenuItem>
       </Menu>

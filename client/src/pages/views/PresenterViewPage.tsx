@@ -17,7 +17,6 @@ import AssignmentIcon from '@material-ui/icons/Assignment'
 import BackspaceIcon from '@material-ui/icons/Backspace'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-import PlayArrowIcon from '@material-ui/icons/PlayArrow'
 import TimerIcon from '@material-ui/icons/Timer'
 import React, { useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
@@ -44,6 +43,10 @@ import {
   ToolBarContainer,
 } from './styled'
 
+/**
+ *  Presentation is an active competition
+ */
+
 const PresenterViewPage: React.FC = () => {
   // for dialog alert
   const [openAlert, setOpen] = React.useState(false)
@@ -58,37 +61,38 @@ const PresenterViewPage: React.FC = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    socket_connect()
-    socketSetSlide
     dispatch(getPresentationCompetition(id))
     dispatch(getPresentationTeams(id))
     dispatch(setPresentationCode(code))
+    socket_connect()
+    socketSetSlide // Behövs denna?
+    setTimeout(startCompetition, 500) // Ghetto, wait for everything to load
+    console.log(id)
   }, [])
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
+
   const handleClose = () => {
     setOpen(false)
     setAnchorEl(null)
+  }
+
+  const startCompetition = () => {
+    socketStartPresentation()
+    console.log('started competition for')
+    console.log(id)
   }
 
   const handleVerifyExit = () => {
     setOpen(true)
   }
 
-  const startCompetition = () => {
-    socketStartPresentation()
-    const haveStarted = true
-    console.log('You have started the competition! GLHF!')
-    console.log(haveStarted)
-  }
-
   const endCompetition = () => {
     setOpen(false)
-    const haveStarted = false
     socketEndPresentation()
-    history.push('/admin')
+    history.push('/admin/tävlingshanterare')
     window.location.reload(false) // TODO: fix this ugly hack, we "need" to refresh site to be able to run the competition correctly again
   }
 
@@ -100,6 +104,7 @@ const PresenterViewPage: React.FC = () => {
             <BackspaceIcon fontSize="large" />
           </PresenterButton>
         </Tooltip>
+
         <Dialog
           fullScreen={fullScreen}
           open={openAlert}
@@ -121,9 +126,10 @@ const PresenterViewPage: React.FC = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        <Typography variant="h3">{presentation.competition.name}</Typography>
         <SlideCounter>
           <Typography variant="h3">
-            {presentation.slide.id} / {presentation.competition.slides.length}
+            {presentation.slide.order + 1} / {presentation.competition.slides.length}
           </Typography>
         </SlideCounter>
       </PresenterHeader>
@@ -136,13 +142,15 @@ const PresenterViewPage: React.FC = () => {
             </PresenterButton>
           </Tooltip>
 
+          {/* 
+          // Manual start button
           <Tooltip title="Start Presentation" arrow>
             <PresenterButton onClick={startCompetition} variant="contained">
-              <PlayArrowIcon fontSize="large" />
+              start
             </PresenterButton>
           </Tooltip>
 
-          {/* 
+          
           // This creates a join button, but presenter should not join others, others should join presenter
           <Tooltip title="Join Presentation" arrow>
             <PresenterButton onClick={socketJoinPresentation} variant="contained">
@@ -206,3 +214,6 @@ const PresenterViewPage: React.FC = () => {
 }
 
 export default PresenterViewPage
+function componentDidMount() {
+  throw new Error('Function not implemented.')
+}
