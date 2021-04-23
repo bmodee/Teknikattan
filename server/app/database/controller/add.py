@@ -131,11 +131,11 @@ def question_answer(data, score, question_id, team_id):
     return db_add(QuestionAnswer(data, score, question_id, team_id))
 
 
-def code(pointer, view_type_id):
+def code(view_type_id, competition_id=None, team_id=None):
     """ Adds a code to the database using the provided arguments. """
 
     code_string = utils.generate_unique_code()
-    return db_add(Code(code_string, pointer, view_type_id))
+    return db_add(Code(code_string, view_type_id, competition_id, team_id))
 
 
 def team(name, competition_id):
@@ -144,7 +144,7 @@ def team(name, competition_id):
     item = db_add(Team(name, competition_id))
 
     # Add code for the team
-    code(item.id, 1)
+    code(1, competition_id, item.id)
 
     return item
 
@@ -189,10 +189,9 @@ def competition(name, year, city_id):
     slide(item_competition.id)
 
     # Add code for Judge view
-    code(item_competition.id, 2)
-
+    code(2, item_competition.id)
     # Add code for Audience view
-    code(item_competition.id, 3)
+    code(3, item_competition.id)
 
     item_competition = utils.refresh(item_competition)
     return item_competition

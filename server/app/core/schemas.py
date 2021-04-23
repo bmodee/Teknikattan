@@ -1,3 +1,4 @@
+from marshmallow.decorators import pre_dump
 import app.database.models as models
 from app.core import ma
 from marshmallow_sqlalchemy import fields
@@ -37,8 +38,9 @@ class CodeSchema(IdNameSchema):
 
     id = ma.auto_field()
     code = ma.auto_field()
-    pointer = ma.auto_field()
     view_type_id = ma.auto_field()
+    competition_id = fields.fields.Integer()
+    team_id = fields.fields.Integer()
 
 
 class ViewTypeSchema(IdNameSchema):

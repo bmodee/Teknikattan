@@ -40,7 +40,7 @@ def code_by_code(code):
 def code_list(competition_id):
     """ Gets a list of all code objects associated with a the provided competition. """
     # team_view_id = 1
-    join_competition = Competition.id == Code.pointer
+    join_competition = Competition.id == Code.competition_id
     filters = Competition.id == competition_id
     return Code.query.join(Competition, join_competition).filter(filters).all()
 

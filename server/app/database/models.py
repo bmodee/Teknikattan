@@ -205,17 +205,17 @@ class Component(db.Model):
 
 
 class Code(db.Model):
-    table_args = (db.UniqueConstraint("pointer", "type"),)
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.Text, unique=True)
-    pointer = db.Column(db.Integer, nullable=False)
-
     view_type_id = db.Column(db.Integer, db.ForeignKey("view_type.id"), nullable=False)
+    competition_id = db.Column(db.Integer, db.ForeignKey("competition.id"), nullable=False)
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=True)
 
-    def __init__(self, code, pointer, view_type_id):
+    def __init__(self, code, view_type_id, competition_id=None, team_id=None):
         self.code = code
-        self.pointer = pointer
         self.view_type_id = view_type_id
+        self.competition_id = competition_id
+        self.team_id = team_id
 
 
 class ViewType(db.Model):
