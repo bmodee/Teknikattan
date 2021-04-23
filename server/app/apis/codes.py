@@ -12,7 +12,7 @@ schema = CodeDTO.schema
 list_schema = CodeDTO.list_schema
 
 
-@api.route("/")
+@api.route("")
 @api.param("competition_id")
 class CodesList(Resource):
     @check_jwt(editor=True)

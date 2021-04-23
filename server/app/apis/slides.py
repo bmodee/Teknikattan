@@ -12,7 +12,7 @@ schema = SlideDTO.schema
 list_schema = SlideDTO.list_schema
 
 
-@api.route("/")
+@api.route("")
 @api.param("competition_id")
 class SlidesList(Resource):
     @check_jwt(editor=True)

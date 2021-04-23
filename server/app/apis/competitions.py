@@ -15,7 +15,7 @@ rich_schema = CompetitionDTO.rich_schema
 list_schema = CompetitionDTO.list_schema
 
 
-@api.route("/")
+@api.route("")
 class CompetitionsList(Resource):
     @check_jwt(editor=True)
     def post(self):

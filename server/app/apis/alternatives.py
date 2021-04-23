@@ -13,7 +13,7 @@ schema = QuestionAlternativeDTO.schema
 list_schema = QuestionAlternativeDTO.list_schema
 
 
-@api.route("/")
+@api.route("")
 @api.param("competition_id, slide_id, question_id")
 class QuestionAlternativeList(Resource):
     @check_jwt(editor=True)

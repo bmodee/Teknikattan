@@ -13,7 +13,7 @@ schema = QuestionAnswerDTO.schema
 list_schema = QuestionAnswerDTO.list_schema
 
 
-@api.route("/")
+@api.route("")
 @api.param("competition_id, team_id")
 class QuestionAnswerList(Resource):
     @check_jwt(editor=True)

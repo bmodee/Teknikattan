@@ -35,7 +35,7 @@ class ComponentByID(Resource):
         return {}, codes.NO_CONTENT
 
 
-@api.route("/")
+@api.route("")
 @api.param("competition_id, slide_id")
 class ComponentList(Resource):
     @check_jwt(editor=True)

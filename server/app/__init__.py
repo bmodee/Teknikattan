@@ -34,7 +34,7 @@ def create_app(config_name="configmodule.DevelopmentConfig"):
                 return redirect(rp[:-1])
 
         @app.after_request
-        def set_core(response):
+        def set_corse(response):
             header = response.headers
             header["Access-Control-Allow-Origin"] = "*"
             return response

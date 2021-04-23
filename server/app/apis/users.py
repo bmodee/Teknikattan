@@ -27,7 +27,7 @@ def edit_user(item_user, args):
     return dbc.edit.default(item_user, **args)
 
 
-@api.route("/")
+@api.route("")
 class UsersList(Resource):
     @check_jwt(editor=True)
     def get(self):

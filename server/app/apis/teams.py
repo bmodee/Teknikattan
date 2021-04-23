@@ -12,7 +12,7 @@ schema = TeamDTO.schema
 list_schema = TeamDTO.list_schema
 
 
-@api.route("/")
+@api.route("")
 @api.param("competition_id")
 class TeamsList(Resource):
     @check_jwt(editor=True)
