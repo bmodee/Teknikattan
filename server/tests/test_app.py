@@ -1,3 +1,7 @@
+"""
+This file tests the api function calls.
+"""
+
 import app.core.http_codes as codes
 from app.database.models import Slide
 
