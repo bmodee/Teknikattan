@@ -1,3 +1,7 @@
+"""
+This file will reset and polulate the database with some data.
+"""
+
 import random
 
 import app.database.controller as dbc
