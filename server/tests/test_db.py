@@ -1,3 +1,7 @@
+"""
+This file tests the database controller functions.
+"""
+
 import app.database.controller as dbc
 from app.database.models import City, Media, MediaType, Role, User
 
