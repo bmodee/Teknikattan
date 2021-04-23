@@ -20,6 +20,7 @@ import React, { useEffect } from 'react'
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom'
 import { getCities } from '../../actions/cities'
 import { getRoles } from '../../actions/roles'
+import { getStatistics } from '../../actions/statistics'
 import { getTypes } from '../../actions/typesAction'
 import { logoutUser } from '../../actions/user'
 import { useAppDispatch, useAppSelector } from '../../hooks'
@@ -71,6 +72,7 @@ const AdminView: React.FC = () => {
     dispatch(getCities())
     dispatch(getRoles())
     dispatch(getTypes())
+    dispatch(getStatistics())
   }, [])
 
   const menuAdminItems = [

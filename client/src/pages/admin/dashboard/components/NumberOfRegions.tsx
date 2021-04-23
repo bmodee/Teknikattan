@@ -4,7 +4,7 @@ import { getCities } from '../../../../actions/cities'
 import { useAppDispatch, useAppSelector } from '../../../../hooks'
 
 const NumberOfRegions: React.FC = () => {
-  const regions = useAppSelector((state) => state.cities.total)
+  const regions = useAppSelector((state) => state.statistics.regions)
   const dispatch = useAppDispatch()
 
   const handleCount = () => {
