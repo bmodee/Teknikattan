@@ -1,7 +1,8 @@
 import app.database.controller as dbc
 from app.apis import check_jwt, item_response, list_response
+from app.core import http_codes
 from app.core.dto import MiscDTO
-from app.database.models import City, ComponentType, MediaType, QuestionType, Role, ViewType
+from app.database.models import City, Competition, ComponentType, MediaType, QuestionType, Role, User, ViewType
 from flask_jwt_extended import jwt_required
 from flask_restx import Resource, reqparse
 
@@ -72,3 +73,13 @@ class Cities(Resource):
         dbc.delete.default(item)
         items = dbc.get.all(City)
         return list_response(city_schema.dump(items))
+
+
+@api.route("/statistics")
+class Statistics(Resource):
+    @check_jwt(editor=True)
+    def get(self):
+        user_count = User.query.count()
+        competition_count = Competition.query.count()
+        region_count = City.query.count()
+        return {"users": user_count, "competitions": competition_count, "regions": region_count}, http_codes.OK

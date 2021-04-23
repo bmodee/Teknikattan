@@ -4,7 +4,7 @@ import { getSearchUsers } from '../../../../actions/searchUser'
 import { useAppDispatch, useAppSelector } from '../../../../hooks'
 
 const NumberOfUsers: React.FC = () => {
-  const usersTotal = useAppSelector((state) => state.searchUsers.total)
+  const usersTotal = useAppSelector((state) => state.statistics.users)
   const dispatch = useAppDispatch()
 
   const handleCount = () => {
