@@ -28,7 +28,7 @@ it('renders presentation editor', () => {
     },
   }
   ;(mockedAxios.get as jest.Mock).mockImplementation((path: string, params?: any) => {
-    if (path.startsWith('/competitions')) return Promise.resolve(competitionRes)
+    if (path.startsWith('/api/competitions')) return Promise.resolve(competitionRes)
     return Promise.resolve(citiesRes)
   })
   render(

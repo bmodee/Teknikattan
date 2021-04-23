@@ -104,7 +104,7 @@ const PresentationEditorPage: React.FC = () => {
   }
 
   const createNewSlide = async () => {
-    await axios.post(`/competitions/${id}/slides`, { title: 'new slide' })
+    await axios.post(`/api/competitions/${id}/slides`, { title: 'new slide' })
     dispatch(getEditorCompetition(id))
   }
 
@@ -128,13 +128,13 @@ const PresentationEditorPage: React.FC = () => {
   }
 
   const handleRemoveSlide = async () => {
-    await axios.delete(`/competitions/${id}/slides/${contextState.slideId}`)
+    await axios.delete(`/api/competitions/${id}/slides/${contextState.slideId}`)
     dispatch(getEditorCompetition(id))
     setContextState(initialState)
   }
 
   const handleDuplicateSlide = async () => {
-    await axios.post(`/competitions/${id}/slides/${contextState.slideId}/copy`)
+    await axios.post(`/api/competitions/${id}/slides/${contextState.slideId}/copy`)
     dispatch(getEditorCompetition(id))
     setContextState(initialState)
   }

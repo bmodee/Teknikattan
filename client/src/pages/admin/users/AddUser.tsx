@@ -59,7 +59,7 @@ const AddUser: React.FC = (props: any) => {
       role_id: selectedRole?.id as number,
     }
     await axios
-      .post('/auth/signup', params)
+      .post('/api/auth/signup', params)
       .then(() => {
         actions.resetForm()
         setAnchorEl(null)

@@ -4,7 +4,7 @@ import Types from './types'
 
 export const getRoles = () => async (dispatch: AppDispatch) => {
   await axios
-    .get('/misc/roles')
+    .get('/api/misc/roles')
     .then((res) => {
       dispatch({
         type: Types.SET_ROLES,

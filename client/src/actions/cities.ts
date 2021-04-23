@@ -4,7 +4,7 @@ import Types from './types'
 
 export const getCities = () => async (dispatch: AppDispatch) => {
   await axios
-    .get('/misc/cities')
+    .get('/api/misc/cities')
     .then((res) => {
       dispatch({
         type: Types.SET_CITIES,

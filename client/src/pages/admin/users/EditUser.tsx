@@ -110,7 +110,7 @@ const EditUser = ({ user }: UserIdProps) => {
   const handleDeleteUsers = async () => {
     setOpen(false)
     await axios
-      .delete(`/auth/delete/${user.id}`)
+      .delete(`/api/auth/delete/${user.id}`)
       .then(() => {
         setAnchorEl(null)
         dispatch(getSearchUsers())
@@ -141,7 +141,7 @@ const EditUser = ({ user }: UserIdProps) => {
       req['role_id'] = params.role_id
     }
     await axios
-      .put('/users/' + user.id, req)
+      .put('/api/users/' + user.id, req)
       .then((res) => {
         setAnchorEl(null)
         dispatch(getSearchUsers())

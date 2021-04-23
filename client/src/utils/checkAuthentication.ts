@@ -16,7 +16,7 @@ export const CheckAuthentication = async () => {
       axios.defaults.headers.common['Authorization'] = authToken
       store.dispatch({ type: Types.LOADING_USER })
       await axios
-        .get('/users')
+        .get('/api/users')
         .then((res) => {
           store.dispatch({ type: Types.SET_AUTHENTICATED })
           store.dispatch({

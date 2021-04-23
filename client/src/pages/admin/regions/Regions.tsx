@@ -45,7 +45,7 @@ const RegionManager: React.FC = (props: any) => {
   const handleDeleteCity = async () => {
     if (activeId) {
       await axios
-        .delete(`/misc/cities/${activeId}`)
+        .delete(`/api/misc/cities/${activeId}`)
         .then(() => {
           setAnchorEl(null)
           dispatch(getCities())
@@ -63,7 +63,7 @@ const RegionManager: React.FC = (props: any) => {
 
   const handleAddCity = async () => {
     await axios
-      .post(`/misc/cities`, { name: newCity })
+      .post(`/api/misc/cities`, { name: newCity })
       .then(() => {
         setAnchorEl(null)
         dispatch(getCities())

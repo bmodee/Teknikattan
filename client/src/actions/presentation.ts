@@ -6,7 +6,7 @@ import Types from './types'
 
 export const getPresentationCompetition = (id: string) => async (dispatch: AppDispatch) => {
   await axios
-    .get(`/competitions/${id}`)
+    .get(`/api/competitions/${id}`)
     .then((res) => {
       dispatch({
         type: Types.SET_PRESENTATION_COMPETITION,
@@ -20,7 +20,7 @@ export const getPresentationCompetition = (id: string) => async (dispatch: AppDi
 
 export const getPresentationTeams = (id: string) => async (dispatch: AppDispatch) => {
   await axios
-    .get(`/competitions/${id}/teams`)
+    .get(`/api/competitions/${id}/teams`)
     .then((res) => {
       dispatch({
         type: Types.SET_PRESENTATION_TEAMS,

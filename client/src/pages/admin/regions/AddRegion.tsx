@@ -51,7 +51,7 @@ const AddRegion: React.FC = (props: any) => {
       name: values.model.name,
     }
     await axios
-      .post('/misc/cities', params)
+      .post('/api/misc/cities', params)
       .then(() => {
         actions.resetForm()
         dispatch(getCities())

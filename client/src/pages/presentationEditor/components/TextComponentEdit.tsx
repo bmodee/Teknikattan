@@ -37,7 +37,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
     setTimerHandle(
       window.setTimeout(async () => {
         console.log('Content was updated on server. id: ', component.id)
-        await axios.put(`/competitions/${competitionId}/slides/${activeSlideId}/components/${component.id}`, {
+        await axios.put(`/api/competitions/${competitionId}/slides/${activeSlideId}/components/${component.id}`, {
           data: { ...component.data, text: a },
         })
         dispatch(getEditorCompetition(id))
@@ -46,7 +46,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
   }
 
   const handleDeleteText = async (componentId: number) => {
-    await axios.delete(`/competitions/${id}/slides/${activeSlideId}/components/${componentId}`)
+    await axios.delete(`/api/competitions/${id}/slides/${activeSlideId}/components/${componentId}`)
     dispatch(getEditorCompetition(id))
   }
 

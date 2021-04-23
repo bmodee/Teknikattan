@@ -7,7 +7,7 @@ import Types from './types'
 export const loginUser = (userData: AccountLoginModel, history: History) => async (dispatch: AppDispatch) => {
   dispatch({ type: Types.LOADING_UI })
   await axios
-    .post('/auth/login', userData)
+    .post('/api/auth/login', userData)
     .then((res) => {
       const token = `Bearer ${res.data.access_token}`
       localStorage.setItem('token', token) //setting token to local storage
@@ -28,7 +28,7 @@ export const loginUser = (userData: AccountLoginModel, history: History) => asyn
 export const getUserData = () => async (dispatch: AppDispatch) => {
   dispatch({ type: Types.LOADING_USER })
   await axios
-    .get('/users')
+    .get('/api/users')
     .then((res) => {
       dispatch({
         type: Types.SET_USER,
@@ -42,7 +42,7 @@ export const getUserData = () => async (dispatch: AppDispatch) => {
 
 export const logoutUser = () => async (dispatch: AppDispatch) => {
   localStorage.removeItem('token')
-  await axios.post('/auth/logout').then(() => {
+  await axios.post('/api/auth/logout').then(() => {
     delete axios.defaults.headers.common['Authorization']
     dispatch({
       type: Types.SET_UNAUTHENTICATED,

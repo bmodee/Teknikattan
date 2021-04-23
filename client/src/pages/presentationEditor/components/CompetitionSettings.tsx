@@ -77,7 +77,7 @@ const CompetitionSettings: React.FC = () => {
   const competition = useAppSelector((state) => state.editor.competition)
   const updateCompetitionName = async (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     await axios
-      .put(`/competitions/${id}`, { name: event.target.value })
+      .put(`/api/competitions/${id}`, { name: event.target.value })
       .then(() => {
         dispatch(getEditorCompetition(id))
       })
@@ -87,7 +87,7 @@ const CompetitionSettings: React.FC = () => {
   const cities = useAppSelector((state) => state.cities.cities)
   const updateCompetitionCity = async (city: City) => {
     await axios
-      .put(`/competitions/${id}`, { city_id: city.id })
+      .put(`/api/competitions/${id}`, { city_id: city.id })
       .then(() => {
         dispatch(getEditorCompetition(id))
       })
@@ -104,7 +104,7 @@ const CompetitionSettings: React.FC = () => {
 
   const removeTeam = async (tid: number) => {
     await axios
-      .delete(`/competitions/${id}/teams/${tid}`)
+      .delete(`/api/competitions/${id}/teams/${tid}`)
       .then(() => {
         dispatch(getEditorCompetition(id))
       })
@@ -113,7 +113,7 @@ const CompetitionSettings: React.FC = () => {
   const addTeam = async () => {
     setAddTeamOpen(false)
     await axios
-      .post(`/competitions/${id}/teams`, { name: selectedTeamName })
+      .post(`/api/competitions/${id}/teams`, { name: selectedTeamName })
       .then(() => {
         dispatch(getEditorCompetition(id))
       })

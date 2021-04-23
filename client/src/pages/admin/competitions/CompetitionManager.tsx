@@ -82,7 +82,7 @@ const CompetitionManager: React.FC = (props: any) => {
   const handleDeleteCompetition = async () => {
     if (activeId) {
       await axios
-        .delete(`/competitions/${activeId}`)
+        .delete(`/api/competitions/${activeId}`)
         .then(() => {
           setAnchorEl(null)
           dispatch(getCompetitions()) // refresh the competition list
@@ -101,7 +101,7 @@ const CompetitionManager: React.FC = (props: any) => {
   const handleDuplicateCompetition = async () => {
     if (activeId) {
       await axios
-        .post(`/competitions/${activeId}/copy`)
+        .post(`/api/competitions/${activeId}/copy`)
         .then(() => {
           setAnchorEl(null)
           dispatch(getCompetitions())

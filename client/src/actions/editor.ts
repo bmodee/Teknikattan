@@ -4,7 +4,7 @@ import Types from './types'
 
 export const getEditorCompetition = (id: string) => async (dispatch: AppDispatch, getState: () => RootState) => {
   await axios
-    .get(`/competitions/${id}`)
+    .get(`/api/competitions/${id}`)
     .then((res) => {
       dispatch({
         type: Types.SET_EDITOR_COMPETITION,

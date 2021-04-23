@@ -15,7 +15,7 @@ export const getSearchUsers = () => async (dispatch: AppDispatch, getState: () =
     email: currentParams.email,
   }
   await axios
-    .get('/users/search', { params })
+    .get('/api/users/search', { params })
     .then((res) => {
       dispatch({
         type: Types.SET_SEARCH_USERS,

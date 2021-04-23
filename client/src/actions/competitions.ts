@@ -15,7 +15,7 @@ export const getCompetitions = () => async (dispatch: AppDispatch, getState: () 
     year: currentParams.year,
   }
   await axios
-    .get('/competitions/search', { params })
+    .get('/api/competitions/search', { params })
     .then((res) => {
       dispatch({
         type: Types.SET_COMPETITIONS,

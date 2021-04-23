@@ -4,7 +4,7 @@ import Types from './types'
 
 export const getTypes = () => async (dispatch: AppDispatch) => {
   await axios
-    .get('/misc/types')
+    .get('/api/misc/types')
     .then((res) => {
       dispatch({
         type: Types.SET_TYPES,

@@ -63,7 +63,7 @@ const AddCompetition: React.FC = (props: any) => {
     }
 
     await axios
-      .post('/competitions', params) // send to database
+      .post('/api/competitions', params) // send to database
       .then(() => {
         actions.resetForm() // reset the form
         setAnchorEl(null)
