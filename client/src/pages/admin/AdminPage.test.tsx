@@ -40,7 +40,7 @@ it('renders admin view', () => {
     },
   }
   ;(mockedAxios.get as jest.Mock).mockImplementation((path: string, params?: any) => {
-    if (path === '/misc/cities') return Promise.resolve(cityRes)
+    if (path === '/api/misc/cities') return Promise.resolve(cityRes)
     else return Promise.resolve(rolesRes)
   })
   render(

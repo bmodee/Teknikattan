@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import store from '../../../store'
 import CompetitionSettings from './CompetitionSettings'
 import SettingsPanel from './SettingsPanel'
+import SlideSettings from './SlideSettings'
 
 it('renders settings panel', () => {
   render(
@@ -28,5 +29,5 @@ it('renders slide settings tab', () => {
   const tabs = wrapper.find('.MuiTabs-flexContainer')
   expect(wrapper.find(CompetitionSettings).length).toEqual(1)
   tabs.children().at(1).simulate('click')
-  expect(wrapper.text().includes('2')).toBe(true) //TODO: check that SlideSettings exists
+  expect(wrapper.find(SlideSettings).length).toEqual(1)
 })

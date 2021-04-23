@@ -100,6 +100,7 @@ if __name__ == "__main__":
     app, _ = create_app("configmodule.DevelopmentConfig")
 
     with app.app_context():
+
         db.drop_all()
         db.create_all()
         _add_items()

@@ -40,5 +40,6 @@
   },
   "search.exclude": {
     "**/env": true
-  }
+  },
+  "python.pythonPath": "server\\env\\Scripts\\python.exe"
 }

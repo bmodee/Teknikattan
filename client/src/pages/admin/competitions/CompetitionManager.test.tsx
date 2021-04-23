@@ -47,7 +47,7 @@ it('renders competition manager', () => {
   }
 
   ;(mockedAxios.get as jest.Mock).mockImplementation((path: string, params?: any) => {
-    if (path === '/competitions/search') return Promise.resolve(compRes)
+    if (path === '/api/competitions/search') return Promise.resolve(compRes)
     else return Promise.resolve(cityRes)
   })
   render(

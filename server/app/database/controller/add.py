@@ -2,10 +2,11 @@
 This file contains functionality to add data to the database.
 """
 
-from sqlalchemy.orm.session import sessionmaker
+import os
+
 import app.core.http_codes as codes
 from app.core import db
-from app.database.controller import utils
+from app.database.controller import get, search, utils
 from app.database.models import (
     Blacklist,
     City,
@@ -25,8 +26,12 @@ from app.database.models import (
     User,
     ViewType,
 )
+from flask.globals import current_app
 from flask_restx import abort
+from PIL import Image
 from sqlalchemy import exc
+from sqlalchemy.orm import relation
+from sqlalchemy.orm.session import sessionmaker
 
 
 def db_add(item):
@@ -97,6 +102,21 @@ def component(type_id, slide_id, data, x=0, y=0, w=0, h=0):
     Adds a component to the slide at the specified coordinates with the
     provided size and data .
     """
+    from app.apis.media import PHOTO_PATH
+
+    if type_id == 2:  # 2 is image
+        item_image = get.one(Media, data["media_id"])
+        filename = item_image.filename
+        path = os.path.join(PHOTO_PATH, filename)
+        with Image.open(path) as im:
+            h = im.height
+            w = im.width
+
+    largest = max(w, h)
+    if largest > 600:
+        ratio = 600 / largest
+        w *= ratio
+        h *= ratio
 
     return db_add(Component(slide_id, type_id, data, x, y, w, h))
 

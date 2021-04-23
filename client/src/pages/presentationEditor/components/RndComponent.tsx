@@ -44,7 +44,14 @@ const RndComponent = ({ component }: ImageComponentProps) => {
           />
         )
       case ComponentTypes.Image:
-        return <ImageComponentDisplay key={component.id} component={component as ImageComponent} />
+        return (
+          <ImageComponentDisplay
+            key={component.id}
+            component={component as ImageComponent}
+            width={currentSize.w}
+            height={currentSize.h}
+          />
+        )
       default:
         break
     }

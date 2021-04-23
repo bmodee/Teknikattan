@@ -84,6 +84,7 @@ export interface Component {
 export interface ImageComponent extends Component {
   data: {
     media_id: number
+    filename: string
   }
 }
 
