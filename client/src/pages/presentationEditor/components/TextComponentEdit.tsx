@@ -57,15 +57,17 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
         init={{
           height: '300px',
           menubar: false,
+          fontsize_formats: '8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt 120pt 144pt',
+          content_style: 'body {font-size: 24pt;}',
           plugins: [
             'advlist autolink lists link image charmap print preview anchor',
             'searchreplace visualblocks code fullscreen',
             'insertdatetime media table paste code help wordcount',
           ],
           toolbar:
-            'undo redo save | fontselect | formatselect | bold italic backcolor | \
-             alignleft aligncenter alignright alignjustify | \
-             bullist numlist outdent indent | removeformat | help',
+            'fontsizeselect | bold italic backcolor | help | \
+            fontselect | formatselect | undo redo | \
+            alignleft aligncenter alignright alignjustify bullist numlist outdent indent | removeformat |',
         }}
         onEditorChange={(a, e) => handleSaveText(a)}
       />

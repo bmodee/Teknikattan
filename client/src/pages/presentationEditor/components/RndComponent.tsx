@@ -40,7 +40,9 @@ const RndComponent = ({ component }: ImageComponentProps) => {
         return (
           <TextComponentContainer
             hover={hover}
-            dangerouslySetInnerHTML={{ __html: (component as TextComponent).data.text }}
+            dangerouslySetInnerHTML={{
+              __html: `<div style="font-size: 24px;"> ${(component as TextComponent).data.text} </div>`,
+            }}
           />
         )
       case ComponentTypes.Image:

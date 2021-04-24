@@ -86,6 +86,12 @@ def slide_count(competition_id):
     return Slide.query.filter(Slide.competition_id == competition_id).count()
 
 
+def slide_count(competition_id):
+    """ Gets the number of slides in the provided competition. """
+
+    return Slide.query.filter(Slide.competition_id == competition_id).count()
+
+
 ### Teams ###
 def team(competition_id, team_id):
     """ Gets the team object associated with the provided id and competition id. """
@@ -100,6 +106,8 @@ def team_list(competition_id):
 
     join_competition = Competition.id == Team.competition_id
     filters = Competition.id == competition_id
+
+    return Team.query.join(Competition, join_competition).filter(filters).all()
 
     return Team.query.join(Competition, join_competition).filter(filters).all()
 
@@ -164,6 +172,14 @@ def question_alternative_list(competition_id, slide_id, question_id):
     join_slide = Slide.id == Question.slide_id
     join_question = Question.id == QuestionAlternative.question_id
     filters = (Competition.id == competition_id) & (Slide.id == slide_id) & (Question.id == question_id)
+
+    return (
+        QuestionAlternative.query.join(Competition, join_competition)
+        .join(Slide, join_slide)
+        .join(Question, join_question)
+        .filter(filters)
+        .all()
+    )
 
     return (
         QuestionAlternative.query.join(Competition, join_competition)
