@@ -23,7 +23,7 @@ const Main: React.FC = () => {
         <SecureRoute login exact path="/" component={LoginPage} />
         <SecureRoute path="/admin" component={AdminPage} />
         <SecureRoute path="/editor/competition-id=:id" component={PresentationEditorPage} />
-        <Route exact path="/view" component={ViewSelectPage} />
+        <Route exact path="/:code" component={ViewSelectPage} />
         <Route exact path="/participant/id=:id&code=:code" component={ParticipantViewPage} />
         <SecureRoute exact path="/presenter/id=:id&code=:code" component={PresenterViewPage} />
         <Route exact path="/judge/id=:id&code=:code" component={JudgeViewPage} />

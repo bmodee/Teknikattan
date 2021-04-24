@@ -79,7 +79,7 @@ class AuthLoginCode(Resource):
         if not verify_code(code):
             api.abort(codes.BAD_REQUEST, "Invalid code")
 
-        item_code = dbc.get.code_by_code(code, True, "A presentation with that code does not exist")
+        item_code = dbc.get.code_by_code(code)
         return item_response(CodeDTO.schema.dump(item_code)), codes.OK
 
 

@@ -1,4 +1,4 @@
-import { Button, TextField } from '@material-ui/core'
+import { Button, TextField, Typography } from '@material-ui/core'
 import { Alert, AlertTitle } from '@material-ui/lab'
 import { Formik, FormikHelpers } from 'formik'
 import React, { useEffect, useState } from 'react'
@@ -83,7 +83,8 @@ const AdminLogin: React.FC = () => {
           {errors.message && (
             <Alert severity="error">
               <AlertTitle>Error</AlertTitle>
-              {errors.message}
+              <Typography>Någonting gick fel. Kontrollera</Typography>
+              <Typography>dina användaruppgifter och försök igen</Typography>
             </Alert>
           )}
           {loading && <CenteredCircularProgress color="secondary" />}

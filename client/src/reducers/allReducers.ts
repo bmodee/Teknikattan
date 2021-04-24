@@ -2,6 +2,7 @@
 
 import { combineReducers } from 'redux'
 import citiesReducer from './citiesReducer'
+import competitionLoginReducer from './competitionLoginReducer'
 import competitionsReducer from './competitionsReducer'
 import editorReducer from './editorReducer'
 import mediaReducer from './mediaReducer'
@@ -26,5 +27,6 @@ const allReducers = combineReducers({
   types: typesReducer,
   media: mediaReducer,
   statistics: statisticsReducer,
+  competitionLogin: competitionLoginReducer,
 })
 export default allReducers

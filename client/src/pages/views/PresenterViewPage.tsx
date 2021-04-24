@@ -52,7 +52,6 @@ const PresenterViewPage: React.FC = () => {
   const [openAlert, setOpen] = React.useState(false)
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
-
   const teams = useAppSelector((state) => state.presentation.teams)
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
   const { id, code }: ViewParams = useParams()

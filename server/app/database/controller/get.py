@@ -34,7 +34,7 @@ def one(db_type, id):
 def code_by_code(code):
     """ Gets the code object associated with the provided code. """
 
-    return Code.query.filter(Code.code == code.upper()).first_extended()
+    return Code.query.filter(Code.code == code.upper()).first_extended( True, "A presentation with that code does not exist")
 
 
 def code_list(competition_id):

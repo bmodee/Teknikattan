@@ -14,6 +14,7 @@ import { socket_connect } from '../../sockets'
 import { SlideListItem } from '../presentationEditor/styled'
 import JudgeScoreDisplay from './components/JudgeScoreDisplay'
 import SlideDisplay from './components/SlideDisplay'
+import { useHistory } from 'react-router-dom'
 import {
   Content,
   JudgeAnswersLabel,
@@ -41,6 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const JudgeViewPage: React.FC = () => {
   const classes = useStyles()
+  const history = useHistory()
   const { id, code }: ViewParams = useParams()
   const dispatch = useAppDispatch()
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0)
@@ -50,12 +52,13 @@ const JudgeViewPage: React.FC = () => {
     setActiveSlideIndex(index)
     dispatch(setCurrentSlide(slides[index]))
   }
-
   useEffect(() => {
     socket_connect()
     dispatch(getPresentationCompetition(id))
     dispatch(getPresentationTeams(id))
     dispatch(setPresentationCode(code))
+    //hides the url so people can't sneak peak
+    history.push('judge')
   }, [])
 
   return (
