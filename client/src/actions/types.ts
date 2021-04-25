@@ -1,3 +1,7 @@
+/*
+This file includes all redux action types 
+*/
+
 export default {
   LOADING_UI: 'LOADING_UI',
   LOADING_USER: 'LOADING_USER',

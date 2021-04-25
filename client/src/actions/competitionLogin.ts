@@ -1,9 +1,14 @@
+/*
+This file handles actions for the competitionLogin redux state
+*/
+
 import axios from 'axios'
 import { History } from 'history'
 import { AppDispatch } from '../store'
 import { AccountLoginModel } from './../interfaces/FormModels'
 import Types from './types'
 
+// Action creator to attempt to login with competition code
 export const loginCompetition = (code: string, history: History) => async (dispatch: AppDispatch) => {
   dispatch({ type: Types.LOADING_COMPETITION_LOGIN })
   await axios

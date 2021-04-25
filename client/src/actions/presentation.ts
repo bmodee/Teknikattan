@@ -1,9 +1,14 @@
+/*
+This file handles actions for the presentation redux state
+*/
+
 import axios from 'axios'
 import { Slide } from '../interfaces/ApiModels'
 import { Timer } from '../interfaces/Timer'
 import store, { AppDispatch } from './../store'
 import Types from './types'
 
+// Save competition in presentation state from input id
 export const getPresentationCompetition = (id: string) => async (dispatch: AppDispatch) => {
   await axios
     .get(`/api/competitions/${id}`)
@@ -18,6 +23,7 @@ export const getPresentationCompetition = (id: string) => async (dispatch: AppDi
     })
 }
 
+// Get all teams from current presentation competition
 export const getPresentationTeams = (id: string) => async (dispatch: AppDispatch) => {
   await axios
     .get(`/api/competitions/${id}/teams`)

@@ -1,7 +1,12 @@
+/*
+This file handles actions for the editor redux state
+*/
+
 import axios from 'axios'
 import { AppDispatch, RootState } from './../store'
 import Types from './types'
 
+// Save competition in editor state from input id
 export const getEditorCompetition = (id: string) => async (dispatch: AppDispatch, getState: () => RootState) => {
   await axios
     .get(`/api/competitions/${id}`)
@@ -19,6 +24,7 @@ export const getEditorCompetition = (id: string) => async (dispatch: AppDispatch
     })
 }
 
+// Set currentSlideId in editor state
 export const setEditorSlideId = (id: number) => (dispatch: AppDispatch) => {
   dispatch({
     type: Types.SET_EDITOR_SLIDE_ID,
