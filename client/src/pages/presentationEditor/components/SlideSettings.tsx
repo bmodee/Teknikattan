@@ -1,3 +1,5 @@
+/* This file compiles and renders the right hand slide settings bar, under the tab "SIDA".
+ */
 import { Divider, List, ListItem, ListItemText, TextField, Typography } from '@material-ui/core'
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -17,6 +19,7 @@ const SlideSettings: React.FC = () => {
   const { id }: CompetitionParams = useParams()
 
   const activeSlide = useAppSelector((state) =>
+    // Gets the slide with id=activeSlideId from the database.
     state.editor.competition.slides.find((slide) => slide && slide.id === state.editor.activeSlideId)
   )
 

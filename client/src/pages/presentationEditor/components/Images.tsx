@@ -1,3 +1,5 @@
+/* This file handles creating and removing image components, and uploading and removing image files from the server.
+ */
 import { ListItem, ListItemText, Typography } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import React, { useState } from 'react'
@@ -25,20 +27,11 @@ type ImagesProps = {
 }
 
 const Images = ({ activeSlide, competitionId }: ImagesProps) => {
-  const pictureList = [
-    { id: 'picture1', name: 'Picture1.jpeg' },
-    { id: 'picture2', name: 'Picture2.jpeg' },
-  ]
-  const handleClosePictureClick = (id: string) => {
-    setPictures(pictures.filter((item) => item.id !== id)) //Will not be done like this when api is used
-  }
-  const [pictures, setPictures] = useState(pictureList)
-
   const dispatch = useDispatch()
 
   const uploadFile = async (formData: FormData) => {
-    // Uploads the file to the server and creates a Media object in database
-    // Returns media id
+    // Uploads the file to the server and creates a Media object in database.
+    // Returns media object data.
     return await axios
       .post(`/api/media/images`, formData)
       .then((response) => {
@@ -48,20 +41,8 @@ const Images = ({ activeSlide, competitionId }: ImagesProps) => {
       .catch(console.log)
   }
 
-  const handleFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files !== null && e.target.files[0]) {
-      const files = Array.from(e.target.files)
-      const file = files[0]
-      const formData = new FormData()
-      formData.append('image', file)
-      const response = await uploadFile(formData)
-      if (response) {
-        const newComponent = createImageComponent(response)
-      }
-    }
-  }
-
   const createImageComponent = async (media: Media) => {
+    // Creates a new image component on the database using API call.
     const imageData = {
       x: 0,
       y: 0,
@@ -79,7 +60,23 @@ const Images = ({ activeSlide, competitionId }: ImagesProps) => {
       .catch(console.log)
   }
 
+  const handleFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Reads the selected image file and uploads it to the server.
+    // Creates a new image component containing the file.
+    if (e.target.files !== null && e.target.files[0]) {
+      const files = Array.from(e.target.files)
+      const file = files[0]
+      const formData = new FormData()
+      formData.append('image', file)
+      const response = await uploadFile(formData)
+      if (response) {
+        const newComponent = createImageComponent(response)
+      }
+    }
+  }
+
   const handleCloseimageClick = async (image: ImageComponent) => {
+    // Removes selected image component and deletes its file from the server.
     await axios
       .delete(`/api/media/images/${image.data.media_id}`)
       .then(() => {
@@ -96,6 +93,7 @@ const Images = ({ activeSlide, competitionId }: ImagesProps) => {
   }
 
   const images = useAppSelector(
+    // Updates component state to match image components found on database.
     (state) =>
       state.editor.competition.slides
         .find((slide) => slide.id === state.editor.activeSlideId)
