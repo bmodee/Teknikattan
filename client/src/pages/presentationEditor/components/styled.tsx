@@ -140,11 +140,11 @@ export const DeleteTextButton = styled(Button)`
   margin-bottom: 7px;
 `
 
-interface TextComponentContainerProps {
+interface HoverContainerProps {
   hover: boolean
 }
 
-export const TextComponentContainer = styled.div<TextComponentContainerProps>`
+export const HoverContainer = styled.div<HoverContainerProps>`
   height: 100%;
   width: 100%;
   padding: ${(props) => (props.hover ? 0 : 1)}px;
