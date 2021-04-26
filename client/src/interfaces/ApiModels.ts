@@ -83,17 +83,13 @@ export interface Component {
 }
 
 export interface ImageComponent extends Component {
-  data: {
-    media_id: number
-    filename: string
-  }
+  media_id: number
+  filename: string
 }
 
 export interface TextComponent extends Component {
-  data: {
-    text: string
-    font: string
-  }
+  text: string
+  font: string
 }
 
 export interface QuestionAlternativeComponent extends Component {

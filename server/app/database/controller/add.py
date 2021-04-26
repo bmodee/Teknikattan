@@ -14,6 +14,7 @@ from app.database.models import (
     Competition,
     Component,
     ComponentType,
+    ImageComponent,
     Media,
     MediaType,
     Question,
@@ -23,6 +24,7 @@ from app.database.models import (
     Role,
     Slide,
     Team,
+    TextComponent,
     User,
     ViewType,
 )
@@ -30,8 +32,10 @@ from flask.globals import current_app
 from flask_restx import abort
 from PIL import Image
 from sqlalchemy import exc
+from sqlalchemy.orm import with_polymorphic
 from sqlalchemy.orm import relation
 from sqlalchemy.orm.session import sessionmaker
+from flask import current_app
 
 
 def db_add(item):
@@ -55,59 +59,16 @@ def db_add(item):
     return item
 
 
-def blacklist(jti):
-    """ Adds a blacklist to the database. """
-
-    return db_add(Blacklist(jti))
-
-
-def mediaType(name):
-    """ Adds a media type to the database. """
-
-    return db_add(MediaType(name))
-
-
-def questionType(name):
-    """ Adds a question type to the database. """
-
-    return db_add(QuestionType(name))
-
-
-def componentType(name):
-    """ Adds a component type to the database. """
-
-    return db_add(ComponentType(name))
-
-
-def viewType(name):
-    """ Adds a view type to the database. """
-
-    return db_add(ViewType(name))
-
-
-def role(name):
-    """ Adds a role to the database. """
-
-    return db_add(Role(name))
-
-
-def city(name):
-    """ Adds a city to the database. """
-
-    return db_add(City(name))
-
-
-def component(type_id, slide_id, data, x=0, y=0, w=0, h=0):
+def component(type_id, slide_id, x=0, y=0, w=0, h=0, **data):
     """
     Adds a component to the slide at the specified coordinates with the
     provided size and data .
     """
-    from app.apis.media import PHOTO_PATH
 
     if type_id == 2:  # 2 is image
         item_image = get.one(Media, data["media_id"])
         filename = item_image.filename
-        path = os.path.join(PHOTO_PATH, filename)
+        path = os.path.join(current_app.config["UPLOADED_PHOTOS_DEST"], filename)
         with Image.open(path) as im:
             h = im.height
             w = im.width
@@ -118,37 +79,17 @@ def component(type_id, slide_id, data, x=0, y=0, w=0, h=0):
         w *= ratio
         h *= ratio
 
-    return db_add(Component(slide_id, type_id, data, x, y, w, h))
+    if type_id == 1:
+        item = db_add(TextComponent(slide_id, type_id, x, y, w, h))
+        item.text = data.get("text")
+    elif type_id == 2:
+        item = db_add(ImageComponent(slide_id, type_id, x, y, w, h))
+        item.media_id = data.get("media_id")
+    else:
+        abort(codes.BAD_REQUEST, f"Invalid type_id{type_id}")
 
-
-def image(filename, user_id):
-    """
-    Adds an image to the database and keeps track of who called the function.
-    """
-
-    return db_add(Media(filename, 1, user_id))
-
-
-def user(email, password, role_id, city_id, name=None):
-    """ Adds a user to the database using the provided arguments. """
-
-    return db_add(User(email, password, role_id, city_id, name))
-
-
-def question(name, total_score, type_id, slide_id):
-    """
-    Adds a question to the specified slide using the provided arguments.
-    """
-
-    return db_add(Question(name, total_score, type_id, slide_id))
-
-
-def question_alternative(text, value, question_id):
-    return db_add(QuestionAlternative(text, value, question_id))
-
-
-def question_answer(data, score, question_id, team_id):
-    return db_add(QuestionAnswer(data, score, question_id, team_id))
+    item = utils.commit_and_refresh(item)
+    return item
 
 
 def code(view_type_id, competition_id=None, team_id=None):
@@ -235,3 +176,75 @@ def _competition_no_slides(name, year, city_id, font=None):
 
     item_competition = utils.refresh(item_competition)
     return item_competition
+
+
+def blacklist(jti):
+    """ Adds a blacklist to the database. """
+
+    return db_add(Blacklist(jti))
+
+
+def mediaType(name):
+    """ Adds a media type to the database. """
+
+    return db_add(MediaType(name))
+
+
+def questionType(name):
+    """ Adds a question type to the database. """
+
+    return db_add(QuestionType(name))
+
+
+def componentType(name):
+    """ Adds a component type to the database. """
+
+    return db_add(ComponentType(name))
+
+
+def viewType(name):
+    """ Adds a view type to the database. """
+
+    return db_add(ViewType(name))
+
+
+def role(name):
+    """ Adds a role to the database. """
+
+    return db_add(Role(name))
+
+
+def city(name):
+    """ Adds a city to the database. """
+
+    return db_add(City(name))
+
+
+def image(filename, user_id):
+    """
+    Adds an image to the database and keeps track of who called the function.
+    """
+
+    return db_add(Media(filename, 1, user_id))
+
+
+def user(email, password, role_id, city_id, name=None):
+    """ Adds a user to the database using the provided arguments. """
+
+    return db_add(User(email, password, role_id, city_id, name))
+
+
+def question(name, total_score, type_id, slide_id):
+    """
+    Adds a question to the specified slide using the provided arguments.
+    """
+
+    return db_add(Question(name, total_score, type_id, slide_id))
+
+
+def question_alternative(text, value, question_id):
+    return db_add(QuestionAlternative(text, value, question_id))
+
+
+def question_answer(data, score, question_id, team_id):
+    return db_add(QuestionAnswer(data, score, question_id, team_id))

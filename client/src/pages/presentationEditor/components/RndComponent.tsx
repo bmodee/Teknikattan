@@ -72,9 +72,7 @@ const RndComponent = ({ component, width, height }: ImageComponentProps) => {
           <HoverContainer
             hover={hover}
             dangerouslySetInnerHTML={{
-              __html: `<div style="font-size: ${Math.round(24 * scale)}px;">${
-                (component as TextComponent).data.text
-              }</div>`,
+              __html: `<div style="font-size: ${Math.round(24 * scale)}px;">${(component as TextComponent).text}</div>`,
             }}
           />
         )
@@ -83,7 +81,7 @@ const RndComponent = ({ component, width, height }: ImageComponentProps) => {
           <HoverContainer hover={hover}>
             <img
               key={component.id}
-              src={`/static/images/${(component as ImageComponent).data.filename}`}
+              src={`/static/images/${(component as ImageComponent).filename}`}
               height={currentSize.h * scale}
               width={currentSize.w * scale}
               draggable={false}
@@ -95,7 +93,7 @@ const RndComponent = ({ component, width, height }: ImageComponentProps) => {
           <HoverContainer hover={hover}>
             <img
               key={component.id}
-              src={`/static/images/${(component as ImageComponent).data.filename}`}
+              src={`/static/images/${(component as ImageComponent).filename}`}
               height={currentSize.h * scale}
               width={currentSize.w * scale}
               draggable={false}

@@ -10,7 +10,7 @@ type ImageComponentProps = {
 const ImageComponentDisplay = ({ component, width, height }: ImageComponentProps) => {
   return (
     <img
-      src={`http://localhost:5000/static/images/${component.data.filename}`}
+      src={`http://localhost:5000/static/images/${component.filename}`}
       height={height}
       width={width}
       draggable={false}

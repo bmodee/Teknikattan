@@ -2,17 +2,20 @@
 This file contains functionality to get data from the database.
 """
 
+from sqlalchemy.orm.util import with_polymorphic
 from app.core import db
 from app.core import http_codes as codes
 from app.database.models import (
     Code,
     Competition,
     Component,
+    ImageComponent,
     Question,
     QuestionAlternative,
     QuestionAnswer,
     Slide,
     Team,
+    TextComponent,
     User,
 )
 from sqlalchemy.orm import joinedload, subqueryload
@@ -216,7 +219,15 @@ def component(competition_id, slide_id, component_id):
     join_competition = Competition.id == Slide.competition_id
     join_slide = Slide.id == Component.slide_id
     filters = (Competition.id == competition_id) & (Slide.id == slide_id) & (Component.id == component_id)
-    return Component.query.join(Competition, join_competition).join(Slide, join_slide).filter(filters).first_extended()
+
+    poly = with_polymorphic(Component, [TextComponent, ImageComponent])
+    return (
+        db.session.query(poly)
+        .join(Competition, join_competition)
+        .join(Slide, join_slide)
+        .filter(filters)
+        .first_extended()
+    )
 
 
 def component_list(competition_id, slide_id):

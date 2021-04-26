@@ -2,6 +2,8 @@ from app.core import bcrypt, db
 from app.database import Dictionary
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 
+from app.database.types import ID_IMAGE_COMPONENT, ID_TEXT_COMPONENT
+
 STRING_SIZE = 254
 
 
@@ -91,7 +93,9 @@ class Competition(db.Model):
     year = db.Column(db.Integer, nullable=False, default=2020)
     font = db.Column(db.String(STRING_SIZE), nullable=False)
     city_id = db.Column(db.Integer, db.ForeignKey("city.id"), nullable=False)
+
     background_image_id = db.Column(db.Integer, db.ForeignKey("media.id"), nullable=True)
+    background_image = db.relationship("Media", uselist=False)
 
     slides = db.relationship("Slide", backref="competition")
     teams = db.relationship("Team", backref="competition")
@@ -190,18 +194,34 @@ class Component(db.Model):
     y = db.Column(db.Integer, nullable=False, default=0)
     w = db.Column(db.Integer, nullable=False, default=1)
     h = db.Column(db.Integer, nullable=False, default=1)
-    data = db.Column(Dictionary())
+    view_type_id = db.Column(db.Integer, db.ForeignKey("view_type.id"), nullable=True)
     slide_id = db.Column(db.Integer, db.ForeignKey("slide.id"), nullable=False)
     type_id = db.Column(db.Integer, db.ForeignKey("component_type.id"), nullable=False)
 
-    def __init__(self, slide_id, type_id, data, x=0, y=0, w=1, h=1):
+    __mapper_args__ = {"polymorphic_on": type_id}
+
+    def __init__(self, slide_id, type_id, x=0, y=0, w=1, h=1):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
-        self.data = data
         self.slide_id = slide_id
         self.type_id = type_id
+
+
+class TextComponent(Component):
+    text = db.Column(db.Text, default="", nullable=False)
+
+    # __tablename__ = None
+    __mapper_args__ = {"polymorphic_identity": ID_TEXT_COMPONENT}
+
+
+class ImageComponent(Component):
+    media_id = db.Column(db.Integer, db.ForeignKey("media.id"), nullable=True)
+    media = db.relationship("Media", uselist=False)
+
+    # __tablename__ = None
+    __mapper_args__ = {"polymorphic_identity": ID_IMAGE_COMPONENT}
 
 
 class Code(db.Model):

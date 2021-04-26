@@ -1,3 +1,4 @@
+from marshmallow.decorators import pre_load
 from marshmallow.decorators import pre_dump
 import app.database.models as models
 from app.core import ma
@@ -115,6 +116,8 @@ class SlideSchema(BaseSchema):
     title = ma.auto_field()
     timer = ma.auto_field()
     competition_id = ma.auto_field()
+    background_image_id = ma.auto_field()
+    background_image = ma.Function(lambda x: x.background_image.filename if x.background_image is not None else "")
 
 
 class TeamSchema(BaseSchema):
@@ -145,6 +148,8 @@ class CompetitionSchema(BaseSchema):
     name = ma.auto_field()
     year = ma.auto_field()
     city_id = ma.auto_field()
+    background_image_id = ma.auto_field()
+    background_image = ma.Function(lambda x: x.background_image.filename if x.background_image is not None else "")
 
 
 class ComponentSchema(BaseSchema):
@@ -156,6 +161,9 @@ class ComponentSchema(BaseSchema):
     y = ma.auto_field()
     w = ma.auto_field()
     h = ma.auto_field()
-    data = ma.Function(lambda obj: obj.data)
     slide_id = ma.auto_field()
     type_id = ma.auto_field()
+
+    text = fields.fields.String()
+    media_id = fields.fields.Integer()
+    filename = ma.Function(lambda x: x.media.filename if hasattr(x, "media_id") else "")

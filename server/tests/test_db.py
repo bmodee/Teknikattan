@@ -94,11 +94,13 @@ def check_slides_copy(item_slide_original, item_slide_copy, num_slides, order):
         assert c1.y == c2.y
         assert c1.w == c2.w
         assert c1.h == c2.h
-        assert c1.data == c2.data
         assert c1.slide_id == item_slide_original.id
         assert c2.slide_id == item_slide_copy.id
         assert c1.type_id == c2.type_id
-
+        if c1.type_id == 1:
+            assert c1.text == c2.text
+        elif c1.type_id == 2:
+            assert c1.image_id == c2.image_id
     # Checks that all questions were correctly copied
     questions = item_slide_original.questions
     questions_copy = item_slide_copy.questions

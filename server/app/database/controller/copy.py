@@ -37,15 +37,19 @@ def _component(item_component, item_slide_new):
     Internal function. Makes a copy of the provided
     component item to the specified slide.
     """
-
+    data = {}
+    if item_component.type_id == 1:
+        data["text"] = item_component.text
+    elif item_component.type_id == 2:
+        data["media_id"] = item_component.media_id
     add.component(
         item_component.type_id,
         item_slide_new.id,
-        item_component.data,
         item_component.x,
         item_component.y,
         item_component.w,
         item_component.h,
+        **data,
     )
 
 

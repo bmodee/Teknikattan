@@ -6,6 +6,7 @@ from flask_sqlalchemy.model import Model
 from sqlalchemy import Column, DateTime, Text
 from sqlalchemy.sql import func
 from sqlalchemy.types import TypeDecorator
+from sqlalchemy import event
 
 
 class Base(Model):

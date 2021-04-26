@@ -24,7 +24,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    setContent(component.data.text)
+    setContent(component.text)
   }, [])
 
   const handleSaveText = async (a: string) => {
@@ -38,7 +38,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
       window.setTimeout(async () => {
         console.log('Content was updated on server. id: ', component.id)
         await axios.put(`/api/competitions/${competitionId}/slides/${activeSlideId}/components/${component.id}`, {
-          data: { ...component.data, text: a },
+          data: { ...component, text: a },
         })
         dispatch(getEditorCompetition(id))
       }, 250)

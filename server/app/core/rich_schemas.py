@@ -42,6 +42,8 @@ class SlideSchemaRich(RichSchema):
     title = ma.auto_field()
     timer = ma.auto_field()
     competition_id = ma.auto_field()
+    background_image_id = ma.auto_field()
+    background_image = ma.Function(lambda x: x.background_image.filename if x.background_image is not None else "")
     questions = fields.Nested(QuestionSchemaRich, many=True)
     components = fields.Nested(schemas.ComponentSchema, many=True)
 
@@ -54,6 +56,9 @@ class CompetitionSchemaRich(RichSchema):
     name = ma.auto_field()
     year = ma.auto_field()
     city_id = ma.auto_field()
+    background_image_id = ma.auto_field()
+    background_image = ma.Function(lambda x: x.background_image.filename if x.background_image is not None else "")
+
     slides = fields.Nested(
         SlideSchemaRich,
         many=True,

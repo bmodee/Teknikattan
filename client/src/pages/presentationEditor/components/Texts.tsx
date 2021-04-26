@@ -27,7 +27,7 @@ const Texts = ({ activeSlide, competitionId }: TextsProps) => {
     if (activeSlide) {
       await axios.post(`/api/competitions/${competitionId}/slides/${activeSlide?.id}/components`, {
         type_id: 1,
-        data: { text: 'Ny text' },
+        text: 'Ny text',
         w: 315,
         h: 50,
       })
