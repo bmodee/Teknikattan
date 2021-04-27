@@ -2,11 +2,11 @@ import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.apis import check_jwt, item_response, list_response
 from app.core.dto import MediaDTO
-from app.core.parsers import media_parser_search
-from app.database.models import City, Media, MediaType, QuestionType, Role
+from app.core.parsers import search_parser
+from app.database.models import Media
 from flask import request
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from flask_restx import Resource, reqparse
+from flask_jwt_extended import get_jwt_identity
+from flask_restx import Resource
 from flask_uploads import UploadNotAllowed
 from sqlalchemy import exc
 import app.core.files as files
@@ -15,6 +15,9 @@ api = MediaDTO.api
 image_set = MediaDTO.image_set
 schema = MediaDTO.schema
 list_schema = MediaDTO.list_schema
+
+media_parser_search = search_parser.copy()
+media_parser_search.add_argument("filename", type=str, default=None, location="args")
 
 
 @api.route("/images")

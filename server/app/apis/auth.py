@@ -3,21 +3,30 @@ import app.database.controller as dbc
 from app.apis import check_jwt, item_response, text_response
 from app.core.codes import verify_code
 from app.core.dto import AuthDTO, CodeDTO
-from app.core.parsers import create_user_parser, login_code_parser, login_parser
-from app.database.models import User
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
     get_jwt_identity,
     get_raw_jwt,
     jwt_refresh_token_required,
-    jwt_required,
 )
-from flask_restx import Namespace, Resource, cors
+from flask_restx import Resource
+from flask_restx import inputs, reqparse
 
 api = AuthDTO.api
 schema = AuthDTO.schema
 list_schema = AuthDTO.list_schema
+
+login_parser = reqparse.RequestParser()
+login_parser.add_argument("email", type=inputs.email(), required=True, location="json")
+login_parser.add_argument("password", required=True, location="json")
+
+create_user_parser = login_parser.copy()
+create_user_parser.add_argument("city_id", type=int, required=True, location="json")
+create_user_parser.add_argument("role_id", type=int, required=True, location="json")
+
+login_code_parser = reqparse.RequestParser()
+login_code_parser.add_argument("code", type=str, location="json")
 
 
 def get_user_claims(item_user):

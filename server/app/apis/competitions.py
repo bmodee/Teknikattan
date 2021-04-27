@@ -2,17 +2,26 @@ import time
 
 import app.database.controller as dbc
 from app.apis import check_jwt, item_response, list_response
-from app.core import rich_schemas
 from app.core.dto import CompetitionDTO
-from app.core.parsers import competition_parser, competition_search_parser
 from app.database.models import Competition
-from flask_jwt_extended import jwt_required
 from flask_restx import Resource
+from flask_restx import reqparse
+from app.core.parsers import search_parser
 
 api = CompetitionDTO.api
 schema = CompetitionDTO.schema
 rich_schema = CompetitionDTO.rich_schema
 list_schema = CompetitionDTO.list_schema
+
+competition_parser = reqparse.RequestParser()
+competition_parser.add_argument("name", type=str, location="json")
+competition_parser.add_argument("year", type=int, location="json")
+competition_parser.add_argument("city_id", type=int, location="json")
+
+competition_search_parser = search_parser.copy()
+competition_search_parser.add_argument("name", type=str, default=None, location="args")
+competition_search_parser.add_argument("year", type=int, default=None, location="args")
+competition_search_parser.add_argument("city_id", type=int, default=None, location="args")
 
 
 @api.route("")

@@ -2,18 +2,29 @@ import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.apis import check_jwt, item_response, list_response
 from app.core.dto import UserDTO
-from app.core.parsers import user_parser, user_search_parser
-from app.database.models import User
-from flask import request
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from flask_restx import Namespace, Resource
+from flask_jwt_extended import get_jwt_identity
+from flask_restx import Resource
+from flask_restx import inputs, reqparse
+from app.core.parsers import search_parser
 
 api = UserDTO.api
 schema = UserDTO.schema
 list_schema = UserDTO.list_schema
 
+user_parser = reqparse.RequestParser()
+user_parser.add_argument("email", type=inputs.email(), location="json")
+user_parser.add_argument("name", type=str, location="json")
+user_parser.add_argument("city_id", type=int, location="json")
+user_parser.add_argument("role_id", type=int, location="json")
 
-def edit_user(item_user, args):
+user_search_parser = search_parser.copy()
+user_search_parser.add_argument("name", type=str, default=None, location="args")
+user_search_parser.add_argument("email", type=str, default=None, location="args")
+user_search_parser.add_argument("city_id", type=int, default=None, location="args")
+user_search_parser.add_argument("role_id", type=int, default=None, location="args")
+
+
+def _edit_user(item_user, args):
     email = args.get("email")
     name = args.get("name")
 
@@ -38,7 +49,7 @@ class UsersList(Resource):
     def put(self):
         args = user_parser.parse_args(strict=True)
         item = dbc.get.user(get_jwt_identity())
-        item = edit_user(item, args)
+        item = _edit_user(item, args)
         return item_response(schema.dump(item))
 
 
@@ -54,7 +65,7 @@ class Users(Resource):
     def put(self, ID):
         args = user_parser.parse_args(strict=True)
         item = dbc.get.user(ID)
-        item = edit_user(item, args)
+        item = _edit_user(item, args)
         return item_response(schema.dump(item))
 
 

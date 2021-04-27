@@ -2,14 +2,17 @@ import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.apis import check_jwt, item_response, list_response
 from app.core.dto import QuestionDTO
-from app.core.parsers import question_parser
-from app.database.models import Question
-from flask_jwt_extended import jwt_required
 from flask_restx import Resource
+from flask_restx import reqparse
 
 api = QuestionDTO.api
 schema = QuestionDTO.schema
 list_schema = QuestionDTO.list_schema
+
+question_parser = reqparse.RequestParser()
+question_parser.add_argument("name", type=str, default=None, location="json")
+question_parser.add_argument("total_score", type=int, default=None, location="json")
+question_parser.add_argument("type_id", type=int, default=None, location="json")
 
 
 @api.route("/questions")

@@ -1,10 +1,10 @@
 import app.database.controller as dbc
-from app.apis import check_jwt, item_response, list_response
+from app.apis import check_jwt, list_response
 from app.core import http_codes
 from app.core.dto import MiscDTO
 from app.database.models import City, Competition, ComponentType, MediaType, QuestionType, Role, User, ViewType
-from flask_jwt_extended import jwt_required
 from flask_restx import Resource, reqparse
+from flask_restx import reqparse
 
 api = MiscDTO.api
 

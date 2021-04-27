@@ -2,14 +2,17 @@ import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.apis import check_jwt, item_response, list_response
 from app.core.dto import SlideDTO
-from app.core.parsers import slide_parser
-from app.database.models import Competition, Slide
-from flask_jwt_extended import jwt_required
 from flask_restx import Resource
+from flask_restx import reqparse
 
 api = SlideDTO.api
 schema = SlideDTO.schema
 list_schema = SlideDTO.list_schema
+
+slide_parser = reqparse.RequestParser()
+slide_parser.add_argument("order", type=int, default=None, location="json")
+slide_parser.add_argument("title", type=str, default=None, location="json")
+slide_parser.add_argument("timer", type=int, default=None, location="json")
 
 
 @api.route("")

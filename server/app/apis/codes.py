@@ -2,9 +2,7 @@ import app.database.controller as dbc
 from app.apis import check_jwt, item_response, list_response
 from app.core import http_codes as codes
 from app.core.dto import CodeDTO
-from app.core.parsers import code_parser
-from app.database.models import Code, Competition
-from flask_jwt_extended import jwt_required
+from app.database.models import Code
 from flask_restx import Resource
 
 api = CodeDTO.api

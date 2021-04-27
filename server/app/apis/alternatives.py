@@ -1,16 +1,17 @@
 import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.apis import check_jwt, item_response, list_response
-from app.core.dto import QuestionAlternativeDTO, QuestionDTO
-from app.core.parsers import question_alternative_parser
-from app.core.schemas import QuestionAlternativeSchema
-from app.database.models import Question, QuestionAlternative
-from flask_jwt_extended import jwt_required
+from app.core.dto import QuestionAlternativeDTO
 from flask_restx import Resource
+from flask_restx import reqparse
 
 api = QuestionAlternativeDTO.api
 schema = QuestionAlternativeDTO.schema
 list_schema = QuestionAlternativeDTO.list_schema
+
+question_alternative_parser = reqparse.RequestParser()
+question_alternative_parser.add_argument("text", type=str, default=None, location="json")
+question_alternative_parser.add_argument("value", type=int, default=None, location="json")
 
 
 @api.route("")

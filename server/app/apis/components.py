@@ -2,15 +2,26 @@ import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.apis import check_jwt, item_response, list_response
 from app.core.dto import ComponentDTO
-from app.core.parsers import component_create_parser, component_edit_parser, component_parser
-from app.database.models import Competition, Component
-from flask.globals import request
-from flask_jwt_extended import jwt_required
 from flask_restx import Resource
+from flask_restx import reqparse
 
 api = ComponentDTO.api
 schema = ComponentDTO.schema
 list_schema = ComponentDTO.list_schema
+
+
+component_parser = reqparse.RequestParser()
+component_parser.add_argument("x", type=str, default=None, location="json")
+component_parser.add_argument("y", type=int, default=None, location="json")
+component_parser.add_argument("w", type=int, default=None, location="json")
+component_parser.add_argument("h", type=int, default=None, location="json")
+
+component_edit_parser = component_parser.copy()
+component_edit_parser.add_argument("text", type=str, location="json")
+component_edit_parser.add_argument("media_id", type=str, location="json")
+
+component_create_parser = component_edit_parser.copy()
+component_create_parser.add_argument("type_id", type=int, required=True, location="json")
 
 
 @api.route("/<component_id>")
