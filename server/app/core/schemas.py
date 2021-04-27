@@ -1,5 +1,5 @@
 from marshmallow.decorators import pre_load
-from marshmallow.decorators import pre_dump
+from marshmallow.decorators import pre_dump, post_dump
 import app.database.models as models
 from app.core import ma
 from marshmallow_sqlalchemy import fields
@@ -155,6 +155,12 @@ class CompetitionSchema(BaseSchema):
 class ComponentSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = models.Component
+
+    @post_dump
+    def handle_filename(self, data, *args, **kwargs):
+        if data["filename"] == "":
+            del data["filename"]
+        return data
 
     id = ma.auto_field()
     x = ma.auto_field()

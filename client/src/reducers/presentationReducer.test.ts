@@ -1,6 +1,6 @@
 import Types from '../actions/types'
 import { RichSlide } from '../interfaces/ApiRichModels'
-import { Slide } from '../interfaces/Slide'
+import { Slide } from '../interfaces/ApiModels'
 import presentationReducer from './presentationReducer'
 
 const initialState = {
@@ -19,7 +19,6 @@ const initialState = {
     timer: 0,
     title: '',
   },
-  teams: [],
   code: '',
   timer: {
     enabled: false,
@@ -41,7 +40,6 @@ it('should handle SET_PRESENTATION_COMPETITION', () => {
     },
     slides: [{ id: 20 }],
     year: 1999,
-    teams: [],
   }
   expect(
     presentationReducer(initialState, {
@@ -51,32 +49,6 @@ it('should handle SET_PRESENTATION_COMPETITION', () => {
   ).toEqual({
     competition: testCompetition,
     slide: testCompetition.slides[0],
-    teams: initialState.teams,
-    code: initialState.code,
-    timer: initialState.timer,
-  })
-})
-
-it('should handle SET_PRESENTATION_TEAMS', () => {
-  const testTeams = [
-    {
-      name: 'testTeamName1',
-      id: 3,
-    },
-    {
-      name: 'testTeamName2',
-      id: 5,
-    },
-  ]
-  expect(
-    presentationReducer(initialState, {
-      type: Types.SET_PRESENTATION_TEAMS,
-      payload: testTeams,
-    })
-  ).toEqual({
-    competition: initialState.competition,
-    slide: initialState.slide,
-    teams: testTeams,
     code: initialState.code,
     timer: initialState.timer,
   })
@@ -100,7 +72,6 @@ it('should handle SET_PRESENTATION_SLIDE', () => {
   ).toEqual({
     competition: initialState.competition,
     slide: testSlide,
-    teams: initialState.teams,
     code: initialState.code,
     timer: initialState.timer,
   })
@@ -115,8 +86,8 @@ describe('should handle SET_PRESENTATION_SLIDE_PREVIOUS', () => {
           { competition_id: 0, order: 0 },
           { competition_id: 0, order: 1 },
         ] as RichSlide[],
+        teams: [],
       },
-      teams: initialState.teams,
       slide: { competition_id: 0, order: 1 } as Slide,
       code: initialState.code,
       timer: initialState.timer,
@@ -128,7 +99,7 @@ describe('should handle SET_PRESENTATION_SLIDE_PREVIOUS', () => {
     ).toEqual({
       competition: testPresentationState.competition,
       slide: testPresentationState.competition.slides[0],
-      teams: testPresentationState.teams,
+
       code: initialState.code,
       timer: initialState.timer,
     })
@@ -141,8 +112,8 @@ describe('should handle SET_PRESENTATION_SLIDE_PREVIOUS', () => {
           { competition_id: 0, order: 0 },
           { competition_id: 0, order: 1 },
         ] as RichSlide[],
+        teams: [],
       },
-      teams: initialState.teams,
       slide: { competition_id: 0, order: 0 } as Slide,
       code: initialState.code,
       timer: initialState.timer,
@@ -154,7 +125,6 @@ describe('should handle SET_PRESENTATION_SLIDE_PREVIOUS', () => {
     ).toEqual({
       competition: testPresentationState.competition,
       slide: testPresentationState.competition.slides[0],
-      teams: testPresentationState.teams,
       code: initialState.code,
       timer: initialState.timer,
     })
@@ -170,9 +140,11 @@ describe('should handle SET_PRESENTATION_SLIDE_NEXT', () => {
           { competition_id: 0, order: 0 },
           { competition_id: 0, order: 1 },
         ] as RichSlide[],
+        teams: [],
       },
-      teams: initialState.teams,
       slide: { competition_id: 0, order: 0 } as Slide,
+      code: initialState.code,
+      timer: initialState.timer,
     }
     expect(
       presentationReducer(testPresentationState, {
@@ -181,7 +153,8 @@ describe('should handle SET_PRESENTATION_SLIDE_NEXT', () => {
     ).toEqual({
       competition: testPresentationState.competition,
       slide: testPresentationState.competition.slides[1],
-      teams: testPresentationState.teams,
+      code: initialState.code,
+      timer: initialState.timer,
     })
   })
   it('by not changing slide if there is no next one', () => {
@@ -192,8 +165,8 @@ describe('should handle SET_PRESENTATION_SLIDE_NEXT', () => {
           { competition_id: 0, order: 0 },
           { competition_id: 0, order: 1 },
         ] as RichSlide[],
+        teams: [],
       },
-      teams: initialState.teams,
       slide: { competition_id: 0, order: 1 } as Slide,
     }
     expect(
@@ -203,7 +176,6 @@ describe('should handle SET_PRESENTATION_SLIDE_NEXT', () => {
     ).toEqual({
       competition: testPresentationState.competition,
       slide: testPresentationState.competition.slides[1],
-      teams: testPresentationState.teams,
     })
   })
 })

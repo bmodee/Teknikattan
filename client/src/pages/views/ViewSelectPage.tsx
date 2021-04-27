@@ -9,12 +9,14 @@ import axios from 'axios'
 import PresenterViewPage from './PresenterViewPage'
 import JudgeViewPage from './JudgeViewPage'
 import AudienceViewPage from './AudienceViewPage'
-import { useAppSelector } from '../../hooks'
+import { useAppDispatch, useAppSelector } from '../../hooks'
+import { getPresentationCompetition, setPresentationCode } from '../../actions/presentation'
 
 interface ViewSelectParams {
   code: string
 }
 const ViewSelectPage: React.FC = () => {
+  const dispatch = useAppDispatch()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [viewTypeId, setViewTypeId] = useState(undefined)
@@ -29,7 +31,7 @@ const ViewSelectPage: React.FC = () => {
         case 'Team':
           return <ParticipantViewPage />
         case 'Judge':
-          return <JudgeViewPage />
+          return <JudgeViewPage code={code} competitionId={competitionId} />
         case 'Audience':
           return <AudienceViewPage />
         default:
@@ -43,8 +45,10 @@ const ViewSelectPage: React.FC = () => {
       .post('/api/auth/login/code', { code })
       .then((response) => {
         setLoading(false)
-        setViewTypeId(response.data[0].view_type_id)
-        setCompetitionId(response.data[0].competition_id)
+        setViewTypeId(response.data.view_type_id)
+        setCompetitionId(response.data.competition_id)
+        dispatch(getPresentationCompetition(response.data.competition_id))
+        dispatch(setPresentationCode(code))
       })
       .catch(() => {
         setLoading(false)
@@ -53,13 +57,17 @@ const ViewSelectPage: React.FC = () => {
   }, [])
 
   return (
-    <ViewSelectContainer>
-      <ViewSelectButtonGroup>
-        {loading && <CircularProgress />}
-        {!loading && renderView(viewTypeId)}
-        {error && <Typography>Något gick fel, dubbelkolla koden och försök igen</Typography>}
-      </ViewSelectButtonGroup>
-    </ViewSelectContainer>
+    <>
+      {!loading && renderView(viewTypeId)}
+      {(loading || error) && (
+        <ViewSelectContainer>
+          <ViewSelectButtonGroup>
+            {loading && <CircularProgress />}
+            {error && <Typography>Något gick fel, dubbelkolla koden och försök igen</Typography>}
+          </ViewSelectButtonGroup>
+        </ViewSelectContainer>
+      )}
+    </>
   )
 }
 

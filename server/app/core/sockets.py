@@ -93,11 +93,7 @@ def join_presentation(data):
         logger.error(f"Client '{request.sid}' failed to join presentation with code '{code}', no such code exists")
         return
 
-    competition_id = (
-        item_code.pointer
-        if item_code.view_type_id != team_view_id
-        else db.session.query(Team).filter(Team.id == item_code.pointer).one().competition_id
-    )
+    competition_id = item_code.competition_id
 
     if competition_id not in presentations:
         logger.error(f"Client '{request.sid}' failed to join presentation '{competition_id}', no such presentation exists")

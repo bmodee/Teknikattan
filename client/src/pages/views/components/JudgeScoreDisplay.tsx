@@ -9,7 +9,7 @@ type ScoreDisplayProps = {
 const questionMaxScore = 5
 
 const JudgeScoreDisplay = ({ teamIndex }: ScoreDisplayProps) => {
-  const currentTeam = useAppSelector((state) => state.presentation.teams[teamIndex])
+  const currentTeam = useAppSelector((state) => state.presentation.competition.teams[teamIndex])
   return (
     <ScoreDisplayContainer>
       <ScoreDisplayHeader>

@@ -18,7 +18,7 @@ class CodesList(Resource):
     @check_jwt(editor=True)
     def get(self, competition_id):
         items = dbc.get.code_list(competition_id)
-        return list_response(list_schema.dump(items), len(items)), codes.OK
+        return list_response(list_schema.dump(items), len(items))
 
 
 @api.route("/<code_id>")
@@ -29,4 +29,4 @@ class CodesById(Resource):
         item = dbc.get.one(Code, code_id)
         item.code = dbc.utils.generate_unique_code()
         dbc.utils.commit_and_refresh(item)
-        return item_response(schema.dump(item)), codes.OK
+        return item_response(schema.dump(item))

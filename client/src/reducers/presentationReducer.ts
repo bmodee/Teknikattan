@@ -7,7 +7,6 @@ import { RichCompetition } from './../interfaces/ApiRichModels'
 interface PresentationState {
   competition: RichCompetition
   slide: Slide
-  teams: Team[]
   code: string
   timer: Timer
 }
@@ -28,7 +27,6 @@ const initialState: PresentationState = {
     timer: 0,
     title: '',
   },
-  teams: [],
   code: '',
   timer: {
     enabled: false,
@@ -43,11 +41,6 @@ export default function (state = initialState, action: AnyAction) {
         ...state,
         slide: action.payload.slides[0] as Slide,
         competition: action.payload as RichCompetition,
-      }
-    case Types.SET_PRESENTATION_TEAMS:
-      return {
-        ...state,
-        teams: action.payload as Team[],
       }
     case Types.SET_PRESENTATION_CODE:
       return {

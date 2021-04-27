@@ -93,11 +93,5 @@ export interface TextComponent extends Component {
 }
 
 export interface QuestionAlternativeComponent extends Component {
-  data: {
-    question_id: number
-    text: string
-    value: number
-    question_alternative_id: number
-    font: string
-  }
+  question_id: number
 }

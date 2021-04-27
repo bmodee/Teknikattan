@@ -19,9 +19,9 @@ import { getTypes } from '../../actions/typesAction'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { RichSlide } from '../../interfaces/ApiRichModels'
 import { RemoveMenuItem } from '../admin/styledComp'
-import { Content } from '../views/styled'
+import { Content, InnerContent } from '../views/styled'
 import SettingsPanel from './components/SettingsPanel'
-import SlideEditor from './components/SlideEditor'
+import SlideDisplay from './components/SlideDisplay'
 import {
   CenteredSpinnerContainer,
   HomeIcon,
@@ -249,7 +249,9 @@ const PresentationEditorPage: React.FC = () => {
       </Drawer>
 
       <Content leftDrawerWidth={leftDrawerWidth} rightDrawerWidth={rightDrawerWidth}>
-        <SlideEditor />
+        <InnerContent>
+          <SlideDisplay editor />
+        </InnerContent>
       </Content>
       <Menu
         keepMounted

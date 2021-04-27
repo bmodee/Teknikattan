@@ -10,16 +10,16 @@ import CheckboxComponent from './CheckboxComponent'
 import ImageComponentDisplay from './ImageComponentDisplay'
 import { HoverContainer } from './styled'
 import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter'
+import TextComponentDisplay from './TextComponentDisplay'
 
-type ImageComponentProps = {
+type RndComponentProps = {
   component: Component
   width: number
   height: number
+  scale: number
 }
 
-const RndComponent = ({ component, width, height }: ImageComponentProps) => {
-  //Makes scale close to 1, 800 height is approxemately for a 1920 by 1080 monitor
-  const scale = height / 800
+const RndComponent = ({ component, width, height, scale }: RndComponentProps) => {
   const [hover, setHover] = useState(false)
   const [currentPos, setCurrentPos] = useState<Position>({ x: component.x, y: component.y })
   const [currentSize, setCurrentSize] = useState<Size>({ w: component.w, h: component.h })
@@ -69,34 +69,17 @@ const RndComponent = ({ component, width, height }: ImageComponentProps) => {
     switch (component.type_id) {
       case ComponentTypes.Text:
         return (
-          <HoverContainer
-            hover={hover}
-            dangerouslySetInnerHTML={{
-              __html: `<div style="font-size: ${Math.round(24 * scale)}px;">${(component as TextComponent).text}</div>`,
-            }}
-          />
-        )
-      case ComponentTypes.Image:
-        return (
           <HoverContainer hover={hover}>
-            <img
-              key={component.id}
-              src={`/static/images/${(component as ImageComponent).filename}`}
-              height={currentSize.h * scale}
-              width={currentSize.w * scale}
-              draggable={false}
-            />
+            <TextComponentDisplay component={component as TextComponent} scale={scale} />
           </HoverContainer>
         )
       case ComponentTypes.Image:
         return (
           <HoverContainer hover={hover}>
-            <img
-              key={component.id}
-              src={`/static/images/${(component as ImageComponent).filename}`}
+            <ImageComponentDisplay
               height={currentSize.h * scale}
               width={currentSize.w * scale}
-              draggable={false}
+              component={component as ImageComponent}
             />
           </HoverContainer>
         )

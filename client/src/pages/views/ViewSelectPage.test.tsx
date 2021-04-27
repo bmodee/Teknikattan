@@ -12,8 +12,17 @@ it('renders view select page', async () => {
     const res = {
       data: {},
     }
+    const compRes = {
+      data: {
+        id: 2,
+        slides: [{ id: 4 }],
+      },
+    }
     ;(mockedAxios.post as jest.Mock).mockImplementation(() => {
       return Promise.resolve(res)
+    })
+    ;(mockedAxios.get as jest.Mock).mockImplementation(() => {
+      return Promise.resolve(compRes)
     })
     render(
       <BrowserRouter>

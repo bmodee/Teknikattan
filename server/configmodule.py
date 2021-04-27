@@ -20,7 +20,7 @@ class Config:
 
 
 class DevelopmentConfig(Config):
-    DEBUG = True
+    DEBUG = False
     SQLALCHEMY_ECHO = False
     # HOST = "localhost"
     # PORT = 5432

@@ -38,7 +38,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
       window.setTimeout(async () => {
         console.log('Content was updated on server. id: ', component.id)
         await axios.put(`/api/competitions/${competitionId}/slides/${activeSlideId}/components/${component.id}`, {
-          data: { ...component, text: a },
+          text: a,
         })
         dispatch(getEditorCompetition(id))
       }, 250)
@@ -57,8 +57,16 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
         init={{
           height: '300px',
           menubar: false,
+          font_formats:
+            ' Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif;\
+             Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Calibri=calibri;\
+             Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier;\
+              Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Symbol=symbol;\
+               Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco;\
+                Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva;\
+                Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats',
           fontsize_formats: '8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt 120pt 144pt',
-          content_style: 'body {font-size: 24pt;}',
+          content_style: 'body {font-size: 24pt; font-family: Calibri;}',
           plugins: [
             'advlist autolink lists link image charmap print preview anchor',
             'searchreplace visualblocks code fullscreen',

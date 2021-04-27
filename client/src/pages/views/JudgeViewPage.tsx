@@ -2,21 +2,17 @@ import { Divider, List, ListItemText, Typography } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import {
-  getPresentationCompetition,
-  getPresentationTeams,
-  setCurrentSlide,
-  setPresentationCode,
-} from '../../actions/presentation'
+import { getPresentationCompetition, setCurrentSlide, setPresentationCode } from '../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { ViewParams } from '../../interfaces/ViewParams'
 import { socket_connect } from '../../sockets'
 import { SlideListItem } from '../presentationEditor/styled'
 import JudgeScoreDisplay from './components/JudgeScoreDisplay'
-import SlideDisplay from './components/SlideDisplay'
+import PresentationComponent from './components/PresentationComponent'
 import { useHistory } from 'react-router-dom'
 import {
   Content,
+  InnerContent,
   JudgeAnswersLabel,
   JudgeAppBar,
   JudgeQuestionsLabel,
@@ -24,9 +20,10 @@ import {
   LeftDrawer,
   RightDrawer,
 } from './styled'
+import SlideDisplay from '../presentationEditor/components/SlideDisplay'
 
 const leftDrawerWidth = 150
-const rightDrawerWidth = 390
+const rightDrawerWidth = 700
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,14 +36,18 @@ const useStyles = makeStyles((theme: Theme) =>
     toolbar: theme.mixins.toolbar,
   })
 )
+type JudgeViewPageProps = {
+  //Prop to distinguish between editor and active competition
+  competitionId: number
+  code: string
+}
 
-const JudgeViewPage: React.FC = () => {
+const JudgeViewPage = ({ competitionId, code }: JudgeViewPageProps) => {
   const classes = useStyles()
   const history = useHistory()
-  const { id, code }: ViewParams = useParams()
   const dispatch = useAppDispatch()
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0)
-  const teams = useAppSelector((state) => state.presentation.teams)
+  const teams = useAppSelector((state) => state.presentation.competition.teams)
   const slides = useAppSelector((state) => state.presentation.competition.slides)
   const handleSelectSlide = (index: number) => {
     setActiveSlideIndex(index)
@@ -54,15 +55,14 @@ const JudgeViewPage: React.FC = () => {
   }
   useEffect(() => {
     socket_connect()
-    dispatch(getPresentationCompetition(id))
-    dispatch(getPresentationTeams(id))
+    dispatch(getPresentationCompetition(competitionId.toString()))
     dispatch(setPresentationCode(code))
     //hides the url so people can't sneak peak
     history.push('judge')
   }, [])
 
   return (
-    <div>
+    <div style={{ height: '100%' }}>
       <JudgeAppBar position="fixed">
         <JudgeToolbar>
           <JudgeQuestionsLabel variant="h5">Frågor</JudgeQuestionsLabel>
@@ -103,17 +103,20 @@ const JudgeViewPage: React.FC = () => {
       >
         <div className={classes.toolbar} />
         <List>
-          {teams.map((answer, index) => (
-            <div key={answer.name}>
-              <JudgeScoreDisplay teamIndex={index} />
-              <Divider />
-            </div>
-          ))}
+          {teams &&
+            teams.map((answer, index) => (
+              <div key={answer.name}>
+                <JudgeScoreDisplay teamIndex={index} />
+                <Divider />
+              </div>
+            ))}
         </List>
       </RightDrawer>
+      <div style={{ height: 64 }} />
       <Content leftDrawerWidth={leftDrawerWidth} rightDrawerWidth={rightDrawerWidth}>
-        <div className={classes.toolbar} />
-        <SlideDisplay />
+        <InnerContent>
+          <SlideDisplay />
+        </InnerContent>
       </Content>
     </div>
   )

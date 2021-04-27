@@ -20,7 +20,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import TimerIcon from '@material-ui/icons/Timer'
 import React, { useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { getPresentationCompetition, getPresentationTeams, setPresentationCode } from '../../actions/presentation'
+import { getPresentationCompetition, setPresentationCode } from '../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { ViewParams } from '../../interfaces/ViewParams'
 import {
@@ -32,13 +32,16 @@ import {
   socketStartTimer,
   socket_connect,
 } from '../../sockets'
-import SlideDisplay from './components/SlideDisplay'
+import SlideDisplay from '../presentationEditor/components/SlideDisplay'
+import PresentationComponent from './components/PresentationComponent'
 import Timer from './components/Timer'
 import {
   PresenterButton,
   PresenterContainer,
+  PresenterContent,
   PresenterFooter,
   PresenterHeader,
+  PresenterInnerContent,
   SlideCounter,
   ToolBarContainer,
 } from './styled'
@@ -52,7 +55,7 @@ const PresenterViewPage: React.FC = () => {
   const [openAlert, setOpen] = React.useState(false)
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
-  const teams = useAppSelector((state) => state.presentation.teams)
+  const teams = useAppSelector((state) => state.presentation.competition.teams)
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
   const { id, code }: ViewParams = useParams()
   const presentation = useAppSelector((state) => state.presentation)
@@ -61,7 +64,6 @@ const PresenterViewPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(getPresentationCompetition(id))
-    dispatch(getPresentationTeams(id))
     dispatch(setPresentationCode(code))
     socket_connect()
     socketSetSlide // Behövs denna?
@@ -132,7 +134,13 @@ const PresenterViewPage: React.FC = () => {
           </Typography>
         </SlideCounter>
       </PresenterHeader>
-      <SlideDisplay />
+      <div style={{ height: 0, paddingTop: 120 }} />
+      <PresenterContent>
+        <PresenterInnerContent>
+          <SlideDisplay />
+        </PresenterInnerContent>
+      </PresenterContent>
+      <div style={{ height: 0, paddingTop: 140 }} />
       <PresenterFooter>
         <ToolBarContainer>
           <Tooltip title="Previous Slide" arrow>
@@ -203,9 +211,7 @@ const PresenterViewPage: React.FC = () => {
           {/**  TODO:
            *    Fix scoreboard
            */}
-          {teams.map((team) => (
-            <ListItem key={team.id}>{team.name} score: 20</ListItem>
-          ))}
+          {teams && teams.map((team) => <ListItem key={team.id}>{team.name} score: 20</ListItem>)}
         </List>
       </Popover>
     </PresenterContainer>

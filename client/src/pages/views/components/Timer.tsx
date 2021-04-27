@@ -36,11 +36,7 @@ const Timer: React.FC = (props: any) => {
     }
   }, [props.timer.enabled])
 
-  return (
-    <>
-      <div>{props.timer.value}</div>
-    </>
-  )
+  return <div>{props.timer.value}</div>
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Timer)

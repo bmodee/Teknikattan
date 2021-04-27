@@ -2,7 +2,7 @@ import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.apis import check_jwt, item_response, list_response
 from app.core.dto import ComponentDTO
-from app.core.parsers import component_create_parser, component_parser
+from app.core.parsers import component_create_parser, component_edit_parser, component_parser
 from app.database.models import Competition, Component
 from flask.globals import request
 from flask_jwt_extended import jwt_required
@@ -23,9 +23,10 @@ class ComponentByID(Resource):
 
     @check_jwt(editor=True)
     def put(self, competition_id, slide_id, component_id):
-        args = component_parser.parse_args()
+        args = component_edit_parser.parse_args(strict=True)
         item = dbc.get.component(competition_id, slide_id, component_id)
-        item = dbc.edit.default(item, **args)
+        args_without_none = {key: value for key, value in args.items() if value is not None}
+        item = dbc.edit.default(item, **args_without_none)
         return item_response(schema.dump(item))
 
     @check_jwt(editor=True)

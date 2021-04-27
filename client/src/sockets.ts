@@ -38,32 +38,26 @@ export const socket_connect = () => {
 
 export const socketStartPresentation = () => {
   socket.emit('start_presentation', { competition_id: store.getState().presentation.competition.id })
-  console.log('START PRESENTATION')
 }
 
 export const socketJoinPresentation = () => {
-  socket.emit('join_presentation', { code: 'CO0ART' }) // TODO: Send code gotten from auth/login/<code> api call
-  console.log('JOIN PRESENTATION')
+  socket.emit('join_presentation', { code: store.getState().presentation.code }) // TODO: Send code gotten from auth/login/<code> api call
 }
 
 export const socketEndPresentation = () => {
   socket.emit('end_presentation', { competition_id: store.getState().presentation.competition.id })
-  console.log('END PRESENTATION')
 }
 
 export const socketSetSlideNext = () => {
   socketSetSlide(store.getState().presentation.slide.order + 1) // TODO: Check that this slide exists
-  console.log('NEXT SLIDE +1')
 }
 
 export const socketSetSlidePrev = () => {
   socketSetSlide(store.getState().presentation.slide.order - 1) // TODO: Check that this slide exists
-  console.log('PREVIOUS SLIDE -1')
 }
 
 export const socketSetSlide = (slide_order: number) => {
   if (slide_order < 0 || store.getState().presentation.competition.slides.length <= slide_order) {
-    console.log('CANT CHANGE TO NON EXISTENT SLIDE')
     return
   }
 
@@ -74,7 +68,6 @@ export const socketSetSlide = (slide_order: number) => {
 }
 
 export const socketSetTimer = (timer: Timer) => {
-  console.log('SET TIMER')
   socket.emit('set_timer', {
     competition_id: store.getState().presentation.competition.id,
     timer: timer,
@@ -82,6 +75,5 @@ export const socketSetTimer = (timer: Timer) => {
 }
 
 export const socketStartTimer = () => {
-  console.log('START TIMER')
   socketSetTimer({ enabled: true, value: store.getState().presentation.timer.value })
 }

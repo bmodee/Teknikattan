@@ -32,7 +32,6 @@ class CompetitionsList(Resource):
 @api.route("/<competition_id>")
 @api.param("competition_id")
 class Competitions(Resource):
-    @check_jwt(editor=True)
     def get(self, competition_id):
         item = dbc.get.competition(competition_id)
 

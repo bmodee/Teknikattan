@@ -2,10 +2,9 @@ import mockedAxios from 'axios'
 import expect from 'expect' // You can use any testing library
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import { Slide } from '../interfaces/Slide'
+import { Slide } from '../interfaces/ApiModels'
 import {
   getPresentationCompetition,
-  getPresentationTeams,
   setCurrentSlide,
   setCurrentSlideNext,
   setCurrentSlidePrevious,
@@ -26,16 +25,6 @@ it('dispatches no actions when failing to get competitions', async () => {
   expect(console.log).toHaveBeenCalled()
 })
 
-it('dispatches no actions when failing to get teams', async () => {
-  console.log = jest.fn()
-  ;(mockedAxios.get as jest.Mock).mockImplementation((path: string, params?: any) => {
-    return Promise.reject(new Error('getting teams failed'))
-  })
-  const store = mockStore({ competitions: { filterParams: [] } })
-  await getPresentationTeams('0')(store.dispatch)
-  expect(store.getActions()).toEqual([])
-  expect(console.log).toHaveBeenCalled()
-})
 it('dispatches correct actions when setting slide', () => {
   const testSlide: Slide = { competition_id: 0, id: 5, order: 5, timer: 20, title: '' }
   const expectedActions = [{ type: Types.SET_PRESENTATION_SLIDE, payload: testSlide }]

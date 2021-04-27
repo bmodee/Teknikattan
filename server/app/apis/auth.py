@@ -80,7 +80,7 @@ class AuthLoginCode(Resource):
             api.abort(codes.BAD_REQUEST, "Invalid code")
 
         item_code = dbc.get.code_by_code(code)
-        return item_response(CodeDTO.schema.dump(item_code)), codes.OK
+        return item_response(CodeDTO.schema.dump(item_code))
 
 
 @api.route("/logout")

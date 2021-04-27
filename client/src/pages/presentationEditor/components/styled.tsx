@@ -18,17 +18,15 @@ export const SettingsTab = styled(Tab)`
 `
 
 export const SlideEditorContainer = styled.div`
+  overflow: hidden;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.08);
 `
 
 export const SlideEditorContainerRatio = styled.div`
-  padding-top: 56.25%;
   width: 100%;
-  height: 0;
   overflow: hidden;
   padding-top: 56.25%;
   position: relative;

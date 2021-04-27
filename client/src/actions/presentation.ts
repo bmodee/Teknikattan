@@ -23,21 +23,6 @@ export const getPresentationCompetition = (id: string) => async (dispatch: AppDi
     })
 }
 
-// Get all teams from current presentation competition
-export const getPresentationTeams = (id: string) => async (dispatch: AppDispatch) => {
-  await axios
-    .get(`/api/competitions/${id}/teams`)
-    .then((res) => {
-      dispatch({
-        type: Types.SET_PRESENTATION_TEAMS,
-        payload: res.data.items,
-      })
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-
 export const setCurrentSlide = (slide: Slide) => (dispatch: AppDispatch) => {
   dispatch({ type: Types.SET_PRESENTATION_SLIDE, payload: slide })
 }
