@@ -1,9 +1,8 @@
 import { ListItem, ListItemText, TextField, withStyles } from '@material-ui/core'
 import axios from 'axios'
 import React from 'react'
-import { useDispatch } from 'react-redux'
 import { getEditorCompetition } from '../../../../actions/editor'
-import { useAppDispatch, useAppSelector } from '../../../../hooks'
+import { useAppDispatch } from '../../../../hooks'
 import { RichSlide } from '../../../../interfaces/ApiRichModels'
 import { Center, SettingsList } from '../styled'
 
@@ -13,12 +12,10 @@ type InstructionsProps = {
 }
 
 const Instructions = ({ activeSlide, competitionId }: InstructionsProps) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [timerHandle, setTimerHandle] = React.useState<number | undefined>(undefined)
-  const activeSlideId = useAppSelector((state) => state.editor.activeSlideId)
 
   const updateInstructionsText = async (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    /* TODO: Implement instructions field in question and add put API
     if (timerHandle) {
       clearTimeout(timerHandle)
       setTimerHandle(undefined)
@@ -29,10 +26,11 @@ const Instructions = ({ activeSlide, competitionId }: InstructionsProps) => {
         console.log('Content was updated on server. id: ', activeSlide.questions[0].id)
         if (activeSlide && activeSlide.questions[0]) {
           await axios
+            // TODO: Implement instructions field in question and add put API
             .put(
               `/api/competitions/${competitionId}/slides/${activeSlide.id}/questions/${activeSlide.questions[0].id}`,
               {
-                name: event.target.value,
+                instructions: event.target.value,
               }
             )
             .then(() => {
@@ -42,7 +40,6 @@ const Instructions = ({ activeSlide, competitionId }: InstructionsProps) => {
         }
       }, 250)
     )
-    */
   }
 
   return (

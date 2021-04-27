@@ -7,18 +7,18 @@ import { useAppSelector } from '../../../hooks'
 import Instructions from './slideSettingsComponents/Instructions'
 import MultipleChoiceAlternatives from './slideSettingsComponents/MultipleChoiceAlternatives'
 import SlideType from './slideSettingsComponents/SlideType'
-import { Center, ImportedImage, SettingsList, SlidePanel } from './styled'
+import { Center, ImportedImage, SettingsList, PanelContainer } from './styled'
 import Timer from './slideSettingsComponents/Timer'
 import Images from './slideSettingsComponents/Images'
 import Texts from './slideSettingsComponents/Texts'
 import QuestionSettings from './slideSettingsComponents/QuestionSettings'
 
 interface CompetitionParams {
-  id: string
+  competitionId: string
 }
 
 const SlideSettings: React.FC = () => {
-  const { id }: CompetitionParams = useParams()
+  const { competitionId }: CompetitionParams = useParams()
 
   const activeSlide = useAppSelector((state) =>
     // Gets the slide with id=activeSlideId from the database.
@@ -26,26 +26,30 @@ const SlideSettings: React.FC = () => {
   )
 
   return (
-    <SlidePanel>
+    <PanelContainer>
       <SettingsList>
-        {activeSlide && <SlideType activeSlide={activeSlide} competitionId={id} />}
+        {activeSlide && <SlideType activeSlide={activeSlide} competitionId={competitionId} />}
         <Divider />
-        {activeSlide && <Timer activeSlide={activeSlide} competitionId={id} />}
+        {activeSlide && <Timer activeSlide={activeSlide} competitionId={competitionId} />}
       </SettingsList>
 
-      {activeSlide?.questions[0] && <QuestionSettings activeSlide={activeSlide} competitionId={id} />}
+      {activeSlide?.questions[0] && <QuestionSettings activeSlide={activeSlide} competitionId={competitionId} />}
       {
         // Choose answer alternatives depending on the slide type
       }
-      {activeSlide?.questions[0]?.type_id === 1 && <Instructions activeSlide={activeSlide} competitionId={id} />}
-      {activeSlide?.questions[0]?.type_id === 2 && <Instructions activeSlide={activeSlide} competitionId={id} />}
+      {activeSlide?.questions[0]?.type_id === 1 && (
+        <Instructions activeSlide={activeSlide} competitionId={competitionId} />
+      )}
+      {activeSlide?.questions[0]?.type_id === 2 && (
+        <Instructions activeSlide={activeSlide} competitionId={competitionId} />
+      )}
       {activeSlide?.questions[0]?.type_id === 3 && (
-        <MultipleChoiceAlternatives activeSlide={activeSlide} competitionId={id} />
+        <MultipleChoiceAlternatives activeSlide={activeSlide} competitionId={competitionId} />
       )}
 
-      {activeSlide && <Texts activeSlide={activeSlide} competitionId={id} />}
+      {activeSlide && <Texts activeSlide={activeSlide} competitionId={competitionId} />}
 
-      {activeSlide && <Images activeSlide={activeSlide} competitionId={id} />}
+      {activeSlide && <Images activeSlide={activeSlide} competitionId={competitionId} />}
 
       <SettingsList>
         <ListItem button>
@@ -58,7 +62,7 @@ const SlideSettings: React.FC = () => {
           </Center>
         </ListItem>
       </SettingsList>
-    </SlidePanel>
+    </PanelContainer>
   )
 }
 

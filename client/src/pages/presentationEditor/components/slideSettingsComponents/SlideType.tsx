@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControl,
   InputLabel,
   ListItem,
   MenuItem,
@@ -16,7 +17,7 @@ import React, { useState } from 'react'
 import { getEditorCompetition } from '../../../../actions/editor'
 import { useAppDispatch } from '../../../../hooks'
 import { RichSlide } from '../../../../interfaces/ApiRichModels'
-import { Center, FormControlDropdown, SlideTypeInputLabel } from '../styled'
+import { Center, FirstItem } from '../styled'
 
 type SlideTypeProps = {
   activeSlide: RichSlide
@@ -85,52 +86,55 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
     }
   }
   return (
-    <ListItem>
-      <FormControlDropdown variant="outlined">
-        <SlideTypeInputLabel>Sidtyp</SlideTypeInputLabel>
-        <Select fullWidth={true} value={activeSlide?.questions[0]?.type_id || 0} label="Sidtyp">
-          <MenuItem value={0}>
-            <Typography variant="button" onClick={() => openSlideTypeDialog(0)}>
-              Informationssida
-            </Typography>
-          </MenuItem>
-          <MenuItem value={1}>
-            <Typography variant="button" onClick={() => openSlideTypeDialog(1)}>
-              Skriftlig fråga
-            </Typography>
-          </MenuItem>
-          <MenuItem value={2}>
-            <Typography variant="button" onClick={() => openSlideTypeDialog(2)}>
-              Praktisk fråga
-            </Typography>
-          </MenuItem>
-          <MenuItem value={3}>
-            <Typography variant="button" onClick={() => openSlideTypeDialog(3)}>
-              Flervalsfråga
-            </Typography>
-          </MenuItem>
-        </Select>
-      </FormControlDropdown>
-      <Dialog open={slideTypeDialog} onClose={closeSlideTypeDialog}>
-        <Center>
-          <DialogTitle color="secondary">Varning!</DialogTitle>
-        </Center>
-        <DialogContent>
-          <DialogContentText>
-            Om du ändrar sidtypen kommer eventuella frågeinställningar gå förlorade. Det inkluderar: frågans namn, poäng
-            och svarsalternativ.{' '}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeSlideTypeDialog} color="secondary">
-            Avbryt
-          </Button>
-          <Button onClick={updateSlideType} color="primary">
-            Bekräfta
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </ListItem>
+    <FirstItem>
+      <ListItem>
+        <FormControl fullWidth variant="outlined">
+          <InputLabel>Sidtyp</InputLabel>
+          <Select fullWidth={true} value={activeSlide?.questions[0]?.type_id || 0} label="Sidtyp">
+            <MenuItem value={0}>
+              <Typography variant="button" onClick={() => openSlideTypeDialog(0)}>
+                Informationssida
+              </Typography>
+            </MenuItem>
+            <MenuItem value={1}>
+              <Typography variant="button" onClick={() => openSlideTypeDialog(1)}>
+                Skriftlig fråga
+              </Typography>
+            </MenuItem>
+            <MenuItem value={2}>
+              <Typography variant="button" onClick={() => openSlideTypeDialog(2)}>
+                Praktisk fråga
+              </Typography>
+            </MenuItem>
+            <MenuItem value={3}>
+              <Typography variant="button" onClick={() => openSlideTypeDialog(3)}>
+                Flervalsfråga
+              </Typography>
+            </MenuItem>
+          </Select>
+        </FormControl>
+
+        <Dialog open={slideTypeDialog} onClose={closeSlideTypeDialog}>
+          <Center>
+            <DialogTitle color="secondary">Varning!</DialogTitle>
+          </Center>
+          <DialogContent>
+            <DialogContentText>
+              Om du ändrar sidtypen kommer eventuella frågeinställningar gå förlorade. Det inkluderar: frågans namn,
+              poäng och svarsalternativ.{' '}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeSlideTypeDialog} color="secondary">
+              Avbryt
+            </Button>
+            <Button onClick={updateSlideType} color="primary">
+              Bekräfta
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ListItem>
+    </FirstItem>
   )
 }
 

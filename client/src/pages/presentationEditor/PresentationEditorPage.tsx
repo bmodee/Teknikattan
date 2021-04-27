@@ -83,18 +83,18 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface CompetitionParams {
-  id: string
+  competitionId: string
 }
 
 const PresentationEditorPage: React.FC = () => {
   const classes = useStyles()
-  const { id }: CompetitionParams = useParams()
+  const { competitionId }: CompetitionParams = useParams()
   const dispatch = useAppDispatch()
   const activeSlideId = useAppSelector((state) => state.editor.activeSlideId)
   const competition = useAppSelector((state) => state.editor.competition)
   const competitionLoading = useAppSelector((state) => state.editor.loading)
   useEffect(() => {
-    dispatch(getEditorCompetition(id))
+    dispatch(getEditorCompetition(competitionId))
     dispatch(getCities())
     dispatch(getTypes())
   }, [])
@@ -104,8 +104,8 @@ const PresentationEditorPage: React.FC = () => {
   }
 
   const createNewSlide = async () => {
-    await axios.post(`/api/competitions/${id}/slides`, { title: 'new slide' })
-    dispatch(getEditorCompetition(id))
+    await axios.post(`/api/competitions/${competitionId}/slides`, { title: 'new slide' })
+    dispatch(getEditorCompetition(competitionId))
   }
 
   const [contextState, setContextState] = React.useState<{
@@ -128,14 +128,14 @@ const PresentationEditorPage: React.FC = () => {
   }
 
   const handleRemoveSlide = async () => {
-    await axios.delete(`/api/competitions/${id}/slides/${contextState.slideId}`)
-    dispatch(getEditorCompetition(id))
+    await axios.delete(`/api/competitions/${competitionId}/slides/${contextState.slideId}`)
+    dispatch(getEditorCompetition(competitionId))
     setContextState(initialState)
   }
 
   const handleDuplicateSlide = async () => {
-    await axios.post(`/api/competitions/${id}/slides/${contextState.slideId}/copy`)
-    dispatch(getEditorCompetition(id))
+    await axios.post(`/api/competitions/${competitionId}/slides/${contextState.slideId}/copy`)
+    dispatch(getEditorCompetition(competitionId))
     setContextState(initialState)
   }
 
@@ -187,9 +187,6 @@ const PresentationEditorPage: React.FC = () => {
             </ViewButton>
             <ViewButton variant="contained" color="secondary">
               Deltagarvy
-            </ViewButton>
-            <ViewButton variant="contained" color="secondary">
-              Domarvy
             </ViewButton>
           </ViewButtonGroup>
         </ToolBarContainer>

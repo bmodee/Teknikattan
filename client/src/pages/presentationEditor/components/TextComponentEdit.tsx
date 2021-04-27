@@ -12,12 +12,11 @@ type ImageComponentProps = {
 }
 
 interface CompetitionParams {
-  id: string
+  competitionId: string
 }
 
 const TextComponentEdit = ({ component }: ImageComponentProps) => {
-  const { id }: CompetitionParams = useParams()
-  const competitionId = useAppSelector((state) => state.editor.competition.id)
+  const { competitionId }: CompetitionParams = useParams()
   const [content, setContent] = useState('')
   const [timerHandle, setTimerHandle] = React.useState<number | undefined>(undefined)
   const activeSlideId = useAppSelector((state) => state.editor.activeSlideId)
@@ -40,14 +39,14 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
         await axios.put(`/api/competitions/${competitionId}/slides/${activeSlideId}/components/${component.id}`, {
           text: newText,
         })
-        dispatch(getEditorCompetition(id))
+        dispatch(getEditorCompetition(competitionId))
       }, 250)
     )
   }
 
   const handleDeleteText = async (componentId: number) => {
-    await axios.delete(`/api/competitions/${id}/slides/${activeSlideId}/components/${componentId}`)
-    dispatch(getEditorCompetition(id))
+    await axios.delete(`/api/competitions/${competitionId}/slides/${activeSlideId}/components/${componentId}`)
+    dispatch(getEditorCompetition(competitionId))
   }
 
   return (

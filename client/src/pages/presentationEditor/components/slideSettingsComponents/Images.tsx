@@ -2,14 +2,13 @@
  */
 import { ListItem, ListItemText, Typography } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React from 'react'
 import { Center, HiddenInput, SettingsList, AddImageButton, ImportedImage, AddButton } from '../styled'
 import axios from 'axios'
 import { getEditorCompetition } from '../../../../actions/editor'
 import { RichSlide } from '../../../../interfaces/ApiRichModels'
 import { ImageComponent, Media } from '../../../../interfaces/ApiModels'
-import { useAppSelector } from '../../../../hooks'
+import { useAppDispatch, useAppSelector } from '../../../../hooks'
 
 type ImagesProps = {
   activeSlide: RichSlide
@@ -17,7 +16,7 @@ type ImagesProps = {
 }
 
 const Images = ({ activeSlide, competitionId }: ImagesProps) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const uploadFile = async (formData: FormData) => {
     // Uploads the file to the server and creates a Media object in database.
@@ -107,7 +106,7 @@ const Images = ({ activeSlide, competitionId }: ImagesProps) => {
           </div>
         ))}
 
-      <ListItem button>
+      <ListItem button style={{ padding: 0 }}>
         <HiddenInput accept="image/*" id="contained-button-file" multiple type="file" onChange={handleFileSelected} />
         <AddImageButton htmlFor="contained-button-file">
           <AddButton variant="button">Lägg till bild</AddButton>

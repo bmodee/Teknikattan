@@ -1,7 +1,6 @@
 import { Divider, List, ListItemText, Typography } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import { getPresentationCompetition, setCurrentSlide, setPresentationCode } from '../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { ViewParams } from '../../interfaces/ViewParams'

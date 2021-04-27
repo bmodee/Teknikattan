@@ -54,23 +54,13 @@ export const ToolbarPadding = styled.div`
   padding-top: 55px;
 `
 
-export const FormControlDropdown = styled(FormControl)`
+export const FirstItem = styled.div`
   width: 100%;
-  margin-top: 10px;
-`
-
-export const SlideTypeInputLabel = styled(InputLabel)`
-  width: 100%;
+  padding-top: 10px;
 `
 
 export const AlternativeTextField = styled(TextField)`
   width: 87%;
-`
-
-export const NoPadding = styled.div`
-  padding: 0;
-  height: 100%;
-  width: 100%;
 `
 
 export const Center = styled.div`
@@ -81,16 +71,13 @@ export const Center = styled.div`
   width: 100%;
 `
 
-export const SlidePanel = styled.div`
+export const PanelContainer = styled.div`
   padding: 10px;
   width: 100%;
 `
 
 export const AddButton = styled(Typography)`
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 7px;
-  padding-bottom: 7px;
+  padding: 7px 8px 7px 8px;
 `
 
 export const ImportedImage = styled.img`
@@ -103,7 +90,7 @@ export const Clickable = styled.div`
 `
 
 export const AddImageButton = styled.label`
-  padding: 0;
+  padding: 8px 13px 8px 13px;
   cursor: 'pointer';
   display: flex;
   justify-content: center;

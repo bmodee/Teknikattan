@@ -1,7 +1,6 @@
 import { ListItem, ListItemText, TextField } from '@material-ui/core'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
 import { getEditorCompetition } from '../../../../actions/editor'
 import { useAppDispatch } from '../../../../hooks'
 import { RichSlide } from '../../../../interfaces/ApiRichModels'
@@ -13,7 +12,7 @@ type QuestionSettingsProps = {
 }
 
 const QuestionSettings = ({ activeSlide, competitionId }: QuestionSettingsProps) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const updateQuestion = async (
     updateTitle: boolean,
@@ -57,16 +56,14 @@ const QuestionSettings = ({ activeSlide, competitionId }: QuestionSettingsProps)
         </Center>
       </ListItem>
       <ListItem divider>
-        <Center>
-          <TextField
-            id="outlined-basic"
-            defaultValue={''}
-            label="Frågans titel"
-            onChange={(event) => updateQuestion(true, event)}
-            variant="outlined"
-            fullWidth={true}
-          />
-        </Center>
+        <TextField
+          id="outlined-basic"
+          defaultValue={''}
+          label="Frågans titel"
+          onChange={(event) => updateQuestion(true, event)}
+          variant="outlined"
+          fullWidth={true}
+        />
       </ListItem>
       <ListItem>
         <Center>
