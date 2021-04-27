@@ -65,7 +65,7 @@ const Images = ({ activeSlide, competitionId }: ImagesProps) => {
   const handleCloseimageClick = async (image: ImageComponent) => {
     // Removes selected image component and deletes its file from the server.
     await axios
-      .delete(`/api/media/images/${image.media_id}`)
+      .delete(`/api/media/images/${image.media?.id}`)
       .then(() => {
         dispatch(getEditorCompetition(competitionId))
       })
@@ -98,9 +98,9 @@ const Images = ({ activeSlide, competitionId }: ImagesProps) => {
         images.map((image) => (
           <div key={image.id}>
             <ListItem divider button>
-              <ImportedImage src={`http://localhost:5000/static/images/thumbnail_${image.filename}`} />
+              <ImportedImage src={`http://localhost:5000/static/images/thumbnail_${image.media?.filename}`} />
               <Center>
-                <ListItemText primary={image.filename} />
+                <ListItemText primary={image.media?.filename} />
               </Center>
               <CloseIcon onClick={() => handleCloseimageClick(image)} />
             </ListItem>

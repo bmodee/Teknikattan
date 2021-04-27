@@ -16,6 +16,7 @@ const initialState: EditorState = {
     city_id: 1,
     slides: [],
     teams: [],
+    background_image: undefined,
   },
   activeSlideId: -1,
   loading: true,

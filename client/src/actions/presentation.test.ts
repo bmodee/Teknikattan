@@ -26,7 +26,7 @@ it('dispatches no actions when failing to get competitions', async () => {
 })
 
 it('dispatches correct actions when setting slide', () => {
-  const testSlide: Slide = { competition_id: 0, id: 5, order: 5, timer: 20, title: '' }
+  const testSlide: Slide = { competition_id: 0, id: 5, order: 5, timer: 20, title: '', background_image_id: 0 }
   const expectedActions = [{ type: Types.SET_PRESENTATION_SLIDE, payload: testSlide }]
   const store = mockStore({})
   setCurrentSlide(testSlide)(store.dispatch)

@@ -10,12 +10,12 @@ schema = QuestionAnswerDTO.schema
 list_schema = QuestionAnswerDTO.list_schema
 
 question_answer_parser = reqparse.RequestParser()
-question_answer_parser.add_argument("data", type=dict, required=True, location="json")
+question_answer_parser.add_argument("answer", type=str, required=True, location="json")
 question_answer_parser.add_argument("score", type=int, required=True, location="json")
 question_answer_parser.add_argument("question_id", type=int, required=True, location="json")
 
 question_answer_edit_parser = reqparse.RequestParser()
-question_answer_edit_parser.add_argument("data", type=dict, default=None, location="json")
+question_answer_edit_parser.add_argument("answer", type=str, default=None, location="json")
 question_answer_edit_parser.add_argument("score", type=int, default=None, location="json")
 
 

@@ -65,7 +65,7 @@ class QuestionAnswerSchema(BaseSchema):
         model = models.QuestionAnswer
 
     id = ma.auto_field()
-    data = ma.Function(lambda obj: obj.data)
+    answer = ma.auto_field()
     score = ma.auto_field()
     question_id = ma.auto_field()
     team_id = ma.auto_field()
@@ -116,8 +116,7 @@ class SlideSchema(BaseSchema):
     title = ma.auto_field()
     timer = ma.auto_field()
     competition_id = ma.auto_field()
-    background_image_id = ma.auto_field()
-    background_image = ma.Function(lambda x: x.background_image.filename if x.background_image is not None else "")
+    background_image = fields.Nested(MediaSchema, many=False)
 
 
 class TeamSchema(BaseSchema):
@@ -148,19 +147,12 @@ class CompetitionSchema(BaseSchema):
     name = ma.auto_field()
     year = ma.auto_field()
     city_id = ma.auto_field()
-    background_image_id = ma.auto_field()
-    background_image = ma.Function(lambda x: x.background_image.filename if x.background_image is not None else "")
+    background_image = fields.Nested(MediaSchema, many=False)
 
 
 class ComponentSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
         model = models.Component
-
-    @post_dump
-    def handle_filename(self, data, *args, **kwargs):
-        if data["filename"] == "":
-            del data["filename"]
-        return data
 
     id = ma.auto_field()
     x = ma.auto_field()
@@ -171,5 +163,4 @@ class ComponentSchema(BaseSchema):
     type_id = ma.auto_field()
 
     text = fields.fields.String()
-    media_id = fields.fields.Integer()
-    filename = ma.Function(lambda x: x.media.filename if hasattr(x, "media_id") else "")
+    media = fields.Nested(MediaSchema, many=False)

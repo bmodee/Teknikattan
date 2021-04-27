@@ -246,5 +246,5 @@ def question_alternative(text, value, question_id):
     return db_add(QuestionAlternative(text, value, question_id))
 
 
-def question_answer(data, score, question_id, team_id):
-    return db_add(QuestionAnswer(data, score, question_id, team_id))
+def question_answer(answer, score, question_id, team_id):
+    return db_add(QuestionAnswer(answer, score, question_id, team_id))

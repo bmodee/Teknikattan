@@ -1,5 +1,4 @@
 from app.core import bcrypt, db
-from app.database import Dictionary
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 
 from app.database.types import ID_IMAGE_COMPONENT, ID_TEXT_COMPONENT
@@ -175,7 +174,7 @@ class QuestionAlternative(db.Model):
 class QuestionAnswer(db.Model):
     __table_args__ = (db.UniqueConstraint("question_id", "team_id"),)
     id = db.Column(db.Integer, primary_key=True)
-    data = db.Column(Dictionary(), nullable=False)
+    answer = db.Column(db.String(STRING_SIZE), nullable=False)
     score = db.Column(db.Integer, nullable=False, default=0)
 
     question_id = db.Column(db.Integer, db.ForeignKey("question.id"), nullable=False)

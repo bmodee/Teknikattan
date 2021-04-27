@@ -77,8 +77,7 @@ def slide_to_competition(item_slide_old, item_competition):
     item_slide_new.body = item_slide_old.body
     item_slide_new.timer = item_slide_old.timer
     item_slide_new.settings = item_slide_old.settings
-
-    # TODO: Add background image
+    item_slide_new.background_image_id = item_slide_old.background_image_id
 
     for item_component in item_slide_old.components:
         _component(item_component, item_slide_new)
@@ -109,6 +108,7 @@ def competition(item_competition_old):
         item_competition_old.font,
     )
     # TODO: Add background image
+    item_competition_new.background_image_id = item_competition_old.background_image_id
 
     for item_slide in item_competition_old.slides:
         slide_to_competition(item_slide, item_competition_new)

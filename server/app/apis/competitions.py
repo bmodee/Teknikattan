@@ -18,6 +18,9 @@ competition_parser.add_argument("name", type=str, location="json")
 competition_parser.add_argument("year", type=int, location="json")
 competition_parser.add_argument("city_id", type=int, location="json")
 
+competition_edit_parser = competition_parser.copy()
+competition_edit_parser.add_argument("background_image_id", default=None, type=int, location="json")
+
 competition_search_parser = search_parser.copy()
 competition_search_parser.add_argument("name", type=str, default=None, location="args")
 competition_search_parser.add_argument("year", type=int, default=None, location="args")
@@ -48,7 +51,7 @@ class Competitions(Resource):
 
     @check_jwt(editor=True)
     def put(self, competition_id):
-        args = competition_parser.parse_args(strict=True)
+        args = competition_edit_parser.parse_args(strict=True)
         item = dbc.get.one(Competition, competition_id)
         item = dbc.edit.default(item, **args)
 

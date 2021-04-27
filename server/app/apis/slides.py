@@ -13,6 +13,7 @@ slide_parser = reqparse.RequestParser()
 slide_parser.add_argument("order", type=int, default=None, location="json")
 slide_parser.add_argument("title", type=str, default=None, location="json")
 slide_parser.add_argument("timer", type=int, default=None, location="json")
+slide_parser.add_argument("background_image_id", default=None, type=int, location="json")
 
 
 @api.route("")

@@ -19,6 +19,7 @@ const initialState: PresentationState = {
     slides: [],
     year: 0,
     teams: [],
+    background_image: undefined,
   },
   slide: {
     competition_id: 0,
@@ -26,6 +27,7 @@ const initialState: PresentationState = {
     order: 0,
     timer: 0,
     title: '',
+    background_image: undefined,
   },
   code: '',
   timer: {

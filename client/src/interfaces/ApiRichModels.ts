@@ -7,6 +7,7 @@ export interface RichCompetition {
   city_id: number
   slides: RichSlide[]
   teams: RichTeam[]
+  background_image?: Media
 }
 
 export interface RichSlide {
@@ -15,9 +16,9 @@ export interface RichSlide {
   timer: number
   title: string
   competition_id: number
+  background_image?: Media
   components: Component[]
   questions: RichQuestion[]
-  medias: Media[]
 }
 
 export interface RichTeam {

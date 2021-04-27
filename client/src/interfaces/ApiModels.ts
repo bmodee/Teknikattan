@@ -38,13 +38,14 @@ export interface Slide {
   order: number
   timer: number
   title: string
+  background_image?: Media
 }
 
 export interface Competition extends NameID {
   font: string
   city_id: number
   year: number
-  background_image_id: number
+  background_image?: Media
 }
 
 export interface Team extends NameID {
@@ -69,7 +70,7 @@ export interface QuestionAnswer {
   id: number
   question_id: number
   team_id: number
-  data: string
+  answer: string
   score: number
 }
 
@@ -83,8 +84,7 @@ export interface Component {
 }
 
 export interface ImageComponent extends Component {
-  media_id: number
-  filename: string
+  media: Media
 }
 
 export interface TextComponent extends Component {
