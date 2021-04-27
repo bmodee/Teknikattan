@@ -13,10 +13,10 @@ import {
 } from '@material-ui/core'
 import axios from 'axios'
 import React, { useState } from 'react'
-import { getEditorCompetition } from '../../../actions/editor'
-import { useAppDispatch } from '../../../hooks'
-import { RichSlide } from '../../../interfaces/ApiRichModels'
-import { Center, FormControlDropdown, SlideTypeInputLabel, WhiteBackground } from './styled'
+import { getEditorCompetition } from '../../../../actions/editor'
+import { useAppDispatch } from '../../../../hooks'
+import { RichSlide } from '../../../../interfaces/ApiRichModels'
+import { Center, FormControlDropdown, SlideTypeInputLabel } from '../styled'
 
 type SlideTypeProps = {
   activeSlide: RichSlide
@@ -85,7 +85,7 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
     }
   }
   return (
-    <WhiteBackground>
+    <ListItem>
       <FormControlDropdown variant="outlined">
         <SlideTypeInputLabel>Sidtyp</SlideTypeInputLabel>
         <Select fullWidth={true} value={activeSlide?.questions[0]?.type_id || 0} label="Sidtyp">
@@ -130,7 +130,7 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
           </Button>
         </DialogActions>
       </Dialog>
-    </WhiteBackground>
+    </ListItem>
   )
 }
 

@@ -4,22 +4,12 @@ import { ListItem, ListItemText, Typography } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import {
-  Center,
-  HiddenInput,
-  SettingsList,
-  AddImageButton,
-  ImportedImage,
-  WhiteBackground,
-  AddButton,
-  Clickable,
-  NoPadding,
-} from './styled'
+import { Center, HiddenInput, SettingsList, AddImageButton, ImportedImage, AddButton } from '../styled'
 import axios from 'axios'
-import { getEditorCompetition } from '../../../actions/editor'
-import { RichSlide } from '../../../interfaces/ApiRichModels'
-import { ImageComponent, Media } from '../../../interfaces/ApiModels'
-import { useAppSelector } from '../../../hooks'
+import { getEditorCompetition } from '../../../../actions/editor'
+import { RichSlide } from '../../../../interfaces/ApiRichModels'
+import { ImageComponent, Media } from '../../../../interfaces/ApiModels'
+import { useAppSelector } from '../../../../hooks'
 
 type ImagesProps = {
   activeSlide: RichSlide
@@ -99,32 +89,30 @@ const Images = ({ activeSlide, competitionId }: ImagesProps) => {
 
   return (
     <SettingsList>
-      <WhiteBackground>
-        <ListItem divider>
-          <Center>
-            <ListItemText primary="Bilder" />
-          </Center>
-        </ListItem>
-        {images &&
-          images.map((image) => (
-            <div key={image.id}>
-              <ListItem divider button>
-                <ImportedImage src={`http://localhost:5000/static/images/thumbnail_${image.filename}`} />
-                <Center>
-                  <ListItemText primary={image.filename} />
-                </Center>
-                <CloseIcon onClick={() => handleCloseimageClick(image)} />
-              </ListItem>
-            </div>
-          ))}
+      <ListItem divider>
+        <Center>
+          <ListItemText primary="Bilder" />
+        </Center>
+      </ListItem>
+      {images &&
+        images.map((image) => (
+          <div key={image.id}>
+            <ListItem divider button>
+              <ImportedImage src={`http://localhost:5000/static/images/thumbnail_${image.filename}`} />
+              <Center>
+                <ListItemText primary={image.filename} />
+              </Center>
+              <CloseIcon onClick={() => handleCloseimageClick(image)} />
+            </ListItem>
+          </div>
+        ))}
 
-        <ListItem button>
-          <HiddenInput accept="image/*" id="contained-button-file" multiple type="file" onChange={handleFileSelected} />
-          <AddImageButton htmlFor="contained-button-file">
-            <AddButton variant="button">Lägg till bild</AddButton>
-          </AddImageButton>
-        </ListItem>
-      </WhiteBackground>
+      <ListItem button>
+        <HiddenInput accept="image/*" id="contained-button-file" multiple type="file" onChange={handleFileSelected} />
+        <AddImageButton htmlFor="contained-button-file">
+          <AddButton variant="button">Lägg till bild</AddButton>
+        </AddImageButton>
+      </ListItem>
     </SettingsList>
   )
 }

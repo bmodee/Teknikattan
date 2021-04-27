@@ -1,12 +1,12 @@
 import { Divider, ListItem, ListItemText, Typography } from '@material-ui/core'
 import React from 'react'
-import { useAppSelector } from '../../../hooks'
-import { TextComponent } from '../../../interfaces/ApiModels'
-import { RichSlide } from '../../../interfaces/ApiRichModels'
-import { AddButton, Center, SettingsList, TextCard } from './styled'
-import TextComponentEdit from './TextComponentEdit'
+import { useAppSelector } from '../../../../hooks'
+import { TextComponent } from '../../../../interfaces/ApiModels'
+import { RichSlide } from '../../../../interfaces/ApiRichModels'
+import { AddButton, Center, SettingsList, TextCard } from '../styled'
+import TextComponentEdit from '../TextComponentEdit'
 import axios from 'axios'
-import { getEditorCompetition } from '../../../actions/editor'
+import { getEditorCompetition } from '../../../../actions/editor'
 import { useDispatch } from 'react-redux'
 
 type TextsProps = {

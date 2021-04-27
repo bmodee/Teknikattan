@@ -4,12 +4,14 @@ import { Divider, List, ListItem, ListItemText, TextField, Typography } from '@m
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useAppSelector } from '../../../hooks'
-import Alternatives from './Alternatives'
-import SlideType from './SlideType'
+import Instructions from './slideSettingsComponents/Instructions'
+import MultipleChoiceAlternatives from './slideSettingsComponents/MultipleChoiceAlternatives'
+import SlideType from './slideSettingsComponents/SlideType'
 import { Center, ImportedImage, SettingsList, SlidePanel } from './styled'
-import Timer from './Timer'
-import Images from './Images'
-import Texts from './Texts'
+import Timer from './slideSettingsComponents/Timer'
+import Images from './slideSettingsComponents/Images'
+import Texts from './slideSettingsComponents/Texts'
+import QuestionSettings from './slideSettingsComponents/QuestionSettings'
 
 interface CompetitionParams {
   id: string
@@ -31,7 +33,15 @@ const SlideSettings: React.FC = () => {
         {activeSlide && <Timer activeSlide={activeSlide} competitionId={id} />}
       </SettingsList>
 
-      {activeSlide && <Alternatives activeSlide={activeSlide} competitionId={id} />}
+      {activeSlide?.questions[0] && <QuestionSettings activeSlide={activeSlide} competitionId={id} />}
+      {
+        // Choose answer alternatives depending on the slide type
+      }
+      {activeSlide?.questions[0]?.type_id === 1 && <Instructions activeSlide={activeSlide} competitionId={id} />}
+      {activeSlide?.questions[0]?.type_id === 2 && <Instructions activeSlide={activeSlide} competitionId={id} />}
+      {activeSlide?.questions[0]?.type_id === 3 && (
+        <MultipleChoiceAlternatives activeSlide={activeSlide} competitionId={id} />
+      )}
 
       {activeSlide && <Texts activeSlide={activeSlide} competitionId={id} />}
 

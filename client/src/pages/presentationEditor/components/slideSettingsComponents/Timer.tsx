@@ -1,10 +1,10 @@
 import { ListItem, TextField } from '@material-ui/core'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { getEditorCompetition } from '../../../actions/editor'
-import { useAppDispatch } from '../../../hooks'
-import { RichSlide } from '../../../interfaces/ApiRichModels'
-import { Center, WhiteBackground } from './styled'
+import { getEditorCompetition } from '../../../../actions/editor'
+import { useAppDispatch } from '../../../../hooks'
+import { RichSlide } from '../../../../interfaces/ApiRichModels'
+import { Center } from '../styled'
 
 type TimerProps = {
   activeSlide: RichSlide
@@ -24,29 +24,26 @@ const Timer = ({ activeSlide, competitionId }: TimerProps) => {
         .catch(console.log)
     }
   }
-  const [timer, setTimer] = useState<number | undefined>(0)
+  const [timer, setTimer] = useState<number | undefined>(activeSlide?.timer)
   useEffect(() => {
     setTimer(activeSlide?.timer)
   }, [activeSlide])
   return (
-    <WhiteBackground>
-      <ListItem>
-        <Center>
-          <TextField
-            id="standard-number"
-            fullWidth={true}
-            variant="outlined"
-            placeholder="Antal sekunder"
-            helperText="Lämna blank för att inte använda timerfunktionen"
-            label="Timer"
-            type="number"
-            defaultValue={activeSlide?.timer || 0}
-            onChange={updateTimer}
-            value={timer}
-          />
-        </Center>
-      </ListItem>
-    </WhiteBackground>
+    <ListItem>
+      <Center>
+        <TextField
+          id="standard-number"
+          fullWidth={true}
+          variant="outlined"
+          placeholder="Antal sekunder"
+          helperText="Lämna blank för att inte använda timerfunktionen"
+          label="Timer"
+          type="number"
+          onChange={updateTimer}
+          value={timer}
+        />
+      </Center>
+    </ListItem>
   )
 }
 

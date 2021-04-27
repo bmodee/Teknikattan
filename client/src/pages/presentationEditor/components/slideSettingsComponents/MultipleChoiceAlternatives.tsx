@@ -4,20 +4,19 @@ import { green, grey } from '@material-ui/core/colors'
 import CloseIcon from '@material-ui/icons/Close'
 import axios from 'axios'
 import React from 'react'
-import { getEditorCompetition } from '../../../actions/editor'
-import { useAppDispatch, useAppSelector } from '../../../hooks'
-import { QuestionAlternative } from '../../../interfaces/ApiModels'
-import { RichSlide } from '../../../interfaces/ApiRichModels'
-import { AddButton, Center, Clickable, SettingsList, TextInput, WhiteBackground } from './styled'
+import { getEditorCompetition } from '../../../../actions/editor'
+import { useAppDispatch, useAppSelector } from '../../../../hooks'
+import { QuestionAlternative } from '../../../../interfaces/ApiModels'
+import { RichSlide } from '../../../../interfaces/ApiRichModels'
+import { AddButton, AlternativeTextField, Center, Clickable, SettingsList } from '../styled'
 
-type AlternativeProps = {
+type MultipleChoiceAlternativeProps = {
   activeSlide: RichSlide
   competitionId: string
 }
 
-const Alternatives = ({ activeSlide, competitionId }: AlternativeProps) => {
+const MultipleChoiceAlternatives = ({ activeSlide, competitionId }: MultipleChoiceAlternativeProps) => {
   const dispatch = useAppDispatch()
-  const competition = useAppSelector((state) => state.editor.competition)
   const activeSlideId = useAppSelector((state) => state.editor.activeSlideId)
   const GreenCheckbox = withStyles({
     root: {
@@ -95,42 +94,40 @@ const Alternatives = ({ activeSlide, competitionId }: AlternativeProps) => {
 
   return (
     <SettingsList>
-      <WhiteBackground>
-        <ListItem divider>
-          <Center>
-            <ListItemText
-              primary="Svarsalternativ"
-              secondary="(Fyll i rutan höger om textfältet för att markera korrekt svar)"
-            />
-          </Center>
-        </ListItem>
-        {activeSlide &&
-          activeSlide.questions[0] &&
-          activeSlide.questions[0].alternatives &&
-          activeSlide.questions[0].alternatives.map((alt) => (
-            <div key={alt.id}>
-              <ListItem divider>
-                <TextInput
-                  id="outlined-basic"
-                  defaultValue={alt.text}
-                  onChange={(event) => updateAlternativeText(alt.id, event.target.value)}
-                  variant="outlined"
-                />
-                <GreenCheckbox checked={numberToBool(alt.value)} onChange={() => updateAlternativeValue(alt)} />
-                <Clickable>
-                  <CloseIcon onClick={() => handleCloseAnswerClick(alt.id)} />
-                </Clickable>
-              </ListItem>
-            </div>
-          ))}
-        <ListItem button onClick={addAlternative}>
-          <Center>
-            <AddButton variant="button">Lägg till svarsalternativ</AddButton>
-          </Center>
-        </ListItem>
-      </WhiteBackground>
+      <ListItem divider>
+        <Center>
+          <ListItemText
+            primary="Svarsalternativ"
+            secondary="(Fyll i rutan höger om textfältet för att markera korrekt svar)"
+          />
+        </Center>
+      </ListItem>
+      {activeSlide &&
+        activeSlide.questions[0] &&
+        activeSlide.questions[0].alternatives &&
+        activeSlide.questions[0].alternatives.map((alt) => (
+          <div key={alt.id}>
+            <ListItem divider>
+              <AlternativeTextField
+                id="outlined-basic"
+                defaultValue={alt.text}
+                onChange={(event) => updateAlternativeText(alt.id, event.target.value)}
+                variant="outlined"
+              />
+              <GreenCheckbox checked={numberToBool(alt.value)} onChange={() => updateAlternativeValue(alt)} />
+              <Clickable>
+                <CloseIcon onClick={() => handleCloseAnswerClick(alt.id)} />
+              </Clickable>
+            </ListItem>
+          </div>
+        ))}
+      <ListItem button onClick={addAlternative}>
+        <Center>
+          <AddButton variant="button">Lägg till svarsalternativ</AddButton>
+        </Center>
+      </ListItem>
     </SettingsList>
   )
 }
 
-export default Alternatives
+export default MultipleChoiceAlternatives

@@ -57,18 +57,13 @@ export const ToolbarPadding = styled.div`
 export const FormControlDropdown = styled(FormControl)`
   width: 100%;
   margin-top: 10px;
-  padding: 8px;
-  padding-left: 16px;
-  padding-right: 16px;
 `
 
 export const SlideTypeInputLabel = styled(InputLabel)`
   width: 100%;
-  padding: 10px;
-  padding-left: 22px;
 `
 
-export const TextInput = styled(TextField)`
+export const AlternativeTextField = styled(TextField)`
   width: 87%;
 `
 
@@ -89,10 +84,6 @@ export const Center = styled.div`
 export const SlidePanel = styled.div`
   padding: 10px;
   width: 100%;
-`
-
-export const WhiteBackground = styled.div`
-  background: white;
 `
 
 export const AddButton = styled(Typography)`
