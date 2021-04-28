@@ -11,11 +11,12 @@ import { ImageComponent, Media } from '../../../../interfaces/ApiModels'
 import { useAppDispatch, useAppSelector } from '../../../../hooks'
 
 type ImagesProps = {
+  activeViewTypeId: number
   activeSlide: RichSlide
   competitionId: string
 }
 
-const Images = ({ activeSlide, competitionId }: ImagesProps) => {
+const Images = ({ activeViewTypeId, activeSlide, competitionId }: ImagesProps) => {
   const dispatch = useAppDispatch()
 
   const uploadFile = async (formData: FormData) => {
@@ -37,6 +38,7 @@ const Images = ({ activeSlide, competitionId }: ImagesProps) => {
       y: 0,
       media_id: media.id,
       type_id: 2,
+      view_type_id: activeViewTypeId,
     }
     await axios
       .post(`/api/competitions/${competitionId}/slides/${activeSlide?.id}/components`, imageData)
@@ -94,17 +96,19 @@ const Images = ({ activeSlide, competitionId }: ImagesProps) => {
         </Center>
       </ListItem>
       {images &&
-        images.map((image) => (
-          <div key={image.id}>
-            <ListItem divider button>
-              <ImportedImage src={`http://localhost:5000/static/images/thumbnail_${image.media?.filename}`} />
-              <Center>
-                <ListItemText primary={image.media?.filename} />
-              </Center>
-              <CloseIcon onClick={() => handleCloseimageClick(image)} />
-            </ListItem>
-          </div>
-        ))}
+        images
+          .filter((image) => image.view_type_id === activeViewTypeId)
+          .map((image) => (
+            <div key={image.id}>
+              <ListItem divider button>
+                <ImportedImage src={`http://localhost:5000/static/images/thumbnail_${image.media?.filename}`} />
+                <Center>
+                  <ListItemText primary={image.media?.filename} />
+                </Center>
+                <CloseIcon onClick={() => handleCloseimageClick(image)} />
+              </ListItem>
+            </div>
+          ))}
 
       <ListItem button style={{ padding: 0 }}>
         <HiddenInput accept="image/*" id="contained-button-file" multiple type="file" onChange={handleFileSelected} />

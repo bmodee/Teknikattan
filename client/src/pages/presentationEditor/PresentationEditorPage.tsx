@@ -10,7 +10,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getCities } from '../../actions/cities'
-import { getEditorCompetition, setEditorSlideId } from '../../actions/editor'
+import { getEditorCompetition, setEditorSlideId, setEditorViewId } from '../../actions/editor'
 import { getTypes } from '../../actions/typesAction'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { RichSlide } from '../../interfaces/ApiRichModels'
@@ -27,6 +27,7 @@ import {
   SlideListItem,
   ToolBarContainer,
   ViewButton,
+  ViewButtonClicked,
   ViewButtonGroup,
 } from './styled'
 
@@ -88,6 +89,7 @@ const PresentationEditorPage: React.FC = () => {
   const { competitionId }: CompetitionParams = useParams()
   const dispatch = useAppDispatch()
   const activeSlideId = useAppSelector((state) => state.editor.activeSlideId)
+  const activeViewTypeId = useAppSelector((state) => state.editor.activeViewTypeId)
   const competition = useAppSelector((state) => state.editor.competition)
   const competitionLoading = useAppSelector((state) => state.editor.loading)
   useEffect(() => {
@@ -147,6 +149,16 @@ const PresentationEditorPage: React.FC = () => {
   })((props: CheckboxProps) => <Checkbox color="default" {...props} />)
   const [checkbox, setCheckbox] = useState(false)
 
+  const viewTypes = useAppSelector((state) => state.types.viewTypes)
+  const [activeViewTypeName, setActiveViewTypeName] = useState('')
+  const changeView = (clickedViewTypeName: string) => {
+    setActiveViewTypeName(clickedViewTypeName)
+    const clickedViewTypeId = viewTypes.find((viewType) => viewType.name === clickedViewTypeName)?.id
+    if (clickedViewTypeId) {
+      dispatch(setEditorViewId(clickedViewTypeId))
+    }
+  }
+
   return (
     <PresentationEditorContainer>
       <CssBaseline />
@@ -164,10 +176,20 @@ const PresentationEditorPage: React.FC = () => {
             <Typography className={classes.alignCheckboxText} variant="button">
               Applicera ändringar på samtliga vyer
             </Typography>
-            <ViewButton variant="contained" color="secondary">
+            <ViewButton
+              activeView={activeViewTypeName === 'Audience'}
+              variant="contained"
+              color="secondary"
+              onClick={() => changeView('Audience')}
+            >
               Åskådarvy
             </ViewButton>
-            <ViewButton variant="contained" color="secondary">
+            <ViewButton
+              activeView={activeViewTypeName === 'Team'}
+              variant="contained"
+              color="secondary"
+              onClick={() => changeView('Team')}
+            >
               Deltagarvy
             </ViewButton>
           </ViewButtonGroup>
@@ -229,7 +251,7 @@ const PresentationEditorPage: React.FC = () => {
 
       <Content leftDrawerWidth={leftDrawerWidth} rightDrawerWidth={rightDrawerWidth}>
         <InnerContent>
-          <SlideDisplay editor />
+          <SlideDisplay variant="editor" activeViewTypeId={activeViewTypeId} />
         </InnerContent>
       </Content>
       <Menu

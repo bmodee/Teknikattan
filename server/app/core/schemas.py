@@ -161,6 +161,7 @@ class ComponentSchema(BaseSchema):
     h = ma.auto_field()
     slide_id = ma.auto_field()
     type_id = ma.auto_field()
+    view_type_id = ma.auto_field()
 
     text = fields.fields.String()
     media = fields.Nested(MediaSchema, many=False)

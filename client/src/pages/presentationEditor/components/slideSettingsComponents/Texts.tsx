@@ -9,11 +9,12 @@ import axios from 'axios'
 import { getEditorCompetition } from '../../../../actions/editor'
 
 type TextsProps = {
+  activeViewTypeId: number
   activeSlide: RichSlide
   competitionId: string
 }
 
-const Texts = ({ activeSlide, competitionId }: TextsProps) => {
+const Texts = ({ activeViewTypeId, activeSlide, competitionId }: TextsProps) => {
   const texts = useAppSelector(
     (state) =>
       state.editor.competition.slides
@@ -29,6 +30,7 @@ const Texts = ({ activeSlide, competitionId }: TextsProps) => {
         text: 'Ny text',
         w: 315,
         h: 50,
+        view_type_id: activeViewTypeId,
       })
       dispatch(getEditorCompetition(competitionId))
     }
@@ -42,12 +44,14 @@ const Texts = ({ activeSlide, competitionId }: TextsProps) => {
         </Center>
       </ListItem>
       {texts &&
-        texts.map((text) => (
-          <TextCard elevation={4} key={text.id}>
-            <TextComponentEdit component={text} />
-            <Divider />
-          </TextCard>
-        ))}
+        texts
+          .filter((text) => text.view_type_id === activeViewTypeId)
+          .map((text) => (
+            <TextCard elevation={4} key={text.id}>
+              <TextComponentEdit component={text} />
+              <Divider />
+            </TextCard>
+          ))}
       <ListItem button onClick={handleAddText}>
         <Center>
           <AddButton variant="button">Lägg till text</AddButton>

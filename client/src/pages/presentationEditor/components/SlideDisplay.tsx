@@ -1,4 +1,3 @@
-import { Button, Typography } from '@material-ui/core'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { getTypes } from '../../../actions/typesAction'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
@@ -8,12 +7,13 @@ import { SlideEditorContainer, SlideEditorContainerRatio, SlideEditorPaper } fro
 
 type SlideDisplayProps = {
   //Prop to distinguish between editor and active competition
-  editor?: boolean | undefined
+  variant: 'editor' | 'presentation'
+  activeViewTypeId: number
 }
 
-const SlideDisplay = ({ editor }: SlideDisplayProps) => {
+const SlideDisplay = ({ variant, activeViewTypeId }: SlideDisplayProps) => {
   const components = useAppSelector((state) => {
-    if (editor)
+    if (variant === 'editor')
       return state.editor.competition.slides.find((slide) => slide.id === state.editor.activeSlideId)?.components
     return state.presentation.competition.slides.find((slide) => slide.id === state.presentation.slide?.id)?.components
   })
@@ -43,21 +43,29 @@ const SlideDisplay = ({ editor }: SlideDisplayProps) => {
       <SlideEditorContainerRatio>
         <SlideEditorPaper ref={editorPaperRef}>
           {components &&
-            components.map((component) => {
-              if (editor)
+            components
+              .filter((component) => component.view_type_id === activeViewTypeId)
+              .map((component) => {
+                if (variant === 'editor')
+                  return (
+                    <RndComponent
+                      height={height}
+                      width={width}
+                      key={component.id}
+                      component={component}
+                      scale={scale}
+                    />
+                  )
                 return (
-                  <RndComponent height={height} width={width} key={component.id} component={component} scale={scale} />
+                  <PresentationComponent
+                    height={height}
+                    width={width}
+                    key={component.id}
+                    component={component}
+                    scale={scale}
+                  />
                 )
-              return (
-                <PresentationComponent
-                  height={height}
-                  width={width}
-                  key={component.id}
-                  component={component}
-                  scale={scale}
-                />
-              )
-            })}
+              })}
         </SlideEditorPaper>
       </SlideEditorContainerRatio>
     </SlideEditorContainer>

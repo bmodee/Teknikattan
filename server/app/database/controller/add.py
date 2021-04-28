@@ -59,7 +59,7 @@ def db_add(item):
     return item
 
 
-def component(type_id, slide_id, x=0, y=0, w=0, h=0, **data):
+def component(type_id, slide_id, view_type_id, x=0, y=0, w=0, h=0, **data):
     """
     Adds a component to the slide at the specified coordinates with the
     provided size and data .
@@ -80,10 +80,10 @@ def component(type_id, slide_id, x=0, y=0, w=0, h=0, **data):
         h *= ratio
 
     if type_id == 1:
-        item = db_add(TextComponent(slide_id, type_id, x, y, w, h))
+        item = db_add(TextComponent(slide_id, type_id, view_type_id, x, y, w, h))
         item.text = data.get("text")
     elif type_id == 2:
-        item = db_add(ImageComponent(slide_id, type_id, x, y, w, h))
+        item = db_add(ImageComponent(slide_id, type_id, view_type_id, x, y, w, h))
         item.media_id = data.get("media_id")
     else:
         abort(codes.BAD_REQUEST, f"Invalid type_id{type_id}")

@@ -45,6 +45,7 @@ def _component(item_component, item_slide_new):
     add.component(
         item_component.type_id,
         item_slide_new.id,
+        item_component.view_type_id,
         item_component.x,
         item_component.y,
         item_component.w,

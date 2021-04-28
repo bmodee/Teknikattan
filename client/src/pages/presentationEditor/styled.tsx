@@ -7,8 +7,18 @@ export const ToolBarContainer = styled(Toolbar)`
   padding-left: 0;
 `
 
-export const ViewButton = styled(Button)`
+interface ViewButtonProps {
+  activeView: boolean
+}
+
+export const ViewButton = styled(Button)<ViewButtonProps>`
   margin-right: 8px;
+  background: ${(props) => (props.activeView ? '#5a0017' : undefined)};
+`
+
+export const ViewButtonClicked = styled(Button)`
+  margin-right: 8px;
+  background: #5a0017;
 `
 
 export const ViewButtonGroup = styled.div`

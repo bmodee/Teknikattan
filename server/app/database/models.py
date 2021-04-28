@@ -199,13 +199,14 @@ class Component(db.Model):
 
     __mapper_args__ = {"polymorphic_on": type_id}
 
-    def __init__(self, slide_id, type_id, x=0, y=0, w=1, h=1):
+    def __init__(self, slide_id, type_id, view_type_id, x=0, y=0, w=1, h=1):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
         self.slide_id = slide_id
         self.type_id = type_id
+        self.view_type_id = view_type_id
 
 
 class TextComponent(Component):

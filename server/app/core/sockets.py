@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 logger.propagate = False
 logger.setLevel(logging.INFO)
 
-formatter = logging.Formatter('[%(levelname)s] %(funcName)s: %(message)s')
+formatter = logging.Formatter("[%(levelname)s] %(funcName)s: %(message)s")
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
 logger.addHandler(stream_handler)
@@ -44,7 +44,9 @@ def start_presentation(data):
     competition_id = data["competition_id"]
 
     if competition_id in presentations:
-        logger.error(f"Client '{request.sid}' failed to start competition '{competition_id}', presentation already active")
+        logger.error(
+            f"Client '{request.sid}' failed to start competition '{competition_id}', presentation already active"
+        )
         return
 
     presentations[competition_id] = {
@@ -58,16 +60,21 @@ def start_presentation(data):
 
     logger.info(f"Client '{request.sid}' started competition '{competition_id}'")
 
+
 @sio.on("end_presentation")
 def end_presentation(data):
     competition_id = data["competition_id"]
 
     if competition_id not in presentations:
-        logger.error(f"Client '{request.sid}' failed to end presentation '{competition_id}', no such presentation exists")
+        logger.error(
+            f"Client '{request.sid}' failed to end presentation '{competition_id}', no such presentation exists"
+        )
         return
 
     if request.sid not in presentations[competition_id]["clients"]:
-        logger.error(f"Client '{request.sid}' failed to end presentation '{competition_id}', client not in presentation")
+        logger.error(
+            f"Client '{request.sid}' failed to end presentation '{competition_id}', client not in presentation"
+        )
         return
 
     if presentations[competition_id]["clients"][request.sid]["view_type"] != "Operator":
@@ -96,11 +103,15 @@ def join_presentation(data):
     competition_id = item_code.competition_id
 
     if competition_id not in presentations:
-        logger.error(f"Client '{request.sid}' failed to join presentation '{competition_id}', no such presentation exists")
+        logger.error(
+            f"Client '{request.sid}' failed to join presentation '{competition_id}', no such presentation exists"
+        )
         return
 
     if request.sid in presentations[competition_id]["clients"]:
-        logger.error(f"Client '{request.sid}' failed to join presentation '{competition_id}', client already in presentation")
+        logger.error(
+            f"Client '{request.sid}' failed to join presentation '{competition_id}', client already in presentation"
+        )
         return
 
     # TODO: Write function in database controller to do this
@@ -120,21 +131,29 @@ def set_slide(data):
     slide_order = data["slide_order"]
 
     if competition_id not in presentations:
-        logger.error(f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', no such presentation exists")
+        logger.error(
+            f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', no such presentation exists"
+        )
         return
 
     if request.sid not in presentations[competition_id]["clients"]:
-        logger.error(f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', client not in presentation")
+        logger.error(
+            f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', client not in presentation"
+        )
         return
 
     if presentations[competition_id]["clients"][request.sid]["view_type"] != "Operator":
-        logger.error(f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', client is not operator")
+        logger.error(
+            f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', client is not operator"
+        )
         return
 
     num_slides = db.session.query(Slide).filter(Slide.competition_id == competition_id).count()
 
     if not (0 <= slide_order < num_slides):
-        logger.error(f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', slide number {slide_order} does not exist")
+        logger.error(
+            f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', slide number {slide_order} does not exist"
+        )
         return
 
     presentations[competition_id]["slide"] = slide_order
@@ -151,15 +170,21 @@ def set_timer(data):
     timer = data["timer"]
 
     if competition_id not in presentations:
-        logger.error(f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', no such presentation exists")
+        logger.error(
+            f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', no such presentation exists"
+        )
         return
 
     if request.sid not in presentations[competition_id]["clients"]:
-        logger.error(f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', client not in presentation")
+        logger.error(
+            f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', client not in presentation"
+        )
         return
 
     if presentations[competition_id]["clients"][request.sid]["view_type"] != "Operator":
-        logger.error(f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', client is not operator")
+        logger.error(
+            f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', client is not operator"
+        )
         return
 
     # TODO: Save timer in presentation, maybe?
@@ -168,4 +193,3 @@ def set_timer(data):
     logger.debug(f"Emitting event 'set_timer' to room {competition_id} including self")
 
     logger.info(f"Client '{request.sid}' set timer '{timer}' in presentation '{competition_id}'")
-

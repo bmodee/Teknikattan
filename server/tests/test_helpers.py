@@ -73,7 +73,7 @@ def add_default_values():
             # dbc.add.question(name=f"Q{i+1}", total_score=i + 1, type_id=1, slide_id=item_slide.id)
 
             # Add text component
-            dbc.add.component(1, item_slide.id, i, 2 * i, 3 * i, 4 * i, text="Text")
+            dbc.add.component(1, item_slide.id, 1, i, 2 * i, 3 * i, 4 * i, text="Text")
 
 
 def get_body(response):

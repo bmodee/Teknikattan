@@ -22,6 +22,7 @@ component_edit_parser.add_argument("media_id", type=str, location="json")
 
 component_create_parser = component_edit_parser.copy()
 component_create_parser.add_argument("type_id", type=int, required=True, location="json")
+component_create_parser.add_argument("view_type_id", type=int, required=True, location="json")
 
 
 @api.route("/<component_id>")

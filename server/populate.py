@@ -86,7 +86,7 @@ def _add_items():
                 y = random.randrange(1, 500)
                 w = random.randrange(150, 400)
                 h = random.randrange(150, 400)
-                dbc.add.component(1, item_slide.id, x, y, w, h, text=f"hej{k}")
+                dbc.add.component(1, item_slide.id, 1, x, y, w, h, text=f"hej{k}")
 
         # item_slide = dbc.add.slide(item_comp)
         # item_slide.title = f"Slide {len(item_comp.slides)}"

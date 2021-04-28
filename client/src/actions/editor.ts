@@ -18,16 +18,28 @@ export const getEditorCompetition = (id: string) => async (dispatch: AppDispatch
       if (getState().editor.activeSlideId === -1 && res.data.slides[0]) {
         setEditorSlideId(res.data.slides[0].id)(dispatch)
       }
+      const defaultViewType = getState().types.viewTypes.find((viewType) => viewType.name === 'Audience')
+      if (getState().editor.activeViewTypeId === -1 && defaultViewType) {
+        setEditorViewId(defaultViewType.id)(dispatch)
+      }
     })
     .catch((err) => {
       console.log(err)
     })
 }
 
-// Set currentSlideId in editor state
+// Set activeSlideId in editor state
 export const setEditorSlideId = (id: number) => (dispatch: AppDispatch) => {
   dispatch({
     type: Types.SET_EDITOR_SLIDE_ID,
+    payload: id,
+  })
+}
+
+// Set activeViewTypeId in editor state
+export const setEditorViewId = (id: number) => (dispatch: AppDispatch) => {
+  dispatch({
+    type: Types.SET_EDITOR_VIEW_ID,
     payload: id,
   })
 }

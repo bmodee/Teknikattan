@@ -24,6 +24,7 @@ const SlideSettings: React.FC = () => {
     // Gets the slide with id=activeSlideId from the database.
     state.editor.competition.slides.find((slide) => slide && slide.id === state.editor.activeSlideId)
   )
+  const activeViewTypeId = useAppSelector((state) => state.editor.activeViewTypeId)
 
   return (
     <PanelContainer>
@@ -47,9 +48,13 @@ const SlideSettings: React.FC = () => {
         <MultipleChoiceAlternatives activeSlide={activeSlide} competitionId={competitionId} />
       )}
 
-      {activeSlide && <Texts activeSlide={activeSlide} competitionId={competitionId} />}
+      {activeSlide && (
+        <Texts activeViewTypeId={activeViewTypeId} activeSlide={activeSlide} competitionId={competitionId} />
+      )}
 
-      {activeSlide && <Images activeSlide={activeSlide} competitionId={competitionId} />}
+      {activeSlide && (
+        <Images activeViewTypeId={activeViewTypeId} activeSlide={activeSlide} competitionId={competitionId} />
+      )}
 
       <SettingsList>
         <ListItem button>

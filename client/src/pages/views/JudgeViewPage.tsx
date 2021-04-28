@@ -51,6 +51,8 @@ const JudgeViewPage = ({ competitionId, code }: JudgeViewPageProps) => {
   const history = useHistory()
   const dispatch = useAppDispatch()
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0)
+  const viewTypes = useAppSelector((state) => state.types.viewTypes)
+  const activeViewTypeId = viewTypes.find((viewType) => viewType.name === 'Judge')?.id
   const teams = useAppSelector((state) => state.presentation.competition.teams)
   const slides = useAppSelector((state) => state.presentation.competition.slides)
   const currentQuestion = slides[activeSlideIndex]?.questions[0]
@@ -128,7 +130,7 @@ const JudgeViewPage = ({ competitionId, code }: JudgeViewPageProps) => {
       <div className={classes.toolbar} />
       <Content leftDrawerWidth={leftDrawerWidth} rightDrawerWidth={rightDrawerWidth}>
         <InnerContent>
-          <SlideDisplay />
+          {activeViewTypeId && <SlideDisplay variant="presentation" activeViewTypeId={activeViewTypeId} />}
         </InnerContent>
       </Content>
     </div>

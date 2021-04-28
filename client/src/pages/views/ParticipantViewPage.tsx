@@ -9,6 +9,8 @@ import { useAppSelector } from '../../hooks'
 const ParticipantViewPage: React.FC = () => {
   const history = useHistory()
   const code = useAppSelector((state) => state.presentation.code)
+  const viewTypes = useAppSelector((state) => state.types.viewTypes)
+  const activeViewTypeId = viewTypes.find((viewType) => viewType.name === 'Participant')?.id
   useEffect(() => {
     //hides the url so people can't sneak peak
     history.push('participant')
@@ -19,7 +21,7 @@ const ParticipantViewPage: React.FC = () => {
   }, [])
   return (
     <ParticipantContainer>
-      <SlideDisplay />
+      {activeViewTypeId && <SlideDisplay variant="presentation" activeViewTypeId={activeViewTypeId} />}
     </ParticipantContainer>
   )
 }

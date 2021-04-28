@@ -20,6 +20,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
   const [content, setContent] = useState('')
   const [timerHandle, setTimerHandle] = React.useState<number | undefined>(undefined)
   const activeSlideId = useAppSelector((state) => state.editor.activeSlideId)
+  const activeViewTypeId = useAppSelector((state) => state.editor.activeViewTypeId)
   const dispatch = useAppDispatch()
 
   useEffect(() => {

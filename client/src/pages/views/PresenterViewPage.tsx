@@ -61,6 +61,8 @@ const PresenterViewPage: React.FC = () => {
   const presentation = useAppSelector((state) => state.presentation)
   const history = useHistory()
   const dispatch = useAppDispatch()
+  const viewTypes = useAppSelector((state) => state.types.viewTypes)
+  const activeViewTypeId = viewTypes.find((viewType) => viewType.name === 'Presenter')?.id
 
   useEffect(() => {
     dispatch(getPresentationCompetition(id))
@@ -137,7 +139,7 @@ const PresenterViewPage: React.FC = () => {
       <div style={{ height: 0, paddingTop: 120 }} />
       <PresenterContent>
         <PresenterInnerContent>
-          <SlideDisplay />
+          {activeViewTypeId && <SlideDisplay variant="presentation" activeViewTypeId={activeViewTypeId} />}
         </PresenterInnerContent>
       </PresenterContent>
       <div style={{ height: 0, paddingTop: 140 }} />

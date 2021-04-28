@@ -80,6 +80,8 @@ export interface Component {
   w: number
   h: number
   type_id: number
+  view_type_id: number
+  slide_id: number
 }
 
 export interface ImageComponent extends Component {
