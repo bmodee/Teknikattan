@@ -4,7 +4,7 @@ import React from 'react'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import store from '../../store'
-import PresenterViewPage from './PresenterViewPage'
+import OperatorViewPage from './OperatorViewPage'
 
 it('renders presenter view page', () => {
   const compRes: any = {
@@ -36,7 +36,7 @@ it('renders presenter view page', () => {
   render(
     <BrowserRouter>
       <Provider store={store}>
-        <PresenterViewPage />
+        <OperatorViewPage />
       </Provider>
     </BrowserRouter>
   )

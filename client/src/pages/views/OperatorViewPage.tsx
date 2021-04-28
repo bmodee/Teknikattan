@@ -7,6 +7,7 @@ import {
   DialogTitle,
   List,
   ListItem,
+  ListItemText,
   Popover,
   Tooltip,
   Typography,
@@ -14,6 +15,8 @@ import {
   useTheme,
 } from '@material-ui/core'
 import AssignmentIcon from '@material-ui/icons/Assignment'
+import FileCopyIcon from '@material-ui/icons/FileCopy'
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
 import BackspaceIcon from '@material-ui/icons/Backspace'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
@@ -36,23 +39,39 @@ import SlideDisplay from '../presentationEditor/components/SlideDisplay'
 import PresentationComponent from './components/PresentationComponent'
 import Timer from './components/Timer'
 import {
-  PresenterButton,
-  PresenterContainer,
-  PresenterContent,
-  PresenterFooter,
-  PresenterHeader,
-  PresenterInnerContent,
+  OperatorButton,
+  OperatorContainer,
+  OperatorFooter,
+  OperatorHeader,
+  OperatorContent,
+  OperatorInnerContent,
   SlideCounter,
   ToolBarContainer,
 } from './styled'
 
 /**
+ *  Description:
+ *
  *  Presentation is an active competition
+ *
+ *
+ *  ===========================================
+ *  TODO:
+ *  - Instead of copying code for others to join the competition, copy URL.
+ *
+ *  - Make code popup less code by using .map instead
+ *
+ *  - Fix scoreboard
+ *
+ *  - When two userers are connected to the same Localhost:5000 and updates/starts/end competition it
+ *    creates a bug where the competition can't be started.
+ * ===========================================
  */
 
-const PresenterViewPage: React.FC = () => {
+const OperatorViewPage: React.FC = () => {
   // for dialog alert
   const [openAlert, setOpen] = React.useState(false)
+  const [openAlertCode, setOpenCode] = React.useState(true)
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const teams = useAppSelector((state) => state.presentation.competition.teams)
@@ -62,14 +81,14 @@ const PresenterViewPage: React.FC = () => {
   const history = useHistory()
   const dispatch = useAppDispatch()
   const viewTypes = useAppSelector((state) => state.types.viewTypes)
-  const activeViewTypeId = viewTypes.find((viewType) => viewType.name === 'Presenter')?.id
+  const activeViewTypeId = viewTypes.find((viewType) => viewType.name === 'Operator')?.id
 
   useEffect(() => {
     dispatch(getPresentationCompetition(id))
     dispatch(setPresentationCode(code))
     socket_connect()
     socketSetSlide // Behövs denna?
-    setTimeout(startCompetition, 500) // Ghetto, wait for everything to load
+    setTimeout(startCompetition, 1000) // Ghetto, wait for everything to load
     // console.log(id)
   }, [])
 
@@ -79,6 +98,7 @@ const PresenterViewPage: React.FC = () => {
 
   const handleClose = () => {
     setOpen(false)
+    setOpenCode(false)
     setAnchorEl(null)
   }
 
@@ -92,6 +112,14 @@ const PresenterViewPage: React.FC = () => {
     setOpen(true)
   }
 
+  const handleOpenCodes = () => {
+    setOpenCode(true)
+  }
+
+  const handleCopy = () => {
+    console.log('copied code to clipboard')
+  }
+
   const endCompetition = () => {
     setOpen(false)
     socketEndPresentation()
@@ -100,12 +128,66 @@ const PresenterViewPage: React.FC = () => {
   }
 
   return (
-    <PresenterContainer>
-      <PresenterHeader>
+    <OperatorContainer>
+      <Dialog
+        fullScreen={fullScreen}
+        open={openAlertCode}
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">{'Koder för tävlingen'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <ListItem>
+              <ListItemText primary={`Domare: ${presentation.code}`} />
+              <Tooltip title="Kopiera kod" arrow>
+                <Button
+                  onClick={() => {
+                    navigator.clipboard.writeText(presentation.code)
+                  }}
+                >
+                  <FileCopyIcon fontSize="small" />
+                </Button>
+              </Tooltip>
+            </ListItem>
+            <ListItem>
+              <ListItemText primary={`Tävlande: ${presentation.code}`} />
+              <Tooltip title="Kopiera kod" arrow>
+                <Button
+                  onClick={() => {
+                    navigator.clipboard.writeText(presentation.code)
+                  }}
+                >
+                  <FileCopyIcon fontSize="small" />
+                </Button>
+              </Tooltip>
+            </ListItem>
+            <ListItem>
+              <ListItemText primary={`Publik: ${presentation.code}`} />
+              <Tooltip title="Kopiera kod" arrow>
+                <Button
+                  onClick={() => {
+                    navigator.clipboard.writeText(presentation.code)
+                  }}
+                >
+                  <FileCopyIcon fontSize="small" />
+                </Button>
+              </Tooltip>
+            </ListItem>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleClose} color="primary">
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <OperatorHeader>
         <Tooltip title="Avsluta tävling" arrow>
-          <PresenterButton onClick={handleVerifyExit} variant="contained" color="secondary">
+          <OperatorButton onClick={handleVerifyExit} variant="contained" color="secondary">
             <BackspaceIcon fontSize="large" />
-          </PresenterButton>
+          </OperatorButton>
         </Tooltip>
 
         <Dialog
@@ -135,67 +217,73 @@ const PresenterViewPage: React.FC = () => {
             {presentation.slide.order + 1} / {presentation.competition.slides.length}
           </Typography>
         </SlideCounter>
-      </PresenterHeader>
+      </OperatorHeader>
       <div style={{ height: 0, paddingTop: 120 }} />
-      <PresenterContent>
-        <PresenterInnerContent>
+      <OperatorContent>
+        <OperatorInnerContent>
           {activeViewTypeId && <SlideDisplay variant="presentation" activeViewTypeId={activeViewTypeId} />}
-        </PresenterInnerContent>
-      </PresenterContent>
+        </OperatorInnerContent>
+      </OperatorContent>
       <div style={{ height: 0, paddingTop: 140 }} />
-      <PresenterFooter>
+      <OperatorFooter>
         <ToolBarContainer>
-          <Tooltip title="Previous Slide" arrow>
-            <PresenterButton onClick={socketSetSlidePrev} variant="contained">
+          <Tooltip title="Föregående" arrow>
+            <OperatorButton onClick={socketSetSlidePrev} variant="contained">
               <ChevronLeftIcon fontSize="large" />
-            </PresenterButton>
+            </OperatorButton>
           </Tooltip>
 
           {/* 
           // Manual start button
           <Tooltip title="Start Presentation" arrow>
-            <PresenterButton onClick={startCompetition} variant="contained">
+            <OperatorButton onClick={startCompetition} variant="contained">
               start
-            </PresenterButton>
+            </OperatorButton>
           </Tooltip>
 
           
-          // This creates a join button, but presenter should not join others, others should join presenter
+          // This creates a join button, but Operator should not join others, others should join Operator
           <Tooltip title="Join Presentation" arrow>
-            <PresenterButton onClick={socketJoinPresentation} variant="contained">
+            <OperatorButton onClick={socketJoinPresentation} variant="contained">
               <GroupAddIcon fontSize="large" />
-            </PresenterButton>
+            </OperatorButton>
           </Tooltip>
           
 
           // This creates another end button, it might not be needed since we already have one
           <Tooltip title="End Presentation" arrow>
-            <PresenterButton onClick={socketEndPresentation} variant="contained">
+            <OperatorButton onClick={socketEndPresentation} variant="contained">
               <CancelIcon fontSize="large" />
-            </PresenterButton>
+            </OperatorButton>
           </Tooltip>
           */}
 
-          <Tooltip title="Start Timer" arrow>
-            <PresenterButton onClick={socketStartTimer} variant="contained">
+          <Tooltip title="Starta Timer" arrow>
+            <OperatorButton onClick={socketStartTimer} variant="contained">
               <TimerIcon fontSize="large" />
               <Timer></Timer>
-            </PresenterButton>
+            </OperatorButton>
           </Tooltip>
 
-          <Tooltip title="Scoreboard" arrow>
-            <PresenterButton onClick={handleOpenPopover} variant="contained">
+          <Tooltip title="Ställning" arrow>
+            <OperatorButton onClick={handleOpenPopover} variant="contained">
               <AssignmentIcon fontSize="large" />
-            </PresenterButton>
+            </OperatorButton>
           </Tooltip>
 
-          <Tooltip title="Next Slide" arrow>
-            <PresenterButton onClick={socketSetSlideNext} variant="contained">
+          <Tooltip title="Koder" arrow>
+            <OperatorButton onClick={handleOpenCodes} variant="contained">
+              <SupervisorAccountIcon fontSize="large" />
+            </OperatorButton>
+          </Tooltip>
+
+          <Tooltip title="Nästa" arrow>
+            <OperatorButton onClick={socketSetSlideNext} variant="contained">
               <ChevronRightIcon fontSize="large" />
-            </PresenterButton>
+            </OperatorButton>
           </Tooltip>
         </ToolBarContainer>
-      </PresenterFooter>
+      </OperatorFooter>
       <Popover
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
@@ -210,17 +298,15 @@ const PresenterViewPage: React.FC = () => {
         }}
       >
         <List>
-          {/**  TODO:
-           *    Fix scoreboard
-           */}
-          {teams && teams.map((team) => <ListItem key={team.id}>{team.name} score: 20</ListItem>)}
+          {teams.map((team) => (
+            <ListItem key={team.id}>
+              {team.name} score: {team.question_answers}{' '}
+            </ListItem>
+          ))}
         </List>
       </Popover>
-    </PresenterContainer>
+    </OperatorContainer>
   )
 }
 
-export default PresenterViewPage
-function componentDidMount() {
-  throw new Error('Function not implemented.')
-}
+export default OperatorViewPage

@@ -35,7 +35,7 @@ export const ViewSelectButtonGroup = styled.div`
   margin-right: auto;
 `
 
-export const PresenterHeader = styled.div`
+export const OperatorHeader = styled.div`
   display: flex;
   justify-content: space-between;
   height: 120px;
@@ -43,7 +43,7 @@ export const PresenterHeader = styled.div`
   position: absolute;
 `
 
-export const PresenterFooter = styled.div`
+export const OperatorFooter = styled.div`
   display: flex;
   justify-content: space-between;
   height: 140px;
@@ -52,7 +52,7 @@ export const PresenterFooter = styled.div`
   width: 100%;
 `
 
-export const PresenterButton = styled(Button)`
+export const OperatorButton = styled(Button)`
   width: 100px;
   height: 100px;
   margin-left: 16px;
@@ -66,7 +66,7 @@ export const SlideCounter = styled(Button)`
   margin-top: 16px;
 `
 
-export const PresenterContainer = styled.div`
+export const OperatorContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -127,7 +127,7 @@ export const InnerContent = styled.div`
   max-width: calc(((100vh - 64px) / 9) * 16);
 `
 
-export const PresenterContent = styled.div`
+export const OperatorContent = styled.div`
   height: 100%;
   width: 100%;
   display: flex;
@@ -135,7 +135,7 @@ export const PresenterContent = styled.div`
   background-color: rgba(0, 0, 0, 0.08);
 `
 
-export const PresenterInnerContent = styled.div`
+export const OperatorInnerContent = styled.div`
   height: 100%;
   width: 100%;
   /* Makes sure width is not bigger than where a 16:9 display can fit 
@@ -143,7 +143,7 @@ export const PresenterInnerContent = styled.div`
   max-width: calc(((100vh - 260px) / 9) * 16);
 `
 
-export const ParticipantContainer = styled.div`
+export const TeamContainer = styled.div`
   max-width: calc((100vh / 9) * 16);
 `
 

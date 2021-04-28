@@ -3,7 +3,7 @@ import React from 'react'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import store from '../../store'
-import ParticipantViewPage from './ParticipantViewPage'
+import TeamViewPage from './TeamViewPage'
 import mockedAxios from 'axios'
 
 it('renders participant view page', () => {
@@ -16,7 +16,7 @@ it('renders participant view page', () => {
   render(
     <BrowserRouter>
       <Provider store={store}>
-        <ParticipantViewPage />
+        <TeamViewPage />
       </Provider>
     </BrowserRouter>
   )

@@ -94,7 +94,7 @@ const CompetitionManager: React.FC = (props: any) => {
   }
 
   const handleStartCompetition = () => {
-    history.push(`/presenter/id=${activeId}&code=123123`)
+    history.push(`/operator/id=${activeId}&code=123123`)
     console.log('GLHF!')
   }
 

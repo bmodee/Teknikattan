@@ -4,9 +4,9 @@ import { Link, useRouteMatch } from 'react-router-dom'
 import { ViewSelectButtonGroup, ViewSelectContainer } from './styled'
 import { useParams } from 'react-router-dom'
 import { CircularProgress, Typography } from '@material-ui/core'
-import ParticipantViewPage from './ParticipantViewPage'
+import TeamViewPage from './TeamViewPage'
 import axios from 'axios'
-import PresenterViewPage from './PresenterViewPage'
+import OperatorViewPage from './OperatorViewPage'
 import JudgeViewPage from './JudgeViewPage'
 import AudienceViewPage from './AudienceViewPage'
 import { useAppDispatch, useAppSelector } from '../../hooks'
@@ -29,7 +29,7 @@ const ViewSelectPage: React.FC = () => {
     if (competitionId) {
       switch (viewType) {
         case 'Team':
-          return <ParticipantViewPage />
+          return <TeamViewPage />
         case 'Judge':
           return <JudgeViewPage code={code} competitionId={competitionId} />
         case 'Audience':
