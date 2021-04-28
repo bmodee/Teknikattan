@@ -8,12 +8,12 @@ export const ToolBarContainer = styled(Toolbar)`
 `
 
 interface ViewButtonProps {
-  activeView: boolean
+  $activeView: boolean
 }
 
 export const ViewButton = styled(Button)<ViewButtonProps>`
   margin-right: 8px;
-  background: ${(props) => (props.activeView ? '#5a0017' : undefined)};
+  background: ${(props) => (props.$activeView ? '#5a0017' : undefined)};
 `
 
 export const ViewButtonClicked = styled(Button)`

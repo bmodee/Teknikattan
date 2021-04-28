@@ -3,14 +3,17 @@ import app.database.controller as dbc
 from app.apis import item_response, list_response, protect_route
 from app.core.dto import TeamDTO
 from flask_restx import Resource, reqparse
-from flask_restx import reqparse
+from app.core.parsers import sentinel
 
 api = TeamDTO.api
 schema = TeamDTO.schema
 list_schema = TeamDTO.list_schema
 
-team_parser = reqparse.RequestParser()
-team_parser.add_argument("name", type=str, location="json")
+team_parser_add = reqparse.RequestParser()
+team_parser_add.add_argument("name", type=str, required=True, location="json")
+
+team_parser_edit = reqparse.RequestParser()
+team_parser_edit.add_argument("name", type=str, default=sentinel, location="json")
 
 
 @api.route("")
@@ -23,7 +26,7 @@ class TeamsList(Resource):
 
     @protect_route(allowed_roles=["*"])
     def post(self, competition_id):
-        args = team_parser.parse_args(strict=True)
+        args = team_parser_add.parse_args(strict=True)
         item_team = dbc.add.team(args["name"], competition_id)
         return item_response(schema.dump(item_team))
 
@@ -45,7 +48,7 @@ class Teams(Resource):
 
     @protect_route(allowed_roles=["*"])
     def put(self, competition_id, team_id):
-        args = team_parser.parse_args(strict=True)
+        args = team_parser_edit.parse_args(strict=True)
         name = args.get("name")
 
         item_team = dbc.get.team(competition_id, team_id)

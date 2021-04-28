@@ -4,25 +4,29 @@ from app.apis import item_response, list_response, protect_route
 from app.core.dto import ComponentDTO
 from flask_restx import Resource
 from flask_restx import reqparse
+from app.core.parsers import sentinel
 
 api = ComponentDTO.api
 schema = ComponentDTO.schema
 list_schema = ComponentDTO.list_schema
 
+component_parser_add = reqparse.RequestParser()
+component_parser_add.add_argument("x", type=str, default=0, location="json")
+component_parser_add.add_argument("y", type=int, default=0, location="json")
+component_parser_add.add_argument("w", type=int, default=1, location="json")
+component_parser_add.add_argument("h", type=int, default=1, location="json")
+component_parser_add.add_argument("type_id", type=int, required=True, location="json")
+component_parser_add.add_argument("view_type_id", type=int, required=True, location="json")
+component_parser_add.add_argument("text", type=str, default=None, location="json")
+component_parser_add.add_argument("media_id", type=str, default=None, location="json")
 
-component_parser = reqparse.RequestParser()
-component_parser.add_argument("x", type=str, default=None, location="json")
-component_parser.add_argument("y", type=int, default=None, location="json")
-component_parser.add_argument("w", type=int, default=None, location="json")
-component_parser.add_argument("h", type=int, default=None, location="json")
-
-component_edit_parser = component_parser.copy()
-component_edit_parser.add_argument("text", type=str, location="json")
-component_edit_parser.add_argument("media_id", type=str, location="json")
-
-component_create_parser = component_edit_parser.copy()
-component_create_parser.add_argument("type_id", type=int, required=True, location="json")
-component_create_parser.add_argument("view_type_id", type=int, required=True, location="json")
+component_parser_edit = reqparse.RequestParser()
+component_parser_edit.add_argument("x", type=str, default=sentinel, location="json")
+component_parser_edit.add_argument("y", type=int, default=sentinel, location="json")
+component_parser_edit.add_argument("w", type=int, default=sentinel, location="json")
+component_parser_edit.add_argument("h", type=int, default=sentinel, location="json")
+component_parser_edit.add_argument("text", type=str, default=sentinel, location="json")
+component_parser_edit.add_argument("media_id", type=str, default=sentinel, location="json")
 
 
 @api.route("/<component_id>")
@@ -35,10 +39,10 @@ class ComponentByID(Resource):
 
     @protect_route(allowed_roles=["*"])
     def put(self, competition_id, slide_id, component_id):
-        args = component_edit_parser.parse_args(strict=True)
+        args = component_parser_edit.parse_args(strict=True)
         item = dbc.get.component(competition_id, slide_id, component_id)
-        args_without_none = {key: value for key, value in args.items() if value is not None}
-        item = dbc.edit.default(item, **args_without_none)
+        args_without_sentinel = {key: value for key, value in args.items() if value is not sentinel}
+        item = dbc.edit.default(item, **args_without_sentinel)
         return item_response(schema.dump(item))
 
     @protect_route(allowed_roles=["*"])
@@ -58,6 +62,6 @@ class ComponentList(Resource):
 
     @protect_route(allowed_roles=["*"])
     def post(self, competition_id, slide_id):
-        args = component_create_parser.parse_args()
+        args = component_parser_add.parse_args()
         item = dbc.add.component(slide_id=slide_id, **args)
         return item_response(schema.dump(item))

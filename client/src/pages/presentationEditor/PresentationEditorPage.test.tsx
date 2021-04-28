@@ -27,8 +27,19 @@ it('renders presentation editor', () => {
       ],
     },
   }
+  const typesRes: any = {
+    data: {
+      view_types: [
+        {
+          name: '',
+          id: 0,
+        },
+      ],
+    },
+  }
   ;(mockedAxios.get as jest.Mock).mockImplementation((path: string, params?: any) => {
     if (path.startsWith('/api/competitions')) return Promise.resolve(competitionRes)
+    if (path.startsWith('/api/misc/types')) return Promise.resolve(typesRes)
     return Promise.resolve(citiesRes)
   })
   render(

@@ -6,32 +6,35 @@ from app.core.dto import CompetitionDTO
 from app.database.models import Competition
 from flask_restx import Resource
 from flask_restx import reqparse
-from app.core.parsers import search_parser
+from app.core.parsers import search_parser, sentinel
 
 api = CompetitionDTO.api
 schema = CompetitionDTO.schema
 rich_schema = CompetitionDTO.rich_schema
 list_schema = CompetitionDTO.list_schema
 
-competition_parser = reqparse.RequestParser()
-competition_parser.add_argument("name", type=str, location="json")
-competition_parser.add_argument("year", type=int, location="json")
-competition_parser.add_argument("city_id", type=int, location="json")
+competition_parser_add = reqparse.RequestParser()
+competition_parser_add.add_argument("name", type=str, required=True, location="json")
+competition_parser_add.add_argument("year", type=int, required=True, location="json")
+competition_parser_add.add_argument("city_id", type=int, required=True, location="json")
 
-competition_edit_parser = competition_parser.copy()
-competition_edit_parser.add_argument("background_image_id", default=None, type=int, location="json")
+competition_parser_edit = reqparse.RequestParser()
+competition_parser_edit.add_argument("name", type=str, default=sentinel, location="json")
+competition_parser_edit.add_argument("year", type=int, default=sentinel, location="json")
+competition_parser_edit.add_argument("city_id", type=int, default=sentinel, location="json")
+competition_parser_edit.add_argument("background_image_id", default=sentinel, type=int, location="json")
 
-competition_search_parser = search_parser.copy()
-competition_search_parser.add_argument("name", type=str, default=None, location="args")
-competition_search_parser.add_argument("year", type=int, default=None, location="args")
-competition_search_parser.add_argument("city_id", type=int, default=None, location="args")
+competition_parser_search = search_parser.copy()
+competition_parser_search.add_argument("name", type=str, default=sentinel, location="args")
+competition_parser_search.add_argument("year", type=int, default=sentinel, location="args")
+competition_parser_search.add_argument("city_id", type=int, default=sentinel, location="args")
 
 
 @api.route("")
 class CompetitionsList(Resource):
     @protect_route(allowed_roles=["*"])
     def post(self):
-        args = competition_parser.parse_args(strict=True)
+        args = competition_parser_add.parse_args(strict=True)
 
         # Add competition
         item = dbc.add.competition(**args)
@@ -52,9 +55,9 @@ class Competitions(Resource):
 
     @protect_route(allowed_roles=["*"])
     def put(self, competition_id):
-        args = competition_edit_parser.parse_args(strict=True)
+        args = competition_parser_edit.parse_args(strict=True)
         item = dbc.get.one(Competition, competition_id)
-        item = dbc.edit.competition(item, **args)
+        item = dbc.edit.default(item, **args)
 
         return item_response(schema.dump(item))
 
@@ -70,7 +73,7 @@ class Competitions(Resource):
 class CompetitionSearch(Resource):
     @protect_route(allowed_roles=["*"])
     def get(self):
-        args = competition_search_parser.parse_args(strict=True)
+        args = competition_parser_search.parse_args(strict=True)
         items, total = dbc.search.competition(**args)
         return list_response(list_schema.dump(items), total)
 

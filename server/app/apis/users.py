@@ -5,23 +5,23 @@ from app.core.dto import UserDTO
 from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
 from flask_restx import inputs, reqparse
-from app.core.parsers import search_parser
+from app.core.parsers import search_parser, sentinel
 
 api = UserDTO.api
 schema = UserDTO.schema
 list_schema = UserDTO.list_schema
 
-user_parser = reqparse.RequestParser()
-user_parser.add_argument("email", type=inputs.email(), location="json")
-user_parser.add_argument("name", type=str, location="json")
-user_parser.add_argument("city_id", type=int, location="json")
-user_parser.add_argument("role_id", type=int, location="json")
+user_parser_edit = reqparse.RequestParser()
+user_parser_edit.add_argument("email", type=inputs.email(), default=sentinel, location="json")
+user_parser_edit.add_argument("name", type=str, default=sentinel, location="json")
+user_parser_edit.add_argument("city_id", type=int, default=sentinel, location="json")
+user_parser_edit.add_argument("role_id", type=int, default=sentinel, location="json")
 
 user_search_parser = search_parser.copy()
-user_search_parser.add_argument("name", type=str, default=None, location="args")
-user_search_parser.add_argument("email", type=str, default=None, location="args")
-user_search_parser.add_argument("city_id", type=int, default=None, location="args")
-user_search_parser.add_argument("role_id", type=int, default=None, location="args")
+user_search_parser.add_argument("name", type=str, default=sentinel, location="args")
+user_search_parser.add_argument("email", type=str, default=sentinel, location="args")
+user_search_parser.add_argument("city_id", type=int, default=sentinel, location="args")
+user_search_parser.add_argument("role_id", type=int, default=sentinel, location="args")
 
 
 def _edit_user(item_user, args):
@@ -47,7 +47,7 @@ class UsersList(Resource):
 
     @protect_route(allowed_roles=["*"])
     def put(self):
-        args = user_parser.parse_args(strict=True)
+        args = user_parser_edit.parse_args(strict=True)
         item = dbc.get.user(get_jwt_identity())
         item = _edit_user(item, args)
         return item_response(schema.dump(item))
@@ -63,7 +63,7 @@ class Users(Resource):
 
     @protect_route(allowed_roles=["Admin"])
     def put(self, ID):
-        args = user_parser.parse_args(strict=True)
+        args = user_parser_edit.parse_args(strict=True)
         item = dbc.get.user(ID)
         item = _edit_user(item, args)
         return item_response(schema.dump(item))

@@ -4,15 +4,21 @@ from app.apis import item_response, list_response, protect_route
 from app.core.dto import QuestionDTO
 from flask_restx import Resource
 from flask_restx import reqparse
+from app.core.parsers import sentinel
 
 api = QuestionDTO.api
 schema = QuestionDTO.schema
 list_schema = QuestionDTO.list_schema
 
-question_parser = reqparse.RequestParser()
-question_parser.add_argument("name", type=str, default=None, location="json")
-question_parser.add_argument("total_score", type=int, default=None, location="json")
-question_parser.add_argument("type_id", type=int, default=None, location="json")
+question_parser_add = reqparse.RequestParser()
+question_parser_add.add_argument("name", type=str, default=None, location="json")
+question_parser_add.add_argument("total_score", type=int, default=None, location="json")
+question_parser_add.add_argument("type_id", type=int, required=True, location="json")
+
+question_parser_edit = reqparse.RequestParser()
+question_parser_edit.add_argument("name", type=str, default=sentinel, location="json")
+question_parser_edit.add_argument("total_score", type=int, default=sentinel, location="json")
+question_parser_edit.add_argument("type_id", type=int, default=sentinel, location="json")
 
 
 @api.route("/questions")
@@ -34,7 +40,7 @@ class QuestionListForSlide(Resource):
 
     @protect_route(allowed_roles=["*"])
     def post(self, competition_id, slide_id):
-        args = question_parser.parse_args(strict=True)
+        args = question_parser_add.parse_args(strict=True)
         item = dbc.add.question(slide_id=slide_id, **args)
         return item_response(schema.dump(item))
 
@@ -49,7 +55,7 @@ class QuestionById(Resource):
 
     @protect_route(allowed_roles=["*"])
     def put(self, competition_id, slide_id, question_id):
-        args = question_parser.parse_args(strict=True)
+        args = question_parser_edit.parse_args(strict=True)
 
         item_question = dbc.get.question(competition_id, slide_id, question_id)
         item_question = dbc.edit.default(item_question, **args)

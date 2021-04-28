@@ -21,14 +21,14 @@ list_schema = AuthDTO.list_schema
 
 login_parser = reqparse.RequestParser()
 login_parser.add_argument("email", type=inputs.email(), required=True, location="json")
-login_parser.add_argument("password", required=True, location="json")
+login_parser.add_argument("password", type=str, required=True, location="json")
 
 create_user_parser = login_parser.copy()
 create_user_parser.add_argument("city_id", type=int, required=True, location="json")
 create_user_parser.add_argument("role_id", type=int, required=True, location="json")
 
 login_code_parser = reqparse.RequestParser()
-login_code_parser.add_argument("code", type=str, location="json")
+login_code_parser.add_argument("code", type=str, required=True, location="json")
 
 
 def get_user_claims(item_user):

@@ -3,6 +3,7 @@ This file contains functionality to get data from the database.
 """
 
 from app.core import db
+from app.core.parsers import sentinel
 
 
 def switch_order(item1, item2):
@@ -46,22 +47,8 @@ def default(item, **kwargs):
     for key, value in kwargs.items():
         if not hasattr(item, key):
             raise AttributeError(f"Item of type {type(item)} has no attribute '{key}'")
-        if value is not None:
+        if value is not sentinel:
             setattr(item, key, value)
     db.session.commit()
     db.session.refresh(item)
     return item
-
-
-def competition(item, **kwargs):
-    if kwargs["background_image_id"] == -1:
-        item.background_image_id = None
-        del kwargs["background_image_id"]
-    return default(item, **kwargs)
-
-
-def slide(item, **kwargs):
-    if kwargs["background_image_id"] == -1:
-        item.background_image_id = None
-        del kwargs["background_image_id"]
-    return default(item, **kwargs)

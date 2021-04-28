@@ -4,19 +4,20 @@ from app.apis import item_response, list_response, protect_route
 from app.core.dto import QuestionAnswerDTO
 from flask_restx import Resource
 from flask_restx import reqparse
+from app.core.parsers import sentinel
 
 api = QuestionAnswerDTO.api
 schema = QuestionAnswerDTO.schema
 list_schema = QuestionAnswerDTO.list_schema
 
-question_answer_parser = reqparse.RequestParser()
-question_answer_parser.add_argument("answer", type=str, required=True, location="json")
-question_answer_parser.add_argument("score", type=int, required=True, location="json")
-question_answer_parser.add_argument("question_id", type=int, required=True, location="json")
+answer_parser_add = reqparse.RequestParser()
+answer_parser_add.add_argument("answer", type=str, required=True, location="json")
+answer_parser_add.add_argument("score", type=int, required=True, location="json")
+answer_parser_add.add_argument("question_id", type=int, required=True, location="json")
 
-question_answer_edit_parser = reqparse.RequestParser()
-question_answer_edit_parser.add_argument("answer", type=str, default=None, location="json")
-question_answer_edit_parser.add_argument("score", type=int, default=None, location="json")
+answer_parser_edit = reqparse.RequestParser()
+answer_parser_edit.add_argument("answer", type=str, default=sentinel, location="json")
+answer_parser_edit.add_argument("score", type=int, default=sentinel, location="json")
 
 
 @api.route("")
@@ -29,7 +30,7 @@ class QuestionAnswerList(Resource):
 
     @protect_route(allowed_roles=["*"], allowed_views=["*"])
     def post(self, competition_id, team_id):
-        args = question_answer_parser.parse_args(strict=True)
+        args = answer_parser_add.parse_args(strict=True)
         item = dbc.add.question_answer(**args, team_id=team_id)
         return item_response(schema.dump(item))
 
@@ -44,7 +45,7 @@ class QuestionAnswers(Resource):
 
     @protect_route(allowed_roles=["*"], allowed_views=["*"])
     def put(self, competition_id, team_id, answer_id):
-        args = question_answer_edit_parser.parse_args(strict=True)
+        args = answer_parser_edit.parse_args(strict=True)
         item = dbc.get.question_answer(competition_id, team_id, answer_id)
         item = dbc.edit.default(item, **args)
         return item_response(schema.dump(item))

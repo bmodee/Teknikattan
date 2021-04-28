@@ -10,6 +10,7 @@ from flask_restx import Resource
 from flask_uploads import UploadNotAllowed
 from sqlalchemy import exc
 import app.core.files as files
+from app.core.parsers import sentinel
 
 api = MediaDTO.api
 image_set = MediaDTO.image_set
@@ -17,7 +18,7 @@ schema = MediaDTO.schema
 list_schema = MediaDTO.list_schema
 
 media_parser_search = search_parser.copy()
-media_parser_search.add_argument("filename", type=str, default=None, location="args")
+media_parser_search.add_argument("filename", type=str, default=sentinel, location="args")
 
 
 @api.route("/images")

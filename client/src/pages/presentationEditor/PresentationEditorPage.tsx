@@ -93,9 +93,9 @@ const PresentationEditorPage: React.FC = () => {
   const competition = useAppSelector((state) => state.editor.competition)
   const competitionLoading = useAppSelector((state) => state.editor.loading)
   useEffect(() => {
+    dispatch(getTypes())
     dispatch(getEditorCompetition(competitionId))
     dispatch(getCities())
-    dispatch(getTypes())
   }, [])
 
   const setActiveSlideId = (id: number) => {
@@ -177,7 +177,7 @@ const PresentationEditorPage: React.FC = () => {
               Applicera ändringar på samtliga vyer
             </Typography>
             <ViewButton
-              activeView={activeViewTypeName === 'Audience'}
+              $activeView={activeViewTypeName === 'Audience'}
               variant="contained"
               color="secondary"
               onClick={() => changeView('Audience')}
@@ -185,7 +185,7 @@ const PresentationEditorPage: React.FC = () => {
               Åskådarvy
             </ViewButton>
             <ViewButton
-              activeView={activeViewTypeName === 'Team'}
+              $activeView={activeViewTypeName === 'Team'}
               variant="contained"
               color="secondary"
               onClick={() => changeView('Team')}

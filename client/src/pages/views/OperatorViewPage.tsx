@@ -143,44 +143,42 @@ const OperatorViewPage: React.FC = () => {
       >
         <DialogTitle id="responsive-dialog-title">{'Koder för tävlingen'}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            <ListItem>
-              <ListItemText primary={`Domare: ${presentation.code}`} />
-              <Tooltip title="Kopiera kod" arrow>
-                <Button
-                  onClick={() => {
-                    navigator.clipboard.writeText(presentation.code)
-                  }}
-                >
-                  <FileCopyIcon fontSize="small" />
-                </Button>
-              </Tooltip>
-            </ListItem>
-            <ListItem>
-              <ListItemText primary={`Tävlande: ${presentation.code}`} />
-              <Tooltip title="Kopiera kod" arrow>
-                <Button
-                  onClick={() => {
-                    navigator.clipboard.writeText(presentation.code)
-                  }}
-                >
-                  <FileCopyIcon fontSize="small" />
-                </Button>
-              </Tooltip>
-            </ListItem>
-            <ListItem>
-              <ListItemText primary={`Publik: ${presentation.code}`} />
-              <Tooltip title="Kopiera kod" arrow>
-                <Button
-                  onClick={() => {
-                    navigator.clipboard.writeText(presentation.code)
-                  }}
-                >
-                  <FileCopyIcon fontSize="small" />
-                </Button>
-              </Tooltip>
-            </ListItem>
-          </DialogContentText>
+          <ListItem>
+            <ListItemText primary={`Domare: ${presentation.code}`} />
+            <Tooltip title="Kopiera kod" arrow>
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(presentation.code)
+                }}
+              >
+                <FileCopyIcon fontSize="small" />
+              </Button>
+            </Tooltip>
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Tävlande: ${presentation.code}`} />
+            <Tooltip title="Kopiera kod" arrow>
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(presentation.code)
+                }}
+              >
+                <FileCopyIcon fontSize="small" />
+              </Button>
+            </Tooltip>
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`Publik: ${presentation.code}`} />
+            <Tooltip title="Kopiera kod" arrow>
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(presentation.code)
+                }}
+              >
+                <FileCopyIcon fontSize="small" />
+              </Button>
+            </Tooltip>
+          </ListItem>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose} color="primary">
@@ -304,11 +302,12 @@ const OperatorViewPage: React.FC = () => {
         }}
       >
         <List>
-          {teams.map((team) => (
-            <ListItem key={team.id}>
-              {team.name} score: {team.question_answers}{' '}
-            </ListItem>
-          ))}
+          {teams &&
+            teams.map((team) => (
+              <ListItem key={team.id}>
+                {team.name} score: {team.question_answers}{' '}
+              </ListItem>
+            ))}
         </List>
       </Popover>
     </OperatorContainer>

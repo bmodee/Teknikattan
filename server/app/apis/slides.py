@@ -4,16 +4,17 @@ from app.apis import item_response, list_response, protect_route
 from app.core.dto import SlideDTO
 from flask_restx import Resource
 from flask_restx import reqparse
+from app.core.parsers import sentinel
 
 api = SlideDTO.api
 schema = SlideDTO.schema
 list_schema = SlideDTO.list_schema
 
-slide_parser = reqparse.RequestParser()
-slide_parser.add_argument("order", type=int, default=None, location="json")
-slide_parser.add_argument("title", type=str, default=None, location="json")
-slide_parser.add_argument("timer", type=int, default=None, location="json")
-slide_parser.add_argument("background_image_id", default=None, type=int, location="json")
+slide_parser_edit = reqparse.RequestParser()
+slide_parser_edit.add_argument("order", type=int, default=sentinel, location="json")
+slide_parser_edit.add_argument("title", type=str, default=sentinel, location="json")
+slide_parser_edit.add_argument("timer", type=int, default=sentinel, location="json")
+slide_parser_edit.add_argument("background_image_id", default=sentinel, type=int, location="json")
 
 
 @api.route("")
@@ -40,10 +41,10 @@ class Slides(Resource):
 
     @protect_route(allowed_roles=["*"])
     def put(self, competition_id, slide_id):
-        args = slide_parser.parse_args(strict=True)
+        args = slide_parser_edit.parse_args(strict=True)
 
         item_slide = dbc.get.slide(competition_id, slide_id)
-        item_slide = dbc.edit.slide(item_slide, **args)
+        item_slide = dbc.edit.default(item_slide, **args)
 
         return item_response(schema.dump(item_slide))
 
@@ -60,7 +61,7 @@ class Slides(Resource):
 class SlideOrder(Resource):
     @protect_route(allowed_roles=["*"])
     def put(self, competition_id, slide_id):
-        args = slide_parser.parse_args(strict=True)
+        args = slide_parser_edit.parse_args(strict=True)
         order = args.get("order")
 
         item_slide = dbc.get.slide(competition_id, slide_id)
