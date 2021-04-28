@@ -5,11 +5,11 @@ This file handles actions for the presentation redux state
 import axios from 'axios'
 import { Slide } from '../interfaces/ApiModels'
 import { Timer } from '../interfaces/Timer'
-import store, { AppDispatch } from './../store'
+import store, { AppDispatch, RootState } from './../store'
 import Types from './types'
 
 // Save competition in presentation state from input id
-export const getPresentationCompetition = (id: string) => async (dispatch: AppDispatch) => {
+export const getPresentationCompetition = (id: string) => async (dispatch: AppDispatch, getState: () => RootState) => {
   await axios
     .get(`/api/competitions/${id}`)
     .then((res) => {
@@ -17,6 +17,9 @@ export const getPresentationCompetition = (id: string) => async (dispatch: AppDi
         type: Types.SET_PRESENTATION_COMPETITION,
         payload: res.data,
       })
+      if (getState().presentation.slide.id === -1 && res.data.slides[0]) {
+        setCurrentSlideByOrder(0)(dispatch)
+      }
     })
     .catch((err) => {
       console.log(err)

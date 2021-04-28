@@ -14,7 +14,7 @@ interface PresentationState {
 const initialState: PresentationState = {
   competition: {
     name: '',
-    id: 0,
+    id: 1,
     city_id: 0,
     slides: [],
     year: 0,
@@ -23,7 +23,7 @@ const initialState: PresentationState = {
   },
   slide: {
     competition_id: 0,
-    id: 0,
+    id: -1,
     order: 0,
     timer: 0,
     title: '',
@@ -41,7 +41,6 @@ export default function (state = initialState, action: AnyAction) {
     case Types.SET_PRESENTATION_COMPETITION:
       return {
         ...state,
-        slide: action.payload.slides[0] as Slide,
         competition: action.payload as RichCompetition,
       }
     case Types.SET_PRESENTATION_CODE:

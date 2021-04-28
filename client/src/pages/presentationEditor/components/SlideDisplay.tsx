@@ -15,7 +15,7 @@ const SlideDisplay = ({ editor }: SlideDisplayProps) => {
   const components = useAppSelector((state) => {
     if (editor)
       return state.editor.competition.slides.find((slide) => slide.id === state.editor.activeSlideId)?.components
-    return state.presentation.competition.slides.find((slide) => slide.id === state.presentation.slide.id)?.components
+    return state.presentation.competition.slides.find((slide) => slide.id === state.presentation.slide?.id)?.components
   })
   const dispatch = useAppDispatch()
   const editorPaperRef = useRef<HTMLDivElement>(null)

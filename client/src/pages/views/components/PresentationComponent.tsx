@@ -37,6 +37,7 @@ const PresentationComponent = ({ component, width, height, scale }: Presentation
       minWidth={75 * scale}
       minHeight={75 * scale}
       disableDragging={true}
+      enableResizing={false}
       bounds="parent"
       //Multiply by scale to show components correctly for current screen size
       size={{ width: component.w * scale, height: component.h * scale }}

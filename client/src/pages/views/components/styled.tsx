@@ -1,4 +1,4 @@
-import { TextField } from '@material-ui/core'
+import { Card, Paper, TextField } from '@material-ui/core'
 import styled from 'styled-components'
 
 export const SlideContainer = styled.div`
@@ -31,4 +31,14 @@ export const ScoreInput = styled(TextField)`
 export const AnswerContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
+`
+
+export const JudgeScoringInstructionsContainer = styled(Paper)`
+  position: absolute;
+  bottom: 0;
+  height: 250px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 `

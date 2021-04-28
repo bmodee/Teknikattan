@@ -1,4 +1,4 @@
-import { AppBar, Button, Drawer, Toolbar, Typography } from '@material-ui/core'
+import { AppBar, Button, Card, Drawer, Paper, Toolbar, Typography } from '@material-ui/core'
 import styled from 'styled-components'
 
 export const JudgeAppBar = styled(AppBar)`
@@ -145,4 +145,27 @@ export const PresenterInnerContent = styled.div`
 
 export const ParticipantContainer = styled.div`
   max-width: calc((100vh / 9) * 16);
+`
+
+interface ScoreHeaderPaperProps {
+  $rightDrawerWidth: number
+}
+
+export const ScoreHeaderPaper = styled(Card)<ScoreHeaderPaperProps>`
+  position: absolute;
+  top: 66px;
+  width: ${(props) => (props ? props.$rightDrawerWidth : 0)}px;
+  height: 71px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+`
+
+export const ScoreHeaderPadding = styled.div`
+  min-height: 71px;
+`
+
+export const ScoreFooterPadding = styled.div`
+  min-height: 250px;
 `

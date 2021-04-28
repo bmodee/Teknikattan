@@ -54,7 +54,6 @@ export interface Team extends NameID {
 
 export interface Question extends NameID {
   slide_id: number
-  title: string
   total_score: number
   type_id: number
 }

@@ -42,7 +42,6 @@ class QuestionAnswers(Resource):
         item = dbc.get.question_answer(competition_id, team_id, answer_id)
         return item_response(schema.dump(item))
 
-    @check_jwt(editor=True)
     def put(self, competition_id, team_id, answer_id):
         args = question_answer_edit_parser.parse_args(strict=True)
         item = dbc.get.question_answer(competition_id, team_id, answer_id)

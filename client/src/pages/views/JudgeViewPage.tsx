@@ -1,4 +1,4 @@
-import { Divider, List, ListItemText, Typography } from '@material-ui/core'
+import { Card, Divider, List, ListItem, ListItemText, Paper, Typography } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useEffect, useState } from 'react'
 import { getPresentationCompetition, setCurrentSlide, setPresentationCode } from '../../actions/presentation'
@@ -18,8 +18,13 @@ import {
   JudgeToolbar,
   LeftDrawer,
   RightDrawer,
+  ScoreHeaderPadding,
+  ScoreHeaderPaper,
+  ScoreFooterPadding,
 } from './styled'
 import SlideDisplay from '../presentationEditor/components/SlideDisplay'
+import JudgeScoringInstructions from './components/JudgeScoringInstructions'
+import { renderSlideIcon } from '../../utils/renderSlideIcon'
 
 const leftDrawerWidth = 150
 const rightDrawerWidth = 700
@@ -48,6 +53,7 @@ const JudgeViewPage = ({ competitionId, code }: JudgeViewPageProps) => {
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0)
   const teams = useAppSelector((state) => state.presentation.competition.teams)
   const slides = useAppSelector((state) => state.presentation.competition.slides)
+  const currentQuestion = slides[activeSlideIndex]?.questions[0]
   const handleSelectSlide = (index: number) => {
     setActiveSlideIndex(index)
     dispatch(setCurrentSlide(slides[index]))
@@ -86,8 +92,8 @@ const JudgeViewPage = ({ competitionId, code }: JudgeViewPageProps) => {
               button
               key={slide.id}
             >
-              <Typography variant="h6">Slide ID: {slide.id} </Typography>
-              <ListItemText primary={slide.title} />
+              {renderSlideIcon(slide)}
+              <ListItemText primary={`Sida ${slide.order + 1}`} />
             </SlideListItem>
           ))}
         </List>
@@ -101,7 +107,13 @@ const JudgeViewPage = ({ competitionId, code }: JudgeViewPageProps) => {
         anchor="right"
       >
         <div className={classes.toolbar} />
-        <List>
+        {currentQuestion && (
+          <ScoreHeaderPaper $rightDrawerWidth={rightDrawerWidth} elevation={4}>
+            <Typography variant="h4">{`${currentQuestion.name} (${currentQuestion.total_score}p)`}</Typography>
+          </ScoreHeaderPaper>
+        )}
+        <ScoreHeaderPadding />
+        <List style={{ overflowY: 'scroll', overflowX: 'hidden' }}>
           {teams &&
             teams.map((answer, index) => (
               <div key={answer.name}>
@@ -110,8 +122,10 @@ const JudgeViewPage = ({ competitionId, code }: JudgeViewPageProps) => {
               </div>
             ))}
         </List>
+        <ScoreFooterPadding />
+        <JudgeScoringInstructions question={currentQuestion} />
       </RightDrawer>
-      <div style={{ height: 64 }} />
+      <div className={classes.toolbar} />
       <Content leftDrawerWidth={leftDrawerWidth} rightDrawerWidth={rightDrawerWidth}>
         <InnerContent>
           <SlideDisplay />

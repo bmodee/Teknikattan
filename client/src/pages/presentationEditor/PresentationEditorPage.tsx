@@ -6,10 +6,6 @@ import Drawer from '@material-ui/core/Drawer'
 import ListItemText from '@material-ui/core/ListItemText'
 import { createStyles, makeStyles, Theme, withStyles } from '@material-ui/core/styles'
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined'
-import BuildOutlinedIcon from '@material-ui/icons/BuildOutlined'
-import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined'
-import DnsOutlinedIcon from '@material-ui/icons/DnsOutlined'
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
@@ -18,6 +14,7 @@ import { getEditorCompetition, setEditorSlideId } from '../../actions/editor'
 import { getTypes } from '../../actions/typesAction'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { RichSlide } from '../../interfaces/ApiRichModels'
+import { renderSlideIcon } from '../../utils/renderSlideIcon'
 import { RemoveMenuItem } from '../admin/styledComp'
 import { Content, InnerContent } from '../views/styled'
 import SettingsPanel from './components/SettingsPanel'
@@ -137,21 +134,6 @@ const PresentationEditorPage: React.FC = () => {
     await axios.post(`/api/competitions/${competitionId}/slides/${contextState.slideId}/copy`)
     dispatch(getEditorCompetition(competitionId))
     setContextState(initialState)
-  }
-
-  const renderSlideIcon = (slide: RichSlide) => {
-    if (slide.questions && slide.questions[0] && slide.questions[0].type_id) {
-      switch (slide.questions[0].type_id) {
-        case 1:
-          return <CreateOutlinedIcon /> // text question
-        case 2:
-          return <BuildOutlinedIcon /> // practical qustion
-        case 3:
-          return <DnsOutlinedIcon /> // multiple choice question
-      }
-    } else {
-      return <InfoOutlinedIcon /> // information slide
-    }
   }
 
   const GreenCheckbox = withStyles({

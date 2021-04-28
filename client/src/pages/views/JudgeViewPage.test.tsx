@@ -9,7 +9,7 @@ import JudgeViewPage from './JudgeViewPage'
 it('renders judge view page', () => {
   const compRes: any = {
     data: {
-      slides: [{ id: 0, title: '' }],
+      slides: [{ id: 0, title: '', questions: [{ id: 0 }] }],
     },
   }
   const teamsRes: any = {

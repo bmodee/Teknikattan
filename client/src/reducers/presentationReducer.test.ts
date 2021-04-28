@@ -6,7 +6,8 @@ import presentationReducer from './presentationReducer'
 const initialState = {
   competition: {
     name: '',
-    id: 0,
+    id: 1,
+    background_image: undefined,
     city_id: 0,
     slides: [],
     year: 0,
@@ -14,7 +15,8 @@ const initialState = {
   },
   slide: {
     competition_id: 0,
-    id: 0,
+    background_image: undefined,
+    id: -1,
     order: 0,
     timer: 0,
     title: '',
@@ -48,7 +50,7 @@ it('should handle SET_PRESENTATION_COMPETITION', () => {
     })
   ).toEqual({
     competition: testCompetition,
-    slide: testCompetition.slides[0],
+    slide: initialState.slide,
     code: initialState.code,
     timer: initialState.timer,
   })
