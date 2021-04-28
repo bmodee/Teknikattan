@@ -17,7 +17,7 @@ def _add_items():
 
     roles = ["Admin", "Editor"]
     cities = ["Linköping", "Stockholm", "Norrköping", "Örkelljunga"]
-    teams = ["Gymnasieskola A", "Gymnasieskola B", "Gymnasieskola C"]
+    teams = ["Högstadie A", "Högstadie B", "Högstadie C"]
 
     for name in media_types:
         dbc.add.mediaType(name)
@@ -76,8 +76,8 @@ def _add_items():
             )
             """
 
-            for i in range(3):
-                dbc.add.question_alternative(f"Alternative {i}", 0, item_slide.questions[0].id)
+            for k in range(3):
+                dbc.add.question_alternative(f"Alternative {k}", 0, item_slide.questions[0].id)
 
             # Add text components
             # TODO: Add images as components

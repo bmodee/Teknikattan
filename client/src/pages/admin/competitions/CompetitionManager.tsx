@@ -1,4 +1,18 @@
-import { Button, Menu, TablePagination, TextField, Typography } from '@material-ui/core'
+import {
+  Button,
+  Menu,
+  ListItem,
+  TablePagination,
+  TextField,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  ListItemText,
+  Tooltip,
+  Box,
+} from '@material-ui/core'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -17,9 +31,12 @@ import React, { useEffect } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { getCompetitions, setFilterParams } from '../../../actions/competitions'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
+import { Team } from '../../../interfaces/ApiModels'
 import { CompetitionFilterParams } from '../../../interfaces/FilterParams'
 import { FilterContainer, RemoveMenuItem, TopBar, YearFilterTextField } from '../styledComp'
 import AddCompetition from './AddCompetition'
+import FileCopyIcon from '@material-ui/icons/FileCopy'
+import RefreshIcon from '@material-ui/icons/Refresh'
 
 /**
  * Component description:
@@ -36,13 +53,31 @@ const useStyles = makeStyles((theme: Theme) =>
     margin: {
       margin: theme.spacing(1),
     },
+    paper: {
+      backgroundColor: theme.palette.background.paper,
+      boxShadow: theme.shadows[5],
+      padding: 4,
+      outline: 'none',
+    },
   })
 )
+
+interface Code {
+  id: number
+  code: string
+  view_type_id: number
+  competition_id: number
+  team_id: number
+}
 
 const CompetitionManager: React.FC = (props: any) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [activeId, setActiveId] = React.useState<number | undefined>(undefined)
   const [timerHandle, setTimerHandle] = React.useState<number | undefined>(undefined)
+  const [dialogIsOpen, setDialogIsOpen] = React.useState(false)
+  const [codes, setCodes] = React.useState<Code[]>([])
+  const [teams, setTeams] = React.useState<Team[]>([])
+  const [competitionName, setCompetitionName] = React.useState<string | undefined>(undefined)
   const loading = useAppSelector((state) => state.user.userInfo === null)
   const competitions = useAppSelector((state) => state.competitions.competitions)
   const filterParams = useAppSelector((state) => state.competitions.filterParams)
@@ -95,7 +130,79 @@ const CompetitionManager: React.FC = (props: any) => {
 
   const handleStartCompetition = () => {
     history.push(`/operator/id=${activeId}&code=123123`)
-    console.log('GLHF!')
+  }
+
+  const getCodes = async () => {
+    await axios
+      .get(`/api/competitions/${activeId}/codes`)
+      .then((response) => {
+        console.log(response.data)
+        setCodes(response.data.items)
+      })
+      .catch(console.log)
+  }
+
+  const getTeams = async () => {
+    await axios
+      .get(`/api/competitions/${activeId}/teams`)
+      .then((response) => {
+        console.log(response.data.items)
+        setTeams(response.data.items)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const getCompetitionName = async () => {
+    await axios
+      .get(`/api/competitions/${activeId}`)
+      .then((response) => {
+        console.log(response.data.name)
+        setCompetitionName(response.data.name)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const getTypeName = (code: Code) => {
+    let typeName = ''
+    switch (code.view_type_id) {
+      case 1:
+        const team = teams.find((team) => team.id === code.team_id)
+        if (team) {
+          typeName = team.name
+        } else {
+          typeName = 'Lagnamn hittades ej'
+        }
+        break
+      case 2:
+        typeName = 'Domare'
+        break
+      case 3:
+        typeName = 'Publik'
+        break
+      case 4:
+        typeName = 'Tävlingsoperator'
+        break
+      default:
+        typeName = 'Typ hittades ej'
+        break
+    }
+    return typeName
+  }
+
+  const handleOpenDialog = async () => {
+    await getCodes()
+    await getTeams()
+    await getCompetitionName()
+    setDialogIsOpen(true)
+  }
+
+  const handleCloseDialog = () => {
+    setDialogIsOpen(false)
+    setAnchorEl(null)
   }
 
   const handleDuplicateCompetition = async () => {
@@ -115,6 +222,18 @@ const CompetitionManager: React.FC = (props: any) => {
   const handleFilterChange = (newParams: CompetitionFilterParams) => {
     dispatch(setFilterParams(newParams))
     dispatch(getCompetitions())
+  }
+
+  const refreshCode = async (code: Code) => {
+    await axios
+      .put(`/api/competitions/${activeId}/codes/${code.id}`)
+      .then(() => {
+        getCodes()
+        dispatch(getCompetitions())
+      })
+      .catch(({ response }) => {
+        console.warn(response.data)
+      })
   }
 
   return (
@@ -207,9 +326,62 @@ const CompetitionManager: React.FC = (props: any) => {
       />
       <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         <MenuItem onClick={handleStartCompetition}>Starta</MenuItem>
+        <MenuItem onClick={handleOpenDialog}>Visa koder</MenuItem>
         <MenuItem onClick={handleDuplicateCompetition}>Duplicera</MenuItem>
         <RemoveMenuItem onClick={handleDeleteCompetition}>Ta bort</RemoveMenuItem>
       </Menu>
+      <Dialog
+        open={dialogIsOpen}
+        onClose={handleCloseDialog}
+        aria-labelledby="max-width-dialog-title"
+        maxWidth="xl"
+        fullWidth={false}
+        fullScreen={false}
+      >
+        <DialogTitle id="max-width-dialog-title" className={classes.paper}>
+          Koder för {competitionName}
+        </DialogTitle>
+        <DialogContent>
+          {/* <DialogContentText>Här visas tävlingskoderna till den valda tävlingen.</DialogContentText> */}
+          {codes.map((code) => (
+            <ListItem key={code.id} style={{ display: 'flex' }}>
+              <ListItemText primary={`${getTypeName(code)}: `} />
+              <Typography component="div">
+                <ListItemText style={{ textAlign: 'right', marginLeft: '10px' }}>
+                  <Box fontFamily="Monospace" fontWeight="fontWeightBold">
+                    {code.code}
+                  </Box>
+                </ListItemText>
+              </Typography>
+              <Tooltip title="Generera ny kod" arrow>
+                <Button
+                  margin-right="0px"
+                  onClick={() => {
+                    refreshCode(code)
+                  }}
+                >
+                  <RefreshIcon fontSize="small" />
+                </Button>
+              </Tooltip>
+              <Tooltip title="Kopiera kod" arrow>
+                <Button
+                  margin-right="0px"
+                  onClick={() => {
+                    navigator.clipboard.writeText(code.code)
+                  }}
+                >
+                  <FileCopyIcon fontSize="small" />
+                </Button>
+              </Tooltip>
+            </ListItem>
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Stäng
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }
