@@ -7,6 +7,11 @@ from app.core.dto import MediaDTO
 
 
 def create_app(config_name="configmodule.DevelopmentConfig"):
+    """
+    Creates Flask app, returns it and a SocketIO instance. Call run on the
+    SocketIO instance and pass in the Flask app to start the server.
+    """
+
     app = Flask(__name__, static_url_path="/static", static_folder="static")
     app.config.from_object(config_name)
     app.url_map.strict_slashes = False

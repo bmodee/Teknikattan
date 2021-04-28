@@ -1,3 +1,7 @@
+"""
+This module contains the parsers used to parse the data gotten in api requests.
+"""
+
 from flask_restx import inputs, reqparse
 
 

@@ -1,3 +1,7 @@
+"""
+This module defines all the http status codes thats used in the api.
+"""
+
 OK = 200
 NO_CONTENT = 204
 BAD_REQUEST = 400

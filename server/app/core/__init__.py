@@ -1,3 +1,8 @@
+"""
+The core submodule contains everything important to the server that doesn't
+fit neatly in either apis or database.
+"""
+
 from app.database import Base, ExtendedQuery
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended.jwt_manager import JWTManager

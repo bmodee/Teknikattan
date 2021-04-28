@@ -1,0 +1,9 @@
+__pycache__
+env
+htmlcov
+.pytest_cache
+app/*.db
+app/static/
+
+# Documentation files
+docs/build

@@ -1,3 +1,9 @@
+"""
+This file contains every model in the database. In regular SQL terms, it 
+defines every table, the fields in those tables and their relationship to 
+each other.
+"""
+
 from app.core import bcrypt, db
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 

@@ -1,3 +1,8 @@
+"""
+The database submodule contaisn all functionality that has to do with the
+database. It can add, get, delete, edit, search and copy items.
+"""
+
 import json
 
 from flask_restx import abort
@@ -16,7 +21,15 @@ class Base(Model):
 
 
 class ExtendedQuery(BaseQuery):
+    """
+    Extensions to a regular query which makes using the database more convenient.
+    """
+
     def first_extended(self, required=True, error_message=None, error_code=404):
+        """
+        Extensions of the first() functions otherwise used on queries. Abort
+        if no item was found and it was required.
+        """
         item = self.first()
 
         if required and not item:
@@ -27,6 +40,10 @@ class ExtendedQuery(BaseQuery):
         return item
 
     def pagination(self, page=0, page_size=15, order_column=None, order=1):
+        """
+        When looking for lists of items this is used to only return a few of
+        them to allow for pagination.
+        """
         query = self
         if order_column:
             if order == 1:
@@ -40,17 +57,17 @@ class ExtendedQuery(BaseQuery):
         return items, total
 
 
-class Dictionary(TypeDecorator):
+# class Dictionary(TypeDecorator):
 
-    impl = Text
+#     impl = Text
 
-    def process_bind_param(self, value, dialect):
-        if value is not None:
-            value = json.dumps(value)
+#     def process_bind_param(self, value, dialect):
+#         if value is not None:
+#             value = json.dumps(value)
 
-        return value
+#         return value
 
-    def process_result_value(self, value, dialect):
-        if value is not None:
-            value = json.loads(value)
-        return value
+#     def process_result_value(self, value, dialect):
+#         if value is not None:
+#             value = json.loads(value)
+#         return value

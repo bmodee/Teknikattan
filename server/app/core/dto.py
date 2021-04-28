@@ -1,3 +1,8 @@
+"""
+The DTO module (short for Data Transfer Object) connects the namespace of an
+API and its related schemas.
+"""
+
 import app.core.rich_schemas as rich_schemas
 import app.core.schemas as schemas
 from flask_restx import Namespace

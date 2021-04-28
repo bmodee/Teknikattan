@@ -1,3 +1,8 @@
+"""
+This module contains schemas used to convert database objects into 
+dictionaries.
+"""
+
 from marshmallow.decorators import pre_load
 from marshmallow.decorators import pre_dump, post_dump
 import app.database.models as models

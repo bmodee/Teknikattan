@@ -41,5 +41,6 @@
   "search.exclude": {
     "**/env": true
   },
-  "python.pythonPath": "server\\env\\Scripts\\python.exe"
+  "python.pythonPath": "server\\env\\Scripts\\python.exe",
+  "restructuredtext.confPath": "${workspaceFolder}\\server\\sphinx\\source"
 }

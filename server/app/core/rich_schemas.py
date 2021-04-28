@@ -1,3 +1,8 @@
+"""
+This module contains rich schemas used to convert database objects into 
+dictionaries. This is the rich variant which means that objects will 
+pull in other whole objects instead of just the id.
+"""
 import app.core.schemas as schemas
 import app.database.models as models
 from app.core import ma

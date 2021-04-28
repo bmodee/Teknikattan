@@ -1,10 +1,4 @@
-__pycache__
-*.db
-*/env
 *.coverage
 */coverage
-htmlcov
-.pytest_cache
 /.idea
 .vs/
-/server/app/static/

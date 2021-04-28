@@ -23,7 +23,6 @@
         {
             "label": "Open client coverage",
             "type": "shell",
-            "group": "build",
             "command": "start ./output/coverage/jest/index.html",
             "problemMatcher": [],
             "options": {
@@ -54,7 +53,7 @@
             },
         },
         {
-            "label": "Populate server",
+            "label": "Populate database",
             "type": "shell",
             "group": "build",
             "command": "env/Scripts/python populate.py",
@@ -66,11 +65,28 @@
         {
             "label": "Open server coverage",
             "type": "shell",
-            "group": "build",
             "command": "start ./htmlcov/index.html",
             "problemMatcher": [],
             "options": {
                 "cwd": "${workspaceFolder}/server"
+            },
+        },
+        {
+            "label": "Generate server documentation",
+            "type": "shell",
+            "command": "../env/Scripts/activate; ./make html",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}/server/docs"
+            },
+        },
+        {
+            "label": "Open server documentation",
+            "type": "shell",
+            "command": "start index.html",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}/server/docs/build/html"
             },
         },
         {

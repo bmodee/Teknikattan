@@ -1,3 +1,10 @@
+"""
+Contains all functionality related sockets. That is starting and ending a presentation, 
+joining and leaving a presentation and syncing slides and timer bewteen all clients
+connected to the same presentation.
+"""
+
+from typing import Dict
 import app.database.controller as dbc
 from app.core import db
 from app.database.models import Competition, Slide, Team, ViewType, Code
@@ -20,12 +27,16 @@ presentations = {}
 
 
 @sio.on("connect")
-def connect():
+def connect() -> None:
     logger.info(f"Client '{request.sid}' connected")
 
 
 @sio.on("disconnect")
-def disconnect():
+def disconnect() -> None:
+    """
+    Remove client from the presentation it was in. Delete presentation if no
+    clients are connected to it.
+    """
     for competition_id, presentation in presentations.items():
         if request.sid in presentation["clients"]:
             del presentation["clients"][request.sid]
@@ -40,7 +51,11 @@ def disconnect():
 
 
 @sio.on("start_presentation")
-def start_presentation(data):
+def start_presentation(data: Dict) -> None:
+    """
+    Starts a presentation if that competition is currently not active.
+    """
+
     competition_id = data["competition_id"]
 
     if competition_id in presentations:
@@ -62,7 +77,15 @@ def start_presentation(data):
 
 
 @sio.on("end_presentation")
-def end_presentation(data):
+def end_presentation(data: Dict) -> None:
+    """
+    End a presentation by sending end_presentation to all connected clients.
+
+    The only clients allowed to do this is the one that started the presentation.
+
+    Log error message if no presentation exists with the send id or if this
+    client is not in that presentation.
+    """
     competition_id = data["competition_id"]
 
     if competition_id not in presentations:
@@ -91,8 +114,13 @@ def end_presentation(data):
 
 
 @sio.on("join_presentation")
-def join_presentation(data):
-    team_view_id = 1
+def join_presentation(data: Dict) -> None:
+    """
+    Join a currently active presentation.
+
+    Log error message if given code doesn't exist, if not presentation associated
+    with that code exists or if client is already in the presentation.
+    """
     code = data["code"]
     item_code = db.session.query(Code).filter(Code.code == code).first()
 
@@ -126,7 +154,15 @@ def join_presentation(data):
 
 
 @sio.on("set_slide")
-def set_slide(data):
+def set_slide(data: Dict) -> None:
+    """
+    Sync slides between all clients in the same presentation by sending
+    set_slide to them.
+
+    Log error if the given competition_id is not active, if client is not in
+    that presentation or the client is not the one who started the presentation.
+    """
+
     competition_id = data["competition_id"]
     slide_order = data["slide_order"]
 
@@ -165,7 +201,14 @@ def set_slide(data):
 
 
 @sio.on("set_timer")
-def set_timer(data):
+def set_timer(data: Dict) -> None:
+    """
+    Sync slides between all clients in the same presentation by sending
+    set_timer to them.
+
+    Log error if the given competition_id is not active, if client is not in
+    that presentation or the client is not the one who started the presentation.
+    """
     competition_id = data["competition_id"]
     timer = data["timer"]
 

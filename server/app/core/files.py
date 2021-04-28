@@ -1,30 +1,35 @@
+"""
+Contains functions related to file handling, mainly saving and deleting images.
+"""
+
 from PIL import Image, ImageChops
-from flask import current_app
+from flask import current_app, has_app_context
 import os
 import datetime
 from flask_uploads import IMAGES, UploadSet
 
-PHOTO_PATH = current_app.config["UPLOADED_PHOTOS_DEST"]
-THUMBNAIL_SIZE = current_app.config["THUMBNAIL_SIZE"]
-image_set = UploadSet("photos", IMAGES)
+if has_app_context():
+    PHOTO_PATH = current_app.config["UPLOADED_PHOTOS_DEST"]
+    THUMBNAIL_SIZE = current_app.config["THUMBNAIL_SIZE"]
+    image_set = UploadSet("photos", IMAGES)
 
 
-def compare_images(input_image, output_image):
-    # compare image dimensions (assumption 1)
-    if input_image.size != output_image.size:
-        return False
+# def compare_images(input_image, output_image):
+#     # compare image dimensions (assumption 1)
+#     if input_image.size != output_image.size:
+#         return False
 
-    rows, cols = input_image.size
+#     rows, cols = input_image.size
 
-    # compare image pixels (assumption 2 and 3)
-    for row in range(rows):
-        for col in range(cols):
-            input_pixel = input_image.getpixel((row, col))
-            output_pixel = output_image.getpixel((row, col))
-            if input_pixel != output_pixel:
-                return False
+#     # compare image pixels (assumption 2 and 3)
+#     for row in range(rows):
+#         for col in range(cols):
+#             input_pixel = input_image.getpixel((row, col))
+#             output_pixel = output_image.getpixel((row, col))
+#             if input_pixel != output_pixel:
+#                 return False
 
-    return True
+#     return True
 
 
 def _delete_image(filename):
@@ -33,6 +38,10 @@ def _delete_image(filename):
 
 
 def save_image_with_thumbnail(image_file):
+    """
+    Saves the given image and also creates a small thumbnail for it.
+    """
+
     saved_filename = image_set.save(image_file)
     saved_path = os.path.join(PHOTO_PATH, saved_filename)
     with Image.open(saved_path) as im:
@@ -45,6 +54,9 @@ def save_image_with_thumbnail(image_file):
 
 
 def delete_image_and_thumbnail(filename):
+    """
+    Delete the given image together with its thumbnail.
+    """
     _delete_image(filename)
     _delete_image(f"thumbnail_{filename}")
 
