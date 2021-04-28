@@ -9,6 +9,7 @@ import {
   ListItem,
   Select,
   InputLabel,
+  ListItemText,
 } from '@material-ui/core'
 import styled from 'styled-components'
 
@@ -71,6 +72,14 @@ export const Center = styled.div`
   width: 100%;
 `
 
+export const ImageTextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+`
+
 export const PanelContainer = styled.div`
   padding: 10px;
   width: 100%;
@@ -91,7 +100,16 @@ export const Clickable = styled.div`
 
 export const AddImageButton = styled.label`
   padding: 8px 13px 8px 13px;
-  cursor: 'pointer';
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+`
+
+export const AddBackgroundButton = styled.label`
+  padding: 16px 29px 16px 29px;
   display: flex;
   justify-content: center;
   text-align: center;
@@ -125,4 +143,8 @@ export const HoverContainer = styled.div<HoverContainerProps>`
   width: 100%;
   padding: ${(props) => (props.hover ? 0 : 1)}px;
   border: solid ${(props) => (props.hover ? 1 : 0)}px;
+`
+
+export const ImageNameText = styled(ListItemText)`
+  word-break: break-all;
 `

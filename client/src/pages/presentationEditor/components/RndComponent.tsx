@@ -26,6 +26,9 @@ const RndComponent = ({ component, width, height, scale }: RndComponentProps) =>
   const competitionId = useAppSelector((state) => state.editor.competition.id)
   const slideId = useAppSelector((state) => state.editor.activeSlideId)
   const [shiftPressed, setShiftPressed] = useState(false)
+  const typeName = useAppSelector(
+    (state) => state.types.componentTypes.find((componentType) => componentType.id === component.type_id)?.name
+  )
   const handleUpdatePos = (pos: Position) => {
     axios.put(`/api/competitions/${competitionId}/slides/${slideId}/components/${component.id}`, {
       x: pos.x,
@@ -98,6 +101,8 @@ const RndComponent = ({ component, width, height, scale }: RndComponentProps) =>
         setCurrentPos({ x: d.x / scale, y: d.y / scale })
         handleUpdatePos({ x: d.x / scale, y: d.y / scale })
       }}
+      //Makes text appear on images
+      style={{ zIndex: typeName === 'Text' ? 2 : 1 }}
       lockAspectRatio={shiftPressed}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -114,6 +119,7 @@ const RndComponent = ({ component, width, height, scale }: RndComponentProps) =>
           w: ref.offsetWidth / scale,
           h: ref.offsetHeight / scale,
         })
+        setCurrentPos({ x: position.x / scale, y: position.y / scale })
       }}
     >
       {hover && (

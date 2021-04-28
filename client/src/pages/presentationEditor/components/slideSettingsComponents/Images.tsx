@@ -58,7 +58,7 @@ const Images = ({ activeViewTypeId, activeSlide, competitionId }: ImagesProps) =
       formData.append('image', file)
       const response = await uploadFile(formData)
       if (response) {
-        const newComponent = createImageComponent(response)
+        createImageComponent(response)
       }
     }
   }

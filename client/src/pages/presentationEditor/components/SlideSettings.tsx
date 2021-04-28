@@ -12,6 +12,7 @@ import Timer from './slideSettingsComponents/Timer'
 import Images from './slideSettingsComponents/Images'
 import Texts from './slideSettingsComponents/Texts'
 import QuestionSettings from './slideSettingsComponents/QuestionSettings'
+import BackgroundImageSelect from './BackgroundImageSelect'
 
 interface CompetitionParams {
   competitionId: string
@@ -56,17 +57,7 @@ const SlideSettings: React.FC = () => {
         <Images activeViewTypeId={activeViewTypeId} activeSlide={activeSlide} competitionId={competitionId} />
       )}
 
-      <SettingsList>
-        <ListItem button>
-          <ImportedImage
-            id="temp source, todo: add image source to elements of pictureList"
-            src="https://i1.wp.com/stickoutmedia.se/wp-content/uploads/2021/01/placeholder-3.png?ssl=1"
-          />
-          <Center>
-            <ListItemText>Välj bakgrundsbild ...</ListItemText>
-          </Center>
-        </ListItem>
-      </SettingsList>
+      <BackgroundImageSelect variant="slide" />
     </PanelContainer>
   )
 }

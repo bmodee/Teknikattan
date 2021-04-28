@@ -17,6 +17,17 @@ const SlideDisplay = ({ variant, activeViewTypeId }: SlideDisplayProps) => {
       return state.editor.competition.slides.find((slide) => slide.id === state.editor.activeSlideId)?.components
     return state.presentation.competition.slides.find((slide) => slide.id === state.presentation.slide?.id)?.components
   })
+  const competitionBackgroundImage = useAppSelector((state) => {
+    if (variant === 'editor') return state.editor.competition.background_image
+    return state.presentation.competition.background_image
+  })
+
+  const slideBackgroundImage = useAppSelector((state) => {
+    if (variant === 'editor')
+      return state.editor.competition.slides.find((slide) => slide.id === state.editor.activeSlideId)?.background_image
+    return state.presentation.competition.slides.find((slide) => slide.id === state.presentation.slide.id)
+      ?.background_image
+  })
   const dispatch = useAppDispatch()
   const editorPaperRef = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(0)
@@ -42,6 +53,16 @@ const SlideDisplay = ({ variant, activeViewTypeId }: SlideDisplayProps) => {
     <SlideEditorContainer>
       <SlideEditorContainerRatio>
         <SlideEditorPaper ref={editorPaperRef}>
+          {(competitionBackgroundImage || slideBackgroundImage) && (
+            <img
+              src={`/static/images/${
+                slideBackgroundImage ? slideBackgroundImage.filename : competitionBackgroundImage?.filename
+              }`}
+              height={height}
+              width={width}
+              draggable={false}
+            />
+          )}
           {components &&
             components
               .filter((component) => component.view_type_id === activeViewTypeId)
