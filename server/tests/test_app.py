@@ -3,7 +3,9 @@ This file tests the api function calls.
 """
 
 import app.core.http_codes as codes
+from app.database.controller.add import competition
 from app.database.models import Slide
+from app.core import sockets
 
 from tests import app, client, db
 from tests.test_helpers import add_default_values, change_order_test, delete, get, post, put
@@ -342,7 +344,7 @@ def test_question_api(client):
     slide_order = 1
     response, body = get(client, f"/api/competitions/{CID}/questions", headers=headers)
     assert response.status_code == codes.OK
-    assert body["count"] == 1
+    assert body["count"] == 2
 
     # Get questions from another competition that should have some questions
     CID = 3
@@ -385,3 +387,67 @@ def test_question_api(client):
     response, _ = delete(client, f"/api/competitions/{CID}/slides/{NEW_slide_order}/questions/{QID}", headers=headers)
     assert response.status_code == codes.NOT_FOUND
     """
+
+
+def test_authorization(client):
+    add_default_values()
+
+    # Fake that competition 1 is active
+    sockets.presentations[1] = {}
+
+    #### TEAM ####
+    # Login in with team code
+    response, body = post(client, "/api/auth/login/code", {"code": "111111"})
+    assert response.status_code == codes.OK
+    headers = {"Authorization": "Bearer " + body["access_token"]}
+
+    competition_id = body["competition_id"]
+    team_id = body["team_id"]
+
+    # Get competition team is in
+    response, body = get(client, f"/api/competitions/{competition_id}", headers=headers)
+    assert response.status_code == codes.OK
+
+    # Try to delete competition team is in
+    response, body = delete(client, f"/api/competitions/{competition_id}", headers=headers)
+    assert response.status_code == codes.UNAUTHORIZED
+
+    # Try to get a different competition
+    response, body = get(client, f"/api/competitions/{competition_id+1}", headers=headers)
+    assert response.status_code == codes.UNAUTHORIZED
+
+    # Get own answers
+    response, body = get(client, f"/api/competitions/{competition_id}/teams/{team_id}/answers", headers=headers)
+    assert response.status_code == codes.OK
+
+    # Try to get another teams answers
+    response, body = get(client, f"/api/competitions/{competition_id}/teams/{team_id+1}/answers", headers=headers)
+    assert response.status_code == codes.UNAUTHORIZED
+
+    #### JUDGE ####
+    # Login in with judge code
+    response, body = post(client, "/api/auth/login/code", {"code": "222222"})
+    assert response.status_code == codes.OK
+    headers = {"Authorization": "Bearer " + body["access_token"]}
+
+    competition_id = body["competition_id"]
+
+    # Get competition judge is in
+    response, body = get(client, f"/api/competitions/{competition_id}", headers=headers)
+    assert response.status_code == codes.OK
+
+    # Try to delete competition judge is in
+    response, body = delete(client, f"/api/competitions/{competition_id}", headers=headers)
+    assert response.status_code == codes.UNAUTHORIZED
+
+    # Try to get a different competition
+    response, body = get(client, f"/api/competitions/{competition_id+1}", headers=headers)
+    assert response.status_code == codes.UNAUTHORIZED
+
+    # Get team answers
+    response, body = get(client, f"/api/competitions/{competition_id}/teams/{team_id}/answers", headers=headers)
+    assert response.status_code == codes.OK
+
+    # Also get antoher teams answers
+    response, body = get(client, f"/api/competitions/{competition_id}/teams/{team_id+1}/answers", headers=headers)
+    assert response.status_code == codes.OK

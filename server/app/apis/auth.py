@@ -1,6 +1,6 @@
 import app.core.http_codes as codes
 import app.database.controller as dbc
-from app.apis import check_jwt, item_response, text_response
+from app.apis import item_response, protect_route, text_response
 from app.core.codes import verify_code
 from app.core.dto import AuthDTO, CodeDTO
 from flask_jwt_extended import (
@@ -12,6 +12,8 @@ from flask_jwt_extended import (
 )
 from flask_restx import Resource
 from flask_restx import inputs, reqparse
+from datetime import timedelta
+from app.core import sockets
 
 api = AuthDTO.api
 schema = AuthDTO.schema
@@ -33,9 +35,13 @@ def get_user_claims(item_user):
     return {"role": item_user.role.name, "city_id": item_user.city_id}
 
 
+def get_code_claims(item_code):
+    return {"view": item_code.view_type.name, "competition_id": item_code.competition_id, "team_id": item_code.team_id}
+
+
 @api.route("/signup")
 class AuthSignup(Resource):
-    @check_jwt(editor=False)
+    @protect_route(allowed_roles=["Admin"])
     def post(self):
         args = create_user_parser.parse_args(strict=True)
         email = args.get("email")
@@ -50,7 +56,7 @@ class AuthSignup(Resource):
 @api.route("/delete/<ID>")
 @api.param("ID")
 class AuthDelete(Resource):
-    @check_jwt(editor=False)
+    @protect_route(allowed_roles=["Admin"])
     def delete(self, ID):
         item_user = dbc.get.user(ID)
 
@@ -86,24 +92,38 @@ class AuthLoginCode(Resource):
         code = args["code"]
 
         if not verify_code(code):
-            api.abort(codes.BAD_REQUEST, "Invalid code")
+            api.abort(codes.UNAUTHORIZED, "Invalid code")
 
         item_code = dbc.get.code_by_code(code)
-        return item_response(CodeDTO.schema.dump(item_code))
+
+        if item_code.competition_id not in sockets.presentations:
+            api.abort(codes.UNAUTHORIZED, "Competition not active")
+
+        access_token = create_access_token(
+            item_code.id, user_claims=get_code_claims(item_code), expires_delta=timedelta(hours=8)
+        )
+
+        response = {
+            "competition_id": item_code.competition_id,
+            "view_type_id": item_code.view_type_id,
+            "team_id": item_code.team_id,
+            "access_token": access_token,
+        }
+        return response
 
 
 @api.route("/logout")
 class AuthLogout(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"], allowed_views=["*"])
     def post(self):
         jti = get_raw_jwt()["jti"]
         dbc.add.blacklist(jti)
-        return text_response("User logout")
+        return text_response("Logout")
 
 
 @api.route("/refresh")
 class AuthRefresh(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     @jwt_refresh_token_required
     def post(self):
         old_jti = get_raw_jwt()["jti"]

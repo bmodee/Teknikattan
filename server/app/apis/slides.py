@@ -1,6 +1,6 @@
 import app.core.http_codes as codes
 import app.database.controller as dbc
-from app.apis import check_jwt, item_response, list_response
+from app.apis import item_response, list_response, protect_route
 from app.core.dto import SlideDTO
 from flask_restx import Resource
 from flask_restx import reqparse
@@ -19,12 +19,12 @@ slide_parser.add_argument("background_image_id", default=None, type=int, locatio
 @api.route("")
 @api.param("competition_id")
 class SlidesList(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def get(self, competition_id):
         items = dbc.get.slide_list(competition_id)
         return list_response(list_schema.dump(items))
 
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def post(self, competition_id):
         item_slide = dbc.add.slide(competition_id)
         return item_response(schema.dump(item_slide))
@@ -33,12 +33,12 @@ class SlidesList(Resource):
 @api.route("/<slide_id>")
 @api.param("competition_id,slide_id")
 class Slides(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def get(self, competition_id, slide_id):
         item_slide = dbc.get.slide(competition_id, slide_id)
         return item_response(schema.dump(item_slide))
 
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def put(self, competition_id, slide_id):
         args = slide_parser.parse_args(strict=True)
 
@@ -47,7 +47,7 @@ class Slides(Resource):
 
         return item_response(schema.dump(item_slide))
 
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def delete(self, competition_id, slide_id):
         item_slide = dbc.get.slide(competition_id, slide_id)
 
@@ -58,7 +58,7 @@ class Slides(Resource):
 @api.route("/<slide_id>/order")
 @api.param("competition_id,slide_id")
 class SlideOrder(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def put(self, competition_id, slide_id):
         args = slide_parser.parse_args(strict=True)
         order = args.get("order")
@@ -87,7 +87,7 @@ class SlideOrder(Resource):
 @api.route("/<slide_id>/copy")
 @api.param("competition_id,slide_id")
 class SlideCopy(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def post(self, competition_id, slide_id):
         item_slide = dbc.get.slide(competition_id, slide_id)
 

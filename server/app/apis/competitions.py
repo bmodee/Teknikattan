@@ -1,7 +1,7 @@
 import time
 
 import app.database.controller as dbc
-from app.apis import check_jwt, item_response, list_response
+from app.apis import item_response, list_response, protect_route
 from app.core.dto import CompetitionDTO
 from app.database.models import Competition
 from flask_restx import Resource
@@ -29,7 +29,7 @@ competition_search_parser.add_argument("city_id", type=int, default=None, locati
 
 @api.route("")
 class CompetitionsList(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def post(self):
         args = competition_parser.parse_args(strict=True)
 
@@ -44,12 +44,13 @@ class CompetitionsList(Resource):
 @api.route("/<competition_id>")
 @api.param("competition_id")
 class Competitions(Resource):
+    @protect_route(allowed_roles=["*"], allowed_views=["*"])
     def get(self, competition_id):
         item = dbc.get.competition(competition_id)
 
         return item_response(rich_schema.dump(item))
 
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def put(self, competition_id):
         args = competition_edit_parser.parse_args(strict=True)
         item = dbc.get.one(Competition, competition_id)
@@ -57,7 +58,7 @@ class Competitions(Resource):
 
         return item_response(schema.dump(item))
 
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def delete(self, competition_id):
         item = dbc.get.one(Competition, competition_id)
         dbc.delete.competition(item)
@@ -67,7 +68,7 @@ class Competitions(Resource):
 
 @api.route("/search")
 class CompetitionSearch(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def get(self):
         args = competition_search_parser.parse_args(strict=True)
         items, total = dbc.search.competition(**args)
@@ -77,7 +78,7 @@ class CompetitionSearch(Resource):
 @api.route("/<competition_id>/copy")
 @api.param("competition_id")
 class SlidesOrder(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def post(self, competition_id):
         item_competition = dbc.get.competition(competition_id)
 

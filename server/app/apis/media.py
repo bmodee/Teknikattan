@@ -1,6 +1,6 @@
 import app.core.http_codes as codes
 import app.database.controller as dbc
-from app.apis import check_jwt, item_response, list_response
+from app.apis import item_response, list_response, protect_route
 from app.core.dto import MediaDTO
 from app.core.parsers import search_parser
 from app.database.models import Media
@@ -22,13 +22,13 @@ media_parser_search.add_argument("filename", type=str, default=None, location="a
 
 @api.route("/images")
 class ImageList(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def get(self):
         args = media_parser_search.parse_args(strict=True)
         items, total = dbc.search.image(**args)
         return list_response(list_schema.dump(items), total)
 
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def post(self):
         if "image" not in request.files:
             api.abort(codes.BAD_REQUEST, "Missing image in request.files")
@@ -48,12 +48,12 @@ class ImageList(Resource):
 @api.route("/images/<ID>")
 @api.param("ID")
 class ImageList(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"], allowed_views=["*"])
     def get(self, ID):
         item = dbc.get.one(Media, ID)
         return item_response(schema.dump(item))
 
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def delete(self, ID):
         item = dbc.get.one(Media, ID)
         try:

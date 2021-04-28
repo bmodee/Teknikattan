@@ -151,8 +151,12 @@ def competition(name, year, city_id):
 
     # Add code for Judge view
     code(2, item_competition.id)
+
     # Add code for Audience view
     code(3, item_competition.id)
+
+    # Add code for Operator view
+    code(4, item_competition.id)
 
     item_competition = utils.refresh(item_competition)
     return item_competition

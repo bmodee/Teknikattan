@@ -230,6 +230,8 @@ class Code(db.Model):
     competition_id = db.Column(db.Integer, db.ForeignKey("competition.id"), nullable=False)
     team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=True)
 
+    view_type = db.relationship("ViewType", uselist=False)
+
     def __init__(self, code, view_type_id, competition_id=None, team_id=None):
         self.code = code
         self.view_type_id = view_type_id
@@ -240,7 +242,6 @@ class Code(db.Model):
 class ViewType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(STRING_SIZE), unique=True)
-    codes = db.relationship("Code", backref="view_type")
 
     def __init__(self, name):
         self.name = name

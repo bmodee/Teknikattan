@@ -3,14 +3,14 @@ import json
 import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.core import db
-from app.database.models import City, Role
+from app.database.models import City, Code, Role
 
 
 def add_default_values():
     media_types = ["Image", "Video"]
     question_types = ["Boolean", "Multiple", "Text"]
     component_types = ["Text", "Image"]
-    view_types = ["Team", "Judge", "Audience"]
+    view_types = ["Team", "Judge", "Audience", "Operator"]
 
     roles = ["Admin", "Editor"]
     cities = ["Linköping", "Testköping"]
@@ -40,6 +40,20 @@ def add_default_values():
 
     # Add competitions
     item_competition = dbc.add.competition("Tom tävling", 2012, item_city.id)
+
+    item_question = dbc.add.question("hej", 5, 1, item_competition.slides[0].id)
+
+    item_team1 = dbc.add.team("Hej lag 3", item_competition.id)
+    item_team2 = dbc.add.team("Hej lag 4", item_competition.id)
+
+    db.session.add(Code("111111", 1, item_competition.id, item_team1.id))  # Team
+    db.session.add(Code("222222", 2, item_competition.id))  # Judge
+
+    dbc.add.QuestionAnswer("hej", 5, item_question.id, item_team1)
+    dbc.add.QuestionAnswer("då", 5, item_question.id, item_team2)
+
+    db.session.commit()
+
     for j in range(2):
         item_comp = dbc.add.competition(f"Tävling {j}", 2012, item_city.id)
         # Add two more slides to competition

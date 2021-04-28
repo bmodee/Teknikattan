@@ -1,6 +1,6 @@
 import app.core.http_codes as codes
 import app.database.controller as dbc
-from app.apis import check_jwt, item_response, list_response
+from app.apis import item_response, list_response, protect_route
 from app.core.dto import UserDTO
 from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
@@ -40,12 +40,12 @@ def _edit_user(item_user, args):
 
 @api.route("")
 class UsersList(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def get(self):
         item = dbc.get.user(get_jwt_identity())
         return item_response(schema.dump(item))
 
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def put(self):
         args = user_parser.parse_args(strict=True)
         item = dbc.get.user(get_jwt_identity())
@@ -56,12 +56,12 @@ class UsersList(Resource):
 @api.route("/<ID>")
 @api.param("ID")
 class Users(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def get(self, ID):
         item = dbc.get.user(ID)
         return item_response(schema.dump(item))
 
-    @check_jwt(editor=False)
+    @protect_route(allowed_roles=["Admin"])
     def put(self, ID):
         args = user_parser.parse_args(strict=True)
         item = dbc.get.user(ID)
@@ -71,7 +71,7 @@ class Users(Resource):
 
 @api.route("/search")
 class UserSearch(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def get(self):
         args = user_search_parser.parse_args(strict=True)
         items, total = dbc.search.user(**args)

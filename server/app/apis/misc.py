@@ -1,5 +1,5 @@
 import app.database.controller as dbc
-from app.apis import check_jwt, list_response
+from app.apis import list_response, protect_route
 from app.core import http_codes
 from app.core.dto import MiscDTO
 from app.database.models import City, Competition, ComponentType, MediaType, QuestionType, Role, User, ViewType
@@ -23,6 +23,7 @@ name_parser.add_argument("name", type=str, required=True, location="json")
 
 @api.route("/types")
 class TypesList(Resource):
+    @protect_route(allowed_roles=["*"], allowed_views=["*"])
     def get(self):
         result = {}
         result["media_types"] = media_type_schema.dump(dbc.get.all(MediaType))
@@ -34,7 +35,7 @@ class TypesList(Resource):
 
 @api.route("/roles")
 class RoleList(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def get(self):
         items = dbc.get.all(Role)
         return list_response(role_schema.dump(items))
@@ -42,12 +43,12 @@ class RoleList(Resource):
 
 @api.route("/cities")
 class CitiesList(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def get(self):
         items = dbc.get.all(City)
         return list_response(city_schema.dump(items))
 
-    @check_jwt(editor=False)
+    @protect_route(allowed_roles=["Admin"])
     def post(self):
         args = name_parser.parse_args(strict=True)
         dbc.add.city(args["name"])
@@ -58,7 +59,7 @@ class CitiesList(Resource):
 @api.route("/cities/<ID>")
 @api.param("ID")
 class Cities(Resource):
-    @check_jwt(editor=False)
+    @protect_route(allowed_roles=["Admin"])
     def put(self, ID):
         item = dbc.get.one(City, ID)
         args = name_parser.parse_args(strict=True)
@@ -67,7 +68,7 @@ class Cities(Resource):
         items = dbc.get.all(City)
         return list_response(city_schema.dump(items))
 
-    @check_jwt(editor=False)
+    @protect_route(allowed_roles=["Admin"])
     def delete(self, ID):
         item = dbc.get.one(City, ID)
         dbc.delete.default(item)
@@ -77,7 +78,7 @@ class Cities(Resource):
 
 @api.route("/statistics")
 class Statistics(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def get(self):
         user_count = User.query.count()
         competition_count = Competition.query.count()

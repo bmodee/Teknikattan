@@ -1,6 +1,6 @@
 import app.core.http_codes as codes
 import app.database.controller as dbc
-from app.apis import check_jwt, item_response, list_response
+from app.apis import item_response, list_response, protect_route
 from app.core.dto import QuestionDTO
 from flask_restx import Resource
 from flask_restx import reqparse
@@ -18,7 +18,7 @@ question_parser.add_argument("type_id", type=int, default=None, location="json")
 @api.route("/questions")
 @api.param("competition_id")
 class QuestionList(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def get(self, competition_id):
         items = dbc.get.question_list_for_competition(competition_id)
         return list_response(list_schema.dump(items))
@@ -27,12 +27,12 @@ class QuestionList(Resource):
 @api.route("/slides/<slide_id>/questions")
 @api.param("competition_id, slide_id")
 class QuestionListForSlide(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def get(self, competition_id, slide_id):
         items = dbc.get.question_list(competition_id, slide_id)
         return list_response(list_schema.dump(items))
 
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def post(self, competition_id, slide_id):
         args = question_parser.parse_args(strict=True)
         item = dbc.add.question(slide_id=slide_id, **args)
@@ -42,12 +42,12 @@ class QuestionListForSlide(Resource):
 @api.route("/slides/<slide_id>/questions/<question_id>")
 @api.param("competition_id, slide_id, question_id")
 class QuestionById(Resource):
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def get(self, competition_id, slide_id, question_id):
         item_question = dbc.get.question(competition_id, slide_id, question_id)
         return item_response(schema.dump(item_question))
 
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def put(self, competition_id, slide_id, question_id):
         args = question_parser.parse_args(strict=True)
 
@@ -56,7 +56,7 @@ class QuestionById(Resource):
 
         return item_response(schema.dump(item_question))
 
-    @check_jwt(editor=True)
+    @protect_route(allowed_roles=["*"])
     def delete(self, competition_id, slide_id, question_id):
         item_question = dbc.get.question(competition_id, slide_id, question_id)
         dbc.delete.question(item_question)
