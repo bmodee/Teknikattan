@@ -21,7 +21,7 @@ import BackspaceIcon from '@material-ui/icons/Backspace'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import TimerIcon from '@material-ui/icons/Timer'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { getPresentationCompetition, setPresentationCode } from '../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../hooks'
@@ -91,6 +91,12 @@ const OperatorViewPage: React.FC = () => {
     setTimeout(startCompetition, 1000) // Ghetto, wait for everything to load
     // console.log(id)
   }, [])
+
+  window.onpopstate = () => {
+    //Handle browser back arrow
+    alert('Tävlingen avslutas för alla')
+    endCompetition()
+  }
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
