@@ -1,7 +1,7 @@
 from app.core import bcrypt, db
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 
-from app.database.types import ID_IMAGE_COMPONENT, ID_TEXT_COMPONENT
+from app.database.types import ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT, ID_TEXT_COMPONENT
 
 STRING_SIZE = 254
 
@@ -222,6 +222,13 @@ class ImageComponent(Component):
 
     # __tablename__ = None
     __mapper_args__ = {"polymorphic_identity": ID_IMAGE_COMPONENT}
+
+
+class QuestionComponent(Component):
+    question_id = db.Column(db.Integer, db.ForeignKey("question.id"), nullable=True)
+
+    # __tablename__ = None
+    __mapper_args__ = {"polymorphic_identity": ID_QUESTION_COMPONENT}
 
 
 class Code(db.Model):

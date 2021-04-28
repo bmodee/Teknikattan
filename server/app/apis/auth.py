@@ -39,6 +39,13 @@ def get_code_claims(item_code):
     return {"view": item_code.view_type.name, "competition_id": item_code.competition_id, "team_id": item_code.team_id}
 
 
+@api.route("/test")
+class AuthSignup(Resource):
+    @protect_route(allowed_roles=["Admin"], allowed_views=["*"])
+    def get(self):
+        return "ok"
+
+
 @api.route("/signup")
 class AuthSignup(Resource):
     @protect_route(allowed_roles=["Admin"])

@@ -4,6 +4,7 @@ This file contains functionality to copy and duplicate data to the database.
 
 from app.database.controller import add, get, search, utils
 from app.database.models import Question
+from app.database.types import ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT, ID_TEXT_COMPONENT
 
 
 def _alternative(item_old, question_id):
@@ -38,10 +39,12 @@ def _component(item_component, item_slide_new):
     component item to the specified slide.
     """
     data = {}
-    if item_component.type_id == 1:
+    if item_component.type_id == ID_TEXT_COMPONENT:
         data["text"] = item_component.text
-    elif item_component.type_id == 2:
+    elif item_component.type_id == ID_IMAGE_COMPONENT:
         data["media_id"] = item_component.media_id
+    elif item_component.type_id == ID_QUESTION_COMPONENT:
+        data["question_id"] = item_component.question_id
     add.component(
         item_component.type_id,
         item_slide_new.id,

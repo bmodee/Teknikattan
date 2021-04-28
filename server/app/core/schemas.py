@@ -165,3 +165,4 @@ class ComponentSchema(BaseSchema):
 
     text = fields.fields.String()
     media = fields.Nested(MediaSchema, many=False)
+    question_id = fields.fields.Integer()

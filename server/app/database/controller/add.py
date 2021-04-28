@@ -20,6 +20,7 @@ from app.database.models import (
     Question,
     QuestionAlternative,
     QuestionAnswer,
+    QuestionComponent,
     QuestionType,
     Role,
     Slide,
@@ -36,6 +37,8 @@ from sqlalchemy.orm import with_polymorphic
 from sqlalchemy.orm import relation
 from sqlalchemy.orm.session import sessionmaker
 from flask import current_app
+
+from app.database.types import ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT, ID_TEXT_COMPONENT
 
 
 def db_add(item):
@@ -79,12 +82,15 @@ def component(type_id, slide_id, view_type_id, x=0, y=0, w=0, h=0, **data):
         w *= ratio
         h *= ratio
 
-    if type_id == 1:
+    if type_id == ID_TEXT_COMPONENT:
         item = db_add(TextComponent(slide_id, type_id, view_type_id, x, y, w, h))
         item.text = data.get("text")
-    elif type_id == 2:
+    elif type_id == ID_IMAGE_COMPONENT:
         item = db_add(ImageComponent(slide_id, type_id, view_type_id, x, y, w, h))
         item.media_id = data.get("media_id")
+    elif type_id == ID_QUESTION_COMPONENT:
+        item = db_add(QuestionComponent(slide_id, type_id, view_type_id, x, y, w, h))
+        item.question_id = data.get("question_id")
     else:
         abort(codes.BAD_REQUEST, f"Invalid type_id{type_id}")
 

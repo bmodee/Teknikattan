@@ -18,7 +18,8 @@ component_parser_add.add_argument("h", type=int, default=1, location="json")
 component_parser_add.add_argument("type_id", type=int, required=True, location="json")
 component_parser_add.add_argument("view_type_id", type=int, required=True, location="json")
 component_parser_add.add_argument("text", type=str, default=None, location="json")
-component_parser_add.add_argument("media_id", type=str, default=None, location="json")
+component_parser_add.add_argument("media_id", type=int, default=None, location="json")
+component_parser_add.add_argument("question_id", type=int, default=None, location="json")
 
 component_parser_edit = reqparse.RequestParser()
 component_parser_edit.add_argument("x", type=str, default=sentinel, location="json")
@@ -26,7 +27,8 @@ component_parser_edit.add_argument("y", type=int, default=sentinel, location="js
 component_parser_edit.add_argument("w", type=int, default=sentinel, location="json")
 component_parser_edit.add_argument("h", type=int, default=sentinel, location="json")
 component_parser_edit.add_argument("text", type=str, default=sentinel, location="json")
-component_parser_edit.add_argument("media_id", type=str, default=sentinel, location="json")
+component_parser_edit.add_argument("media_id", type=int, default=sentinel, location="json")
+component_parser_edit.add_argument("question_id", type=int, default=sentinel, location="json")
 
 
 @api.route("/<component_id>")
