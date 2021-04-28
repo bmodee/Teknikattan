@@ -54,7 +54,7 @@ class Competitions(Resource):
     def put(self, competition_id):
         args = competition_edit_parser.parse_args(strict=True)
         item = dbc.get.one(Competition, competition_id)
-        item = dbc.edit.default(item, **args)
+        item = dbc.edit.competition(item, **args)
 
         return item_response(schema.dump(item))
 

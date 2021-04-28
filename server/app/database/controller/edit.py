@@ -51,3 +51,17 @@ def default(item, **kwargs):
     db.session.commit()
     db.session.refresh(item)
     return item
+
+
+def competition(item, **kwargs):
+    if kwargs["background_image_id"] == -1:
+        item.background_image_id = None
+        del kwargs["background_image_id"]
+    return default(item, **kwargs)
+
+
+def slide(item, **kwargs):
+    if kwargs["background_image_id"] == -1:
+        item.background_image_id = None
+        del kwargs["background_image_id"]
+    return default(item, **kwargs)

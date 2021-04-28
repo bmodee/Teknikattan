@@ -43,7 +43,7 @@ class Slides(Resource):
         args = slide_parser.parse_args(strict=True)
 
         item_slide = dbc.get.slide(competition_id, slide_id)
-        item_slide = dbc.edit.default(item_slide, **args)
+        item_slide = dbc.edit.slide(item_slide, **args)
 
         return item_response(schema.dump(item_slide))
 
