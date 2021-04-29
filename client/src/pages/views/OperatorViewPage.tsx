@@ -1,5 +1,7 @@
 import {
+  Box,
   Button,
+  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
@@ -8,7 +10,9 @@ import {
   List,
   ListItem,
   ListItemText,
+  makeStyles,
   Popover,
+  Theme,
   Tooltip,
   Typography,
   useMediaQuery,
@@ -48,6 +52,8 @@ import {
   SlideCounter,
   ToolBarContainer,
 } from './styled'
+import axios from 'axios'
+import { Team } from '../../interfaces/ApiModels'
 
 /**
  *  Description:
@@ -67,17 +73,47 @@ import {
  *    creates a bug where the competition can't be started.
  * ===========================================
  */
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    table: {
+      width: '100%',
+    },
+    margin: {
+      margin: theme.spacing(1),
+    },
+    paper: {
+      backgroundColor: theme.palette.background.paper,
+      boxShadow: theme.shadows[5],
+      padding: 4,
+      outline: 'none',
+    },
+  })
+)
+
+interface Code {
+  id: number
+  code: string
+  view_type_id: number
+  competition_id: number
+  team_id: number
+}
 
 const OperatorViewPage: React.FC = () => {
   // for dialog alert
   const [openAlert, setOpen] = React.useState(false)
-  const [openAlertCode, setOpenCode] = React.useState(true)
-  const theme = useTheme()
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
-  const teams = useAppSelector((state) => state.presentation.competition.teams)
+  const [openAlertCode, setOpenCode] = React.useState(false)
+  const [codes, setCodes] = React.useState<Code[]>([])
+  const [teams, setTeams] = React.useState<Team[]>([])
+  const [competitionName, setCompetitionName] = React.useState<string | undefined>(undefined)
+
+  //const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+
+  const classes = useStyles()
+  //const teams = useAppSelector((state) => state.presentation.competition.teams)
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
   const { id, code }: ViewParams = useParams()
   const presentation = useAppSelector((state) => state.presentation)
+  const activeId = useAppSelector((state) => state.presentation.competition.id)
   const history = useHistory()
   const dispatch = useAppDispatch()
   const viewTypes = useAppSelector((state) => state.types.viewTypes)
@@ -88,6 +124,7 @@ const OperatorViewPage: React.FC = () => {
     dispatch(setPresentationCode(code))
     socket_connect()
     socketSetSlide // Behövs denna?
+    handleOpenCodes()
     setTimeout(startCompetition, 1000) // Ghetto, wait for everything to load
     // console.log(id)
   }, [])
@@ -118,7 +155,10 @@ const OperatorViewPage: React.FC = () => {
     setOpen(true)
   }
 
-  const handleOpenCodes = () => {
+  const handleOpenCodes = async () => {
+    await getCodes()
+    await getTeams()
+    await getCompetitionName()
     setOpenCode(true)
   }
 
@@ -133,56 +173,108 @@ const OperatorViewPage: React.FC = () => {
     window.location.reload(false) // TODO: fix this ugly hack, we "need" to refresh site to be able to run the competition correctly again
   }
 
+  const getCodes = async () => {
+    await axios
+      .get(`/api/competitions/${activeId}/codes`)
+      .then((response) => {
+        console.log(response.data)
+        setCodes(response.data.items)
+      })
+      .catch(console.log)
+  }
+
+  const getTeams = async () => {
+    await axios
+      .get(`/api/competitions/${activeId}/teams`)
+      .then((response) => {
+        console.log(response.data.items)
+        setTeams(response.data.items)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const getCompetitionName = async () => {
+    await axios
+      .get(`/api/competitions/${activeId}`)
+      .then((response) => {
+        console.log(response.data.name)
+        setCompetitionName(response.data.name)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const getTypeName = (code: Code) => {
+    let typeName = ''
+    switch (code.view_type_id) {
+      case 1:
+        const team = teams.find((team) => team.id === code.team_id)
+        if (team) {
+          typeName = team.name
+        } else {
+          typeName = 'Lagnamn hittades ej'
+        }
+        break
+      case 2:
+        typeName = 'Domare'
+        break
+      case 3:
+        typeName = 'Publik'
+        break
+      case 4:
+        typeName = 'Tävlingsoperatör'
+        break
+      default:
+        typeName = 'Typ hittades ej'
+        break
+    }
+    return typeName
+  }
+
   return (
     <OperatorContainer>
       <Dialog
-        fullScreen={fullScreen}
         open={openAlertCode}
         onClose={handleClose}
-        aria-labelledby="responsive-dialog-title"
+        aria-labelledby="max-width-dialog-title"
+        maxWidth="xl"
+        fullWidth={false}
+        fullScreen={false}
       >
-        <DialogTitle id="responsive-dialog-title">{'Koder för tävlingen'}</DialogTitle>
+        <DialogTitle id="max-width-dialog-title" className={classes.paper}>
+          Koder för {competitionName}
+        </DialogTitle>
         <DialogContent>
-          <ListItem>
-            <ListItemText primary={`Domare: ${presentation.code}`} />
-            <Tooltip title="Kopiera kod" arrow>
-              <Button
-                onClick={() => {
-                  navigator.clipboard.writeText(presentation.code)
-                }}
-              >
-                <FileCopyIcon fontSize="small" />
-              </Button>
-            </Tooltip>
-          </ListItem>
-          <ListItem>
-            <ListItemText primary={`Tävlande: ${presentation.code}`} />
-            <Tooltip title="Kopiera kod" arrow>
-              <Button
-                onClick={() => {
-                  navigator.clipboard.writeText(presentation.code)
-                }}
-              >
-                <FileCopyIcon fontSize="small" />
-              </Button>
-            </Tooltip>
-          </ListItem>
-          <ListItem>
-            <ListItemText primary={`Publik: ${presentation.code}`} />
-            <Tooltip title="Kopiera kod" arrow>
-              <Button
-                onClick={() => {
-                  navigator.clipboard.writeText(presentation.code)
-                }}
-              >
-                <FileCopyIcon fontSize="small" />
-              </Button>
-            </Tooltip>
-          </ListItem>
+          {/* <DialogContentText>Här visas tävlingskoderna till den valda tävlingen.</DialogContentText> */}
+          {codes.map((code) => (
+            <ListItem key={code.id} style={{ display: 'flex' }}>
+              <ListItemText primary={`${getTypeName(code)}: `} />
+              <Typography component="div">
+                <ListItemText style={{ textAlign: 'right', marginLeft: '10px' }}>
+                  <Box fontFamily="Monospace" fontWeight="fontWeightBold">
+                    {code.code}
+                  </Box>
+                </ListItemText>
+              </Typography>
+              <Tooltip title="Kopiera kod" arrow>
+                <Button
+                  margin-right="0px"
+                  onClick={() => {
+                    navigator.clipboard.writeText(code.code)
+                  }}
+                >
+                  <FileCopyIcon fontSize="small" />
+                </Button>
+              </Tooltip>
+            </ListItem>
+          ))}
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose} color="primary">
-            Ok
+          <Button onClick={handleClose} color="primary">
+            Stäng
           </Button>
         </DialogActions>
       </Dialog>
@@ -194,12 +286,7 @@ const OperatorViewPage: React.FC = () => {
           </OperatorButton>
         </Tooltip>
 
-        <Dialog
-          fullScreen={fullScreen}
-          open={openAlert}
-          onClose={handleClose}
-          aria-labelledby="responsive-dialog-title"
-        >
+        <Dialog open={openAlert} onClose={handleClose} aria-labelledby="responsive-dialog-title">
           <DialogTitle id="responsive-dialog-title">{'Vill du avsluta tävlingen?'}</DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -305,7 +392,7 @@ const OperatorViewPage: React.FC = () => {
           {teams &&
             teams.map((team) => (
               <ListItem key={team.id}>
-                {team.name} score: {team.question_answers}{' '}
+                {team.name} score: {'666'}
               </ListItem>
             ))}
         </List>

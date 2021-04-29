@@ -184,7 +184,7 @@ const CompetitionManager: React.FC = (props: any) => {
         typeName = 'Publik'
         break
       case 4:
-        typeName = 'Tävlingsoperator'
+        typeName = 'Tävlingsoperatör'
         break
       default:
         typeName = 'Typ hittades ej'
