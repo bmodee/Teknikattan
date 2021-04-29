@@ -54,6 +54,16 @@ class ComponentByID(Resource):
         return {}, codes.NO_CONTENT
 
 
+@api.route("/<component_id>/copy/<view_type_id>")
+@api.param("competition_id, slide_id, component_id, view_type_id")
+class ComponentList(Resource):
+    @protect_route(allowed_roles=["*"])
+    def post(self, competition_id, slide_id, component_id, view_type_id):
+        item_component = dbc.get.component(competition_id, slide_id, component_id)
+        item = dbc.copy.component(item_component, slide_id, view_type_id)
+        return item_response(schema.dump(item))
+
+
 @api.route("")
 @api.param("competition_id, slide_id")
 class ComponentList(Resource):

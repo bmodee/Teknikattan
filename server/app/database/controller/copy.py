@@ -9,6 +9,7 @@ from app.database.types import ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT, ID_TEX
 
 def _alternative(item_old, question_id):
     """Internal function. Makes a copy of the provided question alternative"""
+
     return add.question_alternative(item_old.text, item_old.value, question_id)
 
 
@@ -39,6 +40,16 @@ def _component(item_component, item_slide_new):
     Internal function. Makes a copy of the provided
     component item to the specified slide.
     """
+
+    component(item_component, item_slide_new.id, item_component.view_type_id)
+
+
+def component(item_component, slide_id_new, view_type_id):
+    """
+    Makes a copy of the provided component item
+    to the specified slide and view_type.
+    """
+
     data = {}
     if item_component.type_id == ID_TEXT_COMPONENT:
         data["text"] = item_component.text
@@ -46,10 +57,11 @@ def _component(item_component, item_slide_new):
         data["media_id"] = item_component.media_id
     elif item_component.type_id == ID_QUESTION_COMPONENT:
         data["question_id"] = item_component.question_id
-    add.component(
+
+    return add.component(
         item_component.type_id,
-        item_slide_new.id,
-        item_component.view_type_id,
+        slide_id_new,
+        view_type_id,
         item_component.x,
         item_component.y,
         item_component.w,

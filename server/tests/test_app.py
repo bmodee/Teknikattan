@@ -112,7 +112,7 @@ def test_competition_api(client):
     assert response.status_code == codes.OK
 
     # Copies competition
-    for _ in range(10):
+    for _ in range(3):
         response, _ = post(client, f"/api/competitions/{competition_id}/copy", headers=headers)
         assert response.status_code == codes.OK
 
@@ -329,6 +329,35 @@ def test_slide_api(client):
         response, _ = post(client, f"/api/competitions/{CID}/slides/{slide_id}/copy", headers=headers)
         assert response.status_code == codes.OK
     """
+
+    # Get a specific component
+    CID = 2
+    SID = 3
+    COMID = 2
+    response, c1 = get(client, f"/api/competitions/{CID}/slides/{SID}/components/{COMID}", headers=headers)
+    assert response.status_code == codes.OK
+
+    # Copy the component to another view
+    view_type_id = 3
+    response, c2 = post(
+        client, f"/api/competitions/{CID}/slides/{SID}/components/{COMID}/copy/{view_type_id}", headers=headers
+    )
+    # Check that the components metch
+    assert response.status_code == codes.OK
+    assert c1 != c2
+    assert c1["x"] == c2["x"]
+    assert c1["y"] == c2["y"]
+    assert c1["w"] == c2["w"]
+    assert c1["h"] == c2["h"]
+    assert c1["slide_id"] == SID
+    assert c2["slide_id"] == SID
+    assert c1["type_id"] == c2["type_id"]
+    if c1["type_id"] == 1:
+        assert c1["text"] == c2["text"]
+    elif c1["type_id"] == 2:
+        assert c1["image_id"] == c2["image_id"]
+    assert c1["view_type_id"] == 1
+    assert c2["view_type_id"] == 3
 
 
 def test_question_api(client):
