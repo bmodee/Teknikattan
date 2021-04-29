@@ -1,4 +1,4 @@
-import { Card, Paper, TextField } from '@material-ui/core'
+import { Paper, TextField } from '@material-ui/core'
 import styled from 'styled-components'
 
 export const SlideContainer = styled.div`
@@ -38,6 +38,11 @@ export const JudgeScoringInstructionsContainer = styled(Paper)`
   bottom: 0;
   height: 250px;
   width: 100%;
+`
+
+export const ScoringInstructionsInner = styled.div`
+  margin-left: 15px;
+  margin-right: 15px;
   display: flex;
   align-items: center;
   flex-direction: column;

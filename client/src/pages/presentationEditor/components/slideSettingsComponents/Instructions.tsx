@@ -54,6 +54,7 @@ const Instructions = ({ activeSlide, competitionId }: InstructionsProps) => {
       <ListItem divider>
         <Center>
           <TextField
+            multiline
             id="outlined-basic"
             defaultValue={activeSlide.questions[0].correcting_instructions}
             onChange={updateInstructionsText}
