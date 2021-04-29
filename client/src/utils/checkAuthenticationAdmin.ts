@@ -8,7 +8,7 @@ const UnAuthorized = async () => {
   await logoutUser()(store.dispatch)
 }
 
-export const CheckAuthentication = async () => {
+export const CheckAuthenticationAdmin = async () => {
   const authToken = localStorage.token
   if (authToken) {
     const decodedToken: any = jwtDecode(authToken)

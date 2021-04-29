@@ -1,4 +1,3 @@
 export interface ViewParams {
-  id: string
-  code: string
+  competitionId: string
 }

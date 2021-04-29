@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Divider, Menu, MenuItem, Typography } from '@material-ui/core'
+import { Button, CircularProgress, Divider, Menu, MenuItem } from '@material-ui/core'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import ListItemText from '@material-ui/core/ListItemText'
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined'
@@ -17,21 +17,21 @@ import SlideDisplay from './components/SlideDisplay'
 import {
   AppBarEditor,
   CenteredSpinnerContainer,
+  CompetitionName,
+  FillLeftContainer,
+  FillRightContainer,
   HomeIcon,
   LeftDrawer,
-  RightDrawer,
+  PositionBottom,
   PresentationEditorContainer,
+  RightDrawer,
+  RightPanelScroll,
   SlideList,
   SlideListItem,
   ToolBarContainer,
+  ToolbarMargin,
   ViewButton,
   ViewButtonGroup,
-  ToolbarMargin,
-  FillLeftContainer,
-  PositionBottom,
-  FillRightContainer,
-  CompetitionName,
-  RightPanelScroll,
 } from './styled'
 
 const initialState = {
@@ -113,7 +113,7 @@ const PresentationEditorPage: React.FC = () => {
   return (
     <PresentationEditorContainer>
       <CssBaseline />
-      <AppBarEditor leftDrawerWidth={leftDrawerWidth} rightDrawerWidth={rightDrawerWidth} position="fixed">
+      <AppBarEditor $leftDrawerWidth={leftDrawerWidth} $rightDrawerWidth={rightDrawerWidth} position="fixed">
         <ToolBarContainer>
           <Button component={Link} to="/admin/tävlingshanterare" style={{ padding: 0 }}>
             <HomeIcon src="/t8.png" />
@@ -142,8 +142,8 @@ const PresentationEditorPage: React.FC = () => {
           </ViewButtonGroup>
         </ToolBarContainer>
       </AppBarEditor>
-      <LeftDrawer leftDrawerWidth={leftDrawerWidth} rightDrawerWidth={undefined} variant="permanent" anchor="left">
-        <FillLeftContainer leftDrawerWidth={leftDrawerWidth} rightDrawerWidth={undefined}>
+      <LeftDrawer $leftDrawerWidth={leftDrawerWidth} $rightDrawerWidth={undefined} variant="permanent" anchor="left">
+        <FillLeftContainer $leftDrawerWidth={leftDrawerWidth} $rightDrawerWidth={undefined}>
           <ToolbarMargin />
           <SlideList>
             {competition.slides &&
@@ -166,13 +166,13 @@ const PresentationEditorPage: React.FC = () => {
             <SlideListItem divider button onClick={() => createNewSlide()}>
               <ListItemText primary="Ny sida" />
               <AddOutlinedIcon />
-            </SlideListItem>
+              </SlideListItem>
           </PositionBottom>
         </FillLeftContainer>
       </LeftDrawer>
       <ToolbarMargin />
-      <RightDrawer leftDrawerWidth={undefined} rightDrawerWidth={rightDrawerWidth} variant="permanent" anchor="right">
-        <FillRightContainer leftDrawerWidth={undefined} rightDrawerWidth={rightDrawerWidth}>
+      <RightDrawer $leftDrawerWidth={undefined} $rightDrawerWidth={rightDrawerWidth} variant="permanent" anchor="right">
+        <FillRightContainer $leftDrawerWidth={undefined} $rightDrawerWidth={rightDrawerWidth}>
           <RightPanelScroll>
             {!competitionLoading ? (
               <SettingsPanel />

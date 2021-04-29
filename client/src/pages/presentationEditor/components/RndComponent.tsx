@@ -1,15 +1,13 @@
-import { Button, Card, IconButton, Tooltip, Typography } from '@material-ui/core'
+import { Card, IconButton, Tooltip } from '@material-ui/core'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Rnd } from 'react-rnd'
 import { ComponentTypes } from '../../../enum/ComponentTypes'
 import { useAppSelector } from '../../../hooks'
-import { Component, ImageComponent, QuestionAlternativeComponent, TextComponent } from '../../../interfaces/ApiModels'
+import { Component, ImageComponent, TextComponent } from '../../../interfaces/ApiModels'
 import { Position, Size } from '../../../interfaces/Components'
-import CheckboxComponent from './CheckboxComponent'
 import ImageComponentDisplay from './ImageComponentDisplay'
 import { HoverContainer } from './styled'
-import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter'
 import TextComponentDisplay from './TextComponentDisplay'
 
 type RndComponentProps = {
@@ -42,13 +40,11 @@ const RndComponent = ({ component, width, height, scale }: RndComponentProps) =>
     })
   }
   const handleCenterHorizontal = () => {
-    console.log(width, currentSize.w)
     const centerX = width / (2 * scale) - currentSize.w / 2
     setCurrentPos({ x: centerX, y: currentPos.y })
     handleUpdatePos({ x: centerX, y: currentPos.y })
   }
   const handleCenterVertical = () => {
-    console.log(height, currentSize.h)
     const centerY = height / (2 * scale) - currentSize.h / 2
     setCurrentPos({ x: currentPos.x, y: centerY })
     handleUpdatePos({ x: currentPos.x, y: centerY })

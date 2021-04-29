@@ -1,14 +1,16 @@
-import { Card, Divider, List, ListItem, ListItemText, Paper, Typography } from '@material-ui/core'
+import { Divider, List, ListItemText, Typography } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useEffect, useState } from 'react'
-import { getPresentationCompetition, setCurrentSlide, setPresentationCode } from '../../actions/presentation'
+import { useHistory, useParams } from 'react-router-dom'
+import { getPresentationCompetition, setCurrentSlide } from '../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { ViewParams } from '../../interfaces/ViewParams'
-import { socket_connect } from '../../sockets'
+import { socketConnect } from '../../sockets'
+import { renderSlideIcon } from '../../utils/renderSlideIcon'
+import SlideDisplay from '../presentationEditor/components/SlideDisplay'
 import { SlideListItem } from '../presentationEditor/styled'
 import JudgeScoreDisplay from './components/JudgeScoreDisplay'
-import PresentationComponent from './components/PresentationComponent'
-import { useHistory } from 'react-router-dom'
+import JudgeScoringInstructions from './components/JudgeScoringInstructions'
 import {
   Content,
   InnerContent,
@@ -18,13 +20,10 @@ import {
   JudgeToolbar,
   LeftDrawer,
   RightDrawer,
+  ScoreFooterPadding,
   ScoreHeaderPadding,
   ScoreHeaderPaper,
-  ScoreFooterPadding,
 } from './styled'
-import SlideDisplay from '../presentationEditor/components/SlideDisplay'
-import JudgeScoringInstructions from './components/JudgeScoringInstructions'
-import { renderSlideIcon } from '../../utils/renderSlideIcon'
 
 const leftDrawerWidth = 150
 const rightDrawerWidth = 700
@@ -40,32 +39,25 @@ const useStyles = makeStyles((theme: Theme) =>
     toolbar: theme.mixins.toolbar,
   })
 )
-type JudgeViewPageProps = {
-  //Prop to distinguish between editor and active competition
-  competitionId: number
-  code: string
-}
 
-const JudgeViewPage = ({ competitionId, code }: JudgeViewPageProps) => {
+const JudgeViewPage: React.FC = () => {
   const classes = useStyles()
   const history = useHistory()
   const dispatch = useAppDispatch()
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0)
   const viewTypes = useAppSelector((state) => state.types.viewTypes)
-  const activeViewTypeId = viewTypes.find((viewType) => viewType.name === 'Judge')?.id
+  const activeViewTypeId = viewTypes.find((viewType) => viewType.name === 'Team')?.id
   const teams = useAppSelector((state) => state.presentation.competition.teams)
   const slides = useAppSelector((state) => state.presentation.competition.slides)
   const currentQuestion = slides[activeSlideIndex]?.questions[0]
+  const { competitionId }: ViewParams = useParams()
   const handleSelectSlide = (index: number) => {
     setActiveSlideIndex(index)
     dispatch(setCurrentSlide(slides[index]))
   }
   useEffect(() => {
-    socket_connect()
-    dispatch(getPresentationCompetition(competitionId.toString()))
-    dispatch(setPresentationCode(code))
-    //hides the url so people can't sneak peak
-    history.push('judge')
+    socketConnect()
+    dispatch(getPresentationCompetition(competitionId))
   }, [])
 
   return (

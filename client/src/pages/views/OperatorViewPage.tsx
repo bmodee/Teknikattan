@@ -15,45 +15,42 @@ import {
   Theme,
   Tooltip,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from '@material-ui/core'
 import AssignmentIcon from '@material-ui/icons/Assignment'
-import FileCopyIcon from '@material-ui/icons/FileCopy'
-import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
 import BackspaceIcon from '@material-ui/icons/Backspace'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import FileCopyIcon from '@material-ui/icons/FileCopy'
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
 import TimerIcon from '@material-ui/icons/Timer'
-import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import React, { useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { getPresentationCompetition, setPresentationCode } from '../../actions/presentation'
+import { getPresentationCompetition } from '../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../hooks'
+import { Team } from '../../interfaces/ApiModels'
 import { ViewParams } from '../../interfaces/ViewParams'
 import {
+  socketConnect,
   socketEndPresentation,
   socketSetSlide,
   socketSetSlideNext,
   socketSetSlidePrev,
   socketStartPresentation,
   socketStartTimer,
-  socket_connect,
 } from '../../sockets'
 import SlideDisplay from '../presentationEditor/components/SlideDisplay'
-import PresentationComponent from './components/PresentationComponent'
 import Timer from './components/Timer'
 import {
   OperatorButton,
   OperatorContainer,
+  OperatorContent,
   OperatorFooter,
   OperatorHeader,
-  OperatorContent,
   OperatorInnerContent,
   SlideCounter,
   ToolBarContainer,
 } from './styled'
-import axios from 'axios'
-import { Team } from '../../interfaces/ApiModels'
 
 /**
  *  Description:
@@ -111,18 +108,17 @@ const OperatorViewPage: React.FC = () => {
   const classes = useStyles()
   //const teams = useAppSelector((state) => state.presentation.competition.teams)
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
-  const { id, code }: ViewParams = useParams()
+  const { competitionId }: ViewParams = useParams()
   const presentation = useAppSelector((state) => state.presentation)
   const activeId = useAppSelector((state) => state.presentation.competition.id)
   const history = useHistory()
   const dispatch = useAppDispatch()
   const viewTypes = useAppSelector((state) => state.types.viewTypes)
-  const activeViewTypeId = viewTypes.find((viewType) => viewType.name === 'Operator')?.id
+  const activeViewTypeId = viewTypes.find((viewType) => viewType.name === 'Audience')?.id
 
   useEffect(() => {
-    dispatch(getPresentationCompetition(id))
-    dispatch(setPresentationCode(code))
-    socket_connect()
+    dispatch(getPresentationCompetition(competitionId))
+    socketConnect()
     socketSetSlide // Behövs denna?
     handleOpenCodes()
     setTimeout(startCompetition, 1000) // Ghetto, wait for everything to load
@@ -148,7 +144,7 @@ const OperatorViewPage: React.FC = () => {
   const startCompetition = () => {
     socketStartPresentation()
     console.log('started competition for')
-    console.log(id)
+    console.log(competitionId)
   }
 
   const handleVerifyExit = () => {
@@ -177,7 +173,6 @@ const OperatorViewPage: React.FC = () => {
     await axios
       .get(`/api/competitions/${activeId}/codes`)
       .then((response) => {
-        console.log(response.data)
         setCodes(response.data.items)
       })
       .catch(console.log)
@@ -187,7 +182,6 @@ const OperatorViewPage: React.FC = () => {
     await axios
       .get(`/api/competitions/${activeId}/teams`)
       .then((response) => {
-        console.log(response.data.items)
         setTeams(response.data.items)
       })
       .catch((err) => {
@@ -199,7 +193,6 @@ const OperatorViewPage: React.FC = () => {
     await axios
       .get(`/api/competitions/${activeId}`)
       .then((response) => {
-        console.log(response.data.name)
         setCompetitionName(response.data.name)
       })
       .catch((err) => {
@@ -249,28 +242,29 @@ const OperatorViewPage: React.FC = () => {
         </DialogTitle>
         <DialogContent>
           {/* <DialogContentText>Här visas tävlingskoderna till den valda tävlingen.</DialogContentText> */}
-          {codes.map((code) => (
-            <ListItem key={code.id} style={{ display: 'flex' }}>
-              <ListItemText primary={`${getTypeName(code)}: `} />
-              <Typography component="div">
-                <ListItemText style={{ textAlign: 'right', marginLeft: '10px' }}>
-                  <Box fontFamily="Monospace" fontWeight="fontWeightBold">
-                    {code.code}
-                  </Box>
-                </ListItemText>
-              </Typography>
-              <Tooltip title="Kopiera kod" arrow>
-                <Button
-                  margin-right="0px"
-                  onClick={() => {
-                    navigator.clipboard.writeText(code.code)
-                  }}
-                >
-                  <FileCopyIcon fontSize="small" />
-                </Button>
-              </Tooltip>
-            </ListItem>
-          ))}
+          {codes &&
+            codes.map((code) => (
+              <ListItem key={code.id} style={{ display: 'flex' }}>
+                <ListItemText primary={`${getTypeName(code)}: `} />
+                <Typography component="div">
+                  <ListItemText style={{ textAlign: 'right', marginLeft: '10px' }}>
+                    <Box fontFamily="Monospace" fontWeight="fontWeightBold">
+                      {code.code}
+                    </Box>
+                  </ListItemText>
+                </Typography>
+                <Tooltip title="Kopiera kod" arrow>
+                  <Button
+                    margin-right="0px"
+                    onClick={() => {
+                      navigator.clipboard.writeText(code.code)
+                    }}
+                  >
+                    <FileCopyIcon fontSize="small" />
+                  </Button>
+                </Tooltip>
+              </ListItem>
+            ))}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

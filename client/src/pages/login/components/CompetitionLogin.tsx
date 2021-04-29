@@ -1,9 +1,8 @@
 import { Button, TextField, Typography } from '@material-ui/core'
 import { Alert, AlertTitle } from '@material-ui/lab'
-import axios from 'axios'
-import { Formik, FormikHelpers } from 'formik'
+import { Formik } from 'formik'
+import React from 'react'
 import { useHistory } from 'react-router-dom'
-import React, { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { loginCompetition } from '../../../actions/competitionLogin'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
@@ -37,8 +36,9 @@ const CompetitionLogin: React.FC = () => {
     model: { code: '' },
   }
   const handleCompetitionSubmit = async (values: CompetitionLoginFormModel) => {
-    dispatch(loginCompetition(values.model.code, history))
+    dispatch(loginCompetition(values.model.code, history, true))
   }
+  
   return (
     <Formik
       initialValues={competitionInitialValues}

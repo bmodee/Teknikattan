@@ -1,43 +1,46 @@
 import { render } from '@testing-library/react'
 import mockedAxios from 'axios'
 import React from 'react'
+import { act } from 'react-dom/test-utils'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import store from '../../store'
 import OperatorViewPage from './OperatorViewPage'
 
-it('renders presenter view page', () => {
-  const compRes: any = {
-    data: {
-      slides: [{ id: 0, title: '' }],
-    },
-  }
-  const teamsRes: any = {
-    data: {
-      items: [
-        {
-          id: 1,
-          name: 'team1',
-        },
-        {
-          id: 2,
-          name: 'team2',
-        },
-      ],
-      count: 2,
-      total_count: 3,
-    },
-  }
+it('renders operator view page', async () => {
+  await act(async () => {
+    const compRes: any = {
+      data: {
+        slides: [{ id: 0, title: '' }],
+      },
+    }
+    const teamsRes: any = {
+      data: {
+        items: [
+          {
+            id: 1,
+            name: 'team1',
+          },
+          {
+            id: 2,
+            name: 'team2',
+          },
+        ],
+        count: 2,
+        total_count: 3,
+      },
+    }
 
-  ;(mockedAxios.get as jest.Mock).mockImplementation((path: string, params?: any) => {
-    if (path.endsWith('/teams')) return Promise.resolve(teamsRes)
-    else return Promise.resolve(compRes)
+    ;(mockedAxios.get as jest.Mock).mockImplementation((path: string, params?: any) => {
+      if (path.endsWith('/teams')) return Promise.resolve(teamsRes)
+      else return Promise.resolve(compRes)
+    })
+    render(
+      <BrowserRouter>
+        <Provider store={store}>
+          <OperatorViewPage />
+        </Provider>
+      </BrowserRouter>
+    )
   })
-  render(
-    <BrowserRouter>
-      <Provider store={store}>
-        <OperatorViewPage />
-      </Provider>
-    </BrowserRouter>
-  )
 })

@@ -1,4 +1,4 @@
-import { AppBar, Button, Card, Drawer, Paper, Toolbar, Typography } from '@material-ui/core'
+import { AppBar, Button, Card, Drawer, Toolbar, Typography } from '@material-ui/core'
 import styled from 'styled-components'
 
 export const JudgeAppBar = styled(AppBar)`
@@ -143,8 +143,18 @@ export const OperatorInnerContent = styled.div`
   max-width: calc(((100vh - 260px) / 9) * 16);
 `
 
-export const TeamContainer = styled.div`
+export const PresentationContainer = styled.div`
+  height: 100%;
+  width: 100%;
   max-width: calc((100vh / 9) * 16);
+`
+
+export const PresentationBackground = styled.div`
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: center;
 `
 
 interface ScoreHeaderPaperProps {

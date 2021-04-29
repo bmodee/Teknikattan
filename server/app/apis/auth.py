@@ -1,19 +1,15 @@
+from datetime import timedelta
+
 import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.apis import item_response, protect_route, text_response
+from app.core import sockets
 from app.core.codes import verify_code
 from app.core.dto import AuthDTO, CodeDTO
-from flask_jwt_extended import (
-    create_access_token,
-    create_refresh_token,
-    get_jwt_identity,
-    get_raw_jwt,
-    jwt_refresh_token_required,
-)
-from flask_restx import Resource
-from flask_restx import inputs, reqparse
-from datetime import timedelta
-from app.core import sockets
+from flask_jwt_extended import (create_access_token, create_refresh_token,
+                                get_jwt_identity, get_raw_jwt,
+                                jwt_refresh_token_required)
+from flask_restx import Resource, inputs, reqparse
 
 api = AuthDTO.api
 schema = AuthDTO.schema
@@ -36,7 +32,7 @@ def get_user_claims(item_user):
 
 
 def get_code_claims(item_code):
-    return {"view": item_code.view_type.name, "competition_id": item_code.competition_id, "team_id": item_code.team_id}
+    return {"view": item_code.view_type.name, "competition_id": item_code.competition_id, "team_id": item_code.team_id, "code": item_code.code}
 
 
 @api.route("/test")
@@ -102,9 +98,10 @@ class AuthLoginCode(Resource):
             api.abort(codes.UNAUTHORIZED, "Invalid code")
 
         item_code = dbc.get.code_by_code(code)
-
-        if item_code.competition_id not in sockets.presentations:
-            api.abort(codes.UNAUTHORIZED, "Competition not active")
+    
+        if item_code.view_type_id != 4:
+            if item_code.competition_id not in sockets.presentations:
+                api.abort(codes.UNAUTHORIZED, "Competition not active")
 
         access_token = create_access_token(
             item_code.id, user_claims=get_code_claims(item_code), expires_delta=timedelta(hours=8)
@@ -112,7 +109,7 @@ class AuthLoginCode(Resource):
 
         response = {
             "competition_id": item_code.competition_id,
-            "view_type_id": item_code.view_type_id,
+            "view": item_code.view_type.name,
             "team_id": item_code.team_id,
             "access_token": access_token,
         }

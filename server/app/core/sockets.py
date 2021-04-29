@@ -3,14 +3,16 @@ Contains all functionality related sockets. That is starting and ending a presen
 joining and leaving a presentation and syncing slides and timer bewteen all clients
 connected to the same presentation.
 """
-
+import logging
 from typing import Dict
+
 import app.database.controller as dbc
 from app.core import db
-from app.database.models import Competition, Slide, Team, ViewType, Code
+from app.database.models import Code, Competition, Slide, Team, ViewType
 from flask.globals import request
+from flask_jwt_extended import verify_jwt_in_request
+from flask_jwt_extended.utils import get_jwt_claims
 from flask_socketio import SocketIO, emit, join_room
-import logging
 
 logger = logging.getLogger(__name__)
 logger.propagate = False
@@ -24,6 +26,34 @@ logger.addHandler(stream_handler)
 sio = SocketIO(cors_allowed_origins="http://localhost:3000")
 
 presentations = {}
+
+
+def _is_allowed(allowed, actual):
+    return actual and "*" in allowed or actual in allowed
+
+
+def protect_route(allowed_views=None):
+    def wrapper(func):
+        def inner(*args, **kwargs):
+            try:
+                verify_jwt_in_request()
+            except:
+                logger.warning("Missing Authorization Header")
+                return
+
+            nonlocal allowed_views
+            allowed_views = allowed_views or []
+            claims = get_jwt_claims()
+            view = claims.get("view")
+            if not _is_allowed(allowed_views, view):
+                logger.warning(f"View '{view}' is not allowed to access route only accessible by '{allowed_views}'")
+                return
+
+            return func(*args, **kwargs)
+
+        return inner
+
+    return wrapper
 
 
 @sio.on("connect")
@@ -50,6 +80,7 @@ def disconnect() -> None:
     logger.info(f"Client '{request.sid}' disconnected")
 
 
+@protect_route(allowed_views=["Operator"])
 @sio.on("start_presentation")
 def start_presentation(data: Dict) -> None:
     """
@@ -76,6 +107,7 @@ def start_presentation(data: Dict) -> None:
     logger.info(f"Client '{request.sid}' started competition '{competition_id}'")
 
 
+@protect_route(allowed_views=["Operator"])
 @sio.on("end_presentation")
 def end_presentation(data: Dict) -> None:
     """
@@ -153,6 +185,7 @@ def join_presentation(data: Dict) -> None:
     logger.info(f"Client '{request.sid}' joined competition '{competition_id}'")
 
 
+@protect_route(allowed_views=["Operator"])
 @sio.on("set_slide")
 def set_slide(data: Dict) -> None:
     """
@@ -200,6 +233,7 @@ def set_slide(data: Dict) -> None:
     logger.info(f"Client '{request.sid}' set slide '{slide_order}' in competition '{competition_id}'")
 
 
+@protect_route(allowed_views=["Operator"])
 @sio.on("set_timer")
 def set_timer(data: Dict) -> None:
     """

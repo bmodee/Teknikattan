@@ -18,9 +18,18 @@ interface SetTimerInterface {
 
 let socket: SocketIOClient.Socket
 
-export const socket_connect = () => {
+export const socketConnect = () => {
   if (!socket) {
-    socket = io('localhost:5000')
+    const token = localStorage.competitionToken
+    socket = io('localhost:5000', {
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            Authorization: token,
+          },
+        },
+      },
+    })
 
     socket.on('set_slide', (data: SetSlideInterface) => {
       setCurrentSlideByOrder(data.slide_order)(store.dispatch)

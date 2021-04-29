@@ -5,19 +5,29 @@ This file handles actions for the competitionLogin redux state
 import axios from 'axios'
 import { History } from 'history'
 import { AppDispatch } from '../store'
-import { AccountLoginModel } from './../interfaces/FormModels'
 import Types from './types'
 
 // Action creator to attempt to login with competition code
-export const loginCompetition = (code: string, history: History) => async (dispatch: AppDispatch) => {
+export const loginCompetition = (code: string, history: History, redirect: boolean) => async (
+  dispatch: AppDispatch
+) => {
   dispatch({ type: Types.LOADING_COMPETITION_LOGIN })
   await axios
     .post('/api/auth/login/code', { code })
     .then((res) => {
-      console.log(code, res.data[0])
+      const token = `Bearer ${res.data.access_token}`
+      localStorage.setItem('competitionToken', token) //setting token to local storage
+      axios.defaults.headers.common['Authorization'] = token //setting authorize token to header in axios
       dispatch({ type: Types.CLEAR_COMPETITION_LOGIN_ERRORS }) // no error
-      // history.push('/admin') //redirecting to admin page after login success
-      if (res.data && res.data[0] && res.data[0].view_type_id) {
+      dispatch({
+        type: Types.SET_COMPETITION_LOGIN_DATA,
+        payload: {
+          competition_id: res.data.competition_id,
+          team_id: res.data.team_id,
+          view: res.data.view,
+        },
+      })
+      if (redirect && res.data && res.data.view_type_id) {
         history.push(`/${code}`)
       }
     })
@@ -25,4 +35,16 @@ export const loginCompetition = (code: string, history: History) => async (dispa
       dispatch({ type: Types.SET_COMPETITION_LOGIN_ERRORS, payload: err && err.response && err.response.data })
       console.log(err)
     })
+}
+
+// Log out from competition and remove jwt token from local storage and axios
+export const logoutCompetition = () => async (dispatch: AppDispatch) => {
+  localStorage.removeItem('competitionToken')
+  await axios.post('/api/auth/logout').then(() => {
+    delete axios.defaults.headers.common['Authorization']
+    dispatch({
+      type: Types.SET_COMPETITION_LOGIN_UNAUTHENTICATED,
+    })
+    window.location.href = '/' //redirect to login page
+  })
 }

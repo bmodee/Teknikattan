@@ -5,7 +5,7 @@
   "editor.tabCompletion": "on",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true,
-    "source.organizeImports": false
+    "source.organizeImports": true
   },
   //python
   "python.venvPath": "${workspaceFolder}\\server",

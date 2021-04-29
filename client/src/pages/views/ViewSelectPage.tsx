@@ -1,69 +1,57 @@
-import Button from '@material-ui/core/Button'
-import React, { useEffect, useState } from 'react'
-import { Link, useRouteMatch } from 'react-router-dom'
-import { ViewSelectButtonGroup, ViewSelectContainer } from './styled'
-import { useParams } from 'react-router-dom'
 import { CircularProgress, Typography } from '@material-ui/core'
-import TeamViewPage from './TeamViewPage'
-import axios from 'axios'
-import OperatorViewPage from './OperatorViewPage'
-import JudgeViewPage from './JudgeViewPage'
-import AudienceViewPage from './AudienceViewPage'
+import React, { useEffect } from 'react'
+import { Redirect, useHistory, useParams } from 'react-router-dom'
+import { loginCompetition } from '../../actions/competitionLogin'
 import { useAppDispatch, useAppSelector } from '../../hooks'
-import { getPresentationCompetition, setPresentationCode } from '../../actions/presentation'
+import { ViewSelectButtonGroup, ViewSelectContainer } from './styled'
 
 interface ViewSelectParams {
   code: string
 }
 const ViewSelectPage: React.FC = () => {
   const dispatch = useAppDispatch()
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
-  const [viewTypeId, setViewTypeId] = useState(undefined)
-  const [competitionId, setCompetitionId] = useState<number | undefined>(undefined)
+  const history = useHistory()
+  const competitionId = useAppSelector((state) => state.competitionLogin.data?.competition_id)
+  const errorMessage = useAppSelector((state) => state.competitionLogin.errors?.message)
+  const loading = useAppSelector((state) => state.competitionLogin.loading)
   const { code }: ViewSelectParams = useParams()
-  const viewType = useAppSelector((state) => state.types.viewTypes.find((viewType) => viewType.id === viewTypeId)?.name)
+  const viewType = useAppSelector((state) => state.competitionLogin.data?.view)
 
-  const renderView = (viewTypeId: number | undefined) => {
+  const renderView = () => {
     //Renders the correct view depending on view type
     if (competitionId) {
       switch (viewType) {
         case 'Team':
-          return <TeamViewPage />
+          return <Redirect to={`/team/competition-id=${competitionId}`} />
         case 'Judge':
-          return <JudgeViewPage code={code} competitionId={competitionId} />
+          return <Redirect to={`/judge/competition-id=${competitionId}`} />
         case 'Audience':
-          return <AudienceViewPage />
+          return <Redirect to={`/audience/competition-id=${competitionId}`} />
+        case 'Operator':
+          return <Redirect to={`/operator/competition-id=${competitionId}`} />
         default:
-          return <Typography>Inkorrekt vy</Typography>
+          return (
+            <ViewSelectContainer>
+              <ViewSelectButtonGroup>
+                <Typography variant="h4">Inkorrekt vy</Typography>
+              </ViewSelectButtonGroup>
+            </ViewSelectContainer>
+          )
       }
     }
   }
-
   useEffect(() => {
-    axios
-      .post('/api/auth/login/code', { code })
-      .then((response) => {
-        setLoading(false)
-        setViewTypeId(response.data.view_type_id)
-        setCompetitionId(response.data.competition_id)
-        dispatch(getPresentationCompetition(response.data.competition_id))
-        dispatch(setPresentationCode(code))
-      })
-      .catch(() => {
-        setLoading(false)
-        setError(true)
-      })
+    dispatch(loginCompetition(code, history, false))
   }, [])
 
   return (
     <>
-      {!loading && renderView(viewTypeId)}
-      {(loading || error) && (
+      {renderView()}
+      {(loading || errorMessage) && (
         <ViewSelectContainer>
           <ViewSelectButtonGroup>
             {loading && <CircularProgress />}
-            {error && <Typography>Något gick fel, dubbelkolla koden och försök igen</Typography>}
+            {errorMessage && <Typography variant="h4">{errorMessage}</Typography>}
           </ViewSelectButtonGroup>
         </ViewSelectContainer>
       )}

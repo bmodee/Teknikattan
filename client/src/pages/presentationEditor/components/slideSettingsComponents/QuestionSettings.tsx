@@ -18,7 +18,6 @@ const QuestionSettings = ({ activeSlide, competitionId }: QuestionSettingsProps)
     updateTitle: boolean,
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
-    console.log('Content was updated on server. id: ', activeSlide.questions[0].id)
     if (activeSlide && activeSlide.questions[0]) {
       if (updateTitle) {
         await axios

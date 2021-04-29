@@ -2,13 +2,13 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { useAppDispatch } from '../../../hooks'
 import {
+  socketConnect,
   socketEndPresentation,
   socketJoinPresentation,
   socketSetSlideNext,
   socketSetSlidePrev,
   socketStartPresentation,
   socketStartTimer,
-  socket_connect,
 } from '../../../sockets'
 
 const mapStateToProps = (state: any) => {
@@ -27,7 +27,7 @@ const SocketTest: React.FC = (props: any) => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    socket_connect()
+    socketConnect()
     // dispatch(getPresentationCompetition('1')) // TODO: Use ID of item_code gotten from auth/login/<code> api call
     // dispatch(getPresentationTeams('1')) // TODO: Use ID of item_code gotten from auth/login/<code> api call
   }, [])

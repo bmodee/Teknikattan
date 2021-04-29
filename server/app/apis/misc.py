@@ -23,7 +23,6 @@ name_parser.add_argument("name", type=str, required=True, location="json")
 
 @api.route("/types")
 class TypesList(Resource):
-    @protect_route(allowed_roles=["*"], allowed_views=["*"])
     def get(self):
         result = {}
         result["media_types"] = media_type_schema.dump(dbc.get.all(MediaType))

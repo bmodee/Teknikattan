@@ -1,4 +1,4 @@
-import { ListItem, ListItemText, TextField, withStyles } from '@material-ui/core'
+import { ListItem, ListItemText, TextField } from '@material-ui/core'
 import axios from 'axios'
 import React from 'react'
 import { getEditorCompetition } from '../../../../actions/editor'
@@ -23,7 +23,6 @@ const Instructions = ({ activeSlide, competitionId }: InstructionsProps) => {
     //Only updates 250ms after last input was made to not spam
     setTimerHandle(
       window.setTimeout(async () => {
-        console.log('Content was updated on server. id: ', activeSlide.questions[0].id)
         if (activeSlide && activeSlide.questions[0]) {
           await axios
             // TODO: Implement instructions field in question and add put API

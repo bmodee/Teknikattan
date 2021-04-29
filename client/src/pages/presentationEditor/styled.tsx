@@ -6,8 +6,8 @@ interface ViewButtonProps {
 }
 
 interface DrawerSizeProps {
-  leftDrawerWidth: number | undefined
-  rightDrawerWidth: number | undefined
+  $leftDrawerWidth: number | undefined
+  $rightDrawerWidth: number | undefined
 }
 
 const AppBarHeight = 64
@@ -66,22 +66,22 @@ export const HomeIcon = styled.img`
 `
 
 export const LeftDrawer = styled(Drawer)<DrawerSizeProps>`
-  width: ${(props) => (props ? props.leftDrawerWidth : 0)}px;
+  width: ${(props) => (props ? props.$leftDrawerWidth : 0)}px;
   flex-shrink: 0;
   position: relative;
   z-index: 1;
 `
 
 export const RightDrawer = styled(Drawer)<DrawerSizeProps>`
-  width: ${(props) => (props ? props.rightDrawerWidth : 0)}px;
+  width: ${(props) => (props ? props.$rightDrawerWidth : 0)}px;
   flex-shrink: 0;
 `
 
 export const AppBarEditor = styled(AppBar)<DrawerSizeProps>`
-  width: calc(100% - ${(props) => (props ? props.rightDrawerWidth : 0)}px);
+  width: calc(100% - ${(props) => (props ? props.$rightDrawerWidth : 0)}px);
   left: 0;
-  margin-left: leftDrawerWidth;
-  margin-right: rightDrawerWidth;
+  margin-left: $leftDrawerWidth;
+  margin-right: $rightDrawerWidth;
 `
 
 // Necessary for content to be below app bar
@@ -90,13 +90,13 @@ export const ToolbarMargin = styled.div`
 `
 
 export const FillLeftContainer = styled.div<DrawerSizeProps>`
-  width: ${(props) => (props ? props.leftDrawerWidth : 0)}px;
+  width: ${(props) => (props ? props.$leftDrawerWidth : 0)}px;
   height: calc(100% - ${SlideListHeight}px);
   overflow: hidden;
 `
 
 export const FillRightContainer = styled.div<DrawerSizeProps>`
-  width: ${(props) => (props ? props.rightDrawerWidth : 0)}px;
+  width: ${(props) => (props ? props.$rightDrawerWidth : 0)}px;
   height: 100%;
   overflow-y: auto;
   background: #e9e9e9;

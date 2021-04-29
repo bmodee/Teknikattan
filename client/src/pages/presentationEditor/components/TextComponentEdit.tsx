@@ -36,7 +36,6 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
     //Only updates 250ms after last input was made to not spam
     setTimerHandle(
       window.setTimeout(async () => {
-        console.log('Content was updated on server. id: ', component.id)
         await axios.put(`/api/competitions/${competitionId}/slides/${activeSlideId}/components/${component.id}`, {
           text: newText,
         })
