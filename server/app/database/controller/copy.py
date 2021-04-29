@@ -24,6 +24,7 @@ def _question(item_question_old, slide_id):
             item_question_old.total_score,
             item_question_old.type_id,
             slide_id,
+            item_question_old.correcting_instructions,
         )
     )
 

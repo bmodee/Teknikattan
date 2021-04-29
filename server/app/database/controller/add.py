@@ -244,12 +244,12 @@ def user(email, password, role_id, city_id, name=None):
     return db_add(User(email, password, role_id, city_id, name))
 
 
-def question(name, total_score, type_id, slide_id):
+def question(name, total_score, type_id, slide_id, correcting_instructions=None):
     """
     Adds a question to the specified slide using the provided arguments.
     """
 
-    return db_add(Question(name, total_score, type_id, slide_id))
+    return db_add(Question(name, total_score, type_id, slide_id, correcting_instructions))
 
 
 def question_alternative(text, value, question_id):

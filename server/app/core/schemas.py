@@ -63,6 +63,7 @@ class QuestionSchema(BaseSchema):
     total_score = ma.auto_field()
     type_id = ma.auto_field()
     slide_id = ma.auto_field()
+    correcting_instructions = ma.auto_field()
 
 
 class QuestionAnswerSchema(BaseSchema):

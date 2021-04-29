@@ -30,7 +30,7 @@ const Instructions = ({ activeSlide, competitionId }: InstructionsProps) => {
             .put(
               `/api/competitions/${competitionId}/slides/${activeSlide.id}/questions/${activeSlide.questions[0].id}`,
               {
-                instructions: event.target.value,
+                correcting_instructions: event.target.value,
               }
             )
             .then(() => {
@@ -56,7 +56,7 @@ const Instructions = ({ activeSlide, competitionId }: InstructionsProps) => {
         <Center>
           <TextField
             id="outlined-basic"
-            defaultValue={''}
+            defaultValue={activeSlide.questions[0].correcting_instructions}
             onChange={updateInstructionsText}
             variant="outlined"
             fullWidth={true}

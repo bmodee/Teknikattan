@@ -14,11 +14,13 @@ question_parser_add = reqparse.RequestParser()
 question_parser_add.add_argument("name", type=str, default=None, location="json")
 question_parser_add.add_argument("total_score", type=int, default=None, location="json")
 question_parser_add.add_argument("type_id", type=int, required=True, location="json")
+question_parser_add.add_argument("correcting_instructions", type=str, default=None, location="json")
 
 question_parser_edit = reqparse.RequestParser()
 question_parser_edit.add_argument("name", type=str, default=sentinel, location="json")
 question_parser_edit.add_argument("total_score", type=int, default=sentinel, location="json")
 question_parser_edit.add_argument("type_id", type=int, default=sentinel, location="json")
+question_parser_edit.add_argument("correcting_instructions", type=str, default=sentinel, location="json")
 
 
 @api.route("/questions")

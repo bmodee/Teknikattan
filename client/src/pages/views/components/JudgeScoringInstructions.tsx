@@ -20,7 +20,7 @@ const JudgeScoringInstructions = ({ question }: JudgeScoringInstructionsProps) =
   return (
     <JudgeScoringInstructionsContainer elevation={3}>
       <Typography variant="h4">Rättningsinstruktioner</Typography>
-      <Typography variant="body1">Såhär rättar du denhär frågan</Typography>
+      <Typography variant="body1">{question?.correcting_instructions}</Typography>
     </JudgeScoringInstructionsContainer>
   )
 }

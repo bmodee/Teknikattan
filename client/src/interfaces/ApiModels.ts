@@ -56,6 +56,7 @@ export interface Question extends NameID {
   slide_id: number
   total_score: number
   type_id: number
+  correcting_instructions: string
 }
 
 export interface QuestionAlternative {

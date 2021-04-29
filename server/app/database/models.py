@@ -154,15 +154,17 @@ class Question(db.Model):
     total_score = db.Column(db.Integer, nullable=False, default=1)
     type_id = db.Column(db.Integer, db.ForeignKey("question_type.id"), nullable=False)
     slide_id = db.Column(db.Integer, db.ForeignKey("slide.id"), nullable=False)
+    correcting_instructions = db.Column(db.Text, nullable=True, default=None)
 
     question_answers = db.relationship("QuestionAnswer", backref="question")
     alternatives = db.relationship("QuestionAlternative", backref="question")
 
-    def __init__(self, name, total_score, type_id, slide_id):
+    def __init__(self, name, total_score, type_id, slide_id, correcting_instructions):
         self.name = name
         self.total_score = total_score
         self.type_id = type_id
         self.slide_id = slide_id
+        self.correcting_instructions = correcting_instructions
 
 
 class QuestionAlternative(db.Model):
