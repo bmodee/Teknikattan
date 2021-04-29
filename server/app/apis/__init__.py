@@ -1,5 +1,3 @@
-from functools import wraps
-
 import app.core.http_codes as http_codes
 from flask_jwt_extended import verify_jwt_in_request
 from flask_jwt_extended.utils import get_jwt_claims

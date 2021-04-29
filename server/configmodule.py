@@ -12,7 +12,7 @@ class Config:
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ["access", "refresh"]
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=2)
-    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
+    # JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     UPLOADED_PHOTOS_DEST = os.path.join(os.getcwd(), "app", "static", "images")
     THUMBNAIL_SIZE = (120, 120)
     SECRET_KEY = os.urandom(24)

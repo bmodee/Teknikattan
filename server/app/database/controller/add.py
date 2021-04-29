@@ -6,13 +6,12 @@ import os
 
 import app.core.http_codes as codes
 from app.core import db
-from app.database.controller import get, search, utils
+from app.database.controller import get, utils
 from app.database.models import (
     Blacklist,
     City,
     Code,
     Competition,
-    Component,
     ComponentType,
     ImageComponent,
     Media,
@@ -28,14 +27,12 @@ from app.database.models import (
     TextComponent,
     User,
     ViewType,
+    Whitelist,
 )
 from flask.globals import current_app
 from flask_restx import abort
 from PIL import Image
 from sqlalchemy import exc
-from sqlalchemy.orm import with_polymorphic
-from sqlalchemy.orm import relation
-from sqlalchemy.orm.session import sessionmaker
 from flask import current_app
 
 from app.database.types import ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT, ID_TEXT_COMPONENT
@@ -195,6 +192,12 @@ def blacklist(jti):
     """ Adds a blacklist to the database. """
 
     return db_add(Blacklist(jti))
+
+
+def whitelist(jti, user_id=None, competition_id=None):
+    """ Adds a whitelist to the database. """
+
+    return db_add(Whitelist(jti, user_id, competition_id))
 
 
 def mediaType(name):

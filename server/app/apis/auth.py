@@ -5,10 +5,10 @@ import app.database.controller as dbc
 from app.apis import item_response, protect_route, text_response
 from app.core import sockets
 from app.core.codes import verify_code
-from app.core.dto import AuthDTO, CodeDTO
-from flask_jwt_extended import (create_access_token, create_refresh_token,
-                                get_jwt_identity, get_raw_jwt,
-                                jwt_refresh_token_required)
+from app.core.dto import AuthDTO
+from app.database.models import Whitelist
+from flask_jwt_extended import create_access_token, get_jti, get_raw_jwt
+from flask_jwt_extended.utils import get_jti
 from flask_restx import Resource, inputs, reqparse
 
 api = AuthDTO.api
@@ -32,7 +32,12 @@ def get_user_claims(item_user):
 
 
 def get_code_claims(item_code):
-    return {"view": item_code.view_type.name, "competition_id": item_code.competition_id, "team_id": item_code.team_id, "code": item_code.code}
+    return {
+        "view": item_code.view_type.name,
+        "competition_id": item_code.competition_id,
+        "team_id": item_code.team_id,
+        "code": item_code.code,
+    }
 
 
 @api.route("/test")
@@ -56,18 +61,16 @@ class AuthSignup(Resource):
         return item_response(schema.dump(item_user))
 
 
-@api.route("/delete/<ID>")
-@api.param("ID")
+@api.route("/delete/<user_id>")
+@api.param("user_id")
 class AuthDelete(Resource):
     @protect_route(allowed_roles=["Admin"])
-    def delete(self, ID):
-        item_user = dbc.get.user(ID)
-
+    def delete(self, user_id):
+        item_user = dbc.get.user(user_id)
+        dbc.delete.whitelist_to_blacklist(Whitelist.user_id == user_id)
         dbc.delete.default(item_user)
-        if int(ID) == get_jwt_identity():
-            jti = get_raw_jwt()["jti"]
-            dbc.add.blacklist(jti)
-        return text_response(f"User {ID} deleted")
+
+        return text_response(f"User {user_id} deleted")
 
 
 @api.route("/login")
@@ -82,9 +85,10 @@ class AuthLogin(Resource):
             api.abort(codes.UNAUTHORIZED, "Invalid email or password")
 
         access_token = create_access_token(item_user.id, user_claims=get_user_claims(item_user))
-        refresh_token = create_refresh_token(item_user.id)
+        # refresh_token = create_refresh_token(item_user.id)
 
-        response = {"id": item_user.id, "access_token": access_token, "refresh_token": refresh_token}
+        response = {"id": item_user.id, "access_token": access_token}
+        dbc.add.whitelist(get_jti(access_token), item_user.id)
         return response
 
 
@@ -98,7 +102,7 @@ class AuthLoginCode(Resource):
             api.abort(codes.UNAUTHORIZED, "Invalid code")
 
         item_code = dbc.get.code_by_code(code)
-    
+
         if item_code.view_type_id != 4:
             if item_code.competition_id not in sockets.presentations:
                 api.abort(codes.UNAUTHORIZED, "Competition not active")
@@ -107,6 +111,7 @@ class AuthLoginCode(Resource):
             item_code.id, user_claims=get_code_claims(item_code), expires_delta=timedelta(hours=8)
         )
 
+        dbc.add.whitelist(get_jti(access_token), competition_id=item_code.competition_id)
         response = {
             "competition_id": item_code.competition_id,
             "view": item_code.view_type.name,
@@ -122,9 +127,12 @@ class AuthLogout(Resource):
     def post(self):
         jti = get_raw_jwt()["jti"]
         dbc.add.blacklist(jti)
+        Whitelist.query.filter(Whitelist.jti == jti).delete()
+        dbc.utils.commit()
         return text_response("Logout")
 
 
+"""
 @api.route("/refresh")
 class AuthRefresh(Resource):
     @protect_route(allowed_roles=["*"])
@@ -137,3 +145,4 @@ class AuthRefresh(Resource):
         dbc.add.blacklist(old_jti)
         response = {"access_token": access_token}
         return response
+"""

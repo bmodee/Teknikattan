@@ -2,7 +2,7 @@
 This file contains functionality to find data to the database.
 """
 
-from app.database.models import Competition, Media, Question, Slide, Team, User
+from app.database.models import Competition, Media, Question, Slide, User
 
 
 def image(filename, page=0, page_size=15, order=1, order_by=None):

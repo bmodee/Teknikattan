@@ -3,15 +3,11 @@ The database submodule contaisn all functionality that has to do with the
 database. It can add, get, delete, edit, search and copy items.
 """
 
-import json
-
 from flask_restx import abort
 from flask_sqlalchemy import BaseQuery
 from flask_sqlalchemy.model import Model
-from sqlalchemy import Column, DateTime, Text
+from sqlalchemy import Column, DateTime
 from sqlalchemy.sql import func
-from sqlalchemy.types import TypeDecorator
-from sqlalchemy import event
 
 
 class Base(Model):

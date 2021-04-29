@@ -45,15 +45,3 @@ def create_app(config_name="configmodule.DevelopmentConfig"):
             return response
 
     return app, sio
-
-
-def identity(payload):
-    user_id = payload["identity"]
-    return models.User.query.filter_by(id=user_id)
-
-
-@jwt.token_in_blacklist_loader
-def check_if_token_in_blacklist(decrypted_token):
-    jti = decrypted_token["jti"]
-
-    return models.Blacklist.query.filter_by(jti=jti).first() is not None

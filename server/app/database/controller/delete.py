@@ -5,9 +5,8 @@ This file contains functionality to delete data to the database.
 import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.core import db
-from app.database.models import Blacklist, City, Competition, Role, Slide, User
+from app.database.models import Whitelist
 from flask_restx import abort
-from sqlalchemy import exc
 
 
 def default(item):
@@ -18,6 +17,19 @@ def default(item):
     except:
         db.session.rollback()
         abort(codes.INTERNAL_SERVER_ERROR, f"Item of type {type(item)} could not be deleted")
+
+
+def whitelist_to_blacklist(filters):
+    """
+    Remove whitelist by condition(filters) and insert those into blacklist
+    Example: When delete user all whitelisted tokens for that user should be blacklisted
+    """
+    whitelist = Whitelist.query.filter(filters).all()
+    for item in whitelist:
+        dbc.add.blacklist(item.jti)
+
+    Whitelist.query.filter(filters).delete()
+    dbc.utils.commit()
 
 
 def component(item_component):

@@ -12,10 +12,21 @@ from app.database.types import ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT, ID_TEX
 STRING_SIZE = 254
 
 
+class Whitelist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    jti = db.Column(db.String, unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+    competition_id = db.Column(db.Integer, db.ForeignKey("competition.id"), nullable=True)
+
+    def __init__(self, jti, user_id=None, competition_id=None):
+        self.jti = jti
+        self.user_id = user_id
+        self.competition_id = competition_id
+
+
 class Blacklist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String, unique=True)
-    expire_date = db.Column(db.Integer, nullable=True)
 
     def __init__(self, jti):
         self.jti = jti

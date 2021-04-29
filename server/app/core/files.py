@@ -2,10 +2,9 @@
 Contains functions related to file handling, mainly saving and deleting images.
 """
 
-from PIL import Image, ImageChops
+from PIL import Image
 from flask import current_app, has_app_context
 import os
-import datetime
 from flask_uploads import IMAGES, UploadSet
 
 if has_app_context():

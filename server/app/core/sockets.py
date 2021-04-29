@@ -6,9 +6,8 @@ connected to the same presentation.
 import logging
 from typing import Dict
 
-import app.database.controller as dbc
 from app.core import db
-from app.database.models import Code, Competition, Slide, Team, ViewType
+from app.database.models import Code, Slide, ViewType
 from flask.globals import request
 from flask_jwt_extended import verify_jwt_in_request
 from flask_jwt_extended.utils import get_jwt_claims

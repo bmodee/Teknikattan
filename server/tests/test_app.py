@@ -149,7 +149,7 @@ def test_auth_and_user_api(client):
     # Try loggin with right PASSWORD
     response, body = post(client, "/api/auth/login", {"email": "test1@test.se", "password": "abc123"})
     assert response.status_code == codes.OK
-    refresh_token = body["refresh_token"]
+    # refresh_token = body["refresh_token"]
     headers = {"Authorization": "Bearer " + body["access_token"]}
 
     # Get the current user

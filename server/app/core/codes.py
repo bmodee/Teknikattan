@@ -4,7 +4,6 @@ Contains all functions purely related to creating and verifying a code.
 
 import random
 import re
-import string
 
 CODE_LENGTH = 6
 ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

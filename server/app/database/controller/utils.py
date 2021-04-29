@@ -7,7 +7,6 @@ from app.core import db
 from app.core.codes import generate_code_string
 from app.database.models import Code
 from flask_restx import abort
-from sqlalchemy import exc
 
 
 def move_slides(item_competition, start_order, end_order):

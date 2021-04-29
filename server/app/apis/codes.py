@@ -1,6 +1,5 @@
 import app.database.controller as dbc
 from app.apis import item_response, list_response, protect_route
-from app.core import http_codes as codes
 from app.core.dto import CodeDTO
 from app.database.models import Code
 from flask_restx import Resource

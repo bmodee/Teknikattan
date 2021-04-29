@@ -1,5 +1,3 @@
-import time
-
 import app.database.controller as dbc
 from app.apis import item_response, list_response, protect_route
 from app.core.dto import CompetitionDTO

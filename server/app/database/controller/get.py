@@ -27,17 +27,19 @@ def all(db_type):
     return db_type.query.all()
 
 
-def one(db_type, id):
+def one(db_type, id, required=True):
     """ Get lazy db-item in the table that has the same id. """
 
-    return db_type.query.filter(db_type.id == id).first_extended()
+    return db_type.query.filter(db_type.id == id).first_extended(required=required)
 
 
 ### Codes ###
 def code_by_code(code):
     """ Gets the code object associated with the provided code. """
 
-    return Code.query.filter(Code.code == code.upper()).first_extended( True, "A presentation with that code does not exist")
+    return Code.query.filter(Code.code == code.upper()).first_extended(
+        True, "A presentation with that code does not exist"
+    )
 
 
 def code_list(competition_id):
