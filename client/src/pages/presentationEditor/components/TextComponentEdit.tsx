@@ -50,7 +50,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
   }
 
   return (
-    <div style={{ minHeight: '300px', height: '100%', width: '100%' }}>
+    <>
       <Editor
         value={content || ''}
         init={{
@@ -81,7 +81,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
       <DeleteTextButton variant="contained" color="secondary" onClick={() => handleDeleteText(component.id)}>
         Ta bort
       </DeleteTextButton>
-    </div>
+    </>
   )
 }
 

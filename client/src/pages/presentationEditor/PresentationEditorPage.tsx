@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Divider, Menu, MenuItem } from '@material-ui/core'
+import { Button, ButtonGroup, CircularProgress, Divider, Menu, MenuItem } from '@material-ui/core'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import ListItemText from '@material-ui/core/ListItemText'
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined'
@@ -31,7 +31,6 @@ import {
   ToolBarContainer,
   ToolbarMargin,
   ViewButton,
-  ViewButtonGroup,
 } from './styled'
 
 const initialState = {
@@ -101,7 +100,7 @@ const PresentationEditorPage: React.FC = () => {
   }
 
   const viewTypes = useAppSelector((state) => state.types.viewTypes)
-  const [activeViewTypeName, setActiveViewTypeName] = useState('')
+  const [activeViewTypeName, setActiveViewTypeName] = useState('Audience')
   const changeView = (clickedViewTypeName: string) => {
     setActiveViewTypeName(clickedViewTypeName)
     const clickedViewTypeId = viewTypes.find((viewType) => viewType.name === clickedViewTypeName)?.id
@@ -122,10 +121,9 @@ const PresentationEditorPage: React.FC = () => {
             {competition.name}
           </CompetitionName>
 
-          <ViewButtonGroup>
+          <ButtonGroup color="secondary" variant="contained">
             <ViewButton
               $activeView={activeViewTypeName === 'Audience'}
-              variant="contained"
               color="secondary"
               onClick={() => changeView('Audience')}
             >
@@ -133,13 +131,12 @@ const PresentationEditorPage: React.FC = () => {
             </ViewButton>
             <ViewButton
               $activeView={activeViewTypeName === 'Team'}
-              variant="contained"
               color="secondary"
               onClick={() => changeView('Team')}
             >
               Deltagarvy
             </ViewButton>
-          </ViewButtonGroup>
+          </ButtonGroup>
         </ToolBarContainer>
       </AppBarEditor>
       <LeftDrawer $leftDrawerWidth={leftDrawerWidth} $rightDrawerWidth={undefined} variant="permanent" anchor="left">
@@ -166,7 +163,7 @@ const PresentationEditorPage: React.FC = () => {
             <SlideListItem divider button onClick={() => createNewSlide()}>
               <ListItemText primary="Ny sida" />
               <AddOutlinedIcon />
-              </SlideListItem>
+            </SlideListItem>
           </PositionBottom>
         </FillLeftContainer>
       </LeftDrawer>
