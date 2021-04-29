@@ -56,10 +56,13 @@ def slide(item_slide):
 
 
 def team(item_team):
-    """ Deletes team and its question answers. """
+    """ Deletes team, its question answers and the code. """
 
     for item_question_answer in item_team.question_answers:
         question_answers(item_question_answer)
+    for item_code in item_team.code:
+        code(item_code)
+
     default(item_team)
 
 
@@ -86,12 +89,19 @@ def question_answers(item_question_answers):
 
 
 def competition(item_competition):
-    """ Deletes competition and its slides and teams. """
+    """ Deletes competition, its slides, teams and codes. """
 
     for item_slide in item_competition.slides:
         _slide(item_slide)
     for item_team in item_competition.teams:
         team(item_team)
+    for item_code in item_competition.codes:
+        code(item_code)
 
-    # TODO codes
     default(item_competition)
+
+
+def code(item_code):
+    """ Deletes competition code. """
+
+    default(item_code)

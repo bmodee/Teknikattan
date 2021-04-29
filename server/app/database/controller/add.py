@@ -179,10 +179,13 @@ def _competition_no_slides(name, year, city_id, font=None):
         item_competition.font = font
 
     # Add code for Judge view
-    code(item_competition.id, 2)
+    code(2, item_competition.id)
 
     # Add code for Audience view
-    code(item_competition.id, 3)
+    code(3, item_competition.id)
+
+    # Add code for Operator view
+    code(4, item_competition.id)
 
     item_competition = utils.refresh(item_competition)
     return item_competition

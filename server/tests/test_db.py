@@ -3,10 +3,10 @@ This file tests the database controller functions.
 """
 
 import app.database.controller as dbc
-from app.database.models import City, Media, MediaType, Role, User
+from app.database.models import City, Competition, Media, MediaType, Role, User, Code
 
 from tests import app, client, db
-from tests.test_helpers import add_default_values, assert_exists, assert_insert_fail
+from tests.test_helpers import add_default_values, assert_exists, assert_insert_fail, delete
 
 
 def test_user(client):
@@ -58,7 +58,7 @@ def test_copy(client):
     item_slide_original = item_slides[0]
 
     # Inserts several copies of the same slide
-    num_copies = 10
+    num_copies = 3
     for _ in range(num_copies):
         item_slide_copy = dbc.copy.slide(item_slide_original)
         num_slides += 1
@@ -73,6 +73,23 @@ def test_copy(client):
             item_slide_original = item_competition_original.slides[order]
             check_slides_copy(item_slide_original, item_slide, num_slides, order)
             assert item_slide.competition_id != item_slide_original.competition_id
+            # TODO: Check that all codes are corectly created
+
+    # Deleting competition deletes all corresponding codes
+    item_competitions = dbc.get.all(Competition)
+    for item_competition in item_competitions:
+        dbc.delete.competition(item_competition)
+    assert len(dbc.get.all(Code)) == 0
+
+    # Deleting team deletes the right code
+    item_competition = dbc.add.competition("tom", 1971, 1)
+    item_team_1 = dbc.add.team("Lag 1", item_competition.id)
+    item_team_2 = dbc.add.team("Lag 2", item_competition.id)
+    assert len(dbc.get.all(Code)) == 5
+    dbc.delete.team(item_team_1)
+    assert len(dbc.get.all(Code)) == 4
+    dbc.delete.team(item_team_2)
+    assert len(dbc.get.all(Code)) == 3
 
 
 def check_slides_copy(item_slide_original, item_slide_copy, num_slides, order):

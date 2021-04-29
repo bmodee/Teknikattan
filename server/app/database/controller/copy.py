@@ -103,7 +103,6 @@ def competition(item_competition_old):
     name = "Kopia av " + item_competition_old.name
     item_competition, total = search.competition(name=name)
     if item_competition:
-        print(f"{item_competition[total-1].name}, {total=}")
         name = "Kopia av " + item_competition[total - 1].name
 
     item_competition_new = add._competition_no_slides(

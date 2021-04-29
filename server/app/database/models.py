@@ -104,6 +104,7 @@ class Competition(db.Model):
 
     slides = db.relationship("Slide", backref="competition")
     teams = db.relationship("Team", backref="competition")
+    codes = db.relationship("Code", backref="competition")
 
     background_image = db.relationship("Media", uselist=False)
 
@@ -121,6 +122,7 @@ class Team(db.Model):
     competition_id = db.Column(db.Integer, db.ForeignKey("competition.id"), nullable=False)
 
     question_answers = db.relationship("QuestionAnswer", backref="team")
+    code = db.relationship("Code", backref="team")
 
     def __init__(self, name, competition_id):
         self.name = name
