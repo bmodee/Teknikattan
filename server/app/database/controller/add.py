@@ -29,13 +29,12 @@ from app.database.models import (
     ViewType,
     Whitelist,
 )
+from app.database.types import ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT, ID_TEXT_COMPONENT
+from flask import current_app
 from flask.globals import current_app
 from flask_restx import abort
 from PIL import Image
 from sqlalchemy import exc
-from flask import current_app
-
-from app.database.types import ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT, ID_TEXT_COMPONENT
 
 
 def db_add(item):

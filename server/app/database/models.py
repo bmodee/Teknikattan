@@ -5,9 +5,8 @@ each other.
 """
 
 from app.core import bcrypt, db
-from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
-
 from app.database.types import ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT, ID_TEXT_COMPONENT
+from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 
 STRING_SIZE = 254
 
@@ -201,8 +200,8 @@ class QuestionAnswer(db.Model):
     question_id = db.Column(db.Integer, db.ForeignKey("question.id"), nullable=False)
     team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
 
-    def __init__(self, data, score, question_id, team_id):
-        self.data = data
+    def __init__(self, answer, score, question_id, team_id):
+        self.answer = answer
         self.score = score
         self.question_id = question_id
         self.team_id = team_id

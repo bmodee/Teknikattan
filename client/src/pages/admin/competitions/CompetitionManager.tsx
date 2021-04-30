@@ -142,7 +142,6 @@ const CompetitionManager: React.FC = (props: any) => {
     await axios
       .get(`/api/competitions/${id}/codes`)
       .then((response) => {
-        console.log(response.data)
         setCodes(response.data.items)
       })
       .catch(console.log)
@@ -152,7 +151,7 @@ const CompetitionManager: React.FC = (props: any) => {
     await axios
       .get(`/api/competitions/${id}/teams`)
       .then((response) => {
-        console.log(response.data.items)
+        // console.log(response.data.items)
         setTeams(response.data.items)
       })
       .catch((err) => {
@@ -164,7 +163,7 @@ const CompetitionManager: React.FC = (props: any) => {
     await axios
       .get(`/api/competitions/${activeId}`)
       .then((response) => {
-        console.log(response.data.name)
+        // console.log(response.data.name)
         setCompetitionName(response.data.name)
       })
       .catch((err) => {

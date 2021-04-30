@@ -59,7 +59,6 @@ import {
  *  TODO:
  *  - Instead of copying code for others to join the competition, copy URL.
  *
- *  - Make code popup less code by using .map instead
  *
  *  - Fix scoreboard
  *
@@ -203,6 +202,16 @@ const OperatorViewPage: React.FC = () => {
         break
     }
     return typeName
+  }
+
+  const addScore = (id: number) => {
+    // Sums the scores for the teams. id must be id-1 because it starts at 1
+    
+    let totalScore = 0
+    for (let j = 0; j < teams[id - 1].question_answers.length; j++) {
+      totalScore = totalScore + teams[id - 1].question_answers[j].score
+    }
+    return totalScore
   }
 
   return (
@@ -364,7 +373,7 @@ const OperatorViewPage: React.FC = () => {
           {teams &&
             teams.map((team) => (
               <ListItem key={team.id}>
-                {team.name} score: {'666'}
+                {team.name} score:{addScore(team.id)}
               </ListItem>
             ))}
         </List>

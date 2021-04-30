@@ -49,8 +49,8 @@ def add_default_values():
     db.session.add(Code("111111", 1, item_competition.id, item_team1.id))  # Team
     db.session.add(Code("222222", 2, item_competition.id))  # Judge
 
-    dbc.add.QuestionAnswer("hej", 5, item_question.id, item_team1)
-    dbc.add.QuestionAnswer("då", 5, item_question.id, item_team2)
+    dbc.add.question_answer("hej", 5, item_question.id, item_team1.id)
+    dbc.add.question_answer("då", 5, item_question.id, item_team2.id)
 
     db.session.commit()
 
