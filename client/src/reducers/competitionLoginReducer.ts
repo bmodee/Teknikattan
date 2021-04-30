@@ -36,13 +36,6 @@ export default function (state = initialState, action: AnyAction) {
         authenticated: true,
         initialized: true,
       }
-
-    case Types.SET_COMPETITION_LOGIN_AUTHENTICATED:
-      return {
-        ...state,
-        authenticated: true,
-        initialized: true,
-      }
     case Types.SET_COMPETITION_LOGIN_ERRORS:
       return {
         ...state,

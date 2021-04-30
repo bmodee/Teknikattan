@@ -28,30 +28,10 @@ const Main: React.FC = () => {
           component={PresentationEditorPage}
         />
         <Route exact path="/:code" component={ViewSelectPage} />
-        <SecureRoute
-          authLevel="competition"
-          exact
-          path="/team/competition-id=:competitionId"
-          component={TeamViewPage}
-        />
-        <SecureRoute
-          authLevel="competition"
-          exact
-          path="/operator/competition-id=:competitionId"
-          component={OperatorViewPage}
-        />
-        <SecureRoute
-          authLevel="competition"
-          exact
-          path="/judge/competition-id=:competitionId"
-          component={JudgeViewPage}
-        />
-        <SecureRoute
-          authLevel="competition"
-          exact
-          path="/audience/competition-id=:competitionId"
-          component={AudienceViewPage}
-        />
+        <SecureRoute authLevel="Team" exact path="/view/team" component={TeamViewPage} />
+        <SecureRoute authLevel="Operator" exact path="/view/operator" component={OperatorViewPage} />
+        <SecureRoute authLevel="Judge" exact path="/view/judge" component={JudgeViewPage} />
+        <SecureRoute authLevel="Audience" exact path="/view/audience" component={AudienceViewPage} />
       </Switch>
     </BrowserRouter>
   )

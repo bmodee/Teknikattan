@@ -7,7 +7,7 @@ import { CheckAuthenticationCompetition } from './checkAuthenticationCompetition
 interface SecureRouteProps extends RouteProps {
   component: React.ComponentType<any>
   rest?: any
-  authLevel: 'competition' | 'admin' | 'login'
+  authLevel: 'admin' | 'login' | 'Operator' | 'Team' | 'Judge' | 'Audience'
 }
 
 /** Utility component to use for authentication, replace all routes that should be private with secure routes*/
@@ -16,6 +16,7 @@ const SecureRoute: React.FC<SecureRouteProps> = ({ component: Component, authLev
   const compAuthenticated = useAppSelector((state) => state.competitionLogin.authenticated)
   const [initialized, setInitialized] = React.useState(false)
   const compInitialized = useAppSelector((state) => state.competitionLogin.initialized)
+  const viewType = useAppSelector((state) => state.competitionLogin.data?.view)
   React.useEffect(() => {
     if (authLevel === 'admin' || authLevel === 'login') {
       CheckAuthenticationAdmin().then(() => setInitialized(true))
@@ -32,11 +33,16 @@ const SecureRoute: React.FC<SecureRouteProps> = ({ component: Component, authLev
           render={(props) => (userAuthenticated ? <Redirect to="/admin" /> : <Component {...props} />)}
         />
       )
-    else if (authLevel === 'competition' && compInitialized)
+    else if (compInitialized && viewType && authLevel !== 'admin') {
       return (
-        <Route {...rest} render={(props) => (compAuthenticated ? <Component {...props} /> : <Redirect to="/" />)} />
+        <Route
+          {...rest}
+          render={(props) =>
+            compAuthenticated && viewType === authLevel ? <Component {...props} /> : <Redirect to="/" />
+          }
+        />
       )
-    else
+    } else
       return (
         <Route {...rest} render={(props) => (userAuthenticated ? <Component {...props} /> : <Redirect to="/" />)} />
       )

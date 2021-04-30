@@ -1,7 +1,7 @@
 import axios from 'axios'
 import jwtDecode from 'jwt-decode'
 import { logoutCompetition } from '../actions/competitionLogin'
-import { setPresentationCode } from '../actions/presentation'
+import { getPresentationCompetition, setPresentationCode } from '../actions/presentation'
 import Types from '../actions/types'
 import store from '../store'
 
@@ -15,19 +15,18 @@ export const CheckAuthenticationCompetition = async () => {
     const decodedToken: any = jwtDecode(authToken)
     if (decodedToken.exp * 1000 >= Date.now()) {
       axios.defaults.headers.common['Authorization'] = authToken
-      console.log(decodedToken.user_claims)
       await axios
         .get('/api/auth/test')
         .then((res) => {
-          store.dispatch({ type: Types.SET_COMPETITION_LOGIN_AUTHENTICATED })
           store.dispatch({
             type: Types.SET_COMPETITION_LOGIN_DATA,
             payload: {
               competition_id: decodedToken.user_claims.competition_id,
               team_id: decodedToken.user_claims.team_id,
-              view: res.data.view,
+              view: decodedToken.user_claims.view,
             },
           })
+          getPresentationCompetition(decodedToken.user_claims.competition_id)(store.dispatch, store.getState)
           setPresentationCode(decodedToken.user_claims.code)(store.dispatch)
         })
         .catch((error) => {

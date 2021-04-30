@@ -22,13 +22,13 @@ const ViewSelectPage: React.FC = () => {
     if (competitionId) {
       switch (viewType) {
         case 'Team':
-          return <Redirect to={`/team/competition-id=${competitionId}`} />
+          return <Redirect to={`/view/team`} />
         case 'Judge':
-          return <Redirect to={`/judge/competition-id=${competitionId}`} />
+          return <Redirect to={`/view/judge`} />
         case 'Audience':
-          return <Redirect to={`/audience/competition-id=${competitionId}`} />
+          return <Redirect to={`/view/audience`} />
         case 'Operator':
-          return <Redirect to={`/operator/competition-id=${competitionId}`} />
+          return <Redirect to={`/view/operator`} />
         default:
           return (
             <ViewSelectContainer>

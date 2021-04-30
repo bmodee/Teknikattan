@@ -63,6 +63,7 @@ export const LeftDrawer = styled(Drawer)<DrawerSizeProps>`
   flex-shrink: 0;
   position: relative;
   z-index: 1;
+  overflow: hidden;
 `
 
 export const RightDrawer = styled(Drawer)<DrawerSizeProps>`

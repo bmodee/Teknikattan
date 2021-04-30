@@ -12,7 +12,7 @@ list_schema = CodeDTO.list_schema
 @api.route("")
 @api.param("competition_id")
 class CodesList(Resource):
-    @protect_route(allowed_roles=["*"])
+    @protect_route(allowed_roles=["*"], allowed_views=["Operator"])
     def get(self, competition_id):
         items = dbc.get.code_list(competition_id)
         return list_response(list_schema.dump(items), len(items))

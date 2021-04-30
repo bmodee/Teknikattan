@@ -13,7 +13,7 @@ it('renders presentation editor', () => {
       id: 0,
       year: 0,
       city_id: 0,
-      slides: [{ id: 5 }],
+      slides: [{ id: 5, order: 2 }],
       teams: [],
     },
   }

@@ -1,17 +1,17 @@
 import {
+  Box,
   Button,
-  Menu,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   ListItem,
+  ListItemText,
+  Menu,
   TablePagination,
   TextField,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  ListItemText,
   Tooltip,
-  Box,
+  Typography,
 } from '@material-ui/core'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -25,7 +25,10 @@ import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import FileCopyIcon from '@material-ui/icons/FileCopy'
+import LinkIcon from '@material-ui/icons/Link'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
+import RefreshIcon from '@material-ui/icons/Refresh'
 import axios from 'axios'
 import React, { useEffect } from 'react'
 import { Link, useHistory } from 'react-router-dom'
@@ -35,8 +38,6 @@ import { Team } from '../../../interfaces/ApiModels'
 import { CompetitionFilterParams } from '../../../interfaces/FilterParams'
 import { FilterContainer, RemoveMenuItem, TopBar, YearFilterTextField } from '../styledComp'
 import AddCompetition from './AddCompetition'
-import FileCopyIcon from '@material-ui/icons/FileCopy'
-import RefreshIcon from '@material-ui/icons/Refresh'
 
 /**
  * Component description:
@@ -83,14 +84,16 @@ const CompetitionManager: React.FC = (props: any) => {
   const filterParams = useAppSelector((state) => state.competitions.filterParams)
   const competitionTotal = useAppSelector((state) => state.competitions.total)
   const cities = useAppSelector((state) => state.cities.cities)
-
   const classes = useStyles()
   const noFilterText = 'Alla'
   const dispatch = useAppDispatch()
   const history = useHistory()
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, id: number) => {
-    setAnchorEl(event.currentTarget)
     setActiveId(id)
+    getCodes(id)
+    getTeams(id)
+    setAnchorEl(event.currentTarget)
   }
 
   const handleClose = () => {
@@ -129,12 +132,15 @@ const CompetitionManager: React.FC = (props: any) => {
   }
 
   const handleStartCompetition = () => {
-    history.push(`/operator/id=${activeId}&code=123123`)
+    const operatorCode = codes.find((code) => code.view_type_id === 4)?.code
+    if (operatorCode) {
+      history.push(`/${operatorCode}`)
+    }
   }
 
-  const getCodes = async () => {
+  const getCodes = async (id: number) => {
     await axios
-      .get(`/api/competitions/${activeId}/codes`)
+      .get(`/api/competitions/${id}/codes`)
       .then((response) => {
         console.log(response.data)
         setCodes(response.data.items)
@@ -142,9 +148,9 @@ const CompetitionManager: React.FC = (props: any) => {
       .catch(console.log)
   }
 
-  const getTeams = async () => {
+  const getTeams = async (id: number) => {
     await axios
-      .get(`/api/competitions/${activeId}/teams`)
+      .get(`/api/competitions/${id}/teams`)
       .then((response) => {
         console.log(response.data.items)
         setTeams(response.data.items)
@@ -194,8 +200,6 @@ const CompetitionManager: React.FC = (props: any) => {
   }
 
   const handleOpenDialog = async () => {
-    await getCodes()
-    await getTeams()
     await getCompetitionName()
     setDialogIsOpen(true)
   }
@@ -225,15 +229,17 @@ const CompetitionManager: React.FC = (props: any) => {
   }
 
   const refreshCode = async (code: Code) => {
-    await axios
-      .put(`/api/competitions/${activeId}/codes/${code.id}`)
-      .then(() => {
-        getCodes()
-        dispatch(getCompetitions())
-      })
-      .catch(({ response }) => {
-        console.warn(response.data)
-      })
+    if (activeId) {
+      await axios
+        .put(`/api/competitions/${activeId}/codes/${code.id}`)
+        .then(() => {
+          getCodes(activeId)
+          dispatch(getCompetitions())
+        })
+        .catch(({ response }) => {
+          console.warn(response.data)
+        })
+    }
   }
 
   return (
@@ -371,6 +377,16 @@ const CompetitionManager: React.FC = (props: any) => {
                   }}
                 >
                   <FileCopyIcon fontSize="small" />
+                </Button>
+              </Tooltip>
+              <Tooltip title="Kopiera länk" arrow>
+                <Button
+                  margin-right="0px"
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${window.location.host}/${code.code}`)
+                  }}
+                >
+                  <LinkIcon fontSize="small" />
                 </Button>
               </Tooltip>
             </ListItem>

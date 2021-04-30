@@ -4,6 +4,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd'
 import { Link, useParams } from 'react-router-dom'
 import { getCities } from '../../actions/cities'
 import { getEditorCompetition, setEditorSlideId, setEditorViewId } from '../../actions/editor'
@@ -109,6 +110,20 @@ const PresentationEditorPage: React.FC = () => {
     }
   }
 
+  const onDragEnd = async (result: DropResult) => {
+    // dropped outside the list
+    if (!result.destination) {
+      return
+    }
+    const draggedIndex = result.source.index
+    const draggedSlideId = competition.slides.find((slide) => slide.order === draggedIndex)?.id
+    if (draggedSlideId) {
+      await axios
+        .put(`/api/competitions/${competitionId}/slides/${draggedSlideId}/order`, { order: result.destination.index })
+        .then(() => dispatch(getEditorCompetition(competitionId)))
+        .catch(console.log)
+    }
+  }
   return (
     <PresentationEditorContainer>
       <CssBaseline />
@@ -143,20 +158,34 @@ const PresentationEditorPage: React.FC = () => {
         <FillLeftContainer $leftDrawerWidth={leftDrawerWidth} $rightDrawerWidth={undefined}>
           <ToolbarMargin />
           <SlideList>
-            {competition.slides &&
-              competition.slides.map((slide) => (
-                <SlideListItem
-                  divider
-                  button
-                  key={slide.id}
-                  selected={slide.id === activeSlideId}
-                  onClick={() => setActiveSlideId(slide.id)}
-                  onContextMenu={(event) => handleRightClick(event, slide.id)}
-                >
-                  {renderSlideIcon(slide)}
-                  <ListItemText primary={`Sida ${slide.order + 1}`} />
-                </SlideListItem>
-              ))}
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="droppable">
+                {(provided) => (
+                  <div key={provided.innerRef.toString()} ref={provided.innerRef} {...provided.droppableProps}>
+                    {competition.slides &&
+                      competition.slides.map((slide, index) => (
+                        <Draggable key={slide.order} draggableId={slide.id.toString()} index={index}>
+                          {(provided, snapshot) => (
+                            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                              <SlideListItem
+                                divider
+                                button
+                                selected={slide.id === activeSlideId}
+                                onClick={() => setActiveSlideId(slide.id)}
+                                onContextMenu={(event) => handleRightClick(event, slide.id)}
+                              >
+                                {renderSlideIcon(slide)}
+                                <ListItemText primary={`Sida ${slide.order + 1}`} />
+                              </SlideListItem>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
           </SlideList>
           <PositionBottom>
             <Divider />
@@ -184,7 +213,7 @@ const PresentationEditorPage: React.FC = () => {
 
       <Content leftDrawerWidth={leftDrawerWidth} rightDrawerWidth={rightDrawerWidth}>
         <InnerContent>
-          <SlideDisplay variant="editor" activeViewTypeId={activeViewTypeId} />
+          {competitionLoading && <SlideDisplay variant="editor" activeViewTypeId={activeViewTypeId} />}
         </InnerContent>
       </Content>
       <Menu

@@ -4,12 +4,14 @@ This file handles actions for the competitionLogin redux state
 
 import axios from 'axios'
 import { History } from 'history'
-import { AppDispatch } from '../store'
+import { AppDispatch, RootState } from '../store'
+import { getPresentationCompetition } from './presentation'
 import Types from './types'
 
 // Action creator to attempt to login with competition code
 export const loginCompetition = (code: string, history: History, redirect: boolean) => async (
-  dispatch: AppDispatch
+  dispatch: AppDispatch,
+  getState: () => RootState
 ) => {
   dispatch({ type: Types.LOADING_COMPETITION_LOGIN })
   await axios
@@ -27,7 +29,8 @@ export const loginCompetition = (code: string, history: History, redirect: boole
           view: res.data.view,
         },
       })
-      if (redirect && res.data && res.data.view_type_id) {
+      getPresentationCompetition(res.data.competition_id)(dispatch, getState)
+      if (redirect && res.data && res.data.view) {
         history.push(`/${code}`)
       }
     })

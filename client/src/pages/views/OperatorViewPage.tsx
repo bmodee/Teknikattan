@@ -25,11 +25,8 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
 import TimerIcon from '@material-ui/icons/Timer'
 import axios from 'axios'
 import React, { useEffect } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
-import { getPresentationCompetition } from '../../actions/presentation'
-import { useAppDispatch, useAppSelector } from '../../hooks'
-import { Team } from '../../interfaces/ApiModels'
-import { ViewParams } from '../../interfaces/ViewParams'
+import { useHistory } from 'react-router-dom'
+import { useAppSelector } from '../../hooks'
 import {
   socketConnect,
   socketEndPresentation,
@@ -100,24 +97,21 @@ const OperatorViewPage: React.FC = () => {
   const [openAlert, setOpen] = React.useState(false)
   const [openAlertCode, setOpenCode] = React.useState(false)
   const [codes, setCodes] = React.useState<Code[]>([])
-  const [teams, setTeams] = React.useState<Team[]>([])
   const [competitionName, setCompetitionName] = React.useState<string | undefined>(undefined)
 
   //const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   const classes = useStyles()
-  //const teams = useAppSelector((state) => state.presentation.competition.teams)
+  const teams = useAppSelector((state) => state.presentation.competition.teams)
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
-  const { competitionId }: ViewParams = useParams()
+  const competitionId = useAppSelector((state) => state.competitionLogin.data?.competition_id)
   const presentation = useAppSelector((state) => state.presentation)
   const activeId = useAppSelector((state) => state.presentation.competition.id)
   const history = useHistory()
-  const dispatch = useAppDispatch()
   const viewTypes = useAppSelector((state) => state.types.viewTypes)
   const activeViewTypeId = viewTypes.find((viewType) => viewType.name === 'Audience')?.id
 
   useEffect(() => {
-    dispatch(getPresentationCompetition(competitionId))
     socketConnect()
     socketSetSlide // Behövs denna?
     handleOpenCodes()
@@ -153,13 +147,8 @@ const OperatorViewPage: React.FC = () => {
 
   const handleOpenCodes = async () => {
     await getCodes()
-    await getTeams()
     await getCompetitionName()
     setOpenCode(true)
-  }
-
-  const handleCopy = () => {
-    console.log('copied code to clipboard')
   }
 
   const endCompetition = () => {
@@ -176,17 +165,6 @@ const OperatorViewPage: React.FC = () => {
         setCodes(response.data.items)
       })
       .catch(console.log)
-  }
-
-  const getTeams = async () => {
-    await axios
-      .get(`/api/competitions/${activeId}/teams`)
-      .then((response) => {
-        setTeams(response.data.items)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
   }
 
   const getCompetitionName = async () => {

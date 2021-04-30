@@ -2,9 +2,8 @@ import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.apis import item_response, list_response, protect_route
 from app.core.dto import SlideDTO
-from flask_restx import Resource
-from flask_restx import reqparse
 from app.core.parsers import sentinel
+from flask_restx import Resource, reqparse
 
 api = SlideDTO.api
 schema = SlideDTO.schema
