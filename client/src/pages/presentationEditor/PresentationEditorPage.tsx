@@ -213,7 +213,7 @@ const PresentationEditorPage: React.FC = () => {
 
       <Content leftDrawerWidth={leftDrawerWidth} rightDrawerWidth={rightDrawerWidth}>
         <InnerContent>
-          {competitionLoading && <SlideDisplay variant="editor" activeViewTypeId={activeViewTypeId} />}
+          <SlideDisplay variant="editor" activeViewTypeId={activeViewTypeId} />
         </InnerContent>
       </Content>
       <Menu
