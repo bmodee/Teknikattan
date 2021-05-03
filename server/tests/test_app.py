@@ -2,13 +2,35 @@
 This file tests the api function calls.
 """
 
+import time
+
 import app.core.http_codes as codes
-from app.database.controller.add import competition
-from app.database.models import Slide
+import pytest
 from app.core import sockets
 
 from tests import app, client, db
 from tests.test_helpers import add_default_values, change_order_test, delete, get, post, put
+
+
+# @pytest.mark.skip(reason="Takes long time")
+def test_locked_api(client):
+    add_default_values()
+
+    # Login in with default user but wrong password until blocked
+    for i in range(4):
+        response, body = post(client, "/api/auth/login", {"email": "test@test.se", "password": "password1"})
+        assert response.status_code == codes.UNAUTHORIZED
+
+    # Login with right password, user should be locked
+    response, body = post(client, "/api/auth/login", {"email": "test@test.se", "password": "password"})
+    assert response.status_code == codes.UNAUTHORIZED
+
+    # Sleep for 4 secounds
+    time.sleep(4)
+
+    # Check so the user is no longer locked
+    response, body = post(client, "/api/auth/login", {"email": "test@test.se", "password": "password"})
+    assert response.status_code == codes.OK
 
 
 def test_misc_api(client):
@@ -125,6 +147,10 @@ def test_auth_and_user_api(client):
     assert response.status_code == codes.OK
     headers = {"Authorization": "Bearer " + body["access_token"]}
 
+    # Login in with default user but wrong password
+    response, body = post(client, "/api/auth/login", {"email": "test@test.se", "password": "password1"})
+    assert response.status_code == codes.UNAUTHORIZED
+
     # Create user
     register_data = {"email": "test1@test.se", "password": "abc123", "role_id": 2, "city_id": 1}
     response, body = post(client, "/api/auth/signup", register_data, headers)
@@ -211,7 +237,6 @@ def test_auth_and_user_api(client):
     assert response.status_code == codes.OK
 
     # TODO: Check if current users jwt (jti) is in blacklist after logging out
-
     response, body = get(client, "/api/users", headers=headers)
     assert response.status_code == codes.UNAUTHORIZED
 

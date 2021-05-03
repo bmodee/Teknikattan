@@ -17,6 +17,8 @@ class Config:
     THUMBNAIL_SIZE = (120, 120)
     SECRET_KEY = os.urandom(24)
     SQLALCHEMY_ECHO = False
+    USER_LOGIN_LOCKED_ATTEMPTS = 12
+    USER_LOGIN_LOCKED_EXPIRES = timedelta(hours=3)
 
 
 class DevelopmentConfig(Config):
@@ -34,6 +36,8 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///test.db"
+    USER_LOGIN_LOCKED_ATTEMPTS = 4
+    USER_LOGIN_LOCKED_EXPIRES = timedelta(seconds=4)
 
 
 class ProductionConfig(Config):

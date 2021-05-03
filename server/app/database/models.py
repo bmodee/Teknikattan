@@ -61,8 +61,9 @@ class User(db.Model):
     _password = db.Column(db.LargeBinary(60), nullable=False)
 
     authenticated = db.Column(db.Boolean, default=False)
-    # twoAuthConfirmed = db.Column(db.Boolean, default=True)
-    # twoAuthCode = db.Column(db.String(STRING_SIZE), nullable=True)
+
+    login_attempts = db.Column(db.Integer, nullable=False, default=0)
+    locked = db.Column(db.DateTime(timezone=True), nullable=True, default=None)
 
     role_id = db.Column(db.Integer, db.ForeignKey("role.id"), nullable=False)
     city_id = db.Column(db.Integer, db.ForeignKey("city.id"), nullable=False)
