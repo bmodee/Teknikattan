@@ -94,6 +94,16 @@ export interface TextComponent extends Component {
   font: string
 }
 
-export interface QuestionAlternativeComponent extends Component {
+export interface QuestionComponent extends Component {
+  id: number
+  x: number
+  y: number
+  w: number
+  h: number
+  slide_id: number
+  type_id: number
+  view_type_id: number
+  text: string
+  media: Media
   question_id: number
 }

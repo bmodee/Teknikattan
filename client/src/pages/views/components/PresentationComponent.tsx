@@ -1,21 +1,17 @@
-import { Typography } from '@material-ui/core'
 import React from 'react'
 import { Rnd } from 'react-rnd'
 import { ComponentTypes } from '../../../enum/ComponentTypes'
-import { useAppSelector } from '../../../hooks'
 import { Component, ImageComponent, TextComponent } from '../../../interfaces/ApiModels'
 import ImageComponentDisplay from '../../presentationEditor/components/ImageComponentDisplay'
+import QuestionComponentDisplay from '../../presentationEditor/components/QuestionComponentDisplay'
 import TextComponentDisplay from '../../presentationEditor/components/TextComponentDisplay'
-import { SlideContainer } from './styled'
 
 type PresentationComponentProps = {
   component: Component
-  width: number
-  height: number
   scale: number
 }
 
-const PresentationComponent = ({ component, width, height, scale }: PresentationComponentProps) => {
+const PresentationComponent = ({ component, scale }: PresentationComponentProps) => {
   const renderInnerComponent = () => {
     switch (component.type_id) {
       case ComponentTypes.Text:
@@ -28,6 +24,8 @@ const PresentationComponent = ({ component, width, height, scale }: Presentation
             component={component as ImageComponent}
           />
         )
+      case ComponentTypes.Question:
+        return <QuestionComponentDisplay variant="presentation" />
       default:
         break
     }

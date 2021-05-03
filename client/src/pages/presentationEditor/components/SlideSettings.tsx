@@ -1,18 +1,19 @@
 /* This file compiles and renders the right hand slide settings bar, under the tab "SIDA".
  */
-import { Divider, List, ListItem, ListItemText, TextField, Typography } from '@material-ui/core'
-import React, { useState } from 'react'
+import { Divider } from '@material-ui/core'
+import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useAppSelector } from '../../../hooks'
+import BackgroundImageSelect from './BackgroundImageSelect'
+import Images from './slideSettingsComponents/Images'
 import Instructions from './slideSettingsComponents/Instructions'
 import MultipleChoiceAlternatives from './slideSettingsComponents/MultipleChoiceAlternatives'
-import SlideType from './slideSettingsComponents/SlideType'
-import { Center, ImportedImage, SettingsList, PanelContainer } from './styled'
-import Timer from './slideSettingsComponents/Timer'
-import Images from './slideSettingsComponents/Images'
-import Texts from './slideSettingsComponents/Texts'
 import QuestionSettings from './slideSettingsComponents/QuestionSettings'
-import BackgroundImageSelect from './BackgroundImageSelect'
+import SingleChoiceAlternatives from './slideSettingsComponents/SingleChoiceAlternatives'
+import SlideType from './slideSettingsComponents/SlideType'
+import Texts from './slideSettingsComponents/Texts'
+import Timer from './slideSettingsComponents/Timer'
+import { PanelContainer, SettingsList } from './styled'
 
 interface CompetitionParams {
   competitionId: string
@@ -36,17 +37,19 @@ const SlideSettings: React.FC = () => {
       </SettingsList>
 
       {activeSlide?.questions[0] && <QuestionSettings activeSlide={activeSlide} competitionId={competitionId} />}
+
       {
-        // Choose answer alternatives depending on the slide type
+        // Choose answer alternatives, depending on the slide type
       }
-      {activeSlide?.questions[0]?.type_id === 1 && (
-        <Instructions activeSlide={activeSlide} competitionId={competitionId} />
-      )}
-      {activeSlide?.questions[0]?.type_id === 2 && (
+      {(activeSlide?.questions[0]?.type_id === 1 || activeSlide?.questions[0]?.type_id === 2) && (
         <Instructions activeSlide={activeSlide} competitionId={competitionId} />
       )}
       {activeSlide?.questions[0]?.type_id === 3 && (
         <MultipleChoiceAlternatives activeSlide={activeSlide} competitionId={competitionId} />
+      )}
+
+      {activeSlide?.questions[0]?.type_id === 4 && (
+        <SingleChoiceAlternatives activeSlide={activeSlide} competitionId={competitionId} />
       )}
 
       {activeSlide && (

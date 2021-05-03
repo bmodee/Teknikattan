@@ -77,15 +77,7 @@ const SlideDisplay = ({ variant, activeViewTypeId }: SlideDisplayProps) => {
                       scale={scale}
                     />
                   )
-                return (
-                  <PresentationComponent
-                    height={height}
-                    width={width}
-                    key={component.id}
-                    component={component}
-                    scale={scale}
-                  />
-                )
+                return <PresentationComponent key={component.id} component={component} scale={scale} />
               })}
         </SlideEditorPaper>
       </SlideEditorContainerRatio>

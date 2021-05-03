@@ -11,7 +11,7 @@ schema = ComponentDTO.schema
 list_schema = ComponentDTO.list_schema
 
 component_parser_add = reqparse.RequestParser()
-component_parser_add.add_argument("x", type=str, default=0, location="json")
+component_parser_add.add_argument("x", type=int, default=0, location="json")
 component_parser_add.add_argument("y", type=int, default=0, location="json")
 component_parser_add.add_argument("w", type=int, default=1, location="json")
 component_parser_add.add_argument("h", type=int, default=1, location="json")
@@ -22,7 +22,7 @@ component_parser_add.add_argument("media_id", type=int, default=None, location="
 component_parser_add.add_argument("question_id", type=int, default=None, location="json")
 
 component_parser_edit = reqparse.RequestParser()
-component_parser_edit.add_argument("x", type=str, default=sentinel, location="json")
+component_parser_edit.add_argument("x", type=int, default=sentinel, location="json")
 component_parser_edit.add_argument("y", type=int, default=sentinel, location="json")
 component_parser_edit.add_argument("w", type=int, default=sentinel, location="json")
 component_parser_edit.add_argument("h", type=int, default=sentinel, location="json")

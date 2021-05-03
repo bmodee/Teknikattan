@@ -1,16 +1,4 @@
-import {
-  FormControl,
-  List,
-  Tab,
-  TextField,
-  Typography,
-  Button,
-  Card,
-  ListItem,
-  Select,
-  InputLabel,
-  ListItemText,
-} from '@material-ui/core'
+import { Button, Card, List, ListItemText, Tab, TextField, Typography } from '@material-ui/core'
 import styled from 'styled-components'
 
 export const SettingsTab = styled(Tab)`
@@ -147,4 +135,8 @@ export const HoverContainer = styled.div<HoverContainerProps>`
 
 export const ImageNameText = styled(ListItemText)`
   word-break: break-all;
+`
+
+export const QuestionComponent = styled.div`
+  outline-style: double;
 `

@@ -11,8 +11,8 @@ from app.database.models import City, QuestionType, Role
 
 def _add_items():
     media_types = ["Image", "Video"]
-    question_types = ["Boolean", "Multiple", "Text"]
-    component_types = ["Text", "Image"]
+    question_types = ["Text", "Practical", "Multiple", "Single"]
+    component_types = ["Text", "Image", "Question"]
     view_types = ["Team", "Judge", "Audience", "Operator"]
 
     roles = ["Admin", "Editor"]

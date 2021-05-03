@@ -15,7 +15,7 @@ import {
 import axios from 'axios'
 import React, { useState } from 'react'
 import { getEditorCompetition } from '../../../../actions/editor'
-import { useAppDispatch } from '../../../../hooks'
+import { useAppDispatch, useAppSelector } from '../../../../hooks'
 import { RichSlide } from '../../../../interfaces/ApiRichModels'
 import { Center, FirstItem } from '../styled'
 
@@ -30,6 +30,11 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
   // For "slide type" dialog
   const [selectedSlideType, setSelectedSlideType] = useState(0)
   const [slideTypeDialog, setSlideTypeDialog] = useState(false)
+  const components = useAppSelector(
+    (state) => state.editor.competition.slides.find((slide) => slide.id === state.editor.activeSlideId)?.components
+  )
+  const questionComponentId = components?.find((qCompId) => qCompId.type_id === 3)?.id
+
   const openSlideTypeDialog = (type_id: number) => {
     setSelectedSlideType(type_id)
     setSlideTypeDialog(true)
@@ -41,6 +46,7 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
   const updateSlideType = async () => {
     closeSlideTypeDialog()
     if (activeSlide) {
+      deleteQuestionComponent(questionComponentId)
       if (activeSlide.questions[0] && activeSlide.questions[0].type_id !== selectedSlideType) {
         if (selectedSlideType === 0) {
           // Change slide type from a question type to information
@@ -67,6 +73,7 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
             })
             .then(() => {
               dispatch(getEditorCompetition(competitionId))
+              createQuestionComponent()
             })
             .catch(console.log)
         }
@@ -80,11 +87,38 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
           })
           .then(() => {
             dispatch(getEditorCompetition(competitionId))
+            createQuestionComponent()
           })
           .catch(console.log)
       }
     }
   }
+
+  const createQuestionComponent = () => {
+    axios
+      .post(`/api/competitions/${competitionId}/slides/${activeSlide.id}/components`, {
+        x: 0,
+        y: 0,
+        w: 400,
+        h: 250,
+        type_id: 3,
+        view_type_id: 1,
+        question_id: activeSlide.questions[0].id,
+      })
+      .then(() => {
+        dispatch(getEditorCompetition(competitionId))
+      })
+      .catch(console.log)
+  }
+
+  const deleteQuestionComponent = (componentId: number | undefined) => {
+    if (componentId) {
+      axios
+        .delete(`/api/competitions/${competitionId}/slides/${activeSlide.id}/components/${componentId}`)
+        .catch(console.log)
+    }
+  }
+
   return (
     <FirstItem>
       <ListItem>
@@ -108,7 +142,12 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
             </MenuItem>
             <MenuItem value={3}>
               <Typography variant="button" onClick={() => openSlideTypeDialog(3)}>
-                Flervalsfråga
+                Kryssfråga
+              </Typography>
+            </MenuItem>
+            <MenuItem value={4}>
+              <Typography variant="button" onClick={() => openSlideTypeDialog(4)}>
+                Alternativfråga
               </Typography>
             </MenuItem>
           </Select>

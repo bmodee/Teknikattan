@@ -9,6 +9,7 @@ import { Component, ImageComponent, TextComponent } from '../../../interfaces/Ap
 import { Position, Size } from '../../../interfaces/Components'
 import { RemoveMenuItem } from '../../admin/styledComp'
 import ImageComponentDisplay from './ImageComponentDisplay'
+import QuestionComponentDisplay from './QuestionComponentDisplay'
 import { HoverContainer } from './styled'
 import TextComponentDisplay from './TextComponentDisplay'
 //import NestedMenuItem from 'material-ui-nested-menu-item'
@@ -124,6 +125,12 @@ const RndComponent = ({ component, width, height, scale }: RndComponentProps) =>
               width={currentSize.w * scale}
               component={component as ImageComponent}
             />
+          </HoverContainer>
+        )
+      case ComponentTypes.Question:
+        return (
+          <HoverContainer hover={hover}>
+            <QuestionComponentDisplay variant="editor" />
           </HoverContainer>
         )
       default:
