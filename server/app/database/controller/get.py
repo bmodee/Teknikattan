@@ -2,7 +2,6 @@
 This file contains functionality to get data from the database.
 """
 
-from sqlalchemy.orm.util import with_polymorphic
 from app.core import db
 from app.core import http_codes as codes
 from app.database.models import (
@@ -18,11 +17,12 @@ from app.database.models import (
     TextComponent,
     User,
 )
-from sqlalchemy.orm import joinedload, subqueryload
+from sqlalchemy.orm import joinedload
+from sqlalchemy.orm.util import with_polymorphic
 
 
 def all(db_type):
-    """ Gets lazy db-item in the provided table. """
+    """ Gets a list of all lazy db-items in the provided table. """
 
     return db_type.query.all()
 
@@ -43,7 +43,10 @@ def code_by_code(code):
 
 
 def code_list(competition_id):
-    """ Gets a list of all code objects associated with a the provided competition. """
+    """
+    Gets a list of all code objects associated with the provided competition.
+    """
+
     # team_view_id = 1
     join_competition = Competition.id == Code.competition_id
     filters = Competition.id == competition_id
@@ -58,19 +61,23 @@ def user_exists(email):
 
 
 def user(user_id):
-    """ Gets the user object associated with the provided id. """
+    """ Gets the user object associated with the provided user. """
 
     return User.query.filter(User.id == user_id).first_extended()
 
 
 def user_by_email(email):
     """ Gets the user object associated with the provided email. """
+
     return User.query.filter(User.email == email).first_extended(error_code=codes.UNAUTHORIZED)
 
 
 ### Slides ###
 def slide(competition_id, slide_id):
-    """ Gets the slide object associated with the provided id and order. """
+    """
+    Gets the slide object associated with the provided competition and slide.
+    """
+
     join_competition = Competition.id == Slide.competition_id
     filters = (Competition.id == competition_id) & (Slide.id == slide_id)
 
@@ -78,7 +85,10 @@ def slide(competition_id, slide_id):
 
 
 def slide_list(competition_id):
-    """ Gets a list of all slide objects associated with a the provided competition. """
+    """
+    Gets a list of all slide objects associated with the provided competition.
+    """
+
     join_competition = Competition.id == Slide.competition_id
     filters = Competition.id == competition_id
 
@@ -91,15 +101,10 @@ def slide_count(competition_id):
     return Slide.query.filter(Slide.competition_id == competition_id).count()
 
 
-def slide_count(competition_id):
-    """ Gets the number of slides in the provided competition. """
-
-    return Slide.query.filter(Slide.competition_id == competition_id).count()
-
-
 ### Teams ###
 def team(competition_id, team_id):
-    """ Gets the team object associated with the provided id and competition id. """
+    """ Gets the team object associated with the competition and team. """
+
     join_competition = Competition.id == Team.competition_id
     filters = (Competition.id == competition_id) & (Team.id == team_id)
 
@@ -107,19 +112,22 @@ def team(competition_id, team_id):
 
 
 def team_list(competition_id):
-    """ Gets a list of all team objects associated with a the provided competition. """
+    """
+    Gets a list of all team objects associated with the provided competition.
+    """
 
     join_competition = Competition.id == Team.competition_id
     filters = Competition.id == competition_id
 
     return Team.query.join(Competition, join_competition).filter(filters).all()
 
-    return Team.query.join(Competition, join_competition).filter(filters).all()
-
 
 ### Questions ###
 def question(competition_id, slide_id, question_id):
-    """ Gets the question object associated with the provided id, slide order and competition id. """
+    """
+    Gets the question object associated with the
+    provided, competition, slide and question.
+    """
 
     join_competition = Competition.id == Slide.competition_id
     join_slide = Slide.id == Question.slide_id
@@ -129,7 +137,10 @@ def question(competition_id, slide_id, question_id):
 
 
 def question_list(competition_id, slide_id):
-    """ Gets a list of all question objects associated with a the provided competition and slide. """
+    """
+    Gets a list of all question objects associated
+    with the provided competition and slide.
+    """
 
     join_competition = Competition.id == Slide.competition_id
     join_slide = Slide.id == Question.slide_id
@@ -139,7 +150,10 @@ def question_list(competition_id, slide_id):
 
 
 def question_list_for_competition(competition_id):
-    """ Gets a list of all question objects associated with a the provided competition. """
+    """
+    Gets a list of all question objects associated
+    with the provided competition.
+    """
 
     join_competition = Competition.id == Slide.competition_id
     join_slide = Slide.id == Question.slide_id
@@ -149,8 +163,16 @@ def question_list_for_competition(competition_id):
 
 
 ### Question Alternative ###
-def question_alternative(competition_id, slide_id, question_id, alternative_id):
-    """ Get question alternative for a given question based on its competition and slide and ID. """
+def question_alternative(
+    competition_id,
+    slide_id,
+    question_id,
+    alternative_id,
+):
+    """
+    Get a question alternative for a given question
+    based on its competition, slide and question.
+    """
 
     join_competition = Competition.id == Slide.competition_id
     join_slide = Slide.id == Question.slide_id
@@ -172,7 +194,11 @@ def question_alternative(competition_id, slide_id, question_id, alternative_id):
 
 
 def question_alternative_list(competition_id, slide_id, question_id):
-    """ Get all question alternatives for a given question based on its competition and slide. """
+    """
+    Get a list of all question alternative objects for a
+    given question based on its competition and slide.
+    """
+
     join_competition = Competition.id == Slide.competition_id
     join_slide = Slide.id == Question.slide_id
     join_question = Question.id == QuestionAlternative.question_id
@@ -186,18 +212,13 @@ def question_alternative_list(competition_id, slide_id, question_id):
         .all()
     )
 
-    return (
-        QuestionAlternative.query.join(Competition, join_competition)
-        .join(Slide, join_slide)
-        .join(Question, join_question)
-        .filter(filters)
-        .all()
-    )
-
 
 ### Question Answers ###
 def question_answer(competition_id, team_id, answer_id):
-    """ Get question answer for a given team based on its competition and ID. """
+    """
+    Get question answer for a given team based on its competition.
+    """
+
     join_competition = Competition.id == Team.competition_id
     join_team = Team.id == QuestionAnswer.team_id
     filters = (Competition.id == competition_id) & (Team.id == team_id) & (QuestionAnswer.id == answer_id)
@@ -207,7 +228,10 @@ def question_answer(competition_id, team_id, answer_id):
 
 
 def question_answer_list(competition_id, team_id):
-    """ Get question answer for a given team based on its competition. """
+    """
+    Get a list of question answers for a given team based on its competition.
+    """
+
     join_competition = Competition.id == Team.competition_id
     join_team = Team.id == QuestionAnswer.team_id
     filters = (Competition.id == competition_id) & (Team.id == team_id)
@@ -216,7 +240,10 @@ def question_answer_list(competition_id, team_id):
 
 ### Components ###
 def component(competition_id, slide_id, component_id):
-    """ Gets a list of all component objects associated with a the provided competition id and slide order. """
+    """
+    Gets a component object associated with
+    the provided competition id and slide order.
+    """
 
     join_competition = Competition.id == Slide.competition_id
     join_slide = Slide.id == Component.slide_id
@@ -233,7 +260,10 @@ def component(competition_id, slide_id, component_id):
 
 
 def component_list(competition_id, slide_id):
-    """ Gets a list of all component objects associated with a the provided competition id and slide order. """
+    """
+    Gets a list of all component objects associated with
+    the provided competition and slide.
+    """
 
     join_competition = Competition.id == Slide.competition_id
     join_slide = Slide.id == Component.slide_id
@@ -243,7 +273,8 @@ def component_list(competition_id, slide_id):
 
 ### Competitions ###
 def competition(competition_id):
-    """ Get Competition and all it's sub-entities """
+    """ Get Competition and all it's sub-entities. """
+
     os1 = joinedload(Competition.slides).joinedload(Slide.components)
     os2 = joinedload(Competition.slides).joinedload(Slide.questions).joinedload(Question.alternatives)
     ot = joinedload(Competition.teams).joinedload(Team.question_answers)

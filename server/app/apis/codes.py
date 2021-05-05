@@ -1,3 +1,8 @@
+"""
+All API calls concerning competition codes.
+Default route: /api/competitions/<competition_id>/codes
+"""
+
 import app.database.controller as dbc
 from app.apis import item_response, list_response, protect_route
 from app.core.dto import CodeDTO
@@ -14,6 +19,8 @@ list_schema = CodeDTO.list_schema
 class CodesList(Resource):
     @protect_route(allowed_roles=["*"], allowed_views=["Operator"])
     def get(self, competition_id):
+        """ Gets the all competition codes. """
+
         items = dbc.get.code_list(competition_id)
         return list_response(list_schema.dump(items), len(items))
 
@@ -23,6 +30,8 @@ class CodesList(Resource):
 class CodesById(Resource):
     @protect_route(allowed_roles=["*"])
     def put(self, competition_id, code_id):
+        """ Generates a new competition code. """
+
         item = dbc.get.one(Code, code_id)
         item.code = dbc.utils.generate_unique_code()
         dbc.utils.commit_and_refresh(item)

@@ -1,16 +1,20 @@
+"""
+All API calls concerning media.
+Default route: /api/media
+"""
+
+import app.core.files as files
 import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.apis import item_response, list_response, protect_route
 from app.core.dto import MediaDTO
-from app.core.parsers import search_parser
+from app.core.parsers import search_parser, sentinel
 from app.database.models import Media
 from flask import request
 from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
 from flask_uploads import UploadNotAllowed
 from sqlalchemy import exc
-import app.core.files as files
-from app.core.parsers import sentinel
 
 api = MediaDTO.api
 image_set = MediaDTO.image_set
@@ -25,12 +29,16 @@ media_parser_search.add_argument("filename", type=str, default=sentinel, locatio
 class ImageList(Resource):
     @protect_route(allowed_roles=["*"])
     def get(self):
+        """ Gets a list of all images with the specified filename. """
+
         args = media_parser_search.parse_args(strict=True)
         items, total = dbc.search.image(**args)
         return list_response(list_schema.dump(items), total)
 
     @protect_route(allowed_roles=["*"])
     def post(self):
+        """ Posts the specified image. """
+
         if "image" not in request.files:
             api.abort(codes.BAD_REQUEST, "Missing image in request.files")
         try:
@@ -51,11 +59,15 @@ class ImageList(Resource):
 class ImageList(Resource):
     @protect_route(allowed_roles=["*"], allowed_views=["*"])
     def get(self, ID):
+        """ Gets the specified image. """
+
         item = dbc.get.one(Media, ID)
         return item_response(schema.dump(item))
 
     @protect_route(allowed_roles=["*"])
     def delete(self, ID):
+        """ Deletes the specified image. """
+
         item = dbc.get.one(Media, ID)
         try:
             files.delete_image_and_thumbnail(item.filename)

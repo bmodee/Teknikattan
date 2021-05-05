@@ -1,3 +1,8 @@
+"""
+All API calls concerning question answers.
+Default route: /api/auth
+"""
+
 from datetime import datetime, timedelta
 
 import app.core.http_codes as codes
@@ -32,10 +37,14 @@ USER_LOGIN_LOCKED_EXPIRES = current_app.config["USER_LOGIN_LOCKED_EXPIRES"]
 
 
 def get_user_claims(item_user):
+    """ Gets user details for jwt-token. """
+
     return {"role": item_user.role.name, "city_id": item_user.city_id}
 
 
 def get_code_claims(item_code):
+    """ Gets code details for jwt-token. """
+
     return {
         "view": item_code.view_type.name,
         "competition_id": item_code.competition_id,
@@ -48,6 +57,8 @@ def get_code_claims(item_code):
 class AuthSignup(Resource):
     @protect_route(allowed_roles=["Admin"], allowed_views=["*"])
     def get(self):
+        """ Tests that the user is an admin. """
+
         return "ok"
 
 
@@ -55,6 +66,8 @@ class AuthSignup(Resource):
 class AuthSignup(Resource):
     @protect_route(allowed_roles=["Admin"])
     def post(self):
+        """ Creates a new user if the user does not already exist. """
+
         args = create_user_parser.parse_args(strict=True)
         email = args.get("email")
 
@@ -72,9 +85,12 @@ class AuthSignup(Resource):
 class AuthDelete(Resource):
     @protect_route(allowed_roles=["Admin"])
     def delete(self, user_id):
+        """ Deletes the specified user and adds their token to the blacklist. """
+
         item_user = dbc.get.user(user_id)
 
-        # Blacklist all the whitelisted tokens in use for the user that will be deleted
+        # Blacklist all the whitelisted tokens
+        # in use for the user that will be deleted
         dbc.delete.whitelist_to_blacklist(Whitelist.user_id == user_id)
 
         # Delete user
@@ -85,6 +101,8 @@ class AuthDelete(Resource):
 @api.route("/login")
 class AuthLogin(Resource):
     def post(self):
+        """ Logs in the specified user and creates a jwt-token. """
+
         args = login_parser.parse_args(strict=True)
         email = args.get("email")
         password = args.get("password")
@@ -133,6 +151,8 @@ class AuthLogin(Resource):
 @api.route("/login/code")
 class AuthLoginCode(Resource):
     def post(self):
+        """ Logs in using the provided competition code. """
+
         args = login_code_parser.parse_args()
         code = args["code"]
 
@@ -166,6 +186,8 @@ class AuthLoginCode(Resource):
 class AuthLogout(Resource):
     @protect_route(allowed_roles=["*"], allowed_views=["*"])
     def post(self):
+        """ Logs out. """
+
         jti = get_raw_jwt()["jti"]
 
         # Blacklist the token so the user cannot access the api anymore

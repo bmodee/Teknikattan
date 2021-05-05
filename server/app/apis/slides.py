@@ -1,3 +1,8 @@
+"""
+All API calls concerning question alternatives.
+Default route: /api/competitions/<competition_id>/slides
+"""
+
 import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.apis import item_response, list_response, protect_route
@@ -21,25 +26,33 @@ slide_parser_edit.add_argument("background_image_id", default=sentinel, type=int
 class SlidesList(Resource):
     @protect_route(allowed_roles=["*"])
     def get(self, competition_id):
+        """ Gets all slides from the specified competition. """
+
         items = dbc.get.slide_list(competition_id)
         return list_response(list_schema.dump(items))
 
     @protect_route(allowed_roles=["*"])
     def post(self, competition_id):
+        """ Posts a new slide to the specified competition. """
+
         item_slide = dbc.add.slide(competition_id)
         return item_response(schema.dump(item_slide))
 
 
 @api.route("/<slide_id>")
-@api.param("competition_id,slide_id")
+@api.param("competition_id, slide_id")
 class Slides(Resource):
     @protect_route(allowed_roles=["*"])
     def get(self, competition_id, slide_id):
+        """ Gets the specified slide. """
+
         item_slide = dbc.get.slide(competition_id, slide_id)
         return item_response(schema.dump(item_slide))
 
     @protect_route(allowed_roles=["*"])
     def put(self, competition_id, slide_id):
+        """ Edits the specified slide using the provided arguments. """
+
         args = slide_parser_edit.parse_args(strict=True)
 
         item_slide = dbc.get.slide(competition_id, slide_id)
@@ -49,6 +62,8 @@ class Slides(Resource):
 
     @protect_route(allowed_roles=["*"])
     def delete(self, competition_id, slide_id):
+        """ Deletes the specified slide. """
+
         item_slide = dbc.get.slide(competition_id, slide_id)
 
         dbc.delete.slide(item_slide)
@@ -56,10 +71,12 @@ class Slides(Resource):
 
 
 @api.route("/<slide_id>/order")
-@api.param("competition_id,slide_id")
+@api.param("competition_id, slide_id")
 class SlideOrder(Resource):
     @protect_route(allowed_roles=["*"])
     def put(self, competition_id, slide_id):
+        """ Edits the specified slide order using the provided arguments. """
+
         args = slide_parser_edit.parse_args(strict=True)
         order = args.get("order")
 
@@ -89,8 +106,9 @@ class SlideOrder(Resource):
 class SlideCopy(Resource):
     @protect_route(allowed_roles=["*"])
     def post(self, competition_id, slide_id):
-        item_slide = dbc.get.slide(competition_id, slide_id)
+        """ Creates a deep copy of the specified slide. """
 
+        item_slide = dbc.get.slide(competition_id, slide_id)
         item_slide_copy = dbc.copy.slide(item_slide)
 
         return item_response(schema.dump(item_slide_copy))

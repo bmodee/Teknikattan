@@ -49,25 +49,34 @@ def db_add(item):
     except (exc.SQLAlchemyError, exc.DBAPIError):
         db.session.rollback()
         # SQL errors such as item already exists
-        abort(codes.INTERNAL_SERVER_ERROR, f"Item of type {type(item)} could not be created")
+        abort(
+            codes.INTERNAL_SERVER_ERROR,
+            f"Item of type {type(item)} could not be created",
+        )
     except:
         db.session.rollback()
         # Catching other errors
-        abort(codes.INTERNAL_SERVER_ERROR, f"Something went wrong when creating {type(item)}")
+        abort(
+            codes.INTERNAL_SERVER_ERROR,
+            f"Something went wrong when creating {type(item)}",
+        )
 
     return item
 
 
 def component(type_id, slide_id, view_type_id, x=0, y=0, w=0, h=0, **data):
     """
-    Adds a component to the slide at the specified coordinates with the
-    provided size and data .
+    Adds a component to the slide at the specified
+    coordinates with the provided size and data.
     """
 
     if type_id == 2:  # 2 is image
         item_image = get.one(Media, data["media_id"])
         filename = item_image.filename
-        path = os.path.join(current_app.config["UPLOADED_PHOTOS_DEST"], filename)
+        path = os.path.join(
+            current_app.config["UPLOADED_PHOTOS_DEST"],
+            filename,
+        )
         with Image.open(path) as im:
             h = im.height
             w = im.width
@@ -79,13 +88,19 @@ def component(type_id, slide_id, view_type_id, x=0, y=0, w=0, h=0, **data):
         h *= ratio
 
     if type_id == ID_TEXT_COMPONENT:
-        item = db_add(TextComponent(slide_id, type_id, view_type_id, x, y, w, h))
+        item = db_add(
+            TextComponent(slide_id, type_id, view_type_id, x, y, w, h),
+        )
         item.text = data.get("text")
     elif type_id == ID_IMAGE_COMPONENT:
-        item = db_add(ImageComponent(slide_id, type_id, view_type_id, x, y, w, h))
+        item = db_add(
+            ImageComponent(slide_id, type_id, view_type_id, x, y, w, h),
+        )
         item.media_id = data.get("media_id")
     elif type_id == ID_QUESTION_COMPONENT:
-        item = db_add(QuestionComponent(slide_id, type_id, view_type_id, x, y, w, h))
+        item = db_add(
+            QuestionComponent(slide_id, type_id, view_type_id, x, y, w, h),
+        )
         item.question_id = data.get("question_id")
     else:
         abort(codes.BAD_REQUEST, f"Invalid type_id{type_id}")
@@ -258,8 +273,18 @@ def question(name, total_score, type_id, slide_id, correcting_instructions=None)
 
 
 def question_alternative(text, value, question_id):
+    """
+    Adds a question alternative to the specified
+    question using the provided arguments.
+    """
+
     return db_add(QuestionAlternative(text, value, question_id))
 
 
 def question_answer(answer, score, question_id, team_id):
+    """
+    Adds a question answer to the specified team
+    and question using the provided arguments.
+    """
+
     return db_add(QuestionAnswer(answer, score, question_id, team_id))

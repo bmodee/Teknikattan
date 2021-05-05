@@ -1,10 +1,14 @@
+"""
+All API calls concerning question answers.
+Default route: /api/competitions/<competition_id>
+"""
+
 import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.apis import item_response, list_response, protect_route
 from app.core.dto import QuestionDTO
-from flask_restx import Resource
-from flask_restx import reqparse
 from app.core.parsers import sentinel
+from flask_restx import Resource, reqparse
 
 api = QuestionDTO.api
 schema = QuestionDTO.schema
@@ -28,6 +32,8 @@ question_parser_edit.add_argument("correcting_instructions", type=str, default=s
 class QuestionList(Resource):
     @protect_route(allowed_roles=["*"])
     def get(self, competition_id):
+        """ Gets all questions in the specified competition. """
+
         items = dbc.get.question_list_for_competition(competition_id)
         return list_response(list_schema.dump(items))
 
@@ -37,11 +43,15 @@ class QuestionList(Resource):
 class QuestionListForSlide(Resource):
     @protect_route(allowed_roles=["*"])
     def get(self, competition_id, slide_id):
+        """ Gets all questions in the specified competition and slide. """
+
         items = dbc.get.question_list(competition_id, slide_id)
         return list_response(list_schema.dump(items))
 
     @protect_route(allowed_roles=["*"])
     def post(self, competition_id, slide_id):
+        """ Posts a new question to the specified slide using the provided arguments. """
+
         args = question_parser_add.parse_args(strict=True)
         item = dbc.add.question(slide_id=slide_id, **args)
         return item_response(schema.dump(item))
@@ -52,11 +62,17 @@ class QuestionListForSlide(Resource):
 class QuestionById(Resource):
     @protect_route(allowed_roles=["*"])
     def get(self, competition_id, slide_id, question_id):
+        """
+        Gets the specified question using the specified competition and slide.
+        """
+
         item_question = dbc.get.question(competition_id, slide_id, question_id)
         return item_response(schema.dump(item_question))
 
     @protect_route(allowed_roles=["*"])
     def put(self, competition_id, slide_id, question_id):
+        """ Edits the specified question with the provided arguments. """
+
         args = question_parser_edit.parse_args(strict=True)
 
         item_question = dbc.get.question(competition_id, slide_id, question_id)
@@ -66,6 +82,8 @@ class QuestionById(Resource):
 
     @protect_route(allowed_roles=["*"])
     def delete(self, competition_id, slide_id, question_id):
+        """ Deletes the specified question. """
+
         item_question = dbc.get.question(competition_id, slide_id, question_id)
         dbc.delete.question(item_question)
         return {}, codes.NO_CONTENT

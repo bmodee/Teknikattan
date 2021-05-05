@@ -10,6 +10,8 @@ from flask_restx import abort
 
 
 def move_slides(item_competition, start_order, end_order):
+    """ Changes a slide order and then arranges other affected slides. """
+
     slides = item_competition.slides
     # Move up
     if start_order < end_order:
@@ -40,6 +42,7 @@ def generate_unique_code():
 
 def refresh(item):
     """ Refreshes the provided item. """
+
     try:
         db.session.refresh(item)
     except Exception as e:
@@ -49,7 +52,8 @@ def refresh(item):
 
 
 def commit():
-    """ Commits. """
+    """ Commits to the database. """
+
     try:
         db.session.commit()
     except Exception as e:

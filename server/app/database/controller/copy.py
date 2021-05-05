@@ -8,7 +8,9 @@ from app.database.types import ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT, ID_TEX
 
 
 def _alternative(item_old, question_id):
-    """Internal function. Makes a copy of the provided question alternative"""
+    """
+    Internal function. Makes a copy of the provided question alternative.
+    """
 
     return add.question_alternative(item_old.text, item_old.value, question_id)
 
@@ -73,7 +75,7 @@ def component(item_component, slide_id_new, view_type_id):
 def slide(item_slide_old):
     """
     Deep copies a slide to the same competition.
-    Does not copy team, question answers.
+    Does not copy team and question answers.
     """
 
     item_competition = get.competition(item_slide_old.competition_id)
@@ -98,7 +100,6 @@ def slide_to_competition(item_slide_old, item_competition):
 
     for item_component in item_slide_old.components:
         _component(item_component, item_slide_new)
-
     for item_question in item_slide_old.questions:
         _question(item_question, item_slide_new.id)
 
@@ -123,7 +124,7 @@ def competition(item_competition_old):
         item_competition_old.city_id,
         item_competition_old.font,
     )
-    # TODO: Add background image
+
     item_competition_new.background_image_id = item_competition_old.background_image_id
 
     for item_slide in item_competition_old.slides:

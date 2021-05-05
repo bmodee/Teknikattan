@@ -1,10 +1,14 @@
+"""
+All misc API calls.
+Default route: /api/misc
+"""
+
 import app.database.controller as dbc
 from app.apis import list_response, protect_route
 from app.core import http_codes
 from app.core.dto import MiscDTO
 from app.database.models import City, Competition, ComponentType, MediaType, QuestionType, Role, User, ViewType
 from flask_restx import Resource, reqparse
-from flask_restx import reqparse
 
 api = MiscDTO.api
 
@@ -24,6 +28,8 @@ name_parser.add_argument("name", type=str, required=True, location="json")
 @api.route("/types")
 class TypesList(Resource):
     def get(self):
+        """ Gets a list of all types. """
+
         result = {}
         result["media_types"] = media_type_schema.dump(dbc.get.all(MediaType))
         result["component_types"] = component_type_schema.dump(dbc.get.all(ComponentType))
@@ -36,6 +42,8 @@ class TypesList(Resource):
 class RoleList(Resource):
     @protect_route(allowed_roles=["*"])
     def get(self):
+        """ Gets a list of all roles. """
+
         items = dbc.get.all(Role)
         return list_response(role_schema.dump(items))
 
@@ -44,11 +52,15 @@ class RoleList(Resource):
 class CitiesList(Resource):
     @protect_route(allowed_roles=["*"])
     def get(self):
+        """ Gets a list of all cities. """
+
         items = dbc.get.all(City)
         return list_response(city_schema.dump(items))
 
     @protect_route(allowed_roles=["Admin"])
     def post(self):
+        """ Posts the specified city. """
+
         args = name_parser.parse_args(strict=True)
         dbc.add.city(args["name"])
         items = dbc.get.all(City)
@@ -60,6 +72,8 @@ class CitiesList(Resource):
 class Cities(Resource):
     @protect_route(allowed_roles=["Admin"])
     def put(self, ID):
+        """ Edits the specified city with the provided arguments. """
+
         item = dbc.get.one(City, ID)
         args = name_parser.parse_args(strict=True)
         item.name = args["name"]
@@ -69,6 +83,8 @@ class Cities(Resource):
 
     @protect_route(allowed_roles=["Admin"])
     def delete(self, ID):
+        """ Deletes the specified city. """
+
         item = dbc.get.one(City, ID)
         dbc.delete.default(item)
         items = dbc.get.all(City)
@@ -79,6 +95,8 @@ class Cities(Resource):
 class Statistics(Resource):
     @protect_route(allowed_roles=["*"])
     def get(self):
+        """ Gets statistics. """
+
         user_count = User.query.count()
         competition_count = Competition.query.count()
         region_count = City.query.count()

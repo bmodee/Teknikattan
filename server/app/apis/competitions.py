@@ -1,10 +1,14 @@
+"""
+All API calls concerning competitions.
+Default route: /api/competitions
+"""
+
 import app.database.controller as dbc
 from app.apis import item_response, list_response, protect_route
 from app.core.dto import CompetitionDTO
-from app.database.models import Competition
-from flask_restx import Resource
-from flask_restx import reqparse
 from app.core.parsers import search_parser, sentinel
+from app.database.models import Competition
+from flask_restx import Resource, reqparse
 
 api = CompetitionDTO.api
 schema = CompetitionDTO.schema
@@ -32,6 +36,8 @@ competition_parser_search.add_argument("city_id", type=int, default=sentinel, lo
 class CompetitionsList(Resource):
     @protect_route(allowed_roles=["*"])
     def post(self):
+        """ Posts a new competition. """
+
         args = competition_parser_add.parse_args(strict=True)
 
         # Add competition
@@ -47,12 +53,16 @@ class CompetitionsList(Resource):
 class Competitions(Resource):
     @protect_route(allowed_roles=["*"], allowed_views=["*"])
     def get(self, competition_id):
+        """ Gets the specified competition. """
+
         item = dbc.get.competition(competition_id)
 
         return item_response(rich_schema.dump(item))
 
     @protect_route(allowed_roles=["*"])
     def put(self, competition_id):
+        """ Edits the specified competition with the specified arguments. """
+
         args = competition_parser_edit.parse_args(strict=True)
         item = dbc.get.one(Competition, competition_id)
         item = dbc.edit.default(item, **args)
@@ -61,6 +71,8 @@ class Competitions(Resource):
 
     @protect_route(allowed_roles=["*"])
     def delete(self, competition_id):
+        """ Deletes the specified competition. """
+
         item = dbc.get.one(Competition, competition_id)
         dbc.delete.competition(item)
 
@@ -71,6 +83,8 @@ class Competitions(Resource):
 class CompetitionSearch(Resource):
     @protect_route(allowed_roles=["*"])
     def get(self):
+        """ Finds a specific competition based on the provided arguments. """
+
         args = competition_parser_search.parse_args(strict=True)
         items, total = dbc.search.competition(**args)
         return list_response(list_schema.dump(items), total)
@@ -81,6 +95,8 @@ class CompetitionSearch(Resource):
 class SlidesOrder(Resource):
     @protect_route(allowed_roles=["*"])
     def post(self, competition_id):
+        """ Creates a deep copy of the specified competition. """
+
         item_competition = dbc.get.competition(competition_id)
 
         item_competition_copy = dbc.copy.competition(item_competition)

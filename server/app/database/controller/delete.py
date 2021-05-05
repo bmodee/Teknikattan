@@ -11,19 +11,25 @@ from flask_restx import abort
 
 def default(item):
     """ Deletes item and commits. """
+
     try:
         db.session.delete(item)
         db.session.commit()
     except:
         db.session.rollback()
-        abort(codes.INTERNAL_SERVER_ERROR, f"Item of type {type(item)} could not be deleted")
+        abort(
+            codes.INTERNAL_SERVER_ERROR,
+            f"Item of type {type(item)} could not be deleted",
+        )
 
 
 def whitelist_to_blacklist(filters):
     """
-    Remove whitelist by condition(filters) and insert those into blacklist
-    Example: When delete user all whitelisted tokens for that user should be blacklisted
+    Remove whitelist by condition(filters) and insert those into blacklist.
+    Example: When delete user all whitelisted tokens for that user should
+             be blacklisted.
     """
+
     whitelist = Whitelist.query.filter(filters).all()
     for item in whitelist:
         dbc.add.blacklist(item.jti)
@@ -43,7 +49,6 @@ def _slide(item_slide):
 
     for item_question in item_slide.questions:
         question(item_question)
-
     for item_component in item_slide.components:
         default(item_component)
 
@@ -85,6 +90,7 @@ def question(item_question):
         question_answers(item_question_answer)
     for item_alternative in item_question.alternatives:
         alternatives(item_alternative)
+
     default(item_question)
 
 
