@@ -27,6 +27,7 @@ import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useAppSelector } from '../../hooks'
+import { RichTeam } from '../../interfaces/ApiRichModels'
 import {
   socketConnect,
   socketEndPresentation,
@@ -204,12 +205,12 @@ const OperatorViewPage: React.FC = () => {
     return typeName
   }
 
-  const addScore = (id: number) => {
-    // Sums the scores for the teams. id must be id-1 because it starts at 1
-    
+  const addScore = (team: RichTeam) => {
+    // Sums the scores for the teams.
+
     let totalScore = 0
-    for (let j = 0; j < teams[id - 1].question_answers.length; j++) {
-      totalScore = totalScore + teams[id - 1].question_answers[j].score
+    for (let j = 0; j < team.question_answers.length; j++) {
+      totalScore = totalScore + team.question_answers[j].score
     }
     return totalScore
   }
@@ -373,7 +374,7 @@ const OperatorViewPage: React.FC = () => {
           {teams &&
             teams.map((team) => (
               <ListItem key={team.id}>
-                {team.name} score:{addScore(team.id)}
+                {team.name} score:{addScore(team)}
               </ListItem>
             ))}
         </List>
