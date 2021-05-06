@@ -137,7 +137,7 @@ def slide(competition_id):
     item_slide = db_add(Slide(order, competition_id))
 
     # Add default question
-    question(f"Fråga {item_slide.order + 1}", 10, 0, item_slide.id)
+    question(f"Fråga {item_slide.order + 1}", 10, 1, item_slide.id)
 
     item_slide = utils.refresh(item_slide)
     return item_slide
