@@ -142,7 +142,7 @@ const EditUser = ({ user }: UserIdProps) => {
     }
     await axios
       .put('/api/users/' + user.id, req)
-      .then((res) => {
+      .then(() => {
         setAnchorEl(null)
         dispatch(getSearchUsers())
       })
@@ -167,7 +167,7 @@ const EditUser = ({ user }: UserIdProps) => {
   }
   return (
     <div>
-      <Button onClick={handleClick}>
+      <Button onClick={handleClick} data-testid={`more-${user.email}`}>
         <MoreHorizIcon />
       </Button>
       <Popover
@@ -289,6 +289,7 @@ const EditUser = ({ user }: UserIdProps) => {
                   Ändra
                 </Button>
                 <Button
+                  data-testid="removeUser"
                   onClick={handleVerifyDelete}
                   className={classes.deleteButton}
                   fullWidth
@@ -313,7 +314,7 @@ const EditUser = ({ user }: UserIdProps) => {
                     <Button autoFocus onClick={handleClose} color="primary">
                       Avbryt
                     </Button>
-                    <Button onClick={handleDeleteUsers} color="primary" autoFocus>
+                    <Button data-testid="acceptRemoveUser" onClick={handleDeleteUsers} color="primary" autoFocus>
                       Ta bort
                     </Button>
                   </DialogActions>

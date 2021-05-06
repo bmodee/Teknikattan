@@ -22,6 +22,7 @@
     "axios": "^0.21.1",
     "formik": "^2.2.6",
     "jwt-decode": "^3.1.2",
+    "puppeteer": "^9.1.1",
     "react": "^17.0.1",
     "react-axios": "^2.0.4",
     "react-beautiful-dnd": "^13.1.0",
@@ -70,8 +71,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint \"./src/**/*.{ts,tsx}\"",
-    "test:coverage": "react-scripts test --coverage --coverageDirectory=output/coverage/jest",
-    "test:coverage:html": "npm test -- --coverage --watchAll=false --coverageDirectory=output/coverage/jest"
+    "unit-test:coverage": "react-scripts test --coverage --testPathIgnorePatterns=src/e2e --coverageDirectory=output/coverage/jest",
+    "unit-test:coverage:html": "npm test -- --testPathIgnorePatterns=src/e2e --coverage --watchAll=false --coverageDirectory=output/coverage/jest",
+    "e2e-test": "npm test -- --testPathPattern=src/e2e"
   },
   "browserslist": {
     "production": [
@@ -89,6 +91,7 @@
     "collectCoverageFrom": [
       "src/**/*.{tsx,ts}",
       "!src/index.tsx",
+      "!src/e2e/*",
       "!src/reportWebVitals.ts",
       "!src/components/TestConnection.tsx"
     ],

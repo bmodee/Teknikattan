@@ -87,6 +87,7 @@ const AddUser: React.FC = (props: any) => {
   return (
     <div>
       <AddButton
+        data-testid="addUserButton"
         style={{ backgroundColor: '#4caf50', color: '#fcfcfc' }}
         color="default"
         variant="contained"
@@ -114,6 +115,7 @@ const AddUser: React.FC = (props: any) => {
             {(formik) => (
               <AddForm onSubmit={formik.handleSubmit}>
                 <TextField
+                  data-testid="addUserEmail"
                   label="Email"
                   name="model.email"
                   helperText={formik.touched.model?.email ? formik.errors.model?.email : ''}
@@ -123,6 +125,7 @@ const AddUser: React.FC = (props: any) => {
                   margin="normal"
                 />
                 <TextField
+                  data-testid="addUserPassword"
                   label="Lösenord"
                   name="model.password"
                   helperText={formik.touched.model?.password ? formik.errors.model?.password : ''}
@@ -132,6 +135,7 @@ const AddUser: React.FC = (props: any) => {
                   margin="normal"
                 />
                 <TextField
+                  data-testid="addUserName"
                   label="Namn"
                   name="model.name"
                   helperText={formik.touched.model?.name ? formik.errors.model?.name : ''}
@@ -146,6 +150,7 @@ const AddUser: React.FC = (props: any) => {
                   </InputLabel>
                   <TextField
                     select
+                    data-testid="userCitySelect"
                     name="model.city"
                     id="standard-select-currency"
                     value={selectedCity ? selectedCity.name : noCitySelected}
@@ -160,7 +165,12 @@ const AddUser: React.FC = (props: any) => {
                     </MenuItem>
                     {cities &&
                       cities.map((city) => (
-                        <MenuItem key={city.name} value={city.name} onClick={() => setSelectedCity(city)}>
+                        <MenuItem
+                          key={city.name}
+                          value={city.name}
+                          onClick={() => setSelectedCity(city)}
+                          data-testid={city.name}
+                        >
                           {city.name}
                         </MenuItem>
                       ))}
@@ -173,6 +183,7 @@ const AddUser: React.FC = (props: any) => {
                   </InputLabel>
                   <TextField
                     select
+                    data-testid="userRoleSelect"
                     name="model.role"
                     id="standard-select-currency"
                     value={selectedRole ? selectedRole.name : noRoleSelected}
@@ -187,7 +198,12 @@ const AddUser: React.FC = (props: any) => {
                     </MenuItem>
                     {roles &&
                       roles.map((role) => (
-                        <MenuItem key={role.name} value={role.name} onClick={() => setSelectedRole(role)}>
+                        <MenuItem
+                          key={role.name}
+                          value={role.name}
+                          onClick={() => setSelectedRole(role)}
+                          data-testid={role.name}
+                        >
                           {role.name}
                         </MenuItem>
                       ))}
@@ -196,6 +212,7 @@ const AddUser: React.FC = (props: any) => {
 
                 <Button
                   type="submit"
+                  data-testid="addUserSubmit"
                   fullWidth
                   variant="contained"
                   color="secondary"

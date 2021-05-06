@@ -15,7 +15,9 @@ const CurrentUser: React.FC = () => {
           </Typography>
         </div>
         <div>
-          <Typography variant="h6">Email: {currentUser && currentUser.email}</Typography>
+          <Typography data-testid="userEmail" variant="h6">
+            Email: {currentUser && currentUser.email}
+          </Typography>
         </div>
         <div>
           <Typography variant="h6">Region: {currentUser && currentUser.city && currentUser.city.name}</Typography>

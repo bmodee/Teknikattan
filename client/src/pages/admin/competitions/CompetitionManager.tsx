@@ -251,12 +251,7 @@ const CompetitionManager: React.FC = (props: any) => {
     <div>
       <TopBar>
         <FilterContainer>
-          <TextField
-            className={classes.margin}
-            value={filterParams.name || ''}
-            onChange={onSearchChange}
-            label="Sök"
-          ></TextField>
+          <TextField className={classes.margin} value={filterParams.name || ''} onChange={onSearchChange} label="Sök" />
           <FormControl className={classes.margin}>
             <InputLabel shrink id="demo-customized-select-native">
               Region
@@ -314,7 +309,7 @@ const CompetitionManager: React.FC = (props: any) => {
                   <TableCell align="right">{cities.find((city) => city.id === row.city_id)?.name || ''}</TableCell>
                   <TableCell align="right">{row.year}</TableCell>
                   <TableCell align="right">
-                    <Button onClick={(event) => handleClick(event, row.id)}>
+                    <Button onClick={(event) => handleClick(event, row.id)} data-testid={row.name}>
                       <MoreHorizIcon />
                     </Button>
                   </TableCell>
@@ -339,7 +334,9 @@ const CompetitionManager: React.FC = (props: any) => {
         <MenuItem onClick={handleStartCompetition}>Starta</MenuItem>
         <MenuItem onClick={handleOpenDialog}>Visa koder</MenuItem>
         <MenuItem onClick={handleDuplicateCompetition}>Duplicera</MenuItem>
-        <RemoveMenuItem onClick={handleDeleteCompetition}>Ta bort</RemoveMenuItem>
+        <RemoveMenuItem onClick={handleDeleteCompetition} data-testid="removeCompetitionButton">
+          Ta bort
+        </RemoveMenuItem>
       </Menu>
       <Dialog
         open={dialogIsOpen}

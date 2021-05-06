@@ -88,6 +88,7 @@ const AddCompetition: React.FC = (props: any) => {
   return (
     <div>
       <AddButton
+        data-testid="addCompetition"
         style={{ backgroundColor: '#4caf50', color: '#fcfcfc' }}
         color="default"
         variant="contained"
@@ -124,6 +125,7 @@ const AddCompetition: React.FC = (props: any) => {
             {(formik) => (
               <AddForm onSubmit={formik.handleSubmit}>
                 <TextField
+                  data-testid="competitionName"
                   label="Namn"
                   name="model.name"
                   helperText={formik.touched.model?.name ? formik.errors.model?.name : ''}
@@ -137,6 +139,7 @@ const AddCompetition: React.FC = (props: any) => {
                     Region
                   </InputLabel>
                   <TextField
+                    data-testid="competitionRegion"
                     select
                     name="model.city"
                     id="standard-select-currency"
@@ -152,7 +155,12 @@ const AddCompetition: React.FC = (props: any) => {
                     </MenuItem>
                     {cities &&
                       cities.map((city) => (
-                        <MenuItem key={city.name} value={city.name} onClick={() => setSelectedCity(city)}>
+                        <MenuItem
+                          key={city.name}
+                          value={city.name}
+                          onClick={() => setSelectedCity(city)}
+                          data-testid={city.name}
+                        >
                           {city.name}
                         </MenuItem>
                       ))}
@@ -170,6 +178,7 @@ const AddCompetition: React.FC = (props: any) => {
                   margin="normal"
                 />
                 <Button
+                  data-testid="acceptCompetition"
                   type="submit"
                   fullWidth
                   variant="contained"

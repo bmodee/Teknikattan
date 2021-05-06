@@ -23,7 +23,7 @@ const Instructions = ({ activeSlide, competitionId }: InstructionsProps) => {
     //Only updates 250ms after last input was made to not spam
     setTimerHandle(
       window.setTimeout(async () => {
-        if (activeSlide && activeSlide.questions[0]) {
+        if (activeSlide && activeSlide.questions?.[0]) {
           await axios
             // TODO: Implement instructions field in question and add put API
             .put(
@@ -56,7 +56,7 @@ const Instructions = ({ activeSlide, competitionId }: InstructionsProps) => {
           <TextField
             multiline
             id="outlined-basic"
-            defaultValue={activeSlide.questions[0].correcting_instructions}
+            defaultValue={activeSlide.questions?.[0].correcting_instructions}
             onChange={updateInstructionsText}
             variant="outlined"
             fullWidth={true}

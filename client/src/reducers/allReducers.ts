@@ -5,7 +5,6 @@ import citiesReducer from './citiesReducer'
 import competitionLoginReducer from './competitionLoginReducer'
 import competitionsReducer from './competitionsReducer'
 import editorReducer from './editorReducer'
-import mediaReducer from './mediaReducer'
 import presentationReducer from './presentationReducer'
 import rolesReducer from './rolesReducer'
 import searchUserReducer from './searchUserReducer'
@@ -25,7 +24,6 @@ const allReducers = combineReducers({
   roles: rolesReducer,
   searchUsers: searchUserReducer,
   types: typesReducer,
-  media: mediaReducer,
   statistics: statisticsReducer,
   competitionLogin: competitionLoginReducer,
 })

@@ -79,6 +79,7 @@ const AddRegion: React.FC = (props: any) => {
           <FormControl className={classes.margin}>
             <Grid container={true}>
               <TextField
+                data-testid="regionTextField"
                 className={classes.margin}
                 helperText={formik.touched.model?.name ? formik.errors.model?.name : ''}
                 error={Boolean(formik.touched.model?.name && formik.errors.model?.name)}
@@ -86,8 +87,9 @@ const AddRegion: React.FC = (props: any) => {
                 onBlur={formik.handleBlur}
                 name="model.name"
                 label="Region"
-              ></TextField>
+              />
               <AddButton
+                data-testid="regionSubmitButton"
                 style={{ backgroundColor: '#4caf50', color: '#fcfcfc' }}
                 className={classes.button}
                 color="default"

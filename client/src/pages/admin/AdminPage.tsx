@@ -91,6 +91,7 @@ const AdminView: React.FC = () => {
     const menuItems = isAdmin ? menuAdminItems : menuEditorItems
     return menuItems.map((value, index) => (
       <ListItem
+        data-testid={value.text}
         button
         component={Link}
         key={value.text}

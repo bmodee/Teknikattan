@@ -46,7 +46,7 @@ client:test:
       - merge_requests
   script:
     - cd client
-    - npm run test:coverage
+    - npm run unit-test:coverage
   coverage: /All files\s*\|\s*([\d\.]+)/
   artifacts:
     paths:

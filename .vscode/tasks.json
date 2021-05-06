@@ -1,102 +1,109 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Start client",
-            "type": "npm",
-            "script": "start",
-            "path": "client/",
-            "group": "build",
-            "problemMatcher": [],
-            "presentation": {
-                "group": "Client/Server"
-            }
-        },
-        {
-            "label": "Test client",
-            "type": "npm",
-            "script": "test:coverage:html",
-            "path": "client/",
-            "group": "build",
-            "problemMatcher": [],
-        },
-        {
-            "label": "Open client coverage",
-            "type": "shell",
-            "command": "start ./output/coverage/jest/index.html",
-            "problemMatcher": [],
-            "options": {
-                "cwd": "${workspaceFolder}/client"
-            },
-        },
-        {
-            "label": "Start server",
-            "type": "shell",
-            "group": "build",
-            "command": "env/Scripts/python main.py",
-            "problemMatcher": [],
-            "options": {
-                "cwd": "${workspaceFolder}/server"
-            },
-            "presentation": {
-                "group": "Client/Server"
-            }
-        },
-        {
-            "label": "Test server",
-            "type": "shell",
-            "group": "build",
-            "command": "env/Scripts/pytest.exe --cov-report html --cov app tests/",
-            "problemMatcher": [],
-            "options": {
-                "cwd": "${workspaceFolder}/server"
-            },
-        },
-        {
-            "label": "Populate database",
-            "type": "shell",
-            "group": "build",
-            "command": "env/Scripts/python populate.py",
-            "problemMatcher": [],
-            "options": {
-                "cwd": "${workspaceFolder}/server"
-            },
-        },
-        {
-            "label": "Open server coverage",
-            "type": "shell",
-            "command": "start ./htmlcov/index.html",
-            "problemMatcher": [],
-            "options": {
-                "cwd": "${workspaceFolder}/server"
-            },
-        },
-        {
-            "label": "Generate server documentation",
-            "type": "shell",
-            "command": "../env/Scripts/activate; ./make html",
-            "problemMatcher": [],
-            "options": {
-                "cwd": "${workspaceFolder}/server/docs"
-            },
-        },
-        {
-            "label": "Open server documentation",
-            "type": "shell",
-            "command": "start index.html",
-            "problemMatcher": [],
-            "options": {
-                "cwd": "${workspaceFolder}/server/docs/build/html"
-            },
-        },
-        {
-            "label": "Start client and server",
-            "group": "build",
-            "dependsOn": [
-                "Start server",
-                "Start client"
-            ],
-            "problemMatcher": []
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start client",
+      "type": "npm",
+      "script": "start",
+      "path": "client/",
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "group": "Client/Server"
+      }
+    },
+    {
+      "label": "Unit tests",
+      "type": "npm",
+      "script": "unit-test:coverage:html",
+      "path": "client/",
+      "group": "build",
+      "detail": "Run unit tests on client",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run e2e tests",
+      "type": "npm",
+      "script": "e2e-test",
+      "path": "client/",
+      "group": "build",
+      "problemMatcher": [],
+      "detail": "Make sure client and server is running before executing."
+    },
+    {
+      "label": "Open client coverage",
+      "type": "shell",
+      "command": "start ./output/coverage/jest/index.html",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/client"
+      }
+    },
+    {
+      "label": "Start server",
+      "type": "shell",
+      "group": "build",
+      "command": "env/Scripts/python main.py",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/server"
+      },
+      "presentation": {
+        "group": "Client/Server"
+      }
+    },
+    {
+      "label": "Test server",
+      "type": "shell",
+      "group": "build",
+      "command": "env/Scripts/pytest.exe --cov-report html --cov app tests/",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/server"
+      }
+    },
+    {
+      "label": "Populate database",
+      "type": "shell",
+      "group": "build",
+      "command": "env/Scripts/python populate.py",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/server"
+      }
+    },
+    {
+      "label": "Open server coverage",
+      "type": "shell",
+      "command": "start ./htmlcov/index.html",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/server"
+      }
+    },
+    {
+      "label": "Generate server documentation",
+      "type": "shell",
+      "command": "../env/Scripts/activate; ./make html",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/server/docs"
+      }
+    },
+    {
+      "label": "Open server documentation",
+      "type": "shell",
+      "command": "start index.html",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/server/docs/build/html"
+      }
+    },
+    {
+      "label": "Start client and server",
+      "group": "build",
+      "dependsOn": ["Start server", "Start client"],
+      "problemMatcher": []
+    }
+  ]
 }

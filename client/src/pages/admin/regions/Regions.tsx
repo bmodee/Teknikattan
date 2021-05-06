@@ -99,7 +99,7 @@ const RegionManager: React.FC = (props: any) => {
                 <TableRow key={row.name}>
                   <TableCell scope="row">{row.name}</TableCell>
                   <TableCell align="right">
-                    <Button onClick={(event) => handleClick(event, row.id)}>
+                    <Button onClick={(event) => handleClick(event, row.id)} data-testid={row.name}>
                       <MoreHorizIcon />
                     </Button>
                   </TableCell>
@@ -110,7 +110,9 @@ const RegionManager: React.FC = (props: any) => {
         {(!cities || cities.length === 0) && <Typography>Inga regioner hittades</Typography>}
       </TableContainer>
       <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-        <RemoveMenuItem onClick={handleDeleteCity}>Ta bort</RemoveMenuItem>
+        <RemoveMenuItem onClick={handleDeleteCity} data-testid="removeRegionButton">
+          Ta bort
+        </RemoveMenuItem>
       </Menu>
     </div>
   )

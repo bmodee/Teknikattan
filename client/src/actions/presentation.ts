@@ -17,7 +17,7 @@ export const getPresentationCompetition = (id: string) => async (dispatch: AppDi
         type: Types.SET_PRESENTATION_COMPETITION,
         payload: res.data,
       })
-      if (getState().presentation.slide.id === -1 && res.data.slides[0]) {
+      if (getState().presentation?.slide.id === -1 && res.data?.slides[0]) {
         setCurrentSlideByOrder(0)(dispatch)
       }
     })

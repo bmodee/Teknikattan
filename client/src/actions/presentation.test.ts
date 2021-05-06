@@ -20,13 +20,13 @@ it('dispatches no actions when failing to get competitions', async () => {
     return Promise.reject(new Error('getting competitions failed'))
   })
   const store = mockStore({ competitions: { filterParams: [] } })
-  await getPresentationCompetition('0')(store.dispatch)
+  await getPresentationCompetition('0')(store.dispatch, store.getState as any)
   expect(store.getActions()).toEqual([])
   expect(console.log).toHaveBeenCalled()
 })
 
 it('dispatches correct actions when setting slide', () => {
-  const testSlide: Slide = { competition_id: 0, id: 5, order: 5, timer: 20, title: '', background_image_id: 0 }
+  const testSlide: Slide = { competition_id: 0, id: 5, order: 5, timer: 20, title: '', background_image: undefined }
   const expectedActions = [{ type: Types.SET_PRESENTATION_SLIDE, payload: testSlide }]
   const store = mockStore({})
   setCurrentSlide(testSlide)(store.dispatch)

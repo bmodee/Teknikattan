@@ -46,8 +46,8 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
   const updateSlideType = async () => {
     closeSlideTypeDialog()
     if (activeSlide) {
-      deleteQuestionComponent(questionComponentId)
-      if (activeSlide.questions[0] && activeSlide.questions[0].type_id !== selectedSlideType) {
+      if (activeSlide.questions?.[0] && activeSlide.questions[0].type_id !== selectedSlideType) {
+        deleteQuestionComponent(questionComponentId)
         if (selectedSlideType === 0) {
           // Change slide type from a question type to information
           await axios
@@ -124,7 +124,7 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
       <ListItem>
         <FormControl fullWidth variant="outlined">
           <InputLabel>Sidtyp</InputLabel>
-          <Select fullWidth={true} value={activeSlide?.questions[0]?.type_id || 0} label="Sidtyp">
+          <Select fullWidth={true} value={activeSlide?.questions?.[0]?.type_id || 0} label="Sidtyp">
             <MenuItem value={0}>
               <Typography variant="button" onClick={() => openSlideTypeDialog(0)}>
                 Informationssida

@@ -57,6 +57,7 @@ const AdminLogin: React.FC = () => {
           <TextField
             label="Email Adress"
             name="model.email"
+            data-testid="email"
             helperText={formik.touched.model?.email ? formik.errors.model?.email : ''}
             error={Boolean(formik.touched.model?.email && formik.errors.model?.email)}
             onChange={formik.handleChange}
@@ -67,6 +68,7 @@ const AdminLogin: React.FC = () => {
             label="Lösenord"
             name="model.password"
             type="password"
+            data-testid="password"
             helperText={formik.touched.model?.password ? formik.errors.model?.password : ''}
             error={Boolean(formik.touched.model?.password && formik.errors.model?.password)}
             onChange={formik.handleChange}
@@ -75,6 +77,7 @@ const AdminLogin: React.FC = () => {
           />
           <Button
             type="submit"
+            data-testid="submit"
             fullWidth
             variant="contained"
             color="secondary"

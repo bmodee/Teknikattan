@@ -17,7 +17,7 @@ export const CheckAuthenticationCompetition = async () => {
       axios.defaults.headers.common['Authorization'] = authToken
       await axios
         .get('/api/auth/test')
-        .then((res) => {
+        .then(() => {
           store.dispatch({
             type: Types.SET_COMPETITION_LOGIN_DATA,
             payload: {

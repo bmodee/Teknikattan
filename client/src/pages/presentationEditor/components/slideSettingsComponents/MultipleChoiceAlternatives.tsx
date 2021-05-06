@@ -34,7 +34,7 @@ const MultipleChoiceAlternatives = ({ activeSlide, competitionId }: MultipleChoi
   }
 
   const updateAlternativeValue = async (alternative: QuestionAlternative) => {
-    if (activeSlide && activeSlide.questions[0]) {
+    if (activeSlide && activeSlide.questions?.[0]) {
       let newValue: number
       if (alternative.value === 0) {
         newValue = 1
@@ -52,7 +52,7 @@ const MultipleChoiceAlternatives = ({ activeSlide, competitionId }: MultipleChoi
   }
 
   const updateAlternativeText = async (alternative_id: number, newText: string) => {
-    if (activeSlide && activeSlide.questions[0]) {
+    if (activeSlide && activeSlide.questions?.[0]) {
       await axios
         .put(
           `/api/competitions/${competitionId}/slides/${activeSlide?.id}/questions/${activeSlide?.questions[0].id}/alternatives/${alternative_id}`,
@@ -66,7 +66,7 @@ const MultipleChoiceAlternatives = ({ activeSlide, competitionId }: MultipleChoi
   }
 
   const addAlternative = async () => {
-    if (activeSlide && activeSlide.questions[0]) {
+    if (activeSlide && activeSlide.questions?.[0]) {
       await axios
         .post(
           `/api/competitions/${competitionId}/slides/${activeSlide?.id}/questions/${activeSlide?.questions[0].id}/alternatives`,
@@ -80,7 +80,7 @@ const MultipleChoiceAlternatives = ({ activeSlide, competitionId }: MultipleChoi
   }
 
   const handleCloseAnswerClick = async (alternative_id: number) => {
-    if (activeSlide && activeSlide.questions[0]) {
+    if (activeSlide && activeSlide.questions?.[0]) {
       await axios
         .delete(
           `/api/competitions/${competitionId}/slides/${activeSlideId}/questions/${activeSlide?.questions[0].id}/alternatives/${alternative_id}`
@@ -102,25 +102,22 @@ const MultipleChoiceAlternatives = ({ activeSlide, competitionId }: MultipleChoi
           />
         </Center>
       </ListItem>
-      {activeSlide &&
-        activeSlide.questions[0] &&
-        activeSlide.questions[0].alternatives &&
-        activeSlide.questions[0].alternatives.map((alt) => (
-          <div key={alt.id}>
-            <ListItem divider>
-              <AlternativeTextField
-                id="outlined-basic"
-                defaultValue={alt.text}
-                onChange={(event) => updateAlternativeText(alt.id, event.target.value)}
-                variant="outlined"
-              />
-              <GreenCheckbox checked={numberToBool(alt.value)} onChange={() => updateAlternativeValue(alt)} />
-              <Clickable>
-                <CloseIcon onClick={() => handleCloseAnswerClick(alt.id)} />
-              </Clickable>
-            </ListItem>
-          </div>
-        ))}
+      {activeSlide?.questions?.[0]?.alternatives?.map((alt) => (
+        <div key={alt.id}>
+          <ListItem divider>
+            <AlternativeTextField
+              id="outlined-basic"
+              defaultValue={alt.text}
+              onChange={(event) => updateAlternativeText(alt.id, event.target.value)}
+              variant="outlined"
+            />
+            <GreenCheckbox checked={numberToBool(alt.value)} onChange={() => updateAlternativeValue(alt)} />
+            <Clickable>
+              <CloseIcon onClick={() => handleCloseAnswerClick(alt.id)} />
+            </Clickable>
+          </ListItem>
+        </div>
+      ))}
       <ListItem button onClick={addAlternative}>
         <Center>
           <AddButton variant="button">Lägg till svarsalternativ</AddButton>

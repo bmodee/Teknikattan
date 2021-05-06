@@ -18,7 +18,7 @@ const QuestionSettings = ({ activeSlide, competitionId }: QuestionSettingsProps)
     updateTitle: boolean,
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
-    if (activeSlide && activeSlide.questions[0]) {
+    if (activeSlide && activeSlide.questions?.[0]) {
       if (updateTitle) {
         await axios
           .put(`/api/competitions/${competitionId}/slides/${activeSlide.id}/questions/${activeSlide.questions[0].id}`, {
@@ -44,7 +44,7 @@ const QuestionSettings = ({ activeSlide, competitionId }: QuestionSettingsProps)
 
   const [score, setScore] = useState<number | undefined>(0)
   useEffect(() => {
-    setScore(activeSlide?.questions[0]?.total_score)
+    setScore(activeSlide?.questions?.[0]?.total_score)
   }, [activeSlide])
 
   return (
@@ -74,7 +74,7 @@ const QuestionSettings = ({ activeSlide, competitionId }: QuestionSettingsProps)
             label="Poäng"
             type="number"
             InputProps={{ inputProps: { min: 0 } }}
-            value={score}
+            value={score || 0}
             onChange={(event) => updateQuestion(false, event)}
           />
         </Center>

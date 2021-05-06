@@ -1,14 +1,14 @@
 /* This file handles creating and removing image components, and uploading and removing image files from the server.
  */
-import { ListItem, ListItemText, Typography } from '@material-ui/core'
+import { ListItem, ListItemText } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
-import React from 'react'
-import { Center, HiddenInput, SettingsList, AddImageButton, ImportedImage, AddButton } from '../styled'
 import axios from 'axios'
+import React from 'react'
 import { getEditorCompetition } from '../../../../actions/editor'
-import { RichSlide } from '../../../../interfaces/ApiRichModels'
-import { ImageComponent, Media } from '../../../../interfaces/ApiModels'
 import { useAppDispatch, useAppSelector } from '../../../../hooks'
+import { ImageComponent, Media } from '../../../../interfaces/ApiModels'
+import { RichSlide } from '../../../../interfaces/ApiRichModels'
+import { AddButton, AddImageButton, Center, HiddenInput, ImportedImage, SettingsList } from '../styled'
 
 type ImagesProps = {
   activeViewTypeId: number
