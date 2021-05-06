@@ -60,12 +60,6 @@ def user_exists(email):
     return User.query.filter(User.email == email).count() > 0
 
 
-def user(user_id):
-    """ Gets the user object associated with the provided user. """
-
-    return User.query.filter(User.id == user_id).first_extended()
-
-
 def user_by_email(email):
     """ Gets the user object associated with the provided email. """
 

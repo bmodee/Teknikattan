@@ -8,6 +8,7 @@ import app.database.controller as dbc
 from app.apis import item_response, list_response, protect_route
 from app.core.dto import UserDTO
 from app.core.parsers import search_parser, sentinel
+from app.database.models import User
 from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource, inputs, reqparse
 
@@ -49,7 +50,7 @@ class UsersList(Resource):
     def get(self):
         """ Gets all users. """
 
-        item = dbc.get.user(get_jwt_identity())
+        item = dbc.get.one(User, get_jwt_identity())
         return item_response(schema.dump(item))
 
     @protect_route(allowed_roles=["*"])
@@ -57,7 +58,7 @@ class UsersList(Resource):
         """ Posts a new user using the specified arguments. """
 
         args = user_parser_edit.parse_args(strict=True)
-        item = dbc.get.user(get_jwt_identity())
+        item = dbc.get.one(User, get_jwt_identity())
         item = _edit_user(item, args)
         return item_response(schema.dump(item))
 
@@ -69,7 +70,7 @@ class Users(Resource):
     def get(self, ID):
         """ Gets the specified user. """
 
-        item = dbc.get.user(ID)
+        item = dbc.get.one(User, ID)
         return item_response(schema.dump(item))
 
     @protect_route(allowed_roles=["Admin"])
@@ -77,7 +78,7 @@ class Users(Resource):
         """ Edits the specified team using the provided arguments. """
 
         args = user_parser_edit.parse_args(strict=True)
-        item = dbc.get.user(ID)
+        item = dbc.get.one(User, ID)
         item = _edit_user(item, args)
         return item_response(schema.dump(item))
 

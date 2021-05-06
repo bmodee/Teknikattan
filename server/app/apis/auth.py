@@ -11,7 +11,7 @@ from app.apis import item_response, protect_route, text_response
 from app.core import sockets
 from app.core.codes import verify_code
 from app.core.dto import AuthDTO
-from app.database.models import Whitelist
+from app.database.models import User, Whitelist
 from flask import current_app
 from flask_jwt_extended import create_access_token, get_jti, get_raw_jwt
 from flask_jwt_extended.utils import get_jti
@@ -87,7 +87,7 @@ class AuthDelete(Resource):
     def delete(self, user_id):
         """ Deletes the specified user and adds their token to the blacklist. """
 
-        item_user = dbc.get.user(user_id)
+        item_user = dbc.get.one(User, user_id)
 
         # Blacklist all the whitelisted tokens
         # in use for the user that will be deleted
