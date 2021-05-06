@@ -2,12 +2,14 @@ import { AnyAction } from 'redux'
 import Types from '../actions/types'
 import { ComponentType, MediaType, QuestionType, ViewType } from '../interfaces/ApiModels'
 
+// Define a type for the Types state
 interface TypesState {
   componentTypes: ComponentType[]
   viewTypes: ViewType[]
   questionTypes: QuestionType[]
   mediaTypes: MediaType[]
 }
+// Define the initial values for the types state
 const initialState: TypesState = {
   componentTypes: [],
   viewTypes: [],

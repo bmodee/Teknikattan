@@ -10,6 +10,7 @@ interface CompetitionState {
   filterParams: CompetitionFilterParams
 }
 
+// Define the initial values for the competition state
 const initialState: CompetitionState = {
   competitions: [],
   total: 0,

@@ -7,6 +7,8 @@ interface MediaState {
   mediatype_id: number
   user_id: number
 }
+
+// Define the initial values for the media state
 const initialState: MediaState = {
   id: 0,
   filename: '',

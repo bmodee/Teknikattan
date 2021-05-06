@@ -305,31 +305,6 @@ const OperatorViewPage: React.FC = () => {
             </OperatorButton>
           </Tooltip>
 
-          {/* 
-          // Manual start button
-          <Tooltip title="Start Presentation" arrow>
-            <OperatorButton onClick={startCompetition} variant="contained">
-              start
-            </OperatorButton>
-          </Tooltip>
-
-          
-          // This creates a join button, but Operator should not join others, others should join Operator
-          <Tooltip title="Join Presentation" arrow>
-            <OperatorButton onClick={socketJoinPresentation} variant="contained">
-              <GroupAddIcon fontSize="large" />
-            </OperatorButton>
-          </Tooltip>
-          
-
-          // This creates another end button, it might not be needed since we already have one
-          <Tooltip title="End Presentation" arrow>
-            <OperatorButton onClick={socketEndPresentation} variant="contained">
-              <CancelIcon fontSize="large" />
-            </OperatorButton>
-          </Tooltip>
-          */}
-
           <Tooltip title="Starta Timer" arrow>
             <OperatorButton onClick={socketStartTimer} variant="contained">
               <TimerIcon fontSize="large" />

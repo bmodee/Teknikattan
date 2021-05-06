@@ -1,9 +1,10 @@
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
-import { Slide, Team } from '../interfaces/ApiModels'
+import { Slide } from '../interfaces/ApiModels'
 import { Timer } from '../interfaces/Timer'
 import { RichCompetition } from './../interfaces/ApiRichModels'
 
+// Define a type for the presentation state
 interface PresentationState {
   competition: RichCompetition
   slide: Slide
@@ -11,6 +12,7 @@ interface PresentationState {
   timer: Timer
 }
 
+// Define the initial values for the presentation state
 const initialState: PresentationState = {
   competition: {
     name: '',

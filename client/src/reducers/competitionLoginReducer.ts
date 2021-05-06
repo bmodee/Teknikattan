@@ -1,16 +1,18 @@
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
 
+// Define a type for the competition login data
 interface CompetitionLoginData {
   competition_id: number
   team_id: number | null
   view: string
 }
-
+// Define a type for UI error
 interface UIError {
   message: string
 }
 
+// Define a type for the competition login state
 interface CompetitionLoginState {
   loading: boolean
   errors: null | UIError
@@ -19,6 +21,7 @@ interface CompetitionLoginState {
   initialized: boolean
 }
 
+// Define the initial values for the competition login state
 const initialState: CompetitionLoginState = {
   loading: false,
   errors: null,

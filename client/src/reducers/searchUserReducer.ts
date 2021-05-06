@@ -3,6 +3,7 @@ import Types from '../actions/types'
 import { User } from '../interfaces/ApiModels'
 import { UserFilterParams } from '../interfaces/FilterParams'
 
+// Define a type for the search user state
 interface SearchUserState {
   users: User[]
   total: number
@@ -10,6 +11,7 @@ interface SearchUserState {
   filterParams: UserFilterParams
 }
 
+// Define the initial values for the search user state
 const initialState: SearchUserState = {
   users: [],
   total: 0,

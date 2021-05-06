@@ -2,11 +2,14 @@ import { AnyAction } from 'redux'
 import Types from '../actions/types'
 import { City } from '../interfaces/ApiModels'
 
+// Define a type for the city state
 interface CityState {
   cities: City[]
   total: number
   count: number
 }
+
+// Define initial values for the city state
 const initialState: CityState = {
   cities: [],
   total: 0,

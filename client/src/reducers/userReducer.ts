@@ -1,6 +1,7 @@
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
 
+// Define a type for users info
 interface UserInfo {
   name: string
   email: string
@@ -9,12 +10,14 @@ interface UserInfo {
   id: number
 }
 
+// Define a type for the users state
 interface UserState {
   authenticated: boolean
   userInfo: UserInfo | null
   loading: boolean
 }
 
+// Define the initial values for the users state
 const initialState: UserState = {
   authenticated: false,
   loading: false,
