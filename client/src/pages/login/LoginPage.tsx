@@ -1,3 +1,7 @@
+/** This is the login page, it contains two child components, one is
+ *   to log in as an admin, the other is to connect to a competition using a code
+ */
+
 import { AppBar, Tab, Tabs } from '@material-ui/core'
 import React from 'react'
 import AdminLogin from './components/AdminLogin'

@@ -6,6 +6,11 @@ import NumberOfCompetitions from './components/NumberOfCompetitions'
 import NumberOfRegions from './components/NumberOfRegions'
 import NumberOfUsers from './components/NumberOfUsers'
 
+/**
+ * This is the first page that is shown after a user logs in. It shows som statistics about the site.
+ *
+ */
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {

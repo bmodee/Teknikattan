@@ -1,3 +1,5 @@
+/** Component that handles the log in when a user is an admin */
+
 import { Button, TextField, Typography } from '@material-ui/core'
 import { Alert, AlertTitle } from '@material-ui/lab'
 import { Formik, FormikHelpers } from 'formik'

@@ -113,14 +113,13 @@ const OperatorViewPage: React.FC = () => {
 
   useEffect(() => {
     socketConnect()
-    socketSetSlide // Behövs denna?
+    socketSetSlide
     handleOpenCodes()
-    setTimeout(startCompetition, 1000) // Ghetto, wait for everything to load
-    // console.log(id)
+    setTimeout(startCompetition, 1000) // Wait for socket to connect
   }, [])
 
+  /** Handles the browsers back button and if pressed cancels the ongoing competition */
   window.onpopstate = () => {
-    //Handle browser back arrow
     alert('Tävlingen avslutas för alla')
     endCompetition()
   }
@@ -136,11 +135,12 @@ const OperatorViewPage: React.FC = () => {
   }
 
   const startCompetition = () => {
-    socketStartPresentation()
+    socketStartPresentation() // Calls the socket to start competition
     console.log('started competition for')
     console.log(competitionId)
   }
 
+  /** Making sure the user wants to exit the competition by displaying a dialog box */
   const handleVerifyExit = () => {
     setOpen(true)
   }
@@ -155,7 +155,7 @@ const OperatorViewPage: React.FC = () => {
     setOpen(false)
     socketEndPresentation()
     history.push('/admin/tävlingshanterare')
-    window.location.reload(false) // TODO: fix this ugly hack, we "need" to refresh site to be able to run the competition correctly again
+    window.location.reload(false) // TODO: fix this, we "need" to refresh site to be able to run the competition correctly again
   }
 
   const getCodes = async () => {
@@ -205,9 +205,8 @@ const OperatorViewPage: React.FC = () => {
     return typeName
   }
 
+  /** Sums the scores for the teams. */
   const addScore = (team: RichTeam) => {
-    // Sums the scores for the teams.
-
     let totalScore = 0
     for (let j = 0; j < team.question_answers.length; j++) {
       totalScore = totalScore + team.question_answers[j].score

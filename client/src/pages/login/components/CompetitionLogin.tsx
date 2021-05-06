@@ -1,3 +1,5 @@
+/** Component that handles the log in when a user connects to a competition through a code */
+
 import { Button, TextField, Typography } from '@material-ui/core'
 import { Alert, AlertTitle } from '@material-ui/lab'
 import { Formik } from 'formik'
@@ -38,7 +40,7 @@ const CompetitionLogin: React.FC = () => {
   const handleCompetitionSubmit = async (values: CompetitionLoginFormModel) => {
     dispatch(loginCompetition(values.model.code, history, true))
   }
-  
+
   return (
     <Formik
       initialValues={competitionInitialValues}
