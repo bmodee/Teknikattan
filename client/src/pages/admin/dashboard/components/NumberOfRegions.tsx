@@ -3,6 +3,8 @@ import React, { useEffect } from 'react'
 import { getCities } from '../../../../actions/cities'
 import { useAppDispatch, useAppSelector } from '../../../../hooks'
 
+/** Shows how many regions is on the system */
+
 const NumberOfRegions: React.FC = () => {
   const regions = useAppSelector((state) => state.statistics.regions)
   const dispatch = useAppDispatch()

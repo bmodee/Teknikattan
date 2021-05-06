@@ -1,3 +1,5 @@
+/** Add a user component */
+
 import { Button, FormControl, InputLabel, MenuItem, Popover, TextField } from '@material-ui/core'
 import PersonAddIcon from '@material-ui/icons/PersonAdd'
 import { Alert, AlertTitle } from '@material-ui/lab'
@@ -16,6 +18,7 @@ type formType = FormModel<AddUserModel>
 const noRoleSelected = 'Välj roll'
 const noCitySelected = 'Välj stad'
 
+/** Form when adding a user with some constraints */
 const userSchema: Yup.SchemaOf<formType> = Yup.object({
   model: Yup.object()
     .shape({

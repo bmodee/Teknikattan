@@ -14,6 +14,9 @@ import { getCities } from '../../../actions/cities'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { RemoveMenuItem, TopBar } from '../styledComp'
 import AddRegion from './AddRegion'
+
+/** shows all the regions in a list */
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     table: {

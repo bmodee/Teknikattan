@@ -3,6 +3,8 @@ import React, { useEffect } from 'react'
 import { getSearchUsers } from '../../../../actions/searchUser'
 import { useAppDispatch, useAppSelector } from '../../../../hooks'
 
+/** Shows how many users are on the system */
+
 const NumberOfUsers: React.FC = () => {
   const usersTotal = useAppSelector((state) => state.statistics.users)
   const dispatch = useAppDispatch()

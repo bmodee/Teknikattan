@@ -2,6 +2,8 @@ import { Box, Typography } from '@material-ui/core'
 import React from 'react'
 import { useAppSelector } from '../../../../hooks'
 
+/** Shows how many competitions is on the system */
+
 const NumberOfCompetitions: React.FC = () => {
   const competitions = useAppSelector((state) => state.statistics.competitions)
 

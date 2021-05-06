@@ -131,6 +131,7 @@ const CompetitionManager: React.FC = (props: any) => {
     }
   }
 
+  /** Start the competition by redirecting with URL with Code */
   const handleStartCompetition = () => {
     const operatorCode = codes.find((code) => code.view_type_id === 4)?.code
     if (operatorCode) {
@@ -138,6 +139,7 @@ const CompetitionManager: React.FC = (props: any) => {
     }
   }
 
+  /** Fetch all the connection codes from the server */
   const getCodes = async (id: number) => {
     await axios
       .get(`/api/competitions/${id}/codes`)
@@ -147,6 +149,7 @@ const CompetitionManager: React.FC = (props: any) => {
       .catch(console.log)
   }
 
+  /** Fetch all the teams from the server that is connected to a specific competition*/
   const getTeams = async (id: number) => {
     await axios
       .get(`/api/competitions/${id}/teams`)
@@ -159,6 +162,7 @@ const CompetitionManager: React.FC = (props: any) => {
       })
   }
 
+  /** Fetch the copetition name from the server */
   const getCompetitionName = async () => {
     await axios
       .get(`/api/competitions/${activeId}`)
@@ -198,16 +202,18 @@ const CompetitionManager: React.FC = (props: any) => {
     return typeName
   }
 
+  /** Handles the opening of the code dialog box */
   const handleOpenDialog = async () => {
     await getCompetitionName()
     setDialogIsOpen(true)
   }
-
+  /** Handles the closing of the code dialog box */
   const handleCloseDialog = () => {
     setDialogIsOpen(false)
     setAnchorEl(null)
   }
 
+  /** Function that copies an existing competition */
   const handleDuplicateCompetition = async () => {
     if (activeId) {
       await axios

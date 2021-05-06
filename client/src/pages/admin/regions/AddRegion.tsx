@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type formType = FormModel<AddCityModel>
 
+/** add a region form with some constraints. */
 const schema: Yup.SchemaOf<formType> = Yup.object({
   model: Yup.object()
     .shape({

@@ -2,6 +2,8 @@ import { Box, Typography } from '@material-ui/core'
 import React from 'react'
 import { useAppSelector } from '../../../../hooks'
 
+/** This component show information about the currently logged in user */
+
 const CurrentUser: React.FC = () => {
   const currentUser = useAppSelector((state: { user: { userInfo: any } }) => state.user.userInfo)
   return (
