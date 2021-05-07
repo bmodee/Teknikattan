@@ -1,6 +1,6 @@
 import Types from '../actions/types'
-import { RichSlide } from '../interfaces/ApiRichModels'
 import { Slide } from '../interfaces/ApiModels'
+import { RichSlide } from '../interfaces/ApiRichModels'
 import presentationReducer from './presentationReducer'
 
 const initialState = {
@@ -170,6 +170,8 @@ describe('should handle SET_PRESENTATION_SLIDE_NEXT', () => {
         teams: [],
       },
       slide: { competition_id: 0, order: 1 } as Slide,
+      code: initialState.code,
+      timer: initialState.timer,
     }
     expect(
       presentationReducer(testPresentationState, {
@@ -178,6 +180,8 @@ describe('should handle SET_PRESENTATION_SLIDE_NEXT', () => {
     ).toEqual({
       competition: testPresentationState.competition,
       slide: testPresentationState.competition.slides[1],
+      code: initialState.code,
+      timer: initialState.timer,
     })
   })
 })

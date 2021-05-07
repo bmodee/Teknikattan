@@ -13,6 +13,8 @@ it('renders competition settings', () => {
         h: 0,
         media: { id: 0, mediatype_id: 0, user_id: 0, filename: '' },
         type_id: 2,
+        view_type_id: 1,
+        slide_id: 2,
       }}
       width={0}
       height={0}

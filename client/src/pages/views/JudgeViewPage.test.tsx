@@ -36,7 +36,7 @@ it('renders judge view page', () => {
   render(
     <BrowserRouter>
       <Provider store={store}>
-        <JudgeViewPage code={''} competitionId={0} />
+        <JudgeViewPage />
       </Provider>
     </BrowserRouter>
   )

@@ -12,7 +12,7 @@ from app.core import sockets
 from app.core.codes import verify_code
 from app.core.dto import AuthDTO
 from app.database.models import User, Whitelist
-from flask import current_app
+from flask import current_app, has_app_context
 from flask_jwt_extended import create_access_token, get_jti, get_raw_jwt
 from flask_jwt_extended.utils import get_jti
 from flask_restx import Resource, inputs, reqparse
@@ -32,8 +32,9 @@ create_user_parser.add_argument("role_id", type=int, required=True, location="js
 login_code_parser = reqparse.RequestParser()
 login_code_parser.add_argument("code", type=str, required=True, location="json")
 
-USER_LOGIN_LOCKED_ATTEMPTS = current_app.config["USER_LOGIN_LOCKED_ATTEMPTS"]
-USER_LOGIN_LOCKED_EXPIRES = current_app.config["USER_LOGIN_LOCKED_EXPIRES"]
+if has_app_context():
+    USER_LOGIN_LOCKED_ATTEMPTS = current_app.config["USER_LOGIN_LOCKED_ATTEMPTS"]
+    USER_LOGIN_LOCKED_EXPIRES = current_app.config["USER_LOGIN_LOCKED_EXPIRES"]
 
 
 def get_user_claims(item_user):

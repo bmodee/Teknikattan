@@ -12,6 +12,11 @@ import TeamViewPage from './pages/views/TeamViewPage'
 import ViewSelectPage from './pages/views/ViewSelectPage'
 import SecureRoute from './utils/SecureRoute'
 
+/**
+ * This is the main function
+ *
+ * @returns jsx - All the routes
+ */
 const Main: React.FC = () => {
   const dispatch = useAppDispatch()
   useEffect(() => {

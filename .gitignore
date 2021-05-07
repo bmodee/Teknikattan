@@ -2,3 +2,6 @@
 */coverage
 /.idea
 .vs/
+
+# Documentation files
+docs/build

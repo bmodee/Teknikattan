@@ -4,6 +4,7 @@ joining and leaving a presentation and syncing slides and timer bewteen all clie
 connected to the same presentation.
 """
 import logging
+from functools import wraps
 from typing import Dict
 
 from app.core import db
@@ -32,7 +33,8 @@ def _is_allowed(allowed, actual):
 
 
 def protect_route(allowed_views=None):
-    def wrapper(func):
+    def wrapper(f):
+        @wraps(f)
         def inner(*args, **kwargs):
             try:
                 verify_jwt_in_request()
@@ -48,7 +50,7 @@ def protect_route(allowed_views=None):
                 logger.warning(f"View '{view}' is not allowed to access route only accessible by '{allowed_views}'")
                 return
 
-            return func(*args, **kwargs)
+            return f(*args, **kwargs)
 
         return inner
 

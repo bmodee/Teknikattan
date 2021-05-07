@@ -27,5 +27,9 @@
   ],
   "exclude": [
     "build"
-  ]
+  ],
+  "typedocOptions": {
+    "entryPoints": "./src/",
+    "exclude": "**/*.test.*",
+  }
 }

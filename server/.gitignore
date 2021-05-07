@@ -5,5 +5,5 @@ htmlcov
 app/*.db
 app/static/
 
-# Documentation files
-docs/build
+# Documentation
+docs
