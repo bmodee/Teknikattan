@@ -10,6 +10,7 @@ import { getCities } from '../../actions/cities'
 import { getEditorCompetition, setEditorSlideId, setEditorViewId } from '../../actions/editor'
 import { getTypes } from '../../actions/typesAction'
 import { useAppDispatch, useAppSelector } from '../../hooks'
+import { RichSlide } from '../../interfaces/ApiRichModels'
 import { renderSlideIcon } from '../../utils/renderSlideIcon'
 import { RemoveMenuItem } from '../admin/styledComp'
 import { Content, InnerContent } from '../views/styled'
@@ -50,6 +51,7 @@ interface CompetitionParams {
 const PresentationEditorPage: React.FC = () => {
   const { competitionId }: CompetitionParams = useParams()
   const dispatch = useAppDispatch()
+  const [sortedSlides, setSortedSlides] = useState<RichSlide[]>([])
   const activeSlideId = useAppSelector((state) => state.editor.activeSlideId)
   const activeViewTypeId = useAppSelector((state) => state.editor.activeViewTypeId)
   const competition = useAppSelector((state) => state.editor.competition)
@@ -59,6 +61,10 @@ const PresentationEditorPage: React.FC = () => {
     dispatch(getEditorCompetition(competitionId))
     dispatch(getCities())
   }, [])
+
+  useEffect(() => {
+    setSortedSlides(competition.slides.sort((a, b) => (a.order > b.order ? 1 : -1)))
+  }, [competition])
 
   const setActiveSlideId = (id: number) => {
     dispatch(setEditorSlideId(id))
@@ -111,16 +117,19 @@ const PresentationEditorPage: React.FC = () => {
   }
 
   const onDragEnd = async (result: DropResult) => {
-    // dropped outside the list
-    if (!result.destination) {
+    // dropped outside the list or same place
+    if (!result.destination || result.destination.index === result.source.index) {
       return
     }
     const draggedIndex = result.source.index
-    const draggedSlideId = competition.slides.find((slide) => slide.order === draggedIndex)?.id
+    const draggedSlideId = sortedSlides[draggedIndex].id
+    const slidesCopy = [...sortedSlides]
+    const [removed] = slidesCopy.splice(draggedIndex, 1)
+    slidesCopy.splice(result.destination.index, 0, removed)
+    setSortedSlides(slidesCopy)
     if (draggedSlideId) {
       await axios
         .put(`/api/competitions/${competitionId}/slides/${draggedSlideId}/order`, { order: result.destination.index })
-        .then(() => dispatch(getEditorCompetition(competitionId)))
         .catch(console.log)
     }
   }
@@ -161,26 +170,26 @@ const PresentationEditorPage: React.FC = () => {
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="droppable">
                 {(provided) => (
-                  <div key={provided.innerRef.toString()} ref={provided.innerRef} {...provided.droppableProps}>
-                    {competition.slides &&
-                      competition.slides.map((slide, index) => (
-                        <Draggable key={slide.order} draggableId={slide.id.toString()} index={index}>
-                          {(provided, snapshot) => (
-                            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                              <SlideListItem
-                                divider
-                                button
-                                selected={slide.id === activeSlideId}
-                                onClick={() => setActiveSlideId(slide.id)}
-                                onContextMenu={(event) => handleRightClick(event, slide.id)}
-                              >
-                                {renderSlideIcon(slide)}
-                                <ListItemText primary={`Sida ${slide.order + 1}`} />
-                              </SlideListItem>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
+                  <div ref={provided.innerRef} {...provided.droppableProps}>
+                    {sortedSlides.map((slide, index) => (
+                      <Draggable key={slide.id} draggableId={slide.id.toString()} index={index}>
+                        {(provided, snapshot) => (
+                          <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                            <SlideListItem
+                              divider
+                              key={slide.order}
+                              button
+                              selected={slide.id === activeSlideId}
+                              onClick={() => setActiveSlideId(slide.id)}
+                              onContextMenu={(event) => handleRightClick(event, slide.id)}
+                            >
+                              {renderSlideIcon(slide)}
+                              <ListItemText primary={`Sida ${slide.id}`} />
+                            </SlideListItem>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
                     {provided.placeholder}
                   </div>
                 )}

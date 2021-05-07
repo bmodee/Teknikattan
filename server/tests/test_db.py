@@ -3,10 +3,10 @@ This file tests the database controller functions.
 """
 
 import app.database.controller as dbc
-from app.database.models import City, Competition, Media, MediaType, Role, User, Code
+from app.database.models import City, Code, Competition, Media, MediaType, Role, User
 
 from tests import app, client, db
-from tests.test_helpers import add_default_values, assert_exists, assert_insert_fail, delete
+from tests.test_helpers import add_default_values, assert_exists, assert_insert_fail, assert_slide_order, delete
 
 
 def test_user(client):
@@ -149,6 +149,33 @@ def check_slides_copy(item_slide_original, item_slide_copy, num_slides, order):
     )
     assert total == num_slides
     assert item_slide_copy == item_slides[order]
+
+
+def test_move_slides(client):
+    add_default_values()
+
+    item_comp = dbc.get.one(Competition, 1)
+
+    for _ in range(9):
+        dbc.add.slide(item_comp.id)
+
+    # Move from beginning to end
+    item_comp = dbc.utils.move_slides(item_comp, 0, 9)
+    assert_slide_order(item_comp, [9, 0, 1, 2, 3, 4, 5, 6, 7, 8])
+
+    # Move from end to beginning
+    item_comp = dbc.utils.move_slides(item_comp, 9, 0)
+    assert_slide_order(item_comp, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+    # Move some things in the middle
+    item_comp = dbc.utils.move_slides(item_comp, 3, 7)
+    assert_slide_order(item_comp, [0, 1, 2, 7, 3, 4, 5, 6, 8, 9])
+
+    item_comp = dbc.utils.move_slides(item_comp, 1, 5)
+    assert_slide_order(item_comp, [0, 5, 1, 7, 2, 3, 4, 6, 8, 9])
+
+    item_comp = dbc.utils.move_slides(item_comp, 8, 2)
+    assert_slide_order(item_comp, [0, 6, 1, 8, 3, 4, 5, 7, 2, 9])
 
 
 """

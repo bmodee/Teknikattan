@@ -153,3 +153,11 @@ def change_order_test(client, cid, slide_id, new_slide_id, h):
     # Changes order
     response, _ = put(client, f"/api/competitions/{cid}/slides/{slide_id}/order", {"order": new_order}, headers=h)
     assert response.status_code == codes.OK
+
+
+def assert_slide_order(item_comp, correct_order):
+    """
+    Assert that the slides in the given competition are in the correct order
+    """
+    for slide, order in zip(item_comp.slides, correct_order):
+        assert slide.order == order

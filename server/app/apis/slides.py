@@ -8,7 +8,10 @@ import app.database.controller as dbc
 from app.apis import item_response, list_response, protect_route
 from app.core.dto import SlideDTO
 from app.core.parsers import sentinel
+from app.database.controller.get import slide_count
+from app.database.models import Competition
 from flask_restx import Resource, reqparse
+from flask_restx.errors import abort
 
 api = SlideDTO.api
 schema = SlideDTO.schema
@@ -78,26 +81,18 @@ class SlideOrder(Resource):
         """ Edits the specified slide order using the provided arguments. """
 
         args = slide_parser_edit.parse_args(strict=True)
-        order = args.get("order")
+        new_order = args.get("order")
 
         item_slide = dbc.get.slide(competition_id, slide_id)
 
-        if order == item_slide.order:
+        if new_order == item_slide.order:
             return item_response(schema.dump(item_slide))
 
-        # clamp order between 0 and max
-        order_count = dbc.get.slide_count(competition_id)
-        if order < 0:
-            order = 0
-        elif order >= order_count - 1:
-            order = order_count - 1
+        if not (0 <= new_order < dbc.get.slide_count(competition_id)):
+            abort(codes.BAD_REQUEST, f"Cant change to invalid slide order '{new_order}'")
 
-        # get slide at the requested order
-        item_slide_id = dbc.get.slide(competition_id, order)
-
-        # switch place between them
-        item_slide = dbc.edit.switch_order(item_slide, item_slide_id)
-
+        item_competition = dbc.get.one(Competition, competition_id)
+        dbc.utils.move_slides(item_competition, item_slide.order, new_order)
         return item_response(schema.dump(item_slide))
 
 
