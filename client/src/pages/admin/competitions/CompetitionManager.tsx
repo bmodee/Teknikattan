@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   ListItem,
   ListItemText,
@@ -12,13 +13,14 @@ import {
   TextField,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from '@material-ui/core'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Paper from '@material-ui/core/Paper'
 import Select from '@material-ui/core/Select'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -72,6 +74,11 @@ interface Code {
 }
 
 const CompetitionManager: React.FC = (props: any) => {
+  // for dialog alert
+  const [openAlert, setOpen] = React.useState(false)
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [activeId, setActiveId] = React.useState<number | undefined>(undefined)
   const [timerHandle, setTimerHandle] = React.useState<number | undefined>(undefined)
@@ -101,6 +108,10 @@ const CompetitionManager: React.FC = (props: any) => {
     setActiveId(undefined)
   }
 
+  const handleCloseVerify = () => {
+    setOpen(false)
+  }
+
   useEffect(() => {
     dispatch(getCompetitions())
   }, [])
@@ -116,8 +127,13 @@ const CompetitionManager: React.FC = (props: any) => {
     dispatch(setFilterParams({ ...filterParams, name: event.target.value }))
   }
 
+  const handleVerifyDelete = () => {
+    setOpen(true)
+  }
+
   // Function to remove a competition from the systems database
   const handleDeleteCompetition = async () => {
+    setOpen(false)
     if (activeId) {
       await axios
         .delete(`/api/competitions/${activeId}`)
@@ -334,10 +350,32 @@ const CompetitionManager: React.FC = (props: any) => {
         <MenuItem onClick={handleStartCompetition}>Starta</MenuItem>
         <MenuItem onClick={handleOpenDialog}>Visa koder</MenuItem>
         <MenuItem onClick={handleDuplicateCompetition}>Duplicera</MenuItem>
-        <RemoveMenuItem onClick={handleDeleteCompetition} data-testid="removeCompetitionButton">
+        <RemoveMenuItem onClick={handleVerifyDelete} data-testid="removeCompetitionButton">
           Ta bort
         </RemoveMenuItem>
       </Menu>
+      <Dialog
+        fullScreen={fullScreen}
+        open={openAlert}
+        onClose={handleCloseVerify}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">{'Ta bort tävlingen?'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Är du säker på att du vill ta bort tävlingen och all dess information från systemet?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleCloseVerify} color="primary">
+            Avbryt
+          </Button>
+          <Button data-testid="acceptRemoveUser" onClick={handleDeleteCompetition} color="primary" autoFocus>
+            Ta bort
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Dialog
         open={dialogIsOpen}
         onClose={handleCloseDialog}
