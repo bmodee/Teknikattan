@@ -21,6 +21,7 @@ import BackspaceIcon from '@material-ui/icons/Backspace'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import FileCopyIcon from '@material-ui/icons/FileCopy'
+import LinkIcon from '@material-ui/icons/Link'
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
 import TimerIcon from '@material-ui/icons/Timer'
 import axios from 'axios'
@@ -248,6 +249,16 @@ const OperatorViewPage: React.FC = () => {
                     }}
                   >
                     <FileCopyIcon fontSize="small" />
+                  </Button>
+                </Tooltip>
+                <Tooltip title="Kopiera länk" arrow>
+                  <Button
+                    margin-right="0px"
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.host}/${code.code}`)
+                    }}
+                  >
+                    <LinkIcon fontSize="small" />
                   </Button>
                 </Tooltip>
               </ListItem>
