@@ -90,13 +90,12 @@ const AddRegion: React.FC = (props: any) => {
               />
               <AddButton
                 data-testid="regionSubmitButton"
-                style={{ backgroundColor: '#4caf50', color: '#fcfcfc' }}
                 className={classes.button}
-                color="default"
+                color="secondary"
                 variant="contained"
                 type="submit"
               >
-                <AddIcon></AddIcon>
+                <AddIcon />
               </AddButton>
             </Grid>
           </FormControl>

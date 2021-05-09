@@ -44,3 +44,8 @@ export const getCompetitions = () => async (dispatch: AppDispatch, getState: () 
 export const setFilterParams = (params: CompetitionFilterParams) => (dispatch: AppDispatch) => {
   dispatch({ type: Types.SET_COMPETITIONS_FILTER_PARAMS, payload: params })
 }
+
+// DIspatch action to set loading
+export const setEditorLoading = (loading: boolean) => (dispatch: AppDispatch) => {
+  dispatch({ type: Types.SET_EDITOR_LOADING, payload: loading })
+}

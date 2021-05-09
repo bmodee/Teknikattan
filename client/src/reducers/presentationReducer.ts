@@ -1,13 +1,12 @@
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
-import { Slide } from '../interfaces/ApiModels'
 import { Timer } from '../interfaces/Timer'
 import { RichCompetition } from './../interfaces/ApiRichModels'
 
 /** Define a type for the presentation state */
 interface PresentationState {
   competition: RichCompetition
-  slide: Slide
+  activeSlideId: number
   code: string
   timer: Timer
 }
@@ -23,14 +22,7 @@ const initialState: PresentationState = {
     teams: [],
     background_image: undefined,
   },
-  slide: {
-    competition_id: 0,
-    id: -1,
-    order: 0,
-    timer: 0,
-    title: '',
-    background_image: undefined,
-  },
+  activeSlideId: -1,
   code: '',
   timer: {
     enabled: false,
@@ -51,34 +43,11 @@ export default function (state = initialState, action: AnyAction) {
         ...state,
         code: action.payload,
       }
-    case Types.SET_PRESENTATION_SLIDE:
+    case Types.SET_PRESENTATION_SLIDE_ID:
       return {
         ...state,
-        slide: action.payload as Slide,
+        activeSlideId: action.payload as number,
       }
-    case Types.SET_PRESENTATION_SLIDE_PREVIOUS:
-      if (state.slide.order - 1 >= 0) {
-        return {
-          ...state,
-          slide: state.competition.slides[state.slide.order - 1],
-        }
-      }
-      return state
-    case Types.SET_PRESENTATION_SLIDE_NEXT:
-      if (state.slide.order + 1 < state.competition.slides.length) {
-        return {
-          ...state,
-          slide: state.competition.slides[state.slide.order + 1],
-        }
-      }
-      return state
-    case Types.SET_PRESENTATION_SLIDE_BY_ORDER:
-      if (0 <= action.payload && action.payload < state.competition.slides.length)
-        return {
-          ...state,
-          slide: state.competition.slides[action.payload],
-        }
-      return state
     case Types.SET_PRESENTATION_TIMER:
       if (action.payload.value == 0) {
         action.payload.enabled = false

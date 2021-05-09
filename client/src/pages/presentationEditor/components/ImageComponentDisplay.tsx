@@ -13,6 +13,8 @@ const ImageComponentDisplay = ({ component, width, height }: ImageComponentProps
       src={`http://localhost:5000/static/images/${component.media?.filename}`}
       height={height}
       width={width}
+      // Make sure the border looks good all around the image
+      style={{ paddingRight: 2, paddingBottom: 2 }}
       draggable={false}
     />
   )

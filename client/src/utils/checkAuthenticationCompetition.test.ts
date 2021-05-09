@@ -20,8 +20,8 @@ it('dispatches correct actions when auth token is ok', async () => {
 
   const testToken =
     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjMyNTE0NDM2OTkzLCJ1c2VyX2NsYWltcyI6eyJjb21wZXRpdGlvbl9pZCI6MTIzMTIzLCJ0ZWFtX2lkIjozMjEzMjEsInZpZXciOiJQYXJ0aWNpcGFudCIsImNvZGUiOiJBQkNERUYifX0.1gPRJcjn3xuPOcgUUffMngIQDoDtxS9RZczcbdyyaaA'
-  localStorage.setItem('competitionToken', testToken)
-  await CheckAuthenticationCompetition()
+  localStorage.setItem('JudgeToken', testToken)
+  await CheckAuthenticationCompetition('Judge')
   expect(spy).toBeCalledWith({
     type: Types.SET_COMPETITION_LOGIN_DATA,
     payload: {
@@ -49,8 +49,8 @@ it('dispatches correct actions when getting user data fails', async () => {
   const spy = jest.spyOn(store, 'dispatch')
   const testToken =
     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjMyNTE0NDM2OTkzLCJ1c2VyX2NsYWltcyI6eyJjb21wZXRpdGlvbl9pZCI6MTIzMTIzLCJ0ZWFtX2lkIjozMjEzMjEsInZpZXciOiJQYXJ0aWNpcGFudCIsImNvZGUiOiJBQkNERUYifX0.1gPRJcjn3xuPOcgUUffMngIQDoDtxS9RZczcbdyyaaA'
-  localStorage.setItem('competitionToken', testToken)
-  await CheckAuthenticationCompetition()
+  localStorage.setItem('AudienceToken', testToken)
+  await CheckAuthenticationCompetition('Audience')
   expect(spy).toBeCalledWith({ type: Types.SET_COMPETITION_LOGIN_UNAUTHENTICATED })
   expect(spy).toBeCalledTimes(1)
   expect(console.log).toHaveBeenCalled()
@@ -61,7 +61,7 @@ it('dispatches no actions when no token exists', async () => {
     return Promise.resolve({ data: {} })
   })
   const spy = jest.spyOn(store, 'dispatch')
-  await CheckAuthenticationCompetition()
+  await CheckAuthenticationCompetition('Operator')
   expect(spy).not.toBeCalled()
 })
 
@@ -71,9 +71,9 @@ it('dispatches correct actions when token is expired', async () => {
   })
   const testToken =
     'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE2MjAyMjE1OTgsImV4cCI6OTU3NTMzNTk4LCJhdWQiOiJ3d3cuZXhhbXBsZS5jb20iLCJzdWIiOiJqcm9ja2V0QGV4YW1wbGUuY29tIn0.uFXtkAsf-cTlKrTIdZ3E-gXnHkzS08iPrhS8iNCGV2E'
-  localStorage.setItem('competitionToken', testToken)
+  localStorage.setItem('TeamToken', testToken)
   const spy = jest.spyOn(store, 'dispatch')
-  await CheckAuthenticationCompetition()
+  await CheckAuthenticationCompetition('Team')
   expect(spy).toBeCalledWith({ type: Types.SET_COMPETITION_LOGIN_UNAUTHENTICATED })
   expect(spy).toBeCalledTimes(1)
 })

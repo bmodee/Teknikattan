@@ -3,20 +3,19 @@ import axios from 'axios'
 import React from 'react'
 import { getPresentationCompetition } from '../../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
+import { RichSlide } from '../../../interfaces/ApiRichModels'
 import { AnswerContainer, ScoreDisplayContainer, ScoreDisplayHeader, ScoreInput } from './styled'
 
 type ScoreDisplayProps = {
   teamIndex: number
+  activeSlide: RichSlide
 }
 
-const JudgeScoreDisplay = ({ teamIndex }: ScoreDisplayProps) => {
+const JudgeScoreDisplay = ({ teamIndex, activeSlide }: ScoreDisplayProps) => {
   const dispatch = useAppDispatch()
   const currentTeam = useAppSelector((state) => state.presentation.competition.teams[teamIndex])
   const currentCompetititonId = useAppSelector((state) => state.presentation.competition.id)
-  const activeQuestion = useAppSelector(
-    (state) =>
-      state.presentation.competition.slides.find((slide) => slide.id === state.presentation.slide?.id)?.questions[0]
-  )
+  const activeQuestion = activeSlide.questions[0]
   const scores = currentTeam.question_answers.map((questionAnswer) => questionAnswer.score)
   const questionMaxScore = activeQuestion?.total_score
   const activeAnswer = currentTeam.question_answers.find(

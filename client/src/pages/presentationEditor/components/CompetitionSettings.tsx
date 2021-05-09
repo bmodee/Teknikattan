@@ -1,23 +1,13 @@
-import {
-  Divider,
-  FormControl,
-  InputLabel,
-  ListItem,
-  ListItemText,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from '@material-ui/core'
-import { Center, ImportedImage, SettingsList, PanelContainer, FirstItem, AddButton } from './styled'
+import { Divider, FormControl, InputLabel, ListItem, MenuItem, Select, TextField, Typography } from '@material-ui/core'
 import axios from 'axios'
-import React, { useState } from 'react'
+import React from 'react'
 import { useParams } from 'react-router-dom'
 import { getEditorCompetition } from '../../../actions/editor'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { City } from '../../../interfaces/ApiModels'
-import Teams from './Teams'
 import BackgroundImageSelect from './BackgroundImageSelect'
+import { FirstItem, PanelContainer, SettingsList } from './styled'
+import Teams from './Teams'
 
 interface CompetitionParams {
   competitionId: string

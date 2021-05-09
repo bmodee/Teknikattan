@@ -172,7 +172,7 @@ const RndComponent = ({ component, width, height, scale }: RndComponentProps) =>
       }}
     >
       {hover && (
-        <Card elevation={6} style={{ position: 'absolute' }}>
+        <Card elevation={6} style={{ position: 'absolute', zIndex: 10 }}>
           <Tooltip title="Centrera horisontellt">
             <IconButton onClick={handleCenterHorizontal}>X</IconButton>
           </Tooltip>

@@ -21,7 +21,7 @@ const SecureRoute: React.FC<SecureRouteProps> = ({ component: Component, authLev
     if (authLevel === 'admin' || authLevel === 'login') {
       CheckAuthenticationAdmin().then(() => setInitialized(true))
     } else {
-      CheckAuthenticationCompetition().then(() => setInitialized(true))
+      CheckAuthenticationCompetition(authLevel).then(() => setInitialized(true))
     }
   }, [])
 

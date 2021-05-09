@@ -68,6 +68,7 @@ const PresentationEditorPage: React.FC = () => {
 
   const setActiveSlideId = (id: number) => {
     dispatch(setEditorSlideId(id))
+    dispatch(getEditorCompetition(competitionId))
   }
 
   const createNewSlide = async () => {
@@ -114,6 +115,7 @@ const PresentationEditorPage: React.FC = () => {
     if (clickedViewTypeId) {
       dispatch(setEditorViewId(clickedViewTypeId))
     }
+    dispatch(getEditorCompetition(competitionId))
   }
 
   const onDragEnd = async (result: DropResult) => {
@@ -138,7 +140,7 @@ const PresentationEditorPage: React.FC = () => {
       <CssBaseline />
       <AppBarEditor $leftDrawerWidth={leftDrawerWidth} $rightDrawerWidth={rightDrawerWidth} position="fixed">
         <ToolBarContainer>
-          <Button component={Link} to="/admin/tävlingshanterare" style={{ padding: 0 }}>
+          <Button component={Link} to="/admin/competition-manager" style={{ padding: 0 }}>
             <HomeIcon src="/t8.png" />
           </Button>
           <CompetitionName variant="h5" noWrap>

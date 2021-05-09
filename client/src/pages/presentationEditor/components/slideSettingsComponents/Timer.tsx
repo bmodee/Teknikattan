@@ -17,7 +17,7 @@ const Timer = ({ activeSlide, competitionId }: TimerProps) => {
     setTimer(+event.target.value)
     if (activeSlide) {
       await axios
-        .put(`/api/competitions/${competitionId}/slides/${activeSlide.id}`, { timer: event.target.value })
+        .put(`/api/competitions/${competitionId}/slides/${activeSlide.id}`, { timer: event.target.value || null })
         .then(() => {
           dispatch(getEditorCompetition(competitionId))
         })
@@ -40,7 +40,7 @@ const Timer = ({ activeSlide, competitionId }: TimerProps) => {
           label="Timer"
           type="number"
           onChange={updateTimer}
-          value={timer}
+          value={timer || ''}
         />
       </Center>
     </ListItem>

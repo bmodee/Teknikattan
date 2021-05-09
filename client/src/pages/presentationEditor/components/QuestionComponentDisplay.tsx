@@ -8,13 +8,16 @@ import { Center } from './styled'
 
 type QuestionComponentProps = {
   variant: 'editor' | 'presentation'
+  currentSlideId?: number
 }
 
-const QuestionComponentDisplay = ({ variant }: QuestionComponentProps) => {
+const QuestionComponentDisplay = ({ variant, currentSlideId }: QuestionComponentProps) => {
   const activeSlide = useAppSelector((state) => {
+    if (variant === 'presentation' && currentSlideId)
+      return state.presentation.competition.slides.find((slide) => slide.id === currentSlideId)
     if (variant === 'editor')
       return state.editor.competition.slides.find((slide) => slide.id === state.editor.activeSlideId)
-    return state.presentation.competition.slides.find((slide) => slide.id === state.presentation.slide?.id)
+    return state.presentation.competition.slides.find((slide) => slide.id === state.presentation.activeSlideId)
   })
 
   const timer = activeSlide?.timer

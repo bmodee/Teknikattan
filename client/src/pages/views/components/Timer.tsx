@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
 import { setPresentationTimer, setPresentationTimerDecrement } from '../../../actions/presentation'
-import { useAppDispatch } from '../../../hooks'
+import { useAppDispatch, useAppSelector } from '../../../hooks'
 import store from '../../../store'
 
-const mapStateToProps = (state: any) => {
+/* const mapStateToProps = (state: any) => {
   return {
     timer: state.presentation.timer,
     timer_start_value: state.presentation.slide.timer,
@@ -15,28 +14,33 @@ const mapDispatchToProps = (dispatch: any) => {
   return {
     // tickTimer: () => dispatch(tickTimer(1)),
   }
-}
+} */
 
 let timerIntervalId: NodeJS.Timeout
 
-const Timer: React.FC = (props: any) => {
+const Timer: React.FC = () => {
   const dispatch = useAppDispatch()
+  const slide = store
+    .getState()
+    .presentation.competition.slides.find((slide) => slide.id === store.getState().presentation.activeSlideId)
+  const timerStartValue = slide?.timer
+  const timer = useAppSelector((state) => state.presentation.timer)
+  useEffect(() => {
+    if (!slide) return
+    dispatch(setPresentationTimer({ enabled: false, value: slide.timer }))
+  }, [timerStartValue])
 
   useEffect(() => {
-    dispatch(setPresentationTimer({ enabled: false, value: store.getState().presentation.slide.timer }))
-  }, [props.timer_start_value])
-
-  useEffect(() => {
-    if (props.timer.enabled) {
+    if (timer.enabled) {
       timerIntervalId = setInterval(() => {
         dispatch(setPresentationTimerDecrement())
       }, 1000)
     } else {
       clearInterval(timerIntervalId)
     }
-  }, [props.timer.enabled])
+  }, [timer.enabled])
 
-  return <div>{props.timer.value}</div>
+  return <div>{timer.value}</div>
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Timer)
+export default Timer

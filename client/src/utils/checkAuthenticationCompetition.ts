@@ -5,12 +5,12 @@ import { getPresentationCompetition, setPresentationCode } from '../actions/pres
 import Types from '../actions/types'
 import store from '../store'
 
-const UnAuthorized = async () => {
-  await logoutCompetition()(store.dispatch)
+const UnAuthorized = async (role: 'Judge' | 'Operator' | 'Team' | 'Audience') => {
+  await logoutCompetition(role)(store.dispatch)
 }
 
-export const CheckAuthenticationCompetition = async () => {
-  const authToken = localStorage.competitionToken
+export const CheckAuthenticationCompetition = async (role: 'Judge' | 'Operator' | 'Team' | 'Audience') => {
+  const authToken = localStorage[`${role}Token`]
   if (authToken) {
     const decodedToken: any = jwtDecode(authToken)
     if (decodedToken.exp * 1000 >= Date.now()) {
@@ -31,10 +31,10 @@ export const CheckAuthenticationCompetition = async () => {
         })
         .catch((error) => {
           console.log(error)
-          UnAuthorized()
+          UnAuthorized(role)
         })
     } else {
-      await UnAuthorized()
+      await UnAuthorized(role)
     }
   }
 }

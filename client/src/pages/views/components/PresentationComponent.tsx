@@ -9,9 +9,10 @@ import TextComponentDisplay from '../../presentationEditor/components/TextCompon
 type PresentationComponentProps = {
   component: Component
   scale: number
+  currentSlideId?: number
 }
 
-const PresentationComponent = ({ component, scale }: PresentationComponentProps) => {
+const PresentationComponent = ({ component, scale, currentSlideId }: PresentationComponentProps) => {
   const renderInnerComponent = () => {
     switch (component.type_id) {
       case ComponentTypes.Text:
@@ -25,7 +26,7 @@ const PresentationComponent = ({ component, scale }: PresentationComponentProps)
           />
         )
       case ComponentTypes.Question:
-        return <QuestionComponentDisplay variant="presentation" />
+        return <QuestionComponentDisplay variant="presentation" currentSlideId={currentSlideId} />
       default:
         break
     }

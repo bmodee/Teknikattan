@@ -24,10 +24,7 @@ const userSchema: Yup.SchemaOf<formType> = Yup.object({
     .shape({
       name: Yup.string(),
       email: Yup.string().email().required('Email krävs'),
-      password: Yup.string()
-        .required('Lösenord krävs.')
-        .min(6, 'Lösenord måste vara minst 6 tecken.')
-        .matches(/[a-zA-Z]/, 'Lösenord får enbart innehålla a-z, A-Z.'),
+      password: Yup.string().required('Lösenord krävs.').min(6, 'Lösenord måste vara minst 6 tecken.'),
       role: Yup.string().required('Roll krävs').notOneOf([noCitySelected], 'Välj en roll'),
       city: Yup.string().required('Stad krävs').notOneOf([noRoleSelected], 'Välj en stad'),
     })
@@ -88,11 +85,10 @@ const AddUser: React.FC = (props: any) => {
     <div>
       <AddButton
         data-testid="addUserButton"
-        style={{ backgroundColor: '#4caf50', color: '#fcfcfc' }}
-        color="default"
+        color="secondary"
         variant="contained"
         onClick={handleClick}
-        endIcon={<PersonAddIcon></PersonAddIcon>}
+        endIcon={<PersonAddIcon />}
       >
         Ny Användare
       </AddButton>

@@ -1,6 +1,4 @@
 import Types from '../actions/types'
-import { Slide } from '../interfaces/ApiModels'
-import { RichSlide } from '../interfaces/ApiRichModels'
 import presentationReducer from './presentationReducer'
 
 const initialState = {
@@ -13,14 +11,7 @@ const initialState = {
     year: 0,
     teams: [],
   },
-  slide: {
-    competition_id: 0,
-    background_image: undefined,
-    id: -1,
-    order: 0,
-    timer: 0,
-    title: '',
-  },
+  activeSlideId: -1,
   code: '',
   timer: {
     enabled: false,
@@ -50,138 +41,23 @@ it('should handle SET_PRESENTATION_COMPETITION', () => {
     })
   ).toEqual({
     competition: testCompetition,
-    slide: initialState.slide,
+    activeSlideId: initialState.activeSlideId,
     code: initialState.code,
     timer: initialState.timer,
   })
 })
 
-it('should handle SET_PRESENTATION_SLIDE', () => {
-  const testSlide = [
-    {
-      competition_id: 20,
-      id: 4,
-      order: 3,
-      timer: 123,
-      title: 'testSlideTitle',
-    },
-  ]
+it('should handle SET_PRESENTATION_SLIDE_ID', () => {
+  const testSlideId = 123123123
   expect(
     presentationReducer(initialState, {
-      type: Types.SET_PRESENTATION_SLIDE,
-      payload: testSlide,
+      type: Types.SET_PRESENTATION_SLIDE_ID,
+      payload: testSlideId,
     })
   ).toEqual({
     competition: initialState.competition,
-    slide: testSlide,
+    activeSlideId: testSlideId,
     code: initialState.code,
     timer: initialState.timer,
-  })
-})
-
-describe('should handle SET_PRESENTATION_SLIDE_PREVIOUS', () => {
-  it('by changing slide to the previous if there is one', () => {
-    const testPresentationState = {
-      competition: {
-        ...initialState.competition,
-        slides: [
-          { competition_id: 0, order: 0 },
-          { competition_id: 0, order: 1 },
-        ] as RichSlide[],
-        teams: [],
-      },
-      slide: { competition_id: 0, order: 1 } as Slide,
-      code: initialState.code,
-      timer: initialState.timer,
-    }
-    expect(
-      presentationReducer(testPresentationState, {
-        type: Types.SET_PRESENTATION_SLIDE_PREVIOUS,
-      })
-    ).toEqual({
-      competition: testPresentationState.competition,
-      slide: testPresentationState.competition.slides[0],
-
-      code: initialState.code,
-      timer: initialState.timer,
-    })
-  })
-  it('by not changing slide if there is no previous one', () => {
-    const testPresentationState = {
-      competition: {
-        ...initialState.competition,
-        slides: [
-          { competition_id: 0, order: 0 },
-          { competition_id: 0, order: 1 },
-        ] as RichSlide[],
-        teams: [],
-      },
-      slide: { competition_id: 0, order: 0 } as Slide,
-      code: initialState.code,
-      timer: initialState.timer,
-    }
-    expect(
-      presentationReducer(testPresentationState, {
-        type: Types.SET_PRESENTATION_SLIDE_PREVIOUS,
-      })
-    ).toEqual({
-      competition: testPresentationState.competition,
-      slide: testPresentationState.competition.slides[0],
-      code: initialState.code,
-      timer: initialState.timer,
-    })
-  })
-})
-
-describe('should handle SET_PRESENTATION_SLIDE_NEXT', () => {
-  it('by changing slide to the next if there is one', () => {
-    const testPresentationState = {
-      competition: {
-        ...initialState.competition,
-        slides: [
-          { competition_id: 0, order: 0 },
-          { competition_id: 0, order: 1 },
-        ] as RichSlide[],
-        teams: [],
-      },
-      slide: { competition_id: 0, order: 0 } as Slide,
-      code: initialState.code,
-      timer: initialState.timer,
-    }
-    expect(
-      presentationReducer(testPresentationState, {
-        type: Types.SET_PRESENTATION_SLIDE_NEXT,
-      })
-    ).toEqual({
-      competition: testPresentationState.competition,
-      slide: testPresentationState.competition.slides[1],
-      code: initialState.code,
-      timer: initialState.timer,
-    })
-  })
-  it('by not changing slide if there is no next one', () => {
-    const testPresentationState = {
-      competition: {
-        ...initialState.competition,
-        slides: [
-          { competition_id: 0, order: 0 },
-          { competition_id: 0, order: 1 },
-        ] as RichSlide[],
-        teams: [],
-      },
-      slide: { competition_id: 0, order: 1 } as Slide,
-      code: initialState.code,
-      timer: initialState.timer,
-    }
-    expect(
-      presentationReducer(testPresentationState, {
-        type: Types.SET_PRESENTATION_SLIDE_NEXT,
-      })
-    ).toEqual({
-      competition: testPresentationState.competition,
-      slide: testPresentationState.competition.slides[1],
-      code: initialState.code,
-      timer: initialState.timer,
-    })
   })
 })

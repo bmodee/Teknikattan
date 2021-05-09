@@ -1,7 +1,7 @@
 import { ListItem, ListItemText, TextField } from '@material-ui/core'
 import axios from 'axios'
 import React from 'react'
-import { getEditorCompetition } from '../../../../actions/editor'
+import { getPresentationCompetition } from '../../../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../../../hooks'
 import { RichSlide } from '../../../../interfaces/ApiRichModels'
 import { Center } from '../styled'
@@ -29,13 +29,14 @@ const AnswerText = ({ activeSlide, competitionId }: AnswerTextProps) => {
 
   const updateAnswer = async (answer: string) => {
     if (activeSlide && team) {
+      console.log(team.question_answers)
       if (team?.question_answers.find((answer) => answer.question_id === activeSlide.questions[0].id)) {
         await axios
           .put(`/api/competitions/${competitionId}/teams/${teamId}/answers/${answerId}`, {
             answer,
           })
           .then(() => {
-            dispatch(getEditorCompetition(competitionId))
+            dispatch(getPresentationCompetition(competitionId))
           })
           .catch(console.log)
       } else {
@@ -46,7 +47,7 @@ const AnswerText = ({ activeSlide, competitionId }: AnswerTextProps) => {
             question_id: activeSlide.questions[0].id,
           })
           .then(() => {
-            dispatch(getEditorCompetition(competitionId))
+            dispatch(getPresentationCompetition(competitionId))
           })
           .catch(console.log)
       }

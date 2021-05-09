@@ -29,9 +29,9 @@ let socket: SocketIOClient.Socket
  * You can also comment functions, like usual. This will automatically appear
  * in the documentation, no more needed.
  */
-export const socketConnect = () => {
+export const socketConnect = (role: 'Judge' | 'Operator' | 'Team' | 'Audience') => {
   if (!socket) {
-    const token = localStorage.competitionToken
+    const token = localStorage[role]
     socket = io('localhost:5000', {
       transportOptions: {
         polling: {
@@ -43,7 +43,7 @@ export const socketConnect = () => {
     })
 
     socket.on('set_slide', (data: SetSlideInterface) => {
-      setCurrentSlideByOrder(data.slide_order)(store.dispatch)
+      setCurrentSlideByOrder(data.slide_order)(store.dispatch, store.getState)
     })
 
     socket.on('set_timer', (data: SetTimerInterface) => {
@@ -69,11 +69,19 @@ export const socketEndPresentation = () => {
 }
 
 export const socketSetSlideNext = () => {
-  socketSetSlide(store.getState().presentation.slide.order + 1) // TODO: Check that this slide exists
+  const activeSlide = store
+    .getState()
+    .presentation.competition.slides.find((slide) => slide.id === store.getState().presentation.activeSlideId)
+  if (!activeSlide) return
+  socketSetSlide(activeSlide.order + 1) // TODO: Check that this slide exists
 }
 
 export const socketSetSlidePrev = () => {
-  socketSetSlide(store.getState().presentation.slide.order - 1) // TODO: Check that this slide exists
+  const activeSlide = store
+    .getState()
+    .presentation.competition.slides.find((slide) => slide.id === store.getState().presentation.activeSlideId)
+  if (!activeSlide) return
+  socketSetSlide(activeSlide.order - 1) // TODO: Check that this slide exists
 }
 
 /**

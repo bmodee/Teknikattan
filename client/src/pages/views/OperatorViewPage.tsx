@@ -12,6 +12,7 @@ import {
   ListItemText,
   makeStyles,
   Popover,
+  Snackbar,
   Theme,
   Tooltip,
   Typography,
@@ -24,8 +25,9 @@ import FileCopyIcon from '@material-ui/icons/FileCopy'
 import LinkIcon from '@material-ui/icons/Link'
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
 import TimerIcon from '@material-ui/icons/Timer'
+import { Alert } from '@material-ui/lab'
 import axios from 'axios'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useAppSelector } from '../../hooks'
 import { RichTeam } from '../../interfaces/ApiRichModels'
@@ -39,6 +41,7 @@ import {
   socketStartTimer,
 } from '../../sockets'
 import SlideDisplay from '../presentationEditor/components/SlideDisplay'
+import { Center } from '../presentationEditor/components/styled'
 import Timer from './components/Timer'
 import {
   OperatorButton,
@@ -111,9 +114,13 @@ const OperatorViewPage: React.FC = () => {
   const history = useHistory()
   const viewTypes = useAppSelector((state) => state.types.viewTypes)
   const activeViewTypeId = viewTypes.find((viewType) => viewType.name === 'Audience')?.id
-
+  const [successMessageOpen, setSuccessMessageOpen] = useState(true)
+  const activeSlideOrder = useAppSelector(
+    (state) =>
+      state.presentation.competition.slides.find((slide) => slide.id === state.presentation.activeSlideId)?.order
+  )
   useEffect(() => {
-    socketConnect()
+    socketConnect('Operator')
     socketSetSlide
     handleOpenCodes()
     setTimeout(startCompetition, 1000) // Wait for socket to connect
@@ -155,7 +162,7 @@ const OperatorViewPage: React.FC = () => {
   const endCompetition = () => {
     setOpen(false)
     socketEndPresentation()
-    history.push('/admin/tävlingshanterare')
+    history.push('/admin/competition-manager')
     window.location.reload(false) // TODO: fix this, we "need" to refresh site to be able to run the competition correctly again
   }
 
@@ -225,9 +232,11 @@ const OperatorViewPage: React.FC = () => {
         fullWidth={false}
         fullScreen={false}
       >
-        <DialogTitle id="max-width-dialog-title" className={classes.paper}>
-          Koder för {competitionName}
-        </DialogTitle>
+        <Center>
+          <DialogTitle id="max-width-dialog-title" className={classes.paper} style={{ width: '100%' }}>
+            Koder för {competitionName}
+          </DialogTitle>
+        </Center>
         <DialogContent>
           {/* <DialogContentText>Här visas tävlingskoderna till den valda tävlingen.</DialogContentText> */}
           {codes &&
@@ -297,7 +306,7 @@ const OperatorViewPage: React.FC = () => {
         <Typography variant="h3">{presentation.competition.name}</Typography>
         <SlideCounter>
           <Typography variant="h3">
-            {presentation.slide.order + 1} / {presentation.competition.slides.length}
+            {activeSlideOrder !== undefined && activeSlideOrder + 1} / {presentation.competition.slides.length}
           </Typography>
         </SlideCounter>
       </OperatorHeader>
@@ -364,6 +373,9 @@ const OperatorViewPage: React.FC = () => {
             ))}
         </List>
       </Popover>
+      <Snackbar open={successMessageOpen} autoHideDuration={4000} onClose={() => setSuccessMessageOpen(false)}>
+        <Alert severity="success">{`Du har gått med i tävlingen "${competitionName}" som operatör`}</Alert>
+      </Snackbar>
     </OperatorContainer>
   )
 }

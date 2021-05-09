@@ -18,7 +18,7 @@ export const loginCompetition = (code: string, history: History, redirect: boole
     .post('/api/auth/login/code', { code })
     .then((res) => {
       const token = `Bearer ${res.data.access_token}`
-      localStorage.setItem('competitionToken', token) //setting token to local storage
+      localStorage.setItem(`${res.data.view}Token`, token) //setting token to local storage
       axios.defaults.headers.common['Authorization'] = token //setting authorize token to header in axios
       dispatch({ type: Types.CLEAR_COMPETITION_LOGIN_ERRORS }) // no error
       dispatch({
@@ -41,8 +41,10 @@ export const loginCompetition = (code: string, history: History, redirect: boole
 }
 
 // Log out from competition and remove jwt token from local storage and axios
-export const logoutCompetition = () => async (dispatch: AppDispatch) => {
-  localStorage.removeItem('competitionToken')
+export const logoutCompetition = (role: 'Judge' | 'Operator' | 'Team' | 'Audience') => async (
+  dispatch: AppDispatch
+) => {
+  localStorage.removeItem(`${role}Token`)
   await axios.post('/api/auth/logout').then(() => {
     delete axios.defaults.headers.common['Authorization']
     dispatch({

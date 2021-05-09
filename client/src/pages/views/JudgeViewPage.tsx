@@ -1,11 +1,11 @@
-import { Divider, List, ListItemText, Typography } from '@material-ui/core'
+import { Divider, List, ListItemText, Snackbar, Typography } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Alert } from '@material-ui/lab'
 import React, { useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
-import { getPresentationCompetition, setCurrentSlide } from '../../actions/presentation'
+import { getPresentationCompetition } from '../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../hooks'
-import { ViewParams } from '../../interfaces/ViewParams'
-import { socketConnect } from '../../sockets'
+import { RichSlide } from '../../interfaces/ApiRichModels'
+import { socketConnect, socketJoinPresentation } from '../../sockets'
 import { renderSlideIcon } from '../../utils/renderSlideIcon'
 import SlideDisplay from '../presentationEditor/components/SlideDisplay'
 import { SlideListItem } from '../presentationEditor/styled'
@@ -42,29 +42,46 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const JudgeViewPage: React.FC = () => {
   const classes = useStyles()
-  const history = useHistory()
   const dispatch = useAppDispatch()
-  const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0)
   const viewTypes = useAppSelector((state) => state.types.viewTypes)
+  const code = useAppSelector((state) => state.presentation.code)
   const activeViewTypeId = viewTypes.find((viewType) => viewType.name === 'Team')?.id
   const teams = useAppSelector((state) => state.presentation.competition.teams)
   const slides = useAppSelector((state) => state.presentation.competition.slides)
-  const currentQuestion = slides[activeSlideIndex]?.questions[0]
-  const { competitionId }: ViewParams = useParams()
+  const [successMessageOpen, setSuccessMessageOpen] = useState(true)
+  const competitionName = useAppSelector((state) => state.presentation.competition.name)
+  const [currentSlide, setCurrentSlide] = useState<RichSlide | undefined>(undefined)
+  const currentQuestion = currentSlide?.questions[0]
+  const operatorActiveSlideId = useAppSelector((state) => state.presentation.activeSlideId)
+  const operatorActiveSlideOrder = useAppSelector(
+    (state) => state.presentation.competition.slides.find((slide) => slide.id === operatorActiveSlideId)?.order
+  )
+  const competitionId = useAppSelector((state) => state.competitionLogin.data?.competition_id)
   const handleSelectSlide = (index: number) => {
-    setActiveSlideIndex(index)
-    dispatch(setCurrentSlide(slides[index]))
+    setCurrentSlide(slides[index])
   }
   useEffect(() => {
-    socketConnect()
-    dispatch(getPresentationCompetition(competitionId))
+    if (code && code !== '') {
+      socketConnect('Judge')
+      socketJoinPresentation()
+    }
   }, [])
-
+  useEffect(() => {
+    if (!currentSlide) setCurrentSlide(slides?.[0])
+  }, [slides])
+  useEffect(() => {
+    if (competitionId) {
+      dispatch(getPresentationCompetition(competitionId.toString()))
+    }
+  }, [operatorActiveSlideId])
   return (
     <div style={{ height: '100%' }}>
       <JudgeAppBar position="fixed">
         <JudgeToolbar>
           <JudgeQuestionsLabel variant="h5">Frågor</JudgeQuestionsLabel>
+          {operatorActiveSlideOrder !== undefined && (
+            <Typography variant="h5">Operatör är på sida: {operatorActiveSlideOrder + 1}</Typography>
+          )}
           <JudgeAnswersLabel variant="h5">Svar</JudgeAnswersLabel>
         </JudgeToolbar>
       </JudgeAppBar>
@@ -80,11 +97,12 @@ const JudgeViewPage: React.FC = () => {
         <List>
           {slides.map((slide, index) => (
             <SlideListItem
-              selected={index === activeSlideIndex}
+              selected={slide.order === currentSlide?.order}
               onClick={() => handleSelectSlide(index)}
               divider
               button
               key={slide.id}
+              style={{ border: 2, borderStyle: slide.id === operatorActiveSlideId ? 'dashed' : 'none' }}
             >
               {renderSlideIcon(slide)}
               <ListItemText primary={`Sida ${slide.order + 1}`} />
@@ -111,20 +129,25 @@ const JudgeViewPage: React.FC = () => {
           {teams &&
             teams.map((answer, index) => (
               <div key={answer.name}>
-                <JudgeScoreDisplay teamIndex={index} />
+                {currentSlide && <JudgeScoreDisplay teamIndex={index} activeSlide={currentSlide} />}
                 <Divider />
               </div>
             ))}
         </List>
         <ScoreFooterPadding />
-        <JudgeScoringInstructions question={currentQuestion} />
+        {currentQuestion && <JudgeScoringInstructions question={currentQuestion} />}
       </RightDrawer>
       <div className={classes.toolbar} />
       <Content leftDrawerWidth={leftDrawerWidth} rightDrawerWidth={rightDrawerWidth}>
         <InnerContent>
-          {activeViewTypeId && <SlideDisplay variant="presentation" activeViewTypeId={activeViewTypeId} />}
+          {activeViewTypeId && currentSlide && (
+            <SlideDisplay variant="presentation" currentSlideId={currentSlide.id} activeViewTypeId={activeViewTypeId} />
+          )}
         </InnerContent>
       </Content>
+      <Snackbar open={successMessageOpen} autoHideDuration={4000} onClose={() => setSuccessMessageOpen(false)}>
+        <Alert severity="success">{`Du har gått med i tävlingen "${competitionName}" som domare`}</Alert>
+      </Snackbar>
     </div>
   )
 }

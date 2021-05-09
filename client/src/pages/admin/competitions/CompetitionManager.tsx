@@ -38,6 +38,7 @@ import { getCompetitions, setFilterParams } from '../../../actions/competitions'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { Team } from '../../../interfaces/ApiModels'
 import { CompetitionFilterParams } from '../../../interfaces/FilterParams'
+import { Center } from '../../presentationEditor/components/styled'
 import { FilterContainer, RemoveMenuItem, TopBar, YearFilterTextField } from '../styledComp'
 import AddCompetition from './AddCompetition'
 
@@ -384,9 +385,11 @@ const CompetitionManager: React.FC = (props: any) => {
         fullWidth={false}
         fullScreen={false}
       >
-        <DialogTitle id="max-width-dialog-title" className={classes.paper}>
-          Koder för {competitionName}
-        </DialogTitle>
+        <Center>
+          <DialogTitle id="max-width-dialog-title" className={classes.paper} style={{ width: '100%' }}>
+            Koder för {competitionName}
+          </DialogTitle>
+        </Center>
         <DialogContent>
           {/* <DialogContentText>Här visas tävlingskoderna till den valda tävlingen.</DialogContentText> */}
           {codes.map((code) => (

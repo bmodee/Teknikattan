@@ -19,6 +19,7 @@ import SettingsOverscanIcon from '@material-ui/icons/SettingsOverscan'
 import React, { useEffect } from 'react'
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom'
 import { getCities } from '../../actions/cities'
+import { setEditorLoading } from '../../actions/competitions'
 import { getRoles } from '../../actions/roles'
 import { getStatistics } from '../../actions/statistics'
 import { getTypes } from '../../actions/typesAction'
@@ -73,6 +74,7 @@ const AdminView: React.FC = () => {
     dispatch(getRoles())
     dispatch(getTypes())
     dispatch(getStatistics())
+    dispatch(setEditorLoading(true))
   }, [])
 
   const menuAdminItems = [
@@ -87,6 +89,21 @@ const AdminView: React.FC = () => {
     { text: 'Tävlingshanterare', icon: SettingsOverscanIcon },
   ]
 
+  const getPathName = (tabName: string) => {
+    switch (tabName) {
+      case 'Startsida':
+        return 'dashboard'
+      case 'Regioner':
+        return 'regions'
+      case 'Användare':
+        return 'users'
+      case 'Tävlingshanterare':
+        return 'competition-manager'
+      default:
+        return ''
+    }
+  }
+
   const renderItems = () => {
     const menuItems = isAdmin ? menuAdminItems : menuEditorItems
     return menuItems.map((value, index) => (
@@ -95,7 +112,7 @@ const AdminView: React.FC = () => {
         button
         component={Link}
         key={value.text}
-        to={`${url}/${value.text.toLowerCase()}`}
+        to={`${url}/${getPathName(value.text)}`}
         selected={index === openIndex}
         onClick={() => setOpenIndex(index)}
       >
@@ -147,16 +164,16 @@ const AdminView: React.FC = () => {
       <main className={classes.content}>
         <div className={classes.toolbar} />
         <Switch>
-          <Route exact path={[path, `${path}/startsida`]}>
+          <Route exact path={[path, `${path}/dashboard`]}>
             <Dashboard />
           </Route>
-          <Route path={`${path}/regioner`}>
+          <Route path={`${path}/regions`}>
             <RegionManager />
           </Route>
-          <Route path={`${path}/användare`}>
+          <Route path={`${path}/users`}>
             <UserManager />
           </Route>
-          <Route path={`${path}/tävlingshanterare`}>
+          <Route path={`${path}/competition-manager`}>
             <CompetitionManager />
           </Route>
         </Switch>

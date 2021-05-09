@@ -8,6 +8,7 @@ type JudgeScoringInstructionsProps = {
 }
 
 const JudgeScoringInstructions = ({ question }: JudgeScoringInstructionsProps) => {
+  console.log(question)
   return (
     <JudgeScoringInstructionsContainer elevation={3}>
       <ScoringInstructionsInner>

@@ -1,4 +1,5 @@
 import { Button, FormControl, InputLabel, MenuItem, Popover, TextField } from '@material-ui/core'
+import PostAddIcon from '@material-ui/icons/PostAdd'
 import { Alert, AlertTitle } from '@material-ui/lab'
 import axios from 'axios'
 import { Formik, FormikHelpers } from 'formik'
@@ -89,10 +90,10 @@ const AddCompetition: React.FC = (props: any) => {
     <div>
       <AddButton
         data-testid="addCompetition"
-        style={{ backgroundColor: '#4caf50', color: '#fcfcfc' }}
-        color="default"
+        color="secondary"
         variant="contained"
         onClick={handleClick}
+        endIcon={<PostAddIcon />}
       >
         Ny Tävling
       </AddButton>

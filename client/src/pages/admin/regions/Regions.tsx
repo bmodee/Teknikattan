@@ -64,26 +64,10 @@ const RegionManager: React.FC = (props: any) => {
     setActiveId(id)
   }
 
-  const handleAddCity = async () => {
-    await axios
-      .post(`/api/misc/cities`, { name: newCity })
-      .then(() => {
-        setAnchorEl(null)
-        dispatch(getCities())
-      })
-      .catch(({ response }) => {
-        console.warn(response.data)
-      })
-  }
-
-  const handleChange = (event: any) => {
-    setNewCity(event.target.value)
-  }
-
   return (
     <div>
       <TopBar>
-        <AddRegion></AddRegion>
+        <AddRegion />
       </TopBar>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="simple table">

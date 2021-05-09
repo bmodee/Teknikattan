@@ -45,6 +45,11 @@ export default function (state = initialState, action: AnyAction) {
         ...state,
         activeViewTypeId: action.payload as number,
       }
+    case Types.SET_EDITOR_LOADING:
+      return {
+        ...state,
+        loading: action.payload as boolean,
+      }
     default:
       return state
   }
