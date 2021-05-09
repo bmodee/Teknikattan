@@ -50,7 +50,7 @@ For each function space, rust-code-analysis computes the list of metrics describ
 
 # Metrics
 
-Now the tool has analyzed the projekt and has outputted json files which the script will extrac the metrics from.
+Now the tool has analyzed the project and has outputted json files which the script will extract the metrics from.
 Don't forget to change the path in the script.
 
 ```bash

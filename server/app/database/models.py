@@ -66,10 +66,7 @@ class User(db.Model):
     locked = db.Column(db.DateTime(timezone=True), nullable=True, default=None)
 
     role_id = db.Column(db.Integer, db.ForeignKey("role.id"), nullable=False)
-    role_name = db.Column(db.Integer, db.ForeignKey("role.name"), nullable=False)
-
     city_id = db.Column(db.Integer, db.ForeignKey("city.id"), nullable=False)
-    city_name = db.Column(db.Integer, db.ForeignKey("city.name"), nullable=False)
 
     media = db.relationship("Media", backref="upload_by")
 
@@ -77,9 +74,7 @@ class User(db.Model):
         self._password = bcrypt.generate_password_hash(plaintext_password)
         self.email = email
         self.role_id = role_id
-        self.role_name = role_name
         self.city_id = city_id
-        self.city_name = city_name
         self.authenticated = False
         self.name = name
 
