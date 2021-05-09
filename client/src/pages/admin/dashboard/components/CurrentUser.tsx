@@ -6,16 +6,6 @@ import { useAppSelector } from '../../../../hooks'
 
 const CurrentUser: React.FC = () => {
   const currentUser = useAppSelector((state: { user: { userInfo: any } }) => state.user.userInfo)
-  const roles = useAppSelector((state) => state.roles.roles)
-  const region = useAppSelector((state) => state.cities.cities)
-
-  const handleRole = (id: number) => {
-    return id
-  }
-
-  const handleRegion = (id: number) => {
-    return id
-  }
 
   return (
     <div>
@@ -31,10 +21,10 @@ const CurrentUser: React.FC = () => {
           </Typography>
         </div>
         <div>
-          <Typography variant="h6">Region: {handleRegion(currentUser.city_id)}</Typography>
+          <Typography variant="h6">Region:</Typography>
         </div>
         <div>
-          <Typography variant="h6">Roll: {handleRole(currentUser.role_id)}</Typography>
+          <Typography variant="h6">Roll: </Typography>
         </div>
       </Box>
     </div>
