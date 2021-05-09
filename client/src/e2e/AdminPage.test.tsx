@@ -137,6 +137,7 @@ describe('Admin page', () => {
     const competitionRegionSelectSelector = '[data-testid="competitionRegion"]'
     const acceptAddCompetition = '[data-testid="acceptCompetition"]'
     const removeCompetitionButtonSelector = '[data-testid="removeCompetitionButton"]'
+    const acceptRemoveCompetitionSelector = '[data-testid="acceptRemoveCompetition"]'
 
     const testCompetitionName = 'New test competition'
     const testCompetitionRegion = 'Linköping'
@@ -169,6 +170,8 @@ describe('Admin page', () => {
     await page.click(testCompetitionSelector)
     await page.waitForTimeout(100)
     await page.click(removeCompetitionButtonSelector)
+    await page.waitForTimeout(100)
+    await page.click(acceptRemoveCompetitionSelector)
     await page.waitForTimeout(1000)
     competitions = await page.$$eval('.MuiTableRow-root > td', (elList) => elList.map((p) => p.textContent))
     expect(competitions).not.toContain(testCompetitionName)

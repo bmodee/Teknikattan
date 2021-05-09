@@ -370,7 +370,7 @@ const CompetitionManager: React.FC = (props: any) => {
           <Button autoFocus onClick={handleCloseVerify} color="primary">
             Avbryt
           </Button>
-          <Button data-testid="acceptRemoveUser" onClick={handleDeleteCompetition} color="primary" autoFocus>
+          <Button data-testid="acceptRemoveCompetition" onClick={handleDeleteCompetition} color="primary" autoFocus>
             Ta bort
           </Button>
         </DialogActions>
