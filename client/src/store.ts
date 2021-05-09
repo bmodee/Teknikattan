@@ -2,7 +2,7 @@ import { AnyAction, applyMiddleware, compose, createStore } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk'
 import allReducers from './reducers/allReducers'
-/*
+/**
   TypeScript does not know the type of the property. 
   Therefore, you will get the error; Property ‘__REDUX_DEVTOOLS_EXTENSION_COMPOSE__’ 
   does not exist on type ‘Window’. Hence, you need to add the property to the global window as below.
@@ -19,10 +19,13 @@ const middleware = [thunk]
 // const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose // allows Mozilla plugin to view state in a GUI, https://github.com/zalmoxisus/redux-devtools-extension#13-use-redux-devtools-extension-package-from-npm
 // const store = createStore(allReducers, composeEnhancers(applyMiddleware()))
 
-// simple store with plugin
+/** Simple store with plugins and middleware */
 const store = createStore(allReducers, initialState, composeWithDevTools(applyMiddleware(...middleware)))
+/** Type of thunk */
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, AnyAction>
+/** Type of state */
 export type RootState = ReturnType<typeof store.getState>
+/** Type of dispatch */
 export type AppDispatch = ThunkDispatch<RootState, void, AnyAction>
 
 export default store

@@ -4,7 +4,7 @@ import { Slide } from '../interfaces/ApiModels'
 import { Timer } from '../interfaces/Timer'
 import { RichCompetition } from './../interfaces/ApiRichModels'
 
-// Define a type for the presentation state
+/** Define a type for the presentation state */
 interface PresentationState {
   competition: RichCompetition
   slide: Slide
@@ -12,7 +12,7 @@ interface PresentationState {
   timer: Timer
 }
 
-// Define the initial values for the presentation state
+/** Define the initial values for the presentation state */
 const initialState: PresentationState = {
   competition: {
     name: '',
@@ -38,6 +38,7 @@ const initialState: PresentationState = {
   },
 }
 
+/** Intercept actions for presentation state and update the state */
 export default function (state = initialState, action: AnyAction) {
   switch (action.type) {
     case Types.SET_PRESENTATION_COMPETITION:

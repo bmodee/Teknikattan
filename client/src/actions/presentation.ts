@@ -1,4 +1,4 @@
-/*
+/**
 This file handles actions for the presentation redux state
 */
 
@@ -8,7 +8,7 @@ import { Timer } from '../interfaces/Timer'
 import store, { AppDispatch, RootState } from './../store'
 import Types from './types'
 
-// Save competition in presentation state from input id
+/** Save competition in presentation state from input id */
 export const getPresentationCompetition = (id: string) => async (dispatch: AppDispatch, getState: () => RootState) => {
   await axios
     .get(`/api/competitions/${id}`)
@@ -26,30 +26,36 @@ export const getPresentationCompetition = (id: string) => async (dispatch: AppDi
     })
 }
 
+/** Set presentation slide using input slide id */
 export const setCurrentSlide = (slide: Slide) => (dispatch: AppDispatch) => {
   dispatch({ type: Types.SET_PRESENTATION_SLIDE, payload: slide })
 }
 
+/** Set presentation slide to previous slide in list */
 export const setCurrentSlidePrevious = () => (dispatch: AppDispatch) => {
   dispatch({ type: Types.SET_PRESENTATION_SLIDE_PREVIOUS })
 }
 
+/** Set presentation slide to next slide in list */
 export const setCurrentSlideNext = () => (dispatch: AppDispatch) => {
   dispatch({ type: Types.SET_PRESENTATION_SLIDE_NEXT })
 }
 
+/** Set presentation slide using input order */
 export const setCurrentSlideByOrder = (order: number) => (dispatch: AppDispatch) => {
   dispatch({ type: Types.SET_PRESENTATION_SLIDE_BY_ORDER, payload: order })
 }
 
+/** Set code of presentation */
 export const setPresentationCode = (code: string) => (dispatch: AppDispatch) => {
   dispatch({ type: Types.SET_PRESENTATION_CODE, payload: code })
 }
-
+/** Set timer to input value */
 export const setPresentationTimer = (timer: Timer) => (dispatch: AppDispatch) => {
   dispatch({ type: Types.SET_PRESENTATION_TIMER, payload: timer })
 }
 
+/** Decrement timer */
 export const setPresentationTimerDecrement = () => (dispatch: AppDispatch) => {
   dispatch({
     type: Types.SET_PRESENTATION_TIMER,

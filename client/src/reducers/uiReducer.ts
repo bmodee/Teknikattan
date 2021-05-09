@@ -1,23 +1,24 @@
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
 
-// Define a type for the UI error
+/** Define a type for the UI error */
 interface UIError {
   message: string
 }
 
-// Define a type for the UI state
+/** Define a type for the UI state */
 interface UIState {
   loading: boolean
   errors: null | UIError
 }
 
-// Define the initial values for the UI state
+/** Define the initial values for the UI state */
 const initialState: UIState = {
   loading: false,
   errors: null,
 }
 
+/** Intercept actions for ui state and update the state */
 export default function (state = initialState, action: AnyAction) {
   switch (action.type) {
     case Types.SET_ERRORS:

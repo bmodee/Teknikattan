@@ -1,4 +1,4 @@
-/*
+/**
 This file handles actions for the searchUser redux state
 */
 
@@ -7,7 +7,7 @@ import { UserFilterParams } from '../interfaces/FilterParams'
 import { AppDispatch, RootState } from './../store'
 import Types from './types'
 
-// Get all users using current filterParams in searchUser state
+/** Get all users using current filterParams in searchUser state */
 export const getSearchUsers = () => async (dispatch: AppDispatch, getState: () => RootState) => {
   const currentParams: UserFilterParams = getState().searchUsers.filterParams
   // Send params in snake-case for api
@@ -40,6 +40,7 @@ export const getSearchUsers = () => async (dispatch: AppDispatch, getState: () =
     })
 }
 
+/** Set filterParams in searchUser state */
 export const setFilterParams = (params: UserFilterParams) => (dispatch: AppDispatch) => {
   dispatch({ type: Types.SET_SEARCH_USERS_FILTER_PARAMS, payload: params })
 }

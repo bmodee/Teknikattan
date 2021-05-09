@@ -2,6 +2,7 @@ import { AnyAction } from 'redux'
 import Types from '../actions/types'
 import { RichCompetition } from '../interfaces/ApiRichModels'
 
+/** Define a type for editor state */
 interface EditorState {
   competition: RichCompetition
   activeSlideId: number
@@ -9,6 +10,7 @@ interface EditorState {
   loading: boolean
 }
 
+/** Define initial values for the editor state */
 const initialState: EditorState = {
   competition: {
     name: '',
@@ -24,6 +26,7 @@ const initialState: EditorState = {
   loading: true,
 }
 
+/** Intercept actions for editor state and update the state */
 export default function (state = initialState, action: AnyAction) {
   switch (action.type) {
     case Types.SET_EDITOR_COMPETITION:

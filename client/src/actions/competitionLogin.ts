@@ -1,4 +1,4 @@
-/*
+/**
 This file handles actions for the competitionLogin redux state
 */
 
@@ -8,7 +8,7 @@ import { AppDispatch, RootState } from '../store'
 import { getPresentationCompetition } from './presentation'
 import Types from './types'
 
-// Action creator to attempt to login with competition code
+/** Action creator to attempt to login with competition code */
 export const loginCompetition = (code: string, history: History, redirect: boolean) => async (
   dispatch: AppDispatch,
   getState: () => RootState

@@ -2,14 +2,14 @@ import { AnyAction } from 'redux'
 import Types from '../actions/types'
 import { ComponentType, MediaType, QuestionType, ViewType } from '../interfaces/ApiModels'
 
-// Define a type for the Types state
+/** Define a type for the Types state */
 interface TypesState {
   componentTypes: ComponentType[]
   viewTypes: ViewType[]
   questionTypes: QuestionType[]
   mediaTypes: MediaType[]
 }
-// Define the initial values for the types state
+/** Define the initial values for the types state */
 const initialState: TypesState = {
   componentTypes: [],
   viewTypes: [],
@@ -17,6 +17,7 @@ const initialState: TypesState = {
   mediaTypes: [],
 }
 
+/** Intercept actions for types state and update the state */
 export default function (state = initialState, action: AnyAction) {
   switch (action.type) {
     case Types.SET_TYPES:

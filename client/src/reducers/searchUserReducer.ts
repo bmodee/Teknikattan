@@ -3,7 +3,7 @@ import Types from '../actions/types'
 import { User } from '../interfaces/ApiModels'
 import { UserFilterParams } from '../interfaces/FilterParams'
 
-// Define a type for the search user state
+/** Define a type for the search user state */
 interface SearchUserState {
   users: User[]
   total: number
@@ -11,7 +11,7 @@ interface SearchUserState {
   filterParams: UserFilterParams
 }
 
-// Define the initial values for the search user state
+/** Define the initial values for the search user state */
 const initialState: SearchUserState = {
   users: [],
   total: 0,
@@ -19,6 +19,7 @@ const initialState: SearchUserState = {
   filterParams: { pageSize: 10, page: 0 },
 }
 
+/** Intercept actions for searchUser state and update the state */
 export default function (state = initialState, action: AnyAction) {
   switch (action.type) {
     case Types.SET_SEARCH_USERS:

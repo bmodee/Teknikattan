@@ -3,6 +3,7 @@ import Types from '../actions/types'
 import { Competition } from '../interfaces/ApiModels'
 import { CompetitionFilterParams } from './../interfaces/FilterParams'
 
+/** Define a type for competitions state */
 interface CompetitionState {
   competitions: Competition[]
   total: number
@@ -10,7 +11,7 @@ interface CompetitionState {
   filterParams: CompetitionFilterParams
 }
 
-// Define the initial values for the competition state
+/** Define the initial values for the competition state */
 const initialState: CompetitionState = {
   competitions: [],
   total: 0,
@@ -18,6 +19,7 @@ const initialState: CompetitionState = {
   filterParams: { pageSize: 10, page: 0 },
 }
 
+/** Intercept actions for competitions state and update the state */
 export default function (state = initialState, action: AnyAction) {
   switch (action.type) {
     case Types.SET_COMPETITIONS:
