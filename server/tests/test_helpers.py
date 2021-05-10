@@ -3,7 +3,7 @@ import json
 import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.core import db
-from app.database.models import City, Code, Role
+from app.database.models import City, Code, Role, Slide
 
 
 def add_default_values():
@@ -161,3 +161,31 @@ def assert_slide_order(item_comp, correct_order):
     """
     for slide, order in zip(item_comp.slides, correct_order):
         assert slide.order == order
+
+
+def assert_all_slide_orders():
+    """ Checks that all slides are in order. """
+
+    # Get slides in competition order and slide order
+    item_slides = Slide.query.order_by(Slide.competition_id).order_by(Slide.order).all()
+
+    order = 0
+    competition_id = 1
+    for item_slide in item_slides:
+        if item_slide.competition_id != competition_id:
+            order = 0
+            competition_id = item_slide.competition_id
+
+        assert item_slide.order == order
+        order += 1
+
+
+def assert_should_fail(func, *args):
+    """ Runs the function which should raise an exception. """
+
+    try:
+        func(*args)
+    except:
+        pass  # Assert failed, as it should
+    else:
+        assert False  # Assertion didn't fail

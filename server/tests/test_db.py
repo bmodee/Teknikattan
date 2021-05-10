@@ -3,10 +3,41 @@ This file tests the database controller functions.
 """
 
 import app.database.controller as dbc
-from app.database.models import City, Code, Competition, Media, MediaType, Role, User
+from app.database.models import City, Code, Competition, Media, MediaType, Role, Slide, User
 
 from tests import app, client, db
-from tests.test_helpers import add_default_values, assert_exists, assert_insert_fail, assert_slide_order, delete
+from tests.test_helpers import add_default_values, assert_all_slide_orders, assert_should_fail, assert_slide_order
+
+
+def test_default_values(client):
+    add_default_values()
+
+    # Basic funcs
+    def func(val):
+        assert val
+
+    # Testing assert_should_fail when it should and should not fail
+    assert_should_fail(func, False)
+
+    try:
+        assert_should_fail(func, True)
+    except:
+        pass
+    else:
+        assert False
+
+    # All slides should be in order
+    assert_all_slide_orders()
+
+    # Slides are moved so they are not in correct order
+    item_slides = dbc.get.all(Slide)
+    for item_slide in item_slides:
+        item_slide.order += 10
+        db.session.add(item_slide)
+    db.session.commit()
+
+    # The slides are not in order so the assert should fail
+    assert_should_fail(assert_all_slide_orders)
 
 
 def test_user(client):
@@ -90,6 +121,8 @@ def test_copy(client):
     assert len(dbc.get.all(Code)) == 4
     dbc.delete.team(item_team_2)
     assert len(dbc.get.all(Code)) == 3
+
+    assert_all_slide_orders()
 
 
 def check_slides_copy(item_slide_original, item_slide_copy, num_slides, order):
@@ -277,6 +310,7 @@ def test_question(client):
     )
     assert item_q1 == item_q2[0]
 
+    assert_all_slide_orders()
 
 def test_slide(client):
     add_default_values()
