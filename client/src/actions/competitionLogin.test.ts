@@ -54,7 +54,7 @@ it('dispatches correct action when logging out from competition', async () => {
     return Promise.resolve({ data: {} })
   })
   const store = mockStore({})
-  await logoutCompetition()(store.dispatch)
+  await logoutCompetition('Judge')(store.dispatch)
   expect(store.getActions()).toEqual([{ type: Types.SET_COMPETITION_LOGIN_UNAUTHENTICATED }])
 })
 
