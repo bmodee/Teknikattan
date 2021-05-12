@@ -13,6 +13,7 @@ type QuestionSettingsProps = {
 
 const QuestionSettings = ({ activeSlide, competitionId }: QuestionSettingsProps) => {
   const dispatch = useAppDispatch()
+  const maxScore = 1000
 
   const updateQuestion = async (
     updateTitle: boolean,
@@ -29,15 +30,34 @@ const QuestionSettings = ({ activeSlide, competitionId }: QuestionSettingsProps)
           })
           .catch(console.log)
       } else {
-        setScore(+event.target.value)
-        await axios
-          .put(`/api/competitions/${competitionId}/slides/${activeSlide.id}/questions/${activeSlide.questions[0].id}`, {
-            total_score: event.target.value,
-          })
-          .then(() => {
-            dispatch(getEditorCompetition(competitionId))
-          })
-          .catch(console.log)
+        if (+event.target.value > maxScore) {
+          setScore(maxScore)
+          await axios
+            .put(
+              `/api/competitions/${competitionId}/slides/${activeSlide.id}/questions/${activeSlide.questions[0].id}`,
+              {
+                total_score: maxScore,
+              }
+            )
+            .then(() => {
+              dispatch(getEditorCompetition(competitionId))
+            })
+            .catch(console.log)
+          return maxScore
+        } else {
+          setScore(+event.target.value)
+          await axios
+            .put(
+              `/api/competitions/${competitionId}/slides/${activeSlide.id}/questions/${activeSlide.questions[0].id}`,
+              {
+                total_score: event.target.value,
+              }
+            )
+            .then(() => {
+              dispatch(getEditorCompetition(competitionId))
+            })
+            .catch(console.log)
+        }
       }
     }
   }
@@ -73,7 +93,7 @@ const QuestionSettings = ({ activeSlide, competitionId }: QuestionSettingsProps)
             helperText="Välj hur många poäng frågan ska ge för rätt svar."
             label="Poäng"
             type="number"
-            InputProps={{ inputProps: { min: 0 } }}
+            InputProps={{ inputProps: { min: 0, max: maxScore } }}
             value={score || 0}
             onChange={(event) => updateQuestion(false, event)}
           />

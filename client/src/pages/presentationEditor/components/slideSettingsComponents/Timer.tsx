@@ -12,9 +12,21 @@ type TimerProps = {
 }
 
 const Timer = ({ activeSlide, competitionId }: TimerProps) => {
+  const maxTime = 1000
   const dispatch = useAppDispatch()
   const updateTimer = async (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    setTimer(+event.target.value)
+    if (+event.target.value > maxTime) {
+      setTimer(maxTime)
+      await axios
+        .put(`/api/competitions/${competitionId}/slides/${activeSlide.id}`, { timer: maxTime || null })
+        .then(() => {
+          dispatch(getEditorCompetition(competitionId))
+        })
+        .catch(console.log)
+      return maxTime
+    } else {
+      setTimer(+event.target.value)
+    }
     if (activeSlide) {
       await axios
         .put(`/api/competitions/${competitionId}/slides/${activeSlide.id}`, { timer: event.target.value || null })
@@ -24,6 +36,7 @@ const Timer = ({ activeSlide, competitionId }: TimerProps) => {
         .catch(console.log)
     }
   }
+
   const [timer, setTimer] = useState<number | undefined>(activeSlide?.timer)
   useEffect(() => {
     setTimer(activeSlide?.timer)
@@ -40,6 +53,7 @@ const Timer = ({ activeSlide, competitionId }: TimerProps) => {
           label="Timer"
           type="number"
           onChange={updateTimer}
+          inputProps={{ max: maxTime }}
           value={timer || ''}
         />
       </Center>
