@@ -12,9 +12,10 @@ type TimerProps = {
 }
 
 const Timer = ({ activeSlide, competitionId }: TimerProps) => {
-  const maxTime = 1000
+  const maxTime = 1000 // ms
   const dispatch = useAppDispatch()
   const updateTimer = async (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    /** If timer value is above the max value, set the timer value to max value to not overflow the server */
     if (+event.target.value > maxTime) {
       setTimer(maxTime)
       await axios
