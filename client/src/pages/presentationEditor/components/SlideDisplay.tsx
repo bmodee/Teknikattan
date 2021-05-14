@@ -23,6 +23,10 @@ const SlideDisplay = ({ variant, activeViewTypeId, currentSlideId }: SlideDispla
       return state.editor.competition.slides.find((slide) => slide.id === state.editor.activeSlideId)
     return state.presentation.competition.slides.find((slide) => slide.id === state.presentation.activeSlideId)
   })
+  const totalSlides = useAppSelector((state) => {
+    if (variant === 'presentation') return state.presentation.competition.slides.length
+    return state.editor.competition.slides.length
+  })
   const components = slide?.components
   const competitionBackgroundImage = useAppSelector((state) => {
     if (variant === 'editor') return state.editor.competition.background_image

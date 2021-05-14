@@ -1,17 +1,10 @@
-import { Snackbar, Typography } from '@material-ui/core'
+import { Snackbar } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import React, { useEffect, useState } from 'react'
 import { useAppSelector } from '../../hooks'
 import { socketConnect, socketJoinPresentation } from '../../sockets'
 import SlideDisplay from '../presentationEditor/components/SlideDisplay'
-import Timer from '../views/components/Timer'
-import {
-  OperatorContainer,
-  OperatorHeader,
-  OperatorHeaderItem,
-  PresentationBackground,
-  PresentationContainer,
-} from './styled'
+import { OperatorContainer, OperatorHeader, PresentationBackground, PresentationContainer } from './styled'
 
 const TeamViewPage: React.FC = () => {
   const code = useAppSelector((state) => state.presentation.code)
@@ -36,16 +29,7 @@ const TeamViewPage: React.FC = () => {
   }, [])
   return (
     <OperatorContainer>
-      <OperatorHeader>
-        <Typography variant="h1">
-          <Timer />
-        </Typography>
-        <OperatorHeaderItem>
-          <Typography variant="h3">
-            {activeSlideOrder !== undefined && activeSlideOrder + 1} / {presentation.competition.slides.length}
-          </Typography>
-        </OperatorHeaderItem>
-      </OperatorHeader>
+      <OperatorHeader></OperatorHeader>
       <PresentationBackground>
         <PresentationContainer>
           {activeViewTypeId && <SlideDisplay variant="presentation" activeViewTypeId={activeViewTypeId} />}
