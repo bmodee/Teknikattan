@@ -66,15 +66,11 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
                 Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats',
           fontsize_formats: '8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt 120pt 144pt',
           content_style: 'body {font-size: 24pt; font-family: Calibri;}',
-          plugins: [
-            'advlist autolink lists link image charmap print preview anchor',
-            'searchreplace visualblocks code fullscreen',
-            'insertdatetime media table paste code help wordcount',
-          ],
+          plugins: ['advlist autolink lists link charmap anchor visualblocks code paste help wordcount'],
           toolbar:
             'fontsizeselect | bold italic backcolor | help | \
             fontselect | formatselect | undo redo | \
-            alignleft aligncenter alignright alignjustify bullist numlist outdent indent | removeformat |',
+            alignleft aligncenter alignright alignjustify bullist numlist outdent indent | removeformat | code',
         }}
         onEditorChange={(a, e) => handleSaveText(a)}
       />
