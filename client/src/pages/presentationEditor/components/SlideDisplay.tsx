@@ -32,10 +32,6 @@ const SlideDisplay = ({ variant, activeViewTypeId, currentSlideId }: SlideDispla
     if (variant === 'editor') return state.editor.competition.background_image
     return state.presentation.competition.background_image
   })
-  const totalSlides = useAppSelector((state) => {
-    if (variant === 'presentation') return state.presentation.competition.slides.length
-    return state.editor.competition.slides.length
-  })
 
   const slideBackgroundImage = slide?.background_image
   const dispatch = useAppDispatch()
