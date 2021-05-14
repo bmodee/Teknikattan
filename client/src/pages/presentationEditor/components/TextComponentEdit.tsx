@@ -56,6 +56,10 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
         init={{
           height: '300px',
           menubar: false,
+          verify_html: false,
+          branding: false,
+          entity_encoding: 'raw',
+          icons: 'material',
           font_formats:
             'Arial=arial,helvetica,sans-serif;Calibri=calibri;\
              Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier;\
