@@ -61,11 +61,11 @@ const CompetitionLogin: React.FC = () => {
           <Button type="submit" fullWidth variant="contained" color="secondary" disabled={!formik.isValid}>
             Anslut till tävling
           </Button>
-          {errors && errors.message && (
+          {errors && (
             <Alert severity="error">
               <AlertTitle>Error</AlertTitle>
-              <Typography>En tävling med den koden hittades ej.</Typography>
-              <Typography>kontrollera koden och försök igen</Typography>
+              <Typography>En tävling med den koden existerar ej.</Typography>
+              <Typography>Dubbelkolla koden och försök igen</Typography>
             </Alert>
           )}
           {loading && <CenteredCircularProgress color="secondary" />}

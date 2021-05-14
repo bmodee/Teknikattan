@@ -7,6 +7,7 @@ import app.database.controller as dbc
 from app.core import db
 from app.database.models import Whitelist
 from flask_restx import abort
+from sqlalchemy.exc import IntegrityError
 
 
 def default(item):
@@ -15,6 +16,9 @@ def default(item):
     try:
         db.session.delete(item)
         db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        abort(codes.CONFLICT, f"Item of type {type(item)} cannot be deleted due to an Integrity Constraint")
     except:
         db.session.rollback()
         abort(

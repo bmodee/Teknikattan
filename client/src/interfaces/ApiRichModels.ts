@@ -13,7 +13,7 @@ export interface RichCompetition {
 export interface RichSlide {
   id: number
   order: number
-  timer: number
+  timer: number | null
   title: string
   competition_id: number
   background_image?: Media

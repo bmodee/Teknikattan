@@ -12,14 +12,14 @@ const ViewSelectPage: React.FC = () => {
   const dispatch = useAppDispatch()
   const history = useHistory()
   const competitionId = useAppSelector((state) => state.competitionLogin.data?.competition_id)
-  const errorMessage = useAppSelector((state) => state.competitionLogin.errors?.message)
+  const errorMessage = useAppSelector((state) => state.competitionLogin.errors)
   const loading = useAppSelector((state) => state.competitionLogin.loading)
   const { code }: ViewSelectParams = useParams()
   const viewType = useAppSelector((state) => state.competitionLogin.data?.view)
 
   const renderView = () => {
     //Renders the correct view depending on view type
-    if (competitionId) {
+    if (competitionId && !errorMessage) {
       switch (viewType) {
         case 'Team':
           return <Redirect to={`/view/team`} />

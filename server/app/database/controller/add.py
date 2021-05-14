@@ -46,6 +46,8 @@ def db_add(item):
         db.session.add(item)
         db.session.commit()
         db.session.refresh(item)
+    except (exc.IntegrityError):
+        abort(codes.CONFLICT, f"Item of type {type(item)} cannot be added due to an Integrity Constraint")
     except (exc.SQLAlchemyError, exc.DBAPIError):
         db.session.rollback()
         # SQL errors such as item already exists
@@ -64,28 +66,11 @@ def db_add(item):
     return item
 
 
-def component(type_id, slide_id, view_type_id, x=0, y=0, w=0, h=0, **data):
+def component(type_id, slide_id, view_type_id, x=0, y=0, w=0, h=0, copy=False, **data):
     """
     Adds a component to the slide at the specified
     coordinates with the provided size and data.
     """
-
-    if type_id == 2:  # 2 is image
-        item_image = get.one(Media, data["media_id"])
-        filename = item_image.filename
-        path = os.path.join(
-            current_app.config["UPLOADED_PHOTOS_DEST"],
-            filename,
-        )
-        with Image.open(path) as im:
-            h = im.height
-            w = im.width
-
-    largest = max(w, h)
-    if largest > 600:
-        ratio = 600 / largest
-        w *= ratio
-        h *= ratio
 
     if type_id == ID_TEXT_COMPONENT:
         item = db_add(
@@ -93,6 +78,24 @@ def component(type_id, slide_id, view_type_id, x=0, y=0, w=0, h=0, **data):
         )
         item.text = data.get("text")
     elif type_id == ID_IMAGE_COMPONENT:
+        if not copy:  # Scale image if adding a new one, a copied image should keep it's size
+            item_image = get.one(Media, data["media_id"])
+            filename = item_image.filename
+            path = os.path.join(
+                current_app.config["UPLOADED_PHOTOS_DEST"],
+                filename,
+            )
+
+            with Image.open(path) as im:
+                h = im.height
+                w = im.width
+
+            largest = max(w, h)
+            if largest > 600:
+                ratio = 600 / largest
+                w *= ratio
+                h *= ratio
+
         item = db_add(
             ImageComponent(slide_id, type_id, view_type_id, x, y, w, h),
         )

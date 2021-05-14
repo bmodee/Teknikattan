@@ -49,8 +49,8 @@ import {
   OperatorContent,
   OperatorFooter,
   OperatorHeader,
+  OperatorHeaderItem,
   OperatorInnerContent,
-  SlideCounter,
   ToolBarContainer,
 } from './styled'
 
@@ -101,7 +101,7 @@ const OperatorViewPage: React.FC = () => {
   const [openAlert, setOpen] = React.useState(false)
   const [openAlertCode, setOpenCode] = React.useState(false)
   const [codes, setCodes] = React.useState<Code[]>([])
-  const [competitionName, setCompetitionName] = React.useState<string | undefined>(undefined)
+  const competitionName = useAppSelector((state) => state.presentation.competition.name)
 
   //const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
@@ -122,7 +122,6 @@ const OperatorViewPage: React.FC = () => {
   useEffect(() => {
     socketConnect('Operator')
     socketSetSlide
-    handleOpenCodes()
     setTimeout(startCompetition, 1000) // Wait for socket to connect
   }, [])
 
@@ -155,7 +154,6 @@ const OperatorViewPage: React.FC = () => {
 
   const handleOpenCodes = async () => {
     await getCodes()
-    await getCompetitionName()
     setOpenCode(true)
   }
 
@@ -174,18 +172,6 @@ const OperatorViewPage: React.FC = () => {
       })
       .catch(console.log)
   }
-
-  const getCompetitionName = async () => {
-    await axios
-      .get(`/api/competitions/${activeId}`)
-      .then((response) => {
-        setCompetitionName(response.data.name)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
-
   const getTypeName = (code: Code) => {
     let typeName = ''
     switch (code.view_type_id) {
@@ -224,14 +210,7 @@ const OperatorViewPage: React.FC = () => {
 
   return (
     <OperatorContainer>
-      <Dialog
-        open={openAlertCode}
-        onClose={handleClose}
-        aria-labelledby="max-width-dialog-title"
-        maxWidth="xl"
-        fullWidth={false}
-        fullScreen={false}
-      >
+      <Dialog open={openAlertCode} onClose={handleClose} aria-labelledby="max-width-dialog-title" maxWidth="xl">
         <Center>
           <DialogTitle id="max-width-dialog-title" className={classes.paper} style={{ width: '100%' }}>
             Koder för {competitionName}
@@ -303,12 +282,14 @@ const OperatorViewPage: React.FC = () => {
             </Button>
           </DialogActions>
         </Dialog>
-        <Typography variant="h3">{presentation.competition.name}</Typography>
-        <SlideCounter>
+        <OperatorHeaderItem>
+          <Typography variant="h3">{presentation.competition.name}</Typography>
+        </OperatorHeaderItem>
+        <OperatorHeaderItem>
           <Typography variant="h3">
             {activeSlideOrder !== undefined && activeSlideOrder + 1} / {presentation.competition.slides.length}
           </Typography>
-        </SlideCounter>
+        </OperatorHeaderItem>
       </OperatorHeader>
       <div style={{ height: 0, paddingTop: 120 }} />
       <OperatorContent>
@@ -364,6 +345,7 @@ const OperatorViewPage: React.FC = () => {
           horizontal: 'center',
         }}
       >
+        {(!teams || teams.length === 0) && 'Det finns inga lag i denna tävling'}
         <List>
           {teams &&
             teams.map((team) => (
@@ -373,7 +355,11 @@ const OperatorViewPage: React.FC = () => {
             ))}
         </List>
       </Popover>
-      <Snackbar open={successMessageOpen} autoHideDuration={4000} onClose={() => setSuccessMessageOpen(false)}>
+      <Snackbar
+        open={successMessageOpen && Boolean(competitionName)}
+        autoHideDuration={4000}
+        onClose={() => setSuccessMessageOpen(false)}
+      >
         <Alert severity="success">{`Du har gått med i tävlingen "${competitionName}" som operatör`}</Alert>
       </Snackbar>
     </OperatorContainer>

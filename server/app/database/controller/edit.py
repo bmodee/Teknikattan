@@ -2,29 +2,11 @@
 This file contains functionality to get data from the database.
 """
 
+import app.core.http_codes as codes
 from app.core import db
 from app.core.parsers import sentinel
-
-
-def switch_order(item1, item2):
-    """ Switches order between two slides. """
-
-    old_order = item1.order
-    new_order = item2.order
-
-    item2.order = -1
-    db.session.commit()
-    db.session.refresh(item2)
-
-    item1.order = new_order
-    db.session.commit()
-    db.session.refresh(item1)
-
-    item2.order = old_order
-    db.session.commit()
-    db.session.refresh(item2)
-
-    return item1
+from flask_restx.errors import abort
+from sqlalchemy import exc
 
 
 def default(item, **kwargs):
@@ -49,6 +31,10 @@ def default(item, **kwargs):
             raise AttributeError(f"Item of type {type(item)} has no attribute '{key}'")
         if value is not sentinel:
             setattr(item, key, value)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except exc.IntegrityError:
+        abort(codes.CONFLICT, f"Item of type {type(item)} cannot be edited due to an Integrity Constraint")
+
     db.session.refresh(item)
     return item

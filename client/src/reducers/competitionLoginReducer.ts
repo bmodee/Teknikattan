@@ -7,15 +7,11 @@ interface CompetitionLoginData {
   team_id: number | null
   view: string
 }
-/** Define a type for UI error */
-interface UIError {
-  message: string
-}
 
 /** Define a type for the competition login state */
 interface CompetitionLoginState {
   loading: boolean
-  errors: null | UIError
+  errors: null | string
   authenticated: boolean
   data: CompetitionLoginData | null
   initialized: boolean
@@ -43,7 +39,7 @@ export default function (state = initialState, action: AnyAction) {
     case Types.SET_COMPETITION_LOGIN_ERRORS:
       return {
         ...state,
-        errors: action.payload as UIError,
+        errors: action.payload as string,
         loading: false,
       }
     case Types.CLEAR_COMPETITION_LOGIN_ERRORS:

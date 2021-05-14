@@ -20,6 +20,7 @@ import React, { useEffect } from 'react'
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom'
 import { getCities } from '../../actions/cities'
 import { setEditorLoading } from '../../actions/competitions'
+import { setEditorSlideId } from '../../actions/editor'
 import { getRoles } from '../../actions/roles'
 import { getStatistics } from '../../actions/statistics'
 import { getTypes } from '../../actions/typesAction'
@@ -75,6 +76,7 @@ const AdminView: React.FC = () => {
     dispatch(getTypes())
     dispatch(getStatistics())
     dispatch(setEditorLoading(true))
+    dispatch(setEditorSlideId(-1))
   }, [])
 
   const menuAdminItems = [

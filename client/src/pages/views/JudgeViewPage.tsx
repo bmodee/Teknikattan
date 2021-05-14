@@ -53,6 +53,7 @@ const JudgeViewPage: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState<RichSlide | undefined>(undefined)
   const currentQuestion = currentSlide?.questions[0]
   const operatorActiveSlideId = useAppSelector((state) => state.presentation.activeSlideId)
+  const timer = useAppSelector((state) => state.presentation.timer)
   const operatorActiveSlideOrder = useAppSelector(
     (state) => state.presentation.competition.slides.find((slide) => slide.id === operatorActiveSlideId)?.order
   )
@@ -74,6 +75,12 @@ const JudgeViewPage: React.FC = () => {
       dispatch(getPresentationCompetition(competitionId.toString()))
     }
   }, [operatorActiveSlideId])
+  useEffect(() => {
+    // Every second tic of the timer, load new answers
+    if (timer.value % 2 === 0 && competitionId) {
+      dispatch(getPresentationCompetition(competitionId.toString()))
+    }
+  }, [timer.value])
   return (
     <div style={{ height: '100%' }}>
       <JudgeAppBar position="fixed">

@@ -35,7 +35,14 @@ export const loginCompetition = (code: string, history: History, redirect: boole
       }
     })
     .catch((err) => {
-      dispatch({ type: Types.SET_COMPETITION_LOGIN_ERRORS, payload: err && err.response && err.response.data })
+      let errorMessage = err?.response?.data?.message
+      if (err?.response?.status === 401) {
+        errorMessage = 'Inkorrekt kod. Dubbelkolla koden och försök igen.'
+      }
+      if (err?.response?.status === 404) {
+        errorMessage = 'En tävling med den koden existerar inte. Dubbelkolla koden och försök igen.'
+      }
+      dispatch({ type: Types.SET_COMPETITION_LOGIN_ERRORS, payload: errorMessage })
       console.log(err)
     })
 }

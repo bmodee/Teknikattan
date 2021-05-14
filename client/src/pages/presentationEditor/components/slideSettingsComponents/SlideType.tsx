@@ -56,6 +56,7 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
             )
             .then(() => {
               dispatch(getEditorCompetition(competitionId))
+              removeQuestionComponent()
             })
             .catch(console.log)
         } else {
@@ -73,11 +74,11 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
             })
             .then(() => {
               dispatch(getEditorCompetition(competitionId))
-              createQuestionComponent()
+              removeQuestionComponent().then(() => createQuestionComponent())
             })
             .catch(console.log)
         }
-      } else if (selectedSlideType !== 0) {
+      } else if (activeSlide.questions[0].type_id === 0 && selectedSlideType !== 0) {
         // Change slide type from information to a question type
         await axios
           .post(`/api/competitions/${competitionId}/slides/${activeSlide.id}/questions`, {
@@ -94,8 +95,8 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
     }
   }
 
-  const createQuestionComponent = () => {
-    axios
+  const createQuestionComponent = async () => {
+    await axios
       .post(`/api/competitions/${competitionId}/slides/${activeSlide.id}/components`, {
         x: 0,
         y: 0,
@@ -109,6 +110,15 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
         dispatch(getEditorCompetition(competitionId))
       })
       .catch(console.log)
+  }
+
+  const removeQuestionComponent = async () => {
+    const questionComponentId = activeSlide.components.find((component) => component.type_id === 3)?.id
+    if (questionComponentId) {
+      await axios
+        .delete(`/api/competitions/${competitionId}/slides/${activeSlide.id}/components/${questionComponentId}`)
+        .catch(console.log)
+    }
   }
 
   const deleteQuestionComponent = (componentId: number | undefined) => {
@@ -125,30 +135,20 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
         <FormControl fullWidth variant="outlined">
           <InputLabel>Sidtyp</InputLabel>
           <Select fullWidth={true} value={activeSlide?.questions?.[0]?.type_id || 0} label="Sidtyp">
-            <MenuItem value={0}>
-              <Typography variant="button" onClick={() => openSlideTypeDialog(0)}>
-                Informationssida
-              </Typography>
+            <MenuItem value={0} button onClick={() => openSlideTypeDialog(0)}>
+              <Typography>Informationssida</Typography>
             </MenuItem>
-            <MenuItem value={1}>
-              <Typography variant="button" onClick={() => openSlideTypeDialog(1)}>
-                Skriftlig fråga
-              </Typography>
+            <MenuItem value={1} button onClick={() => openSlideTypeDialog(1)}>
+              <Typography>Skriftlig fråga</Typography>
             </MenuItem>
-            <MenuItem value={2}>
-              <Typography variant="button" onClick={() => openSlideTypeDialog(2)}>
-                Praktisk fråga
-              </Typography>
+            <MenuItem value={2} button onClick={() => openSlideTypeDialog(2)}>
+              <Typography>Praktisk fråga</Typography>
             </MenuItem>
-            <MenuItem value={3}>
-              <Typography variant="button" onClick={() => openSlideTypeDialog(3)}>
-                Kryssfråga
-              </Typography>
+            <MenuItem value={3} button onClick={() => openSlideTypeDialog(3)}>
+              <Typography>Kryssfråga</Typography>
             </MenuItem>
-            <MenuItem value={4}>
-              <Typography variant="button" onClick={() => openSlideTypeDialog(4)}>
-                Alternativfråga
-              </Typography>
+            <MenuItem value={4} button onClick={() => openSlideTypeDialog(4)}>
+              <Typography>Alternativfråga</Typography>
             </MenuItem>
           </Select>
         </FormControl>

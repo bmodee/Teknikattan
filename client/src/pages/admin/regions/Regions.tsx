@@ -1,4 +1,4 @@
-import { Button, Menu, Typography } from '@material-ui/core'
+import { Button, Menu, Snackbar, Typography } from '@material-ui/core'
 import Paper from '@material-ui/core/Paper'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
@@ -8,6 +8,7 @@ import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
+import { Alert } from '@material-ui/lab'
 import axios from 'axios'
 import React, { useEffect } from 'react'
 import { getCities } from '../../../actions/cities'
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const RegionManager: React.FC = (props: any) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [activeId, setActiveId] = React.useState<number | undefined>(undefined)
-  const citiesTotal = useAppSelector((state) => state.cities.total)
+  const [errorActive, setErrorActive] = React.useState(false)
   const cities = useAppSelector((state) => state.cities.cities)
   const [newCity, setNewCity] = React.useState<string>()
   const classes = useStyles()
@@ -53,8 +54,8 @@ const RegionManager: React.FC = (props: any) => {
           setAnchorEl(null)
           dispatch(getCities())
         })
-        .catch(({ response }) => {
-          console.warn(response.data)
+        .catch((response) => {
+          if (response?.response?.status === 409) setErrorActive(true)
         })
     }
   }
@@ -98,6 +99,9 @@ const RegionManager: React.FC = (props: any) => {
           Ta bort
         </RemoveMenuItem>
       </Menu>
+      <Snackbar open={errorActive} autoHideDuration={4000} onClose={() => setErrorActive(false)}>
+        <Alert severity="error">{`Du kan inte ta bort regionen eftersom det finns användare eller tävlingar kopplade till den.`}</Alert>
+      </Snackbar>
     </div>
   )
 }

@@ -68,6 +68,7 @@ def component(item_component, slide_id_new, view_type_id):
         item_component.y,
         item_component.w,
         item_component.h,
+        copy=True,
         **data,
     )
 

@@ -8,9 +8,9 @@ import Timer from '../views/components/Timer'
 import {
   OperatorContainer,
   OperatorHeader,
+  OperatorHeaderItem,
   PresentationBackground,
   PresentationContainer,
-  SlideCounter,
 } from './styled'
 
 const TeamViewPage: React.FC = () => {
@@ -38,13 +38,13 @@ const TeamViewPage: React.FC = () => {
     <OperatorContainer>
       <OperatorHeader>
         <Typography variant="h1">
-          <Timer></Timer>
+          <Timer />
         </Typography>
-        <SlideCounter>
+        <OperatorHeaderItem>
           <Typography variant="h3">
             {activeSlideOrder !== undefined && activeSlideOrder + 1} / {presentation.competition.slides.length}
           </Typography>
-        </SlideCounter>
+        </OperatorHeaderItem>
       </OperatorHeader>
       <PresentationBackground>
         <PresentationContainer>

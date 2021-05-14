@@ -62,7 +62,7 @@ it('dispatches correct action when failing to log in user', async () => {
   console.log = jest.fn()
   const errorMessage = 'getting teams failed'
   ;(mockedAxios.post as jest.Mock).mockImplementation(() => {
-    return Promise.reject({ response: { data: errorMessage } })
+    return Promise.reject({ response: { data: { message: errorMessage } } })
   })
   const store = mockStore({})
   const history = createMemoryHistory()

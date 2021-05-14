@@ -58,6 +58,7 @@ export const Center = styled.div`
   text-align: center;
   height: 100%;
   width: 100%;
+  overflow-x: hidden;
 `
 
 export const ImageTextContainer = styled.div`
@@ -139,4 +140,8 @@ export const ImageNameText = styled(ListItemText)`
 
 export const QuestionComponent = styled.div`
   outline-style: double;
+`
+
+export const SettingsItemContainer = styled.div`
+  padding: 5px;
 `

@@ -1,6 +1,6 @@
 import { Divider, FormControl, InputLabel, ListItem, MenuItem, Select, TextField, Typography } from '@material-ui/core'
 import axios from 'axios'
-import React from 'react'
+import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getEditorCompetition } from '../../../actions/editor'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
@@ -15,6 +15,7 @@ interface CompetitionParams {
 
 const CompetitionSettings: React.FC = () => {
   const { competitionId }: CompetitionParams = useParams()
+  const [nameErrorText, setNameErrorText] = useState<string | undefined>(undefined)
   const dispatch = useAppDispatch()
   const competition = useAppSelector((state) => state.editor.competition)
   const cities = useAppSelector((state) => state.cities.cities)
@@ -23,9 +24,12 @@ const CompetitionSettings: React.FC = () => {
     await axios
       .put(`/api/competitions/${competitionId}`, { name: event.target.value })
       .then(() => {
+        setNameErrorText(undefined)
         dispatch(getEditorCompetition(competitionId))
       })
-      .catch(console.log)
+      .catch((response) => {
+        if (response?.response.status === 409) setNameErrorText('Det finns redan en tävling med det namnet.')
+      })
   }
 
   const updateCompetitionCity = async (city: City) => {
@@ -52,6 +56,8 @@ const CompetitionSettings: React.FC = () => {
         <FirstItem>
           <ListItem>
             <TextField
+              error={Boolean(nameErrorText)}
+              helperText={nameErrorText}
               id="outlined-basic"
               label={'Tävlingsnamn'}
               defaultValue={competition.name}

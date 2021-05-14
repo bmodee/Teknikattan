@@ -36,7 +36,7 @@ export interface Slide {
   competition_id: number
   id: number
   order: number
-  timer: number
+  timer: number | null
   title: string
   background_image?: Media
 }
@@ -54,7 +54,7 @@ export interface Team extends NameID {
 
 export interface Question extends NameID {
   slide_id: number
-  total_score: number
+  total_score: number | null
   type_id: number
   correcting_instructions: string
 }

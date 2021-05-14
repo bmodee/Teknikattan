@@ -21,8 +21,8 @@ export const JudgeAnswersLabel = styled(Typography)`
 export const ViewSelectContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 12%;
-  height: 100%;
+  padding-top: 12%;
+  height: calc(100%-12%);
 `
 
 export const ViewSelectButtonGroup = styled.div`
@@ -60,7 +60,7 @@ export const OperatorButton = styled(Button)`
   margin-top: 16px;
 `
 
-export const SlideCounter = styled(Button)`
+export const OperatorHeaderItem = styled(Button)`
   margin-left: 16px;
   margin-right: 16px;
   margin-top: 16px;

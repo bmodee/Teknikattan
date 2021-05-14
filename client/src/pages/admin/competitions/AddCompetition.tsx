@@ -74,9 +74,11 @@ const AddCompetition: React.FC = (props: any) => {
       // if the post request fails
       .catch(({ response }) => {
         console.warn(response.data)
-        if (response.data && response.data.message)
+        if (response?.status === 409)
+          actions.setFieldError('error', 'En tävling med det namnet finns redan, välj ett nytt namn och försök igen')
+        else if (response.data && response.data.message)
           actions.setFieldError('error', response.data && response.data.message)
-        else actions.setFieldError('error', 'Something went wrong, please try again')
+        else actions.setFieldError('error', 'Någonting gick fel, försök igen')
       })
       .finally(() => {
         actions.setSubmitting(false)
@@ -184,7 +186,7 @@ const AddCompetition: React.FC = (props: any) => {
                   fullWidth
                   variant="contained"
                   color="secondary"
-                  disabled={!formik.isValid || !formik.values.model?.name || !formik.values.model?.city}
+                  disabled={!formik.isValid || !formik.values.model?.name || !selectedCity}
                 >
                   Skapa
                 </Button>

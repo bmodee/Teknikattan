@@ -26,7 +26,7 @@ const Timer: React.FC = () => {
   const timerStartValue = slide?.timer
   const timer = useAppSelector((state) => state.presentation.timer)
   useEffect(() => {
-    if (!slide) return
+    if (!slide || !slide.timer) return
     dispatch(setPresentationTimer({ enabled: false, value: slide.timer }))
   }, [timerStartValue])
 

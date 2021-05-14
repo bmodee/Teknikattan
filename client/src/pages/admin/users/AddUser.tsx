@@ -212,7 +212,13 @@ const AddUser: React.FC = (props: any) => {
                   fullWidth
                   variant="contained"
                   color="secondary"
-                  disabled={!formik.isValid || !formik.values.model?.name || !formik.values.model?.city}
+                  disabled={
+                    !formik.isValid ||
+                    !formik.values.model?.email ||
+                    !formik.values.model?.password ||
+                    !selectedCity?.name ||
+                    !selectedRole?.name
+                  }
                 >
                   Lägg till
                 </Button>

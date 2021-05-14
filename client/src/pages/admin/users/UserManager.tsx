@@ -47,23 +47,6 @@ const UserManager: React.FC = (props: any) => {
   const dispatch = useAppDispatch()
 
   const open = Boolean(anchorEl)
-  const id = open ? 'simple-popover' : undefined
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, user: User) => {
-    setAnchorEl(event.currentTarget)
-    setSelectedUser(user)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
-    setSelectedUser(undefined)
-    console.log('close')
-  }
-
-  const handleEditClose = () => {
-    setEditAnchorEl(null)
-    console.log('edit close')
-  }
 
   useEffect(() => {
     dispatch(getSearchUsers())

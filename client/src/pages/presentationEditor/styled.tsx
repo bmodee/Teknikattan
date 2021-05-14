@@ -20,11 +20,7 @@ export const ToolBarContainer = styled(Toolbar)`
 `
 
 export const ViewButton = styled(Button)<ViewButtonProps>`
-  background: ${(props) => (props.$activeView ? '#5a0017' : undefined)};
-`
-
-export const ViewButtonClicked = styled(Button)`
-  background: #5a0017;
+  background: ${(props) => (!props.$activeView ? '#5a0017' : undefined)};
 `
 
 export const SlideList = styled(List)`

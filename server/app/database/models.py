@@ -5,7 +5,8 @@ each other.
 """
 
 from app.core import bcrypt, db
-from app.database.types import ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT, ID_TEXT_COMPONENT
+from app.database.types import (ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT,
+                                ID_TEXT_COMPONENT)
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 
 STRING_SIZE = 254
@@ -146,7 +147,7 @@ class Slide(db.Model):
     order = db.Column(db.Integer, nullable=False)
     title = db.Column(db.String(STRING_SIZE), nullable=False, default="")
     body = db.Column(db.Text, nullable=False, default="")
-    timer = db.Column(db.Integer, nullable=False, default=0)
+    timer = db.Column(db.Integer, nullable=True)
     settings = db.Column(db.Text, nullable=False, default="{}")
     competition_id = db.Column(db.Integer, db.ForeignKey("competition.id"), nullable=False)
 
@@ -164,7 +165,7 @@ class Slide(db.Model):
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(STRING_SIZE), nullable=False)
-    total_score = db.Column(db.Integer, nullable=False, default=1)
+    total_score = db.Column(db.Integer, nullable=True, default=None)
     type_id = db.Column(db.Integer, db.ForeignKey("question_type.id"), nullable=False)
     slide_id = db.Column(db.Integer, db.ForeignKey("slide.id"), nullable=False)
     correcting_instructions = db.Column(db.Text, nullable=True, default=None)

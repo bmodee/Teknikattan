@@ -49,12 +49,13 @@ export default function (state = initialState, action: AnyAction) {
         activeSlideId: action.payload as number,
       }
     case Types.SET_PRESENTATION_TIMER:
+      const timer = action.payload as Timer
       if (action.payload.value == 0) {
-        action.payload.enabled = false
+        timer.enabled = false
       }
       return {
         ...state,
-        timer: action.payload,
+        timer,
       }
     default:
       return state

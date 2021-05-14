@@ -98,7 +98,7 @@ def start_presentation(data: Dict) -> None:
 
     presentations[competition_id] = {
         "clients": {request.sid: {"view_type": "Operator"}},
-        "slide": None,
+        "slide": 0,
         "timer": {"enabled": False, "start_value": None, "value": None},
     }
 
@@ -184,6 +184,8 @@ def join_presentation(data: Dict) -> None:
     logger.debug(f"Client '{request.sid}' joined room {competition_id}")
 
     logger.info(f"Client '{request.sid}' joined competition '{competition_id}'")
+
+    emit("set_slide", {"slide_order": presentations[competition_id]["slide"]})
 
 
 @protect_route(allowed_views=["Operator"])
