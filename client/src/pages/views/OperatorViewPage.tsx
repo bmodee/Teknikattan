@@ -309,7 +309,7 @@ const OperatorViewPage: React.FC = () => {
           <Tooltip title="Starta Timer" arrow>
             <OperatorButton onClick={socketStartTimer} variant="contained">
               <TimerIcon fontSize="large" />
-              <Timer></Timer>
+              <Timer disableText />
             </OperatorButton>
           </Tooltip>
 

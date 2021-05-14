@@ -3,6 +3,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { getTypes } from '../../../actions/typesAction'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import PresentationComponent from '../../views/components/PresentationComponent'
+import Timer from '../../views/components/Timer'
 import RndComponent from './RndComponent'
 import { Center, SlideEditorContainer, SlideEditorContainerRatio, SlideEditorPaper } from './styled'
 
@@ -26,6 +27,10 @@ const SlideDisplay = ({ variant, activeViewTypeId, currentSlideId }: SlideDispla
   const competitionBackgroundImage = useAppSelector((state) => {
     if (variant === 'editor') return state.editor.competition.background_image
     return state.presentation.competition.background_image
+  })
+  const totalSlides = useAppSelector((state) => {
+    if (variant === 'presentation') return state.presentation.competition.slides.length
+    return state.editor.competition.slides.length
   })
 
   const slideBackgroundImage = slide?.background_image
@@ -54,6 +59,13 @@ const SlideDisplay = ({ variant, activeViewTypeId, currentSlideId }: SlideDispla
     <SlideEditorContainer>
       <SlideEditorContainerRatio>
         <SlideEditorPaper ref={editorPaperRef}>
+          <Typography variant="h3" style={{ position: 'absolute', left: 5, top: 5 }}>
+            {variant === 'editor' && `Tid kvar: ${slide?.timer}`}
+            {variant === 'presentation' && <Timer />}
+          </Typography>
+          <Typography variant="h3" style={{ position: 'absolute', right: 5, top: 5 }}>
+            {slide && `Sida: ${slide?.order + 1} / ${totalSlides}`}
+          </Typography>
           {(competitionBackgroundImage || slideBackgroundImage) && (
             <img
               src={`/static/images/${

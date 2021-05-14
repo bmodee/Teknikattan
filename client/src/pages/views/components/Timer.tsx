@@ -18,7 +18,11 @@ const mapDispatchToProps = (dispatch: any) => {
 
 let timerIntervalId: NodeJS.Timeout
 
-const Timer: React.FC = () => {
+type TimerProps = {
+  disableText?: boolean
+}
+
+const Timer = ({ disableText }: TimerProps) => {
   const dispatch = useAppDispatch()
   const slide = store
     .getState()
@@ -40,7 +44,7 @@ const Timer: React.FC = () => {
     }
   }, [timer.enabled])
 
-  return <div>{timer.value}</div>
+  return <div>{`${!disableText ? 'Tid kvar:' : ''} ${timer.value}`}</div>
 }
 
 export default Timer
