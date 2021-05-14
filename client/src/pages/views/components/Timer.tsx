@@ -40,7 +40,7 @@ const Timer: React.FC = () => {
     }
   }, [timer.enabled])
 
-  return <div>{timer.value}</div>
+  return <div>{`Tid kvar: ${timer.value}`}</div>
 }
 
 export default Timer
