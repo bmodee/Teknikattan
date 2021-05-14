@@ -59,6 +59,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
           verify_html: false,
           branding: false,
           entity_encoding: 'raw',
+          toolbar_mode: 'sliding',
           icons: 'material',
           font_formats:
             'Arial=arial,helvetica,sans-serif;Calibri=calibri;\
@@ -70,9 +71,10 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
           content_style: 'body {font-size: 24pt; font-family: Calibri;}',
           plugins: ['advlist autolink lists link charmap anchor visualblocks code paste help wordcount'],
           toolbar:
-            'fontsizeselect | bold italic backcolor | help | \
-            fontselect | formatselect | undo redo | \
-            alignleft aligncenter alignright alignjustify bullist numlist outdent indent | removeformat | code',
+            'fontsizeselect | bold italic underline backcolor | \
+            fontselect | formatselect  | \
+            alignleft aligncenter alignright alignjustify bullist numlist outdent indent |\
+            undo redo | code removeformat | help',
         }}
         onEditorChange={(a, e) => handleSaveText(a)}
       />
