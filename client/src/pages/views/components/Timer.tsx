@@ -21,23 +21,12 @@ const Timer = ({ disableText }: TimerProps) => {
   }, [slideTimer])
 
   useEffect(() => {
-    console.log(timer)
     if (!timer.enabled) {
-      console.log('interval id: ', timerIntervalId)
-      console.log('slide timer: ', slideTimer)
-
       if (timerIntervalId !== null) clearInterval(timerIntervalId)
 
-      console.log('timer enabled false')
-      console.log('timer: ', timer)
-
       if (timer.value !== null) {
-        console.log('timer value not null')
-
         setRemainingTimer(0)
       } else if (slideTimer) {
-        console.log('timer value null and slideTimer has value')
-
         setRemainingTimer(slideTimer * 1000)
       }
 
@@ -46,12 +35,10 @@ const Timer = ({ disableText }: TimerProps) => {
 
     setTimerIntervalId(
       setInterval(() => {
-        console.log('interval tick')
         if (timer.value === null) return
         if (timer.enabled === false && timerIntervalId !== null) clearInterval(timerIntervalId)
 
         if (timer.value - Date.now() < 0) {
-          console.log('timer reached zero')
           setRemainingTimer(0)
           dispatch(setPresentationTimer({ ...timer, enabled: false }))
           if (timerIntervalId !== null) clearInterval(timerIntervalId)

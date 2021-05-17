@@ -7,11 +7,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  List,
   ListItem,
   ListItemText,
   makeStyles,
-  Popover,
   Snackbar,
   Theme,
   Tooltip,
@@ -30,10 +28,10 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useAppSelector } from '../../hooks'
-import { RichTeam } from '../../interfaces/ApiRichModels'
 import { socketConnect, socketEndPresentation, socketSync } from '../../sockets'
 import SlideDisplay from '../presentationEditor/components/SlideDisplay'
 import { Center } from '../presentationEditor/components/styled'
+import Scoreboard from './components/Scoreboard'
 import Timer from './components/Timer'
 import {
   OperatorButton,
@@ -111,6 +109,8 @@ const OperatorViewPage: React.FC = () => {
   )
   const isFirstSlide = activeSlideOrder === 0
   const isLastSlide = useAppSelector((state) => activeSlideOrder === state.presentation.competition.slides.length - 1)
+  const showScoreboard = useAppSelector((state) => state.presentation.show_scoreboard)
+
   useEffect(() => {
     socketConnect('Operator')
   }, [])
@@ -119,10 +119,6 @@ const OperatorViewPage: React.FC = () => {
   window.onpopstate = () => {
     alert('Tävlingen avslutas för alla')
     endCompetition()
-  }
-
-  const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
   }
 
   const handleClose = () => {
@@ -181,15 +177,6 @@ const OperatorViewPage: React.FC = () => {
         break
     }
     return typeName
-  }
-
-  /** Sums the scores for the teams. */
-  const addScore = (team: RichTeam) => {
-    let totalScore = 0
-    for (let j = 0; j < team.question_answers.length; j++) {
-      totalScore = totalScore + team.question_answers[j].score
-    }
-    return totalScore
   }
 
   const handleStartTimer = () => {
@@ -259,7 +246,6 @@ const OperatorViewPage: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
       <OperatorHeader>
         <Tooltip title="Avsluta tävling" arrow>
           <OperatorButton onClick={handleVerifyExit} variant="contained" color="secondary">
@@ -301,14 +287,14 @@ const OperatorViewPage: React.FC = () => {
       <div style={{ height: 0, paddingTop: 140 }} />
       <OperatorFooter>
         <ToolBarContainer>
-          <Tooltip title="Föregående" arrow>
+          <Tooltip title="Föregående sida" arrow>
             <OperatorButton onClick={handleSetPrevSlide} variant="contained" disabled={isFirstSlide}>
               <ChevronLeftIcon fontSize="large" />
             </OperatorButton>
           </Tooltip>
 
           {slideTimer && (
-            <Tooltip title="Starta Timer" arrow>
+            <Tooltip title="Starta timer" arrow>
               <OperatorButton
                 onClick={handleStartTimer}
                 variant="contained"
@@ -320,48 +306,27 @@ const OperatorViewPage: React.FC = () => {
             </Tooltip>
           )}
 
-          <Tooltip title="Ställning" arrow>
-            <OperatorButton onClick={handleOpenPopover} variant="contained">
+          <Tooltip title="Visa ställning för publik" arrow>
+            <OperatorButton onClick={() => socketSync({ show_scoreboard: true })} variant="contained">
               <AssignmentIcon fontSize="large" />
             </OperatorButton>
           </Tooltip>
+          {showScoreboard && <Scoreboard isOperator />}
 
-          <Tooltip title="Koder" arrow>
+          <Tooltip title="Visa koder" arrow>
             <OperatorButton onClick={handleOpenCodes} variant="contained">
               <SupervisorAccountIcon fontSize="large" />
             </OperatorButton>
           </Tooltip>
 
-          <Tooltip title="Nästa" arrow>
+          <Tooltip title="Nästa sida" arrow>
             <OperatorButton onClick={handleSetNextSlide} variant="contained" disabled={isLastSlide}>
               <ChevronRightIcon fontSize="large" />
             </OperatorButton>
           </Tooltip>
         </ToolBarContainer>
       </OperatorFooter>
-      <Popover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-      >
-        {(!teams || teams.length === 0) && 'Det finns inga lag i denna tävling'}
-        <List>
-          {teams &&
-            teams.map((team) => (
-              <ListItem key={team.id}>
-                {team.name} score:{addScore(team)}
-              </ListItem>
-            ))}
-        </List>
-      </Popover>
+
       <Snackbar
         open={successMessageOpen && Boolean(competitionName)}
         autoHideDuration={4000}

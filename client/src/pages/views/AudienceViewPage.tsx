@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useAppSelector } from '../../hooks'
 import { socketConnect } from '../../sockets'
 import SlideDisplay from '../presentationEditor/components/SlideDisplay'
+import Scoreboard from './components/Scoreboard'
 import { PresentationBackground, PresentationContainer } from './styled'
 
 const AudienceViewPage: React.FC = () => {
@@ -12,6 +13,8 @@ const AudienceViewPage: React.FC = () => {
   const activeViewTypeId = viewTypes.find((viewType) => viewType.name === 'Audience')?.id
   const [successMessageOpen, setSuccessMessageOpen] = useState(true)
   const competitionName = useAppSelector((state) => state.presentation.competition.name)
+  const showScoreboard = useAppSelector((state) => state.presentation.show_scoreboard)
+
   useEffect(() => {
     if (code && code !== '') {
       socketConnect('Audience')
@@ -26,6 +29,7 @@ const AudienceViewPage: React.FC = () => {
         <Snackbar open={successMessageOpen} autoHideDuration={4000} onClose={() => setSuccessMessageOpen(false)}>
           <Alert severity="success">{`Du har gått med i tävlingen "${competitionName}" som åskådare`}</Alert>
         </Snackbar>
+        {showScoreboard && <Scoreboard />}
       </PresentationBackground>
     )
   }

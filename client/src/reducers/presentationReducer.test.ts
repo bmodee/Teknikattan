@@ -17,6 +17,7 @@ const initialState = {
     value: null,
     enabled: false,
   },
+  show_scoreboard: false,
 }
 
 it('should return the initial state', () => {
@@ -44,6 +45,7 @@ it('should handle SET_PRESENTATION_COMPETITION', () => {
     activeSlideId: initialState.activeSlideId,
     code: initialState.code,
     timer: initialState.timer,
+    show_scoreboard: initialState.show_scoreboard,
   })
 })
 
@@ -59,5 +61,6 @@ it('should handle SET_PRESENTATION_SLIDE_ID', () => {
     activeSlideId: testSlideId,
     code: initialState.code,
     timer: initialState.timer,
+    show_scoreboard: initialState.show_scoreboard,
   })
 })

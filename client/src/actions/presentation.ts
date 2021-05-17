@@ -40,3 +40,8 @@ export const setPresentationCode = (code: string) => (dispatch: AppDispatch) => 
 export const setPresentationTimer = (timer: TimerState) => (dispatch: AppDispatch) => {
   dispatch({ type: Types.SET_PRESENTATION_TIMER, payload: timer })
 }
+
+/** Set show_scoreboard to input value */
+export const setPresentationShowScoreboard = (show_scoreboard: boolean) => (dispatch: AppDispatch) => {
+  dispatch({ type: Types.SET_PRESENTATION_SHOW_SCOREBOARD, payload: show_scoreboard })
+}

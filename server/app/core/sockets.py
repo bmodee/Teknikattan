@@ -72,7 +72,7 @@ def authorize_client(f, allowed_views=None, require_active_competition=True, *ar
 
     allowed_views = allowed_views or []
     if not _is_allowed(allowed_views, view):
-        logger.error(f"Won't call function '{f.__name__}': View '{view}' is not {' or '.join(allowed_views)}")
+        logger.error(f"Won't call function '{f.__name__}': View '{view}' is not '{' or '.join(allowed_views)}'")
         return
 
     return f(*args, **kwargs)
@@ -103,6 +103,7 @@ def connect() -> None:
                 "value": None,
                 "enabled": False,
             },
+            "show_scoreboard": False,
         }
         logger.info(f"Client '{request.sid}' with view '{view}' started competition '{competition_id}'")
     else:

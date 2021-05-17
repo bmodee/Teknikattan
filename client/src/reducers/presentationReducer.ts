@@ -9,6 +9,7 @@ interface PresentationState {
   activeSlideId: number
   code: string
   timer: TimerState
+  show_scoreboard: boolean
 }
 
 /** Define the initial values for the presentation state */
@@ -28,6 +29,7 @@ const initialState: PresentationState = {
     value: null,
     enabled: false,
   },
+  show_scoreboard: false,
 }
 
 /** Intercept actions for presentation state and update the state */
@@ -52,6 +54,11 @@ export default function (state = initialState, action: AnyAction) {
       return {
         ...state,
         timer: action.payload as TimerState,
+      }
+    case Types.SET_PRESENTATION_SHOW_SCOREBOARD:
+      return {
+        ...state,
+        show_scoreboard: action.payload as boolean,
       }
     default:
       return state

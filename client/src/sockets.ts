@@ -1,11 +1,12 @@
 import io from 'socket.io-client'
-import { setCurrentSlideByOrder, setPresentationTimer } from './actions/presentation'
+import { setCurrentSlideByOrder, setPresentationShowScoreboard, setPresentationTimer } from './actions/presentation'
 import { TimerState } from './interfaces/Timer'
 import store from './store'
 
 interface SyncInterface {
   slide_order?: number
   timer?: TimerState
+  show_scoreboard?: boolean
 }
 
 let socket: SocketIOClient.Socket
@@ -28,6 +29,7 @@ export const socketConnect = (role: 'Judge' | 'Operator' | 'Team' | 'Audience') 
     // The order of these is important, for some reason
     if (data.timer !== undefined) setPresentationTimer(data.timer)(store.dispatch)
     if (data.slide_order !== undefined) setCurrentSlideByOrder(data.slide_order)(store.dispatch, store.getState)
+    if (data.show_scoreboard !== undefined) setPresentationShowScoreboard(data.show_scoreboard)(store.dispatch)
   })
 
   socket.on('end_presentation', () => {
@@ -39,9 +41,6 @@ export const socketEndPresentation = () => {
   socket.emit('end_presentation')
 }
 
-export const socketSync = ({ slide_order, timer }: SyncInterface) => {
-  socket.emit('sync', {
-    slide_order,
-    timer,
-  })
+export const socketSync = (syncData: SyncInterface) => {
+  socket.emit('sync', syncData)
 }
