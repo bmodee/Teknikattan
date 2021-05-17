@@ -1,4 +1,4 @@
-export interface Timer {
+export interface TimerState {
+  value: number | null
   enabled: boolean
-  value: number
 }

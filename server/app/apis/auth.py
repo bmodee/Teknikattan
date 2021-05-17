@@ -8,9 +8,9 @@ from datetime import datetime, timedelta
 import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.apis import item_response, protect_route, text_response
-from app.core import sockets
 from app.core.codes import verify_code
 from app.core.dto import AuthDTO
+from app.core.sockets import is_active_competition
 from app.database.models import User, Whitelist
 from flask import current_app, has_app_context
 from flask_jwt_extended import create_access_token, get_jti, get_raw_jwt
@@ -164,7 +164,7 @@ class AuthLoginCode(Resource):
         item_code = dbc.get.code_by_code(code)
 
         if item_code.view_type_id != 4:
-            if item_code.competition_id not in sockets.presentations:
+            if not is_active_competition(item_code.competition_id):
                 api.abort(codes.UNAUTHORIZED, "Competition not active")
 
         # Create jwt that is only valid for 8 hours

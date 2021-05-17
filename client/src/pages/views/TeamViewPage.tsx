@@ -2,7 +2,7 @@ import { Snackbar } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import React, { useEffect, useState } from 'react'
 import { useAppSelector } from '../../hooks'
-import { socketConnect, socketJoinPresentation } from '../../sockets'
+import { socketConnect } from '../../sockets'
 import SlideDisplay from '../presentationEditor/components/SlideDisplay'
 import { OperatorContainer, OperatorHeader, PresentationBackground, PresentationContainer } from './styled'
 
@@ -24,7 +24,6 @@ const TeamViewPage: React.FC = () => {
   useEffect(() => {
     if (code && code !== '') {
       socketConnect('Team')
-      socketJoinPresentation()
     }
   }, [])
   return (

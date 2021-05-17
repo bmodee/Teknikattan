@@ -31,15 +31,7 @@ import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useAppSelector } from '../../hooks'
 import { RichTeam } from '../../interfaces/ApiRichModels'
-import {
-  socketConnect,
-  socketEndPresentation,
-  socketSetSlide,
-  socketSetSlideNext,
-  socketSetSlidePrev,
-  socketStartPresentation,
-  socketStartTimer,
-} from '../../sockets'
+import { socketConnect, socketEndPresentation, socketSync } from '../../sockets'
 import SlideDisplay from '../presentationEditor/components/SlideDisplay'
 import { Center } from '../presentationEditor/components/styled'
 import Timer from './components/Timer'
@@ -62,11 +54,6 @@ import {
  *
  *  ===========================================
  *  TODO:
- *  - Instead of copying code for others to join the competition, copy URL.
- *
- *
- *  - Fix scoreboard
- *
  *  - When two userers are connected to the same Localhost:5000 and updates/starts/end competition it
  *    creates a bug where the competition can't be started.
  * ===========================================
@@ -108,9 +95,9 @@ const OperatorViewPage: React.FC = () => {
   const classes = useStyles()
   const teams = useAppSelector((state) => state.presentation.competition.teams)
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
-  const competitionId = useAppSelector((state) => state.competitionLogin.data?.competition_id)
   const presentation = useAppSelector((state) => state.presentation)
   const activeId = useAppSelector((state) => state.presentation.competition.id)
+  const timer = useAppSelector((state) => state.presentation.timer)
   const history = useHistory()
   const viewTypes = useAppSelector((state) => state.types.viewTypes)
   const activeViewTypeId = viewTypes.find((viewType) => viewType.name === 'Audience')?.id
@@ -119,10 +106,13 @@ const OperatorViewPage: React.FC = () => {
     (state) =>
       state.presentation.competition.slides.find((slide) => slide.id === state.presentation.activeSlideId)?.order
   )
+  const slideTimer = useAppSelector((state) =>
+    activeSlideOrder !== undefined ? state.presentation.competition.slides[activeSlideOrder].timer : null
+  )
+  const isFirstSlide = activeSlideOrder === 0
+  const isLastSlide = useAppSelector((state) => activeSlideOrder === state.presentation.competition.slides.length - 1)
   useEffect(() => {
     socketConnect('Operator')
-    socketSetSlide
-    setTimeout(startCompetition, 1000) // Wait for socket to connect
   }, [])
 
   /** Handles the browsers back button and if pressed cancels the ongoing competition */
@@ -139,12 +129,6 @@ const OperatorViewPage: React.FC = () => {
     setOpen(false)
     setOpenCode(false)
     setAnchorEl(null)
-  }
-
-  const startCompetition = () => {
-    socketStartPresentation() // Calls the socket to start competition
-    console.log('started competition for')
-    console.log(competitionId)
   }
 
   /** Making sure the user wants to exit the competition by displaying a dialog box */
@@ -206,6 +190,23 @@ const OperatorViewPage: React.FC = () => {
       totalScore = totalScore + team.question_answers[j].score
     }
     return totalScore
+  }
+
+  const handleStartTimer = () => {
+    if (!slideTimer) return
+
+    if (!timer.enabled) socketSync({ timer: { value: Date.now() + 1000 * slideTimer, enabled: true } })
+    else socketSync({ timer: { ...timer, enabled: false } })
+  }
+
+  const handleSetNextSlide = () => {
+    if (activeSlideOrder !== undefined)
+      socketSync({ slide_order: activeSlideOrder + 1, timer: { value: null, enabled: false } })
+  }
+
+  const handleSetPrevSlide = () => {
+    if (activeSlideOrder !== undefined)
+      socketSync({ slide_order: activeSlideOrder - 1, timer: { value: null, enabled: false } })
   }
 
   return (
@@ -301,17 +302,23 @@ const OperatorViewPage: React.FC = () => {
       <OperatorFooter>
         <ToolBarContainer>
           <Tooltip title="Föregående" arrow>
-            <OperatorButton onClick={socketSetSlidePrev} variant="contained">
+            <OperatorButton onClick={handleSetPrevSlide} variant="contained" disabled={isFirstSlide}>
               <ChevronLeftIcon fontSize="large" />
             </OperatorButton>
           </Tooltip>
 
-          <Tooltip title="Starta Timer" arrow>
-            <OperatorButton onClick={socketStartTimer} variant="contained">
-              <TimerIcon fontSize="large" />
-              <Timer disableText />
-            </OperatorButton>
-          </Tooltip>
+          {slideTimer && (
+            <Tooltip title="Starta Timer" arrow>
+              <OperatorButton
+                onClick={handleStartTimer}
+                variant="contained"
+                disabled={timer.value !== null && !timer.enabled}
+              >
+                <TimerIcon fontSize="large" />
+                <Timer disableText />
+              </OperatorButton>
+            </Tooltip>
+          )}
 
           <Tooltip title="Ställning" arrow>
             <OperatorButton onClick={handleOpenPopover} variant="contained">
@@ -326,7 +333,7 @@ const OperatorViewPage: React.FC = () => {
           </Tooltip>
 
           <Tooltip title="Nästa" arrow>
-            <OperatorButton onClick={socketSetSlideNext} variant="contained">
+            <OperatorButton onClick={handleSetNextSlide} variant="contained" disabled={isLastSlide}>
               <ChevronRightIcon fontSize="large" />
             </OperatorButton>
           </Tooltip>

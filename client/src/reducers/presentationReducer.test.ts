@@ -14,8 +14,8 @@ const initialState = {
   activeSlideId: -1,
   code: '',
   timer: {
+    value: null,
     enabled: false,
-    value: 0,
   },
 }
 

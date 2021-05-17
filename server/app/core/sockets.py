@@ -1,14 +1,10 @@
 """
-Contains all functionality related sockets. That is starting and ending a presentation, 
-joining and leaving a presentation and syncing slides and timer bewteen all clients
-connected to the same presentation.
+Contains all functionality related sockets. That is starting, joining, ending, 
+disconnecting from and syncing active competitions.
 """
 import logging
-from functools import wraps
-from typing import Dict
 
-from app.core import db
-from app.database.models import Code, Slide, ViewType
+from decorator import decorator
 from flask.globals import request
 from flask_jwt_extended import verify_jwt_in_request
 from flask_jwt_extended.utils import get_jwt_claims
@@ -18,258 +14,148 @@ logger = logging.getLogger(__name__)
 logger.propagate = False
 logger.setLevel(logging.INFO)
 
-formatter = logging.Formatter("[%(levelname)s] %(funcName)s: %(message)s")
+formatter = logging.Formatter("[%(levelname)s] %(message)s")
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
 logger.addHandler(stream_handler)
 
 sio = SocketIO(cors_allowed_origins="http://localhost:3000")
 
-presentations = {}
+active_competitions = {}
 
 
-def _is_allowed(allowed, actual):
-    return actual and "*" in allowed or actual in allowed
+def _unpack_claims():
+    """
+    :return: A tuple containing competition_id and view, gotten from claim
+    :rtype: tuple
+    """
+
+    claims = get_jwt_claims()
+    return claims["competition_id"], claims["view"]
 
 
-def protect_route(allowed_views=None):
-    def wrapper(f):
-        @wraps(f)
-        def inner(*args, **kwargs):
-            try:
-                verify_jwt_in_request()
-            except:
-                logger.warning("Missing Authorization Header")
-                return
-
-            nonlocal allowed_views
-            allowed_views = allowed_views or []
-            claims = get_jwt_claims()
-            view = claims.get("view")
-            if not _is_allowed(allowed_views, view):
-                logger.warning(f"View '{view}' is not allowed to access route only accessible by '{allowed_views}'")
-                return
-
-            return f(*args, **kwargs)
-
-        return inner
-
-    return wrapper
+def is_active_competition(competition_id):
+    """
+    :return: True if competition with competition_id is currently active else False
+    :rtype: bool
+    """
+    return competition_id in active_competitions
 
 
-@sio.on("connect")
+def _get_sync_variables(active_competition, sync_values):
+    return {key: value for key, value in active_competition.items() if key in sync_values}
+
+
+@decorator
+def authorize_client(f, allowed_views=None, require_active_competition=True, *args, **kwargs):
+    """
+    Decorator used to authorize a client that sends socket events. Check that
+    the client has authorization headers, that client view gotten from claims
+    is in allowed_views and that the competition the clients is in is active
+    if require_active_competition is True.
+    """
+
+    try:
+        verify_jwt_in_request()
+    except:
+        logger.error(f"Won't call function '{f.__name__}': Missing Authorization Header")
+        return
+
+    def _is_allowed(allowed, actual):
+        return actual and "*" in allowed or actual in allowed
+
+    competition_id, view = _unpack_claims()
+
+    if require_active_competition and not is_active_competition(competition_id):
+        logger.error(f"Won't call function '{f.__name__}': Competition '{competition_id}' is not active")
+        return
+
+    allowed_views = allowed_views or []
+    if not _is_allowed(allowed_views, view):
+        logger.error(f"Won't call function '{f.__name__}': View '{view}' is not {' or '.join(allowed_views)}")
+        return
+
+    return f(*args, **kwargs)
+
+
+@sio.event
+@authorize_client(require_active_competition=False, allowed_views=["*"])
 def connect() -> None:
-    logger.info(f"Client '{request.sid}' connected")
+    """
+    Connect to a active competition. If competition with competition_id is not active,
+    start it if client is an operator, otherwise ignore it.
+    """
+
+    competition_id, view = _unpack_claims()
+
+    if is_active_competition(competition_id):
+        active_competition = active_competitions[competition_id]
+        active_competition["client_count"] += 1
+        join_room(competition_id)
+        emit("sync", _get_sync_variables(active_competition, ["slide_order", "timer"]))
+        logger.info(f"Client '{request.sid}' with view '{view}' joined competition '{competition_id}'")
+    elif view == "Operator":
+        join_room(competition_id)
+        active_competitions[competition_id] = {
+            "client_count": 1,
+            "slide_order": 0,
+            "timer": {
+                "value": None,
+                "enabled": False,
+            },
+        }
+        logger.info(f"Client '{request.sid}' with view '{view}' started competition '{competition_id}'")
+    else:
+        logger.error(
+            f"Client '{request.sid}' with view '{view}' tried to join non active competition '{competition_id}'"
+        )
 
 
-@sio.on("disconnect")
+@sio.event
+@authorize_client(allowed_views=["*"])
 def disconnect() -> None:
     """
-    Remove client from the presentation it was in. Delete presentation if no
+    Remove client from the active_competition it was in. Delete active_competition if no
     clients are connected to it.
     """
-    for competition_id, presentation in presentations.items():
-        if request.sid in presentation["clients"]:
-            del presentation["clients"][request.sid]
-            logger.debug(f"Client '{request.sid}' left presentation '{competition_id}'")
-            break
 
-    if presentations and not presentations[competition_id]["clients"]:
-        del presentations[competition_id]
-        logger.info(f"No people left in presentation '{competition_id}', ended presentation")
+    competition_id, _ = _unpack_claims()
+    active_competitions[competition_id]["client_count"] -= 1
+    logger.info(f"Client '{request.sid}' disconnected from competition '{competition_id}'")
 
-    logger.info(f"Client '{request.sid}' disconnected")
+    if active_competitions[competition_id]["client_count"] <= 0:
+        del active_competitions[competition_id]
+        logger.info(f"No people left in active_competition '{competition_id}', ended active_competition")
 
 
-@protect_route(allowed_views=["Operator"])
-@sio.on("start_presentation")
-def start_presentation(data: Dict) -> None:
+@sio.event
+@authorize_client(allowed_views=["Operator"])
+def end_presentation() -> None:
     """
-    Starts a presentation if that competition is currently not active.
+    End a active_competition by sending end_presentation to all connected clients.
     """
 
-    competition_id = data["competition_id"]
-
-    if competition_id in presentations:
-        logger.error(
-            f"Client '{request.sid}' failed to start competition '{competition_id}', presentation already active"
-        )
-        return
-
-    presentations[competition_id] = {
-        "clients": {request.sid: {"view_type": "Operator"}},
-        "slide": 0,
-        "timer": {"enabled": False, "start_value": None, "value": None},
-    }
-
-    join_room(competition_id)
-    logger.debug(f"Client '{request.sid}' joined room {competition_id}")
-
-    logger.info(f"Client '{request.sid}' started competition '{competition_id}'")
-
-
-@protect_route(allowed_views=["Operator"])
-@sio.on("end_presentation")
-def end_presentation(data: Dict) -> None:
-    """
-    End a presentation by sending end_presentation to all connected clients.
-
-    The only clients allowed to do this is the one that started the presentation.
-
-    Log error message if no presentation exists with the send id or if this
-    client is not in that presentation.
-    """
-    competition_id = data["competition_id"]
-
-    if competition_id not in presentations:
-        logger.error(
-            f"Client '{request.sid}' failed to end presentation '{competition_id}', no such presentation exists"
-        )
-        return
-
-    if request.sid not in presentations[competition_id]["clients"]:
-        logger.error(
-            f"Client '{request.sid}' failed to end presentation '{competition_id}', client not in presentation"
-        )
-        return
-
-    if presentations[competition_id]["clients"][request.sid]["view_type"] != "Operator":
-        logger.error(f"Client '{request.sid}' failed to end presentation '{competition_id}', client is not operator")
-        return
-
-    del presentations[competition_id]
-    logger.debug(f"Deleted presentation {competition_id}")
-
+    competition_id, _ = _unpack_claims()
     emit("end_presentation", room=competition_id, include_self=True)
-    logger.debug(f"Emitting event 'end_presentation' to room {competition_id} including self")
-
-    logger.info(f"Client '{request.sid}' ended presentation '{competition_id}'")
 
 
-@sio.on("join_presentation")
-def join_presentation(data: Dict) -> None:
+@sio.event
+@authorize_client(allowed_views=["Operator"])
+def sync(data) -> None:
     """
-    Join a currently active presentation.
-
-    Log error message if given code doesn't exist, if not presentation associated
-    with that code exists or if client is already in the presentation.
-    """
-    code = data["code"]
-    item_code = db.session.query(Code).filter(Code.code == code).first()
-
-    if not item_code:
-        logger.error(f"Client '{request.sid}' failed to join presentation with code '{code}', no such code exists")
-        return
-
-    competition_id = item_code.competition_id
-
-    if competition_id not in presentations:
-        logger.error(
-            f"Client '{request.sid}' failed to join presentation '{competition_id}', no such presentation exists"
-        )
-        return
-
-    if request.sid in presentations[competition_id]["clients"]:
-        logger.error(
-            f"Client '{request.sid}' failed to join presentation '{competition_id}', client already in presentation"
-        )
-        return
-
-    # TODO: Write function in database controller to do this
-    view_type_name = db.session.query(ViewType).filter(ViewType.id == item_code.view_type_id).one().name
-
-    presentations[competition_id]["clients"][request.sid] = {"view_type": view_type_name}
-
-    join_room(competition_id)
-    logger.debug(f"Client '{request.sid}' joined room {competition_id}")
-
-    logger.info(f"Client '{request.sid}' joined competition '{competition_id}'")
-
-    emit("set_slide", {"slide_order": presentations[competition_id]["slide"]})
-
-
-@protect_route(allowed_views=["Operator"])
-@sio.on("set_slide")
-def set_slide(data: Dict) -> None:
-    """
-    Sync slides between all clients in the same presentation by sending
-    set_slide to them.
-
-    Log error if the given competition_id is not active, if client is not in
-    that presentation or the client is not the one who started the presentation.
+    Sync active_competition for all clients connected to competition.
     """
 
-    competition_id = data["competition_id"]
-    slide_order = data["slide_order"]
+    competition_id, view = _unpack_claims()
+    active_competition = active_competitions[competition_id]
 
-    if competition_id not in presentations:
-        logger.error(
-            f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', no such presentation exists"
-        )
-        return
+    for key, value in data.items():
+        if key not in active_competition:
+            logger.warning(f"Invalid sync data: '{key}':'{value}'")
 
-    if request.sid not in presentations[competition_id]["clients"]:
-        logger.error(
-            f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', client not in presentation"
-        )
-        return
+        active_competition[key] = value
 
-    if presentations[competition_id]["clients"][request.sid]["view_type"] != "Operator":
-        logger.error(
-            f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', client is not operator"
-        )
-        return
-
-    num_slides = db.session.query(Slide).filter(Slide.competition_id == competition_id).count()
-
-    if not (0 <= slide_order < num_slides):
-        logger.error(
-            f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', slide number {slide_order} does not exist"
-        )
-        return
-
-    presentations[competition_id]["slide"] = slide_order
-
-    emit("set_slide", {"slide_order": slide_order}, room=competition_id, include_self=True)
-    logger.debug(f"Emitting event 'set_slide' to room {competition_id} including self")
-
-    logger.info(f"Client '{request.sid}' set slide '{slide_order}' in competition '{competition_id}'")
-
-
-@protect_route(allowed_views=["Operator"])
-@sio.on("set_timer")
-def set_timer(data: Dict) -> None:
-    """
-    Sync slides between all clients in the same presentation by sending
-    set_timer to them.
-
-    Log error if the given competition_id is not active, if client is not in
-    that presentation or the client is not the one who started the presentation.
-    """
-    competition_id = data["competition_id"]
-    timer = data["timer"]
-
-    if competition_id not in presentations:
-        logger.error(
-            f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', no such presentation exists"
-        )
-        return
-
-    if request.sid not in presentations[competition_id]["clients"]:
-        logger.error(
-            f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', client not in presentation"
-        )
-        return
-
-    if presentations[competition_id]["clients"][request.sid]["view_type"] != "Operator":
-        logger.error(
-            f"Client '{request.sid}' failed to set slide in presentation '{competition_id}', client is not operator"
-        )
-        return
-
-    # TODO: Save timer in presentation, maybe?
-
-    emit("set_timer", {"timer": timer}, room=competition_id, include_self=True)
-    logger.debug(f"Emitting event 'set_timer' to room {competition_id} including self")
-
-    logger.info(f"Client '{request.sid}' set timer '{timer}' in presentation '{competition_id}'")
+    emit("sync", _get_sync_variables(active_competition, data), room=competition_id, include_self=True)
+    logger.info(
+        f"Client '{request.sid}' with view '{view}' synced values {_get_sync_variables(active_competition, data)} in competition '{competition_id}'"
+    )

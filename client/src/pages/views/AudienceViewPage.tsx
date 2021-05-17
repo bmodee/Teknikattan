@@ -2,7 +2,7 @@ import { Snackbar, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import React, { useEffect, useState } from 'react'
 import { useAppSelector } from '../../hooks'
-import { socketConnect, socketJoinPresentation } from '../../sockets'
+import { socketConnect } from '../../sockets'
 import SlideDisplay from '../presentationEditor/components/SlideDisplay'
 import { PresentationBackground, PresentationContainer } from './styled'
 
@@ -15,7 +15,6 @@ const AudienceViewPage: React.FC = () => {
   useEffect(() => {
     if (code && code !== '') {
       socketConnect('Audience')
-      socketJoinPresentation()
     }
   }, [])
   if (activeViewTypeId) {

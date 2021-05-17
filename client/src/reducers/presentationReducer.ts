@@ -1,6 +1,6 @@
 import { AnyAction } from 'redux'
 import Types from '../actions/types'
-import { Timer } from '../interfaces/Timer'
+import { TimerState } from '../interfaces/Timer'
 import { RichCompetition } from './../interfaces/ApiRichModels'
 
 /** Define a type for the presentation state */
@@ -8,7 +8,7 @@ interface PresentationState {
   competition: RichCompetition
   activeSlideId: number
   code: string
-  timer: Timer
+  timer: TimerState
 }
 
 /** Define the initial values for the presentation state */
@@ -25,8 +25,8 @@ const initialState: PresentationState = {
   activeSlideId: -1,
   code: '',
   timer: {
+    value: null,
     enabled: false,
-    value: 0,
   },
 }
 
@@ -41,7 +41,7 @@ export default function (state = initialState, action: AnyAction) {
     case Types.SET_PRESENTATION_CODE:
       return {
         ...state,
-        code: action.payload,
+        code: action.payload as string,
       }
     case Types.SET_PRESENTATION_SLIDE_ID:
       return {
@@ -49,13 +49,9 @@ export default function (state = initialState, action: AnyAction) {
         activeSlideId: action.payload as number,
       }
     case Types.SET_PRESENTATION_TIMER:
-      const timer = action.payload as Timer
-      if (action.payload.value == 0) {
-        timer.enabled = false
-      }
       return {
         ...state,
-        timer,
+        timer: action.payload as TimerState,
       }
     default:
       return state

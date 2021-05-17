@@ -3,8 +3,8 @@ This file handles actions for the presentation redux state
 */
 
 import axios from 'axios'
-import { Timer } from '../interfaces/Timer'
-import store, { AppDispatch, RootState } from './../store'
+import { TimerState } from '../interfaces/Timer'
+import { AppDispatch, RootState } from './../store'
 import Types from './types'
 
 /** Save competition in presentation state from input id */
@@ -35,18 +35,8 @@ export const setCurrentSlideByOrder = (order: number) => (dispatch: AppDispatch,
 export const setPresentationCode = (code: string) => (dispatch: AppDispatch) => {
   dispatch({ type: Types.SET_PRESENTATION_CODE, payload: code })
 }
-/** Set timer to input value */
-export const setPresentationTimer = (timer: Timer) => (dispatch: AppDispatch) => {
-  dispatch({ type: Types.SET_PRESENTATION_TIMER, payload: timer })
-}
 
-/** Decrement timer */
-export const setPresentationTimerDecrement = () => (dispatch: AppDispatch) => {
-  dispatch({
-    type: Types.SET_PRESENTATION_TIMER,
-    payload: {
-      enabled: store.getState().presentation.timer.enabled,
-      value: store.getState().presentation.timer.value - 1,
-    },
-  })
+/** Set timer to input value */
+export const setPresentationTimer = (timer: TimerState) => (dispatch: AppDispatch) => {
+  dispatch({ type: Types.SET_PRESENTATION_TIMER, payload: timer })
 }

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { getPresentationCompetition } from '../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { RichSlide } from '../../interfaces/ApiRichModels'
-import { socketConnect, socketJoinPresentation } from '../../sockets'
+import { socketConnect } from '../../sockets'
 import { renderSlideIcon } from '../../utils/renderSlideIcon'
 import SlideDisplay from '../presentationEditor/components/SlideDisplay'
 import { SlideListItem } from '../presentationEditor/styled'
@@ -64,7 +64,6 @@ const JudgeViewPage: React.FC = () => {
   useEffect(() => {
     if (code && code !== '') {
       socketConnect('Judge')
-      socketJoinPresentation()
     }
   }, [])
   useEffect(() => {
@@ -75,12 +74,14 @@ const JudgeViewPage: React.FC = () => {
       dispatch(getPresentationCompetition(competitionId.toString()))
     }
   }, [operatorActiveSlideId])
-  useEffect(() => {
-    // Every second tic of the timer, load new answers
-    if (timer.value % 2 === 0 && competitionId) {
-      dispatch(getPresentationCompetition(competitionId.toString()))
-    }
-  }, [timer.value])
+  // useEffect(() => {
+  //   // Every second tic of the timer, load new answers
+  //   // TODO: use a set interval that updates every second ( look in Timer.tsx in clien/src/pages/views/components )
+  //   // Then clear interval when timer - Date.now() is negative
+  //   if (timer !== null && timer - (Date.now() % 2) === 0 && competitionId) {
+  //     dispatch(getPresentationCompetition(competitionId.toString()))
+  //   }
+  // }, [timer])
   return (
     <div style={{ height: '100%' }}>
       <JudgeAppBar position="fixed">

@@ -88,7 +88,6 @@ const AdminView: React.FC = () => {
     let activeIndex
     if (isAdmin) activeIndex = menuAdminItems.findIndex((menuItem) => location.pathname.endsWith(menuItem.route))
     else activeIndex = menuEditorItems.findIndex((menuItem) => location.pathname.endsWith(menuItem.route))
-    console.log(activeIndex, isAdmin, location.pathname, menuEditorItems)
     if (activeIndex !== -1) setOpenIndex(activeIndex)
   }
 

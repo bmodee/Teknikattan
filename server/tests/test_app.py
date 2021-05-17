@@ -447,7 +447,7 @@ def test_authorization(client):
     add_default_values()
 
     # Fake that competition 1 is active
-    sockets.presentations[1] = {}
+    sockets.active_competitions[1] = {}
 
     #### TEAM ####
     # Login in with team code
