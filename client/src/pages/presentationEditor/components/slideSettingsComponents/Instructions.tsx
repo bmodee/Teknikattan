@@ -1,3 +1,11 @@
+/**
+ * This file returns the instructions component
+ * The creator of a competition can add a description of how a question will be corrected.
+ * This information is showed in the judge view and will help the judges decide what answer was correct.
+ *
+ * @module
+ */
+
 import { ListItem, ListItemText, TextField } from '@material-ui/core'
 import axios from 'axios'
 import React from 'react'
@@ -25,7 +33,6 @@ const Instructions = ({ activeSlide, competitionId }: InstructionsProps) => {
       window.setTimeout(async () => {
         if (activeSlide && activeSlide.questions?.[0]) {
           await axios
-            // TODO: Implement instructions field in question and add put API
             .put(
               `/api/competitions/${competitionId}/slides/${activeSlide.id}/questions/${activeSlide.questions[0].id}`,
               {

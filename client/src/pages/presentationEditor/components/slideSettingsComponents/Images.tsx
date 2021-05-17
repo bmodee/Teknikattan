@@ -1,5 +1,9 @@
-/* This file handles creating and removing image components, and uploading and removing image files from the server.
+/**
+ * This file handles creating and removing image components, and uploading and removing image files from the server.
+ *
+ * @module
  */
+
 import { ListItem, ListItemText } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import axios from 'axios'

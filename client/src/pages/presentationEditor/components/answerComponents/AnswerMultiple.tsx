@@ -1,3 +1,17 @@
+/**
+ * What it is:
+ * Contains the component for the multiple choice question type ("Kryssfråga")
+ * which is displayed in the participant view in the editor and presentation.
+ * This is a part of a question component which the users will interact with to answer multiple choice questions.
+ * The participants get multiple alternatives and can mark multiple of these alternatives as correct.
+ *
+ * How it's used:
+ * This file is used when a question component is to be rendered which only happens in QuestionComponentDisplay.tsx.
+ * For more information read the documentation of that file.
+ *
+ * @module
+ */
+
 import { Checkbox, ListItem, ListItemText, Typography, withStyles } from '@material-ui/core'
 import { CheckboxProps } from '@material-ui/core/Checkbox'
 import { green, grey } from '@material-ui/core/colors'

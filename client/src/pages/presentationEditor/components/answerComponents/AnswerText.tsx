@@ -1,3 +1,17 @@
+/**
+ * What it is:
+ * Returns the component for the text question type ("Skriftlig fråga")
+ * which is a part of a question component which displayed in the participant view in the editor and presentation.
+ * This is the component the users will interact with to answer text questions.
+ * In practice the participants writes their answer in a text field.
+ *
+ * How it's used:
+ * This file is used when a question component is to be rendered which only happens in QuestionComponentDisplay.tsx.
+ * For more information read the documentation of that file.
+ *
+ * @module
+ */
+
 import { ListItem, ListItemText, TextField } from '@material-ui/core'
 import axios from 'axios'
 import React from 'react'
@@ -18,6 +32,7 @@ const AnswerText = ({ activeSlide, competitionId }: AnswerTextProps) => {
   const teamId = useAppSelector((state) => state.competitionLogin.data?.team_id)
   const team = useAppSelector((state) => state.presentation.competition.teams.find((team) => team.id === teamId))
   const answerId = team?.question_answers.find((answer) => answer.question_id === activeSlide?.questions[0].id)?.id
+
   const onAnswerChange = (answer: string) => {
     if (timerHandle) {
       clearTimeout(timerHandle)

@@ -1,3 +1,16 @@
+/**
+ * What it is:
+ * This file contains the question component function which returns the question component.
+ * This component is used for displaying a question component for the participants with correct type of answer alternatives to interact with
+ * (see the function getAlternatives).
+ *
+ * How it's used:
+ * This file is used when a question component is to be displayed which happens in RndComponent.tsx for rendering in the editor
+ * and PresentationComponent.tsx for rendering in the presentation (the actual competition).
+ *
+ * @module
+ */
+
 import { Card, Divider, ListItem, Typography } from '@material-ui/core'
 import React from 'react'
 import { useAppSelector } from '../../../hooks'
@@ -29,6 +42,10 @@ const QuestionComponentDisplay = ({ variant, currentSlideId }: QuestionComponent
     (state) => state.types.questionTypes.find((qType) => qType.id === questionTypeId)?.name
   )
 
+  /**
+   * This function is used for displaying the correct answer alternatives which is the part of the question component
+   * which the participants will interact with to submit their answers.
+   */
   const getAlternatives = () => {
     switch (questionTypeName) {
       case 'Text':

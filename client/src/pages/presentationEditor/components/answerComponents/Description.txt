@@ -1,0 +1,2 @@
+The files in this directory generates the part of a question component which the participants
+interacts with to change and submit their answer.

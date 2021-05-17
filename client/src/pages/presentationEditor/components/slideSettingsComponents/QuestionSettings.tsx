@@ -1,3 +1,10 @@
+/**
+ * This file contatins the question settings component, which in turn lets the competition editor
+ * change the name of the question and how many points the participants can get when submittning the correct answer.
+ *
+ * @module
+ */
+
 import { ListItem, ListItemText, TextField } from '@material-ui/core'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
@@ -14,6 +21,7 @@ type QuestionSettingsProps = {
 const QuestionSettings = ({ activeSlide, competitionId }: QuestionSettingsProps) => {
   const dispatch = useAppDispatch()
   const [timerHandle, setTimerHandle] = useState<number | undefined>(undefined)
+
   const handleChangeQuestion = (
     updateTitle: boolean,
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -28,6 +36,8 @@ const QuestionSettings = ({ activeSlide, competitionId }: QuestionSettingsProps)
       setName(event.target.value)
     } else setScore(+event.target.value)
   }
+
+  // Set to not let the editor set a bigger number than this to affect the server in a bad way.
   const maxScore = 1000000
 
   const updateQuestion = async (

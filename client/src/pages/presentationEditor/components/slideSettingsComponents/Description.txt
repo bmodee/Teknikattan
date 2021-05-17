@@ -1,0 +1,2 @@
+Every file in this folder is only used in SlideSettings.tsx.
+These files constitutes the content of the slide settings panel to the right in the editor.

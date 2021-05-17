@@ -1,3 +1,17 @@
+/**
+ * What it is:
+ * Contains the component for the single choice question type ("Alternativfråga")
+ * which is displayed in the participant view in the editor and presentation.
+ * This is a part of a question component which the users will interact with to answer multiple choice questions.
+ * The participants get multiple alternatives but can only mark one of these alternatives as correct.
+ *
+ * How it's used:
+ * This file is used when a question component is to be rendered which only happens in QuestionComponentDisplay.tsx.
+ * For more information read the documentation of that file.
+ *
+ * @module
+ */
+
 import { Checkbox, ListItem, ListItemText, Typography, withStyles } from '@material-ui/core'
 import { CheckboxProps } from '@material-ui/core/Checkbox'
 import { green, grey } from '@material-ui/core/colors'
@@ -35,8 +49,8 @@ const AnswerSingle = ({ variant, activeSlide, competitionId }: AnswerSingleProps
 
   const updateAnswer = async (alternative: QuestionAlternative) => {
     if (activeSlide) {
-      // TODO: ignore API calls when an answer is already checked
       if (team?.question_answers[0]) {
+        // If an alternative was already marked
         await axios
           .put(`/api/competitions/${competitionId}/teams/${teamId}/answers/${answerId}`, {
             answer: alternative.text,
@@ -50,6 +64,7 @@ const AnswerSingle = ({ variant, activeSlide, competitionId }: AnswerSingleProps
           })
           .catch(console.log)
       } else {
+        // If no alternative was already marked
         await axios
           .post(`/api/competitions/${competitionId}/teams/${teamId}/answers`, {
             answer: alternative.text,
@@ -87,6 +102,9 @@ const AnswerSingle = ({ variant, activeSlide, competitionId }: AnswerSingleProps
     checked: {},
   })((props: CheckboxProps) => <Checkbox color="default" {...props} />)
 
+  /**
+   * Renders the radio button which the participants will click to mark their answer.
+   */
   const renderRadioButton = (alt: QuestionAlternative) => {
     if (variant === 'presentation') {
       if (decideChecked(alt)) {

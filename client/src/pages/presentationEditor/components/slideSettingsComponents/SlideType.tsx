@@ -1,3 +1,9 @@
+/**
+ * Lets a competition creator set the slide type for a slide such as "Informationssida" or "Skriftlig fråga" etc.
+ *
+ * @module
+ */
+
 import {
   Button,
   Dialog,

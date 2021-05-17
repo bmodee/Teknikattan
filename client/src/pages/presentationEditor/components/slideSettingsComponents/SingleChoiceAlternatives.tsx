@@ -1,3 +1,9 @@
+/**
+ * Lets a competition creator add, remove and handle alternatives for single choice questions ("Alternativfråga") in the slide settings panel.
+ *
+ * @module
+ */
+
 import { ListItem, ListItemText } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonCheckedOutlined'

@@ -1,3 +1,9 @@
+/**
+ * Lets a competition creator add, remove and handle alternatives for multiple choice questions ("Kryssfråga") in the slide settings panel.
+ *
+ * @module
+ */
+
 import { Checkbox, ListItem, ListItemText, withStyles } from '@material-ui/core'
 import { CheckboxProps } from '@material-ui/core/Checkbox'
 import { green, grey } from '@material-ui/core/colors'
@@ -18,6 +24,7 @@ type MultipleChoiceAlternativeProps = {
 const MultipleChoiceAlternatives = ({ activeSlide, competitionId }: MultipleChoiceAlternativeProps) => {
   const dispatch = useAppDispatch()
   const activeSlideId = useAppSelector((state) => state.editor.activeSlideId)
+
   const GreenCheckbox = withStyles({
     root: {
       color: grey[900],
@@ -28,6 +35,9 @@ const MultipleChoiceAlternatives = ({ activeSlide, competitionId }: MultipleChoi
     checked: {},
   })((props: CheckboxProps) => <Checkbox color="default" {...props} />)
 
+  /**
+   * A checked checkbox is represented with 1 and an unchecked with 0.
+   */
   const numberToBool = (num: number) => {
     if (num === 0) return false
     else return true
