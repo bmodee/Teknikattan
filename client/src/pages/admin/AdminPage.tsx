@@ -17,7 +17,7 @@ import LocationCityIcon from '@material-ui/icons/LocationCity'
 import PeopleIcon from '@material-ui/icons/People'
 import SettingsOverscanIcon from '@material-ui/icons/SettingsOverscan'
 import React, { useEffect } from 'react'
-import { Link, Route, Switch, useRouteMatch } from 'react-router-dom'
+import { Link, Route, Switch, useLocation, useRouteMatch } from 'react-router-dom'
 import { getCities } from '../../actions/cities'
 import { setEditorLoading } from '../../actions/competitions'
 import { setEditorSlideId } from '../../actions/editor'
@@ -59,6 +59,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const AdminView: React.FC = () => {
   const classes = useStyles()
+  const location = useLocation()
   const [openIndex, setOpenIndex] = React.useState(0)
   const { path, url } = useRouteMatch()
   const currentUser = useAppSelector((state) => state.user.userInfo)
@@ -79,33 +80,29 @@ const AdminView: React.FC = () => {
     dispatch(setEditorSlideId(-1))
   }, [])
 
+  useEffect(() => {
+    setActiveTabFromUrl()
+  }, [isAdmin])
+
+  const setActiveTabFromUrl = () => {
+    let activeIndex
+    if (isAdmin) activeIndex = menuAdminItems.findIndex((menuItem) => location.pathname.endsWith(menuItem.route))
+    else activeIndex = menuEditorItems.findIndex((menuItem) => location.pathname.endsWith(menuItem.route))
+    console.log(activeIndex, isAdmin, location.pathname, menuEditorItems)
+    if (activeIndex !== -1) setOpenIndex(activeIndex)
+  }
+
   const menuAdminItems = [
-    { text: 'Startsida', icon: DashboardIcon },
-    { text: 'Regioner', icon: LocationCityIcon },
-    { text: 'Användare', icon: PeopleIcon },
-    { text: 'Tävlingshanterare', icon: SettingsOverscanIcon },
+    { text: 'Startsida', icon: DashboardIcon, route: 'dashboard' },
+    { text: 'Regioner', icon: LocationCityIcon, route: 'regions' },
+    { text: 'Användare', icon: PeopleIcon, route: 'users' },
+    { text: 'Tävlingshanterare', icon: SettingsOverscanIcon, route: 'competition-manager' },
   ]
 
   const menuEditorItems = [
-    { text: 'Startsida', icon: DashboardIcon },
-    { text: 'Tävlingshanterare', icon: SettingsOverscanIcon },
+    { text: 'Startsida', icon: DashboardIcon, route: 'dashboard' },
+    { text: 'Tävlingshanterare', icon: SettingsOverscanIcon, route: 'competition-manager' },
   ]
-
-  const getPathName = (tabName: string) => {
-    switch (tabName) {
-      case 'Startsida':
-        return 'dashboard'
-      case 'Regioner':
-        return 'regions'
-      case 'Användare':
-        return 'users'
-      case 'Tävlingshanterare':
-        return 'competition-manager'
-      default:
-        return ''
-    }
-  }
-
   const renderItems = () => {
     const menuItems = isAdmin ? menuAdminItems : menuEditorItems
     return menuItems.map((value, index) => (
@@ -114,7 +111,7 @@ const AdminView: React.FC = () => {
         button
         component={Link}
         key={value.text}
-        to={`${url}/${getPathName(value.text)}`}
+        to={`${url}/${value.route}`}
         selected={index === openIndex}
         onClick={() => setOpenIndex(index)}
       >
