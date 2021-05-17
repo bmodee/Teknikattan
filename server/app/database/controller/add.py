@@ -18,8 +18,9 @@ from app.database.models import (
     MediaType,
     Question,
     QuestionAlternative,
-    QuestionAnswer,
+    QuestionAlternativeAnswer,
     QuestionComponent,
+    QuestionScore,
     QuestionType,
     Role,
     Slide,
@@ -284,10 +285,19 @@ def question_alternative(text, value, question_id):
     return db_add(QuestionAlternative(text, value, question_id))
 
 
-def question_answer(answer, score, question_id, team_id):
+def question_score(score, question_id, team_id):
     """
     Adds a question answer to the specified team
     and question using the provided arguments.
     """
 
-    return db_add(QuestionAnswer(answer, score, question_id, team_id))
+    return db_add(QuestionScore(score, question_id, team_id))
+
+
+def question_alternative_answer(answer, question_alternative_id, team_id):
+    """
+    Adds a question answer to the specified team
+    and question using the provided arguments.
+    """
+
+    return db_add(QuestionAlternativeAnswer(answer, question_alternative_id, team_id))

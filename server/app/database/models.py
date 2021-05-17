@@ -5,8 +5,7 @@ each other.
 """
 
 from app.core import bcrypt, db
-from app.database.types import (ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT,
-                                ID_TEXT_COMPONENT)
+from app.database.types import ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT, ID_TEXT_COMPONENT
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 
 STRING_SIZE = 254
@@ -133,7 +132,9 @@ class Team(db.Model):
     name = db.Column(db.String(STRING_SIZE), nullable=False)
     competition_id = db.Column(db.Integer, db.ForeignKey("competition.id"), nullable=False)
 
-    question_answers = db.relationship("QuestionAnswer", backref="team")
+    question_alternative_answers = db.relationship("QuestionAlternativeAnswer", backref="team")
+    question_scores = db.relationship("QuestionScore", backref="team")
+
     code = db.relationship("Code", backref="team")
 
     def __init__(self, name, competition_id):
@@ -170,7 +171,6 @@ class Question(db.Model):
     slide_id = db.Column(db.Integer, db.ForeignKey("slide.id"), nullable=False)
     correcting_instructions = db.Column(db.Text, nullable=True, default=None)
 
-    question_answers = db.relationship("QuestionAnswer", backref="question")
     alternatives = db.relationship("QuestionAlternative", backref="question")
 
     def __init__(self, name, total_score, type_id, slide_id, correcting_instructions):
@@ -193,19 +193,31 @@ class QuestionAlternative(db.Model):
         self.question_id = question_id
 
 
-class QuestionAnswer(db.Model):
+class QuestionScore(db.Model):
     __table_args__ = (db.UniqueConstraint("question_id", "team_id"),)
     id = db.Column(db.Integer, primary_key=True)
-    answer = db.Column(db.String(STRING_SIZE), nullable=False)
-    score = db.Column(db.Integer, nullable=False, default=0)
+    score = db.Column(db.Integer, nullable=True, default=0)
 
-    question_id = db.Column(db.Integer, db.ForeignKey("question.id"), nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey("question_alternative.id"), nullable=False)
     team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
 
-    def __init__(self, answer, score, question_id, team_id):
-        self.answer = answer
+    def __init__(self, score, question_id, team_id):
         self.score = score
         self.question_id = question_id
+        self.team_id = team_id
+
+
+class QuestionAlternativeAnswer(db.Model):
+    __table_args__ = (db.UniqueConstraint("question_alternative_id", "team_id"),)
+    id = db.Column(db.Integer, primary_key=True)
+    answer = db.Column(db.String(STRING_SIZE), nullable=False)
+
+    question_alternative_id = db.Column(db.Integer, db.ForeignKey("question_alternative.id"), nullable=False)
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+
+    def __init__(self, answer, question_alternative_id, team_id):
+        self.answer = answer
+        self.question_alternative_id = question_alternative_id
         self.team_id = team_id
 
 

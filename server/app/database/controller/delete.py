@@ -5,7 +5,7 @@ This file contains functionality to delete data to the database.
 import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.core import db
-from app.database.models import Whitelist
+from app.database.models import QuestionAlternativeAnswer, QuestionScore, Whitelist
 from flask_restx import abort
 from sqlalchemy.exc import IntegrityError
 
@@ -79,8 +79,8 @@ def slide(item_slide):
 def team(item_team):
     """ Deletes team, its question answers and the code. """
 
-    for item_question_answer in item_team.question_answers:
-        question_answers(item_question_answer)
+    for item_question_answer in item_team.question_alternative_answers:
+        default(item_question_answer)
     for item_code in item_team.code:
         code(item_code)
 
@@ -90,8 +90,11 @@ def team(item_team):
 def question(item_question):
     """ Deletes question and its alternatives and answers. """
 
-    for item_question_answer in item_question.question_answers:
-        question_answers(item_question_answer)
+    scores = QuestionScore.query.filter(QuestionScore.question_id == item_question.id).all()
+
+    for item_question_score in scores:
+        default(item_question_score)
+
     for item_alternative in item_question.alternatives:
         alternatives(item_alternative)
 
@@ -100,14 +103,13 @@ def question(item_question):
 
 def alternatives(item_alternatives):
     """ Deletes question alternative. """
+    answers = QuestionAlternativeAnswer.query.filter(
+        QuestionAlternativeAnswer.question_alternative_id == item_alternatives.id
+    ).all()
+    for item_answer in answers:
+        default(item_answer)
 
     default(item_alternatives)
-
-
-def question_answers(item_question_answers):
-    """ Deletes question answer. """
-
-    default(item_question_answers)
 
 
 def competition(item_competition):

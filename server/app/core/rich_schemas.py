@@ -36,7 +36,8 @@ class TeamSchemaRich(RichSchema):
     id = ma.auto_field()
     name = ma.auto_field()
     competition_id = ma.auto_field()
-    question_answers = fields.Nested(schemas.QuestionAnswerSchema, many=True)
+    question_alternative_answers = fields.Nested(schemas.QuestionAlternativeAnswerSchema, many=True)
+    question_scores = fields.Nested(schemas.QuestionScoreSchema, many=True)
 
 
 class SlideSchemaRich(RichSchema):

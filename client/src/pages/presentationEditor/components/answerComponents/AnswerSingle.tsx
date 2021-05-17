@@ -12,9 +12,7 @@
  * @module
  */
 
-import { Checkbox, ListItem, ListItemText, Typography, withStyles } from '@material-ui/core'
-import { CheckboxProps } from '@material-ui/core/Checkbox'
-import { green, grey } from '@material-ui/core/colors'
+import { ListItem, ListItemText, Typography } from '@material-ui/core'
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonCheckedOutlined'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUncheckedOutlined'
 import axios from 'axios'
@@ -39,68 +37,41 @@ const AnswerSingle = ({ variant, activeSlide, competitionId }: AnswerSingleProps
     if (variant === 'editor') return state.editor.competition.teams.find((team) => team.id === teamId)
     return state.presentation.competition.teams.find((team) => team.id === teamId)
   })
-  const answerId = team?.question_answers.find((answer) => answer.question_id === activeSlide?.questions[0].id)?.id
 
   const decideChecked = (alternative: QuestionAlternative) => {
-    const teamAnswer = team?.question_answers.find((answer) => answer.answer === alternative.text)?.answer
-    if (teamAnswer) return true
-    else return false
+    const answer = team?.question_alternative_answers.find(
+      (questionAnswer) => questionAnswer.question_alternative_id == alternative.id
+    )
+    if (answer) {
+      return answer.answer === '1'
+    }
+    return false
   }
 
   const updateAnswer = async (alternative: QuestionAlternative) => {
-    if (activeSlide) {
-      if (team?.question_answers[0]) {
-        // If an alternative was already marked
-        await axios
-          .put(`/api/competitions/${competitionId}/teams/${teamId}/answers/${answerId}`, {
-            answer: alternative.text,
-          })
-          .then(() => {
-            if (variant === 'editor') {
-              dispatch(getEditorCompetition(competitionId))
-            } else {
-              dispatch(getPresentationCompetition(competitionId))
-            }
-          })
-          .catch(console.log)
-      } else {
-        // If no alternative was already marked
-        await axios
-          .post(`/api/competitions/${competitionId}/teams/${teamId}/answers`, {
-            answer: alternative.text,
-            score: 0,
-            question_id: activeSlide.questions[0].id,
-          })
-          .then(() => {
-            if (variant === 'editor') {
-              dispatch(getEditorCompetition(competitionId))
-            } else {
-              dispatch(getPresentationCompetition(competitionId))
-            }
-          })
-          .catch(console.log)
-      }
+    if (!activeSlide) {
+      return
     }
-  }
 
-  const deleteAnswer = async () => {
+    // Unselect each radio button to only allow one selected alternative
+    const alternatives = activeSlide.questions[0].alternatives
+    for (const alt of alternatives) {
+      const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/question_alternatives/${alt.id}`
+      await axios.put(url, { answer: 0 })
+    }
+    // Update selected alternative
+    const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/question_alternatives/${alternative.id}`
     await axios
-      .delete(`/api/competitions/${competitionId}/teams/${teamId}/answers`)
+      .put(url, { answer: 1 })
       .then(() => {
-        dispatch(getEditorCompetition(competitionId))
+        if (variant === 'editor') {
+          dispatch(getEditorCompetition(competitionId))
+        } else {
+          dispatch(getPresentationCompetition(competitionId))
+        }
       })
       .catch(console.log)
   }
-
-  const GreenCheckbox = withStyles({
-    root: {
-      color: grey[900],
-      '&$checked': {
-        color: green[600],
-      },
-    },
-    checked: {},
-  })((props: CheckboxProps) => <Checkbox color="default" {...props} />)
 
   /**
    * Renders the radio button which the participants will click to mark their answer.

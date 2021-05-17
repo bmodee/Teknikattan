@@ -24,8 +24,8 @@ const Scoreboard = ({ isOperator }: ScoreboardProps) => {
   /** Sums the scores for the teams. */
   const addScore = (team: RichTeam) => {
     let totalScore = 0
-    for (let j = 0; j < team.question_answers.length; j++) {
-      totalScore = totalScore + team.question_answers[j].score
+    for (let j = 0; j < team.question_scores.length; j++) {
+      totalScore = totalScore + team.question_scores[j].score
     }
     return totalScore
   }

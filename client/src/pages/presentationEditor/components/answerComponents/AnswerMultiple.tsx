@@ -34,50 +34,38 @@ const AnswerMultiple = ({ variant, activeSlide, competitionId }: AnswerMultipleP
   const dispatch = useAppDispatch()
   const teamId = useAppSelector((state) => state.competitionLogin.data?.team_id)
   const team = useAppSelector((state) => state.presentation.competition.teams.find((team) => team.id === teamId))
-  const answer = team?.question_answers.find((answer) => answer.question_id === activeSlide?.questions[0].id)
 
   const decideChecked = (alternative: QuestionAlternative) => {
-    const teamAnswer = team?.question_answers.find((answer) => answer.answer === alternative.text)?.answer
-    if (alternative.text === teamAnswer) return true
-    else return false
-  }
-
-  const updateAnswer = async (alternative: QuestionAlternative) => {
-    // TODO: fix. Make list of alternatives and delete & post instead of put to allow multiple boxes checked.
-    if (activeSlide) {
-      if (team?.question_answers.find((answer) => answer.question_id === activeSlide.questions[0].id)) {
-        if (answer?.answer === alternative.text) {
-          // Uncheck checkbox
-          deleteAnswer()
-        } else {
-          // Check another box
-          // TODO
-        }
-      } else {
-        // Check first checkbox
-        await axios
-          .post(`/api/competitions/${competitionId}/teams/${teamId}/answers`, {
-            answer: alternative.text,
-            score: 0,
-            question_id: activeSlide.questions[0].id,
-          })
-          .then(() => {
-            if (variant === 'editor') {
-              dispatch(getEditorCompetition(competitionId))
-            } else {
-              dispatch(getPresentationCompetition(competitionId))
-            }
-          })
-          .catch(console.log)
-      }
+    const answer = team?.question_alternative_answers.find(
+      (questionAnswer) => questionAnswer.question_alternative_id == alternative.id
+    )
+    if (answer) {
+      return answer.answer === '1'
     }
+    return false
   }
 
-  const deleteAnswer = async () => {
+  const updateAnswer = async (alternative: QuestionAlternative, checked: boolean) => {
+    // TODO: fix. Make list of alternatives and delete & post instead of put to allow multiple boxes checked.
+    if (!activeSlide) {
+      return
+    }
+
+    //const checkedValue = checked ? 1 : 0
+    //const correctAnswer = checkedValue === alternative.value ? 1 : 0
+
+    const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/question_alternatives/${alternative.id}`
+    const payload = {
+      answer: checked ? 1 : 0,
+    }
     await axios
-      .delete(`/api/competitions/${competitionId}/teams/${teamId}/answers`) // TODO: fix
+      .put(url, payload)
       .then(() => {
-        dispatch(getEditorCompetition(competitionId))
+        if (variant === 'editor') {
+          dispatch(getEditorCompetition(competitionId))
+        } else {
+          dispatch(getPresentationCompetition(competitionId))
+        }
       })
       .catch(console.log)
   }
@@ -105,10 +93,10 @@ const AnswerMultiple = ({ variant, activeSlide, competitionId }: AnswerMultipleP
         activeSlide.questions[0].alternatives.map((alt) => (
           <div key={alt.id}>
             <ListItem divider>
-              {
-                //<GreenCheckbox checked={checkbox} onChange={(event) => updateAnswer(alt, event.target.checked)} />
-              }
-              <GreenCheckbox checked={decideChecked(alt)} onChange={() => updateAnswer(alt)} />
+              <GreenCheckbox
+                checked={decideChecked(alt)}
+                onChange={(event: any) => updateAnswer(alt, event.target.checked)}
+              />
               <Typography style={{ wordBreak: 'break-all' }}>{alt.text}</Typography>
             </ListItem>
           </div>

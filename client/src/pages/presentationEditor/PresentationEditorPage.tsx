@@ -186,7 +186,7 @@ const PresentationEditorPage: React.FC = () => {
                               onContextMenu={(event) => handleRightClick(event, slide.id)}
                             >
                               {renderSlideIcon(slide)}
-                              <ListItemText primary={`Sida ${slide.id}`} />
+                              <ListItemText primary={`Sida ${slide.order + 1}`} />
                             </SlideListItem>
                           </div>
                         )}

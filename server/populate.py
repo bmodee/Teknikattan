@@ -106,12 +106,12 @@ def _add_items():
             dbc.add.team(f"{name}{i}", item_comp.id)
 
     # question_answer(answer, score, question_id, team_id)
-    dbc.add.question_answer("ett svar som ger 2p", 2, 1, 1)
-    dbc.add.question_answer("ett svar som ger 10p", 10, 2, 1)
-    dbc.add.question_answer("ett svar som ger 6p", 6, 3, 1)
+    # dbc.add.question_answer("ett svar som ger 2p", 2, 1, 1)
+    # dbc.add.question_answer("ett svar som ger 10p", 10, 2, 1)
+    # dbc.add.question_answer("ett svar som ger 6p", 6, 3, 1)
 
-    dbc.add.question_answer("ett svar som ger 2p", 2, 1, 2)
-    dbc.add.question_answer("ett svar som ger 3p", 3, 1, 3)
+    # dbc.add.question_answer("ett svar som ger 2p", 2, 1, 2)
+    # dbc.add.question_answer("ett svar som ger 3p", 3, 1, 3)
 
 
 if __name__ == "__main__":

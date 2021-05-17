@@ -11,12 +11,14 @@ from app.database.models import (
     ImageComponent,
     Question,
     QuestionAlternative,
-    QuestionAnswer,
+    QuestionAlternativeAnswer,
+    QuestionScore,
     Slide,
     Team,
     TextComponent,
     User,
 )
+from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.util import with_polymorphic
 
@@ -208,28 +210,68 @@ def question_alternative_list(competition_id, slide_id, question_id):
 
 
 ### Question Answers ###
-def question_answer(competition_id, team_id, answer_id):
+
+
+def question_score(competition_id, team_id, question_id, required=True):
     """
     Get question answer for a given team based on its competition.
     """
 
     join_competition = Competition.id == Team.competition_id
-    join_team = Team.id == QuestionAnswer.team_id
-    filters = (Competition.id == competition_id) & (Team.id == team_id) & (QuestionAnswer.id == answer_id)
+    join_team = Team.id == QuestionScore.team_id
+    filters = (Competition.id == competition_id) & (Team.id == team_id) & (QuestionScore.question_id == question_id)
     return (
-        QuestionAnswer.query.join(Competition, join_competition).join(Team, join_team).filter(filters).first_extended()
+        QuestionScore.query.join(Competition, join_competition)
+        .join(Team, join_team)
+        .filter(filters)
+        .first_extended(required)
     )
 
 
-def question_answer_list(competition_id, team_id):
+def question_score_list(competition_id, team_id):
+    """
+    Get question answer for a given team based on its competition.
+    """
+
+    join_competition = Competition.id == Team.competition_id
+    join_team = Team.id == QuestionScore.team_id
+    filters = (Competition.id == competition_id) & (Team.id == team_id)
+    return QuestionScore.query.join(Competition, join_competition).join(Team, join_team).filter(filters).all()
+
+
+def question_alternative_answer(competition_id, team_id, question_alternative_id, required=True):
+    """
+    Get question answer for a given team based on its competition.
+    """
+
+    join_competition = Competition.id == Team.competition_id
+    join_team = Team.id == QuestionAlternativeAnswer.team_id
+    filters = (
+        (Competition.id == competition_id)
+        & (Team.id == team_id)
+        & (QuestionAlternativeAnswer.question_alternative_id == question_alternative_id)
+    )
+    return (
+        QuestionAlternativeAnswer.query.join(Competition, join_competition)
+        .join(Team, join_team)
+        .filter(filters)
+        .first_extended(required)
+    )
+
+
+def question_alternative_answer_list(competition_id, team_id):
     """
     Get a list of question answers for a given team based on its competition.
     """
 
     join_competition = Competition.id == Team.competition_id
-    join_team = Team.id == QuestionAnswer.team_id
+    join_team = Team.id == QuestionAlternativeAnswer.team_id
     filters = (Competition.id == competition_id) & (Team.id == team_id)
-    return QuestionAnswer.query.join(Competition, join_competition).join(Team, join_team).filter(filters).all()
+    query = QuestionAlternativeAnswer.query.join(Competition, join_competition).join(Team, join_team).filter(filters)
+    # Get total score
+    # sum = query.with_entities(func.sum(QuestionAnswer.score)).all()
+    items = query.all()
+    return items
 
 
 ### Components ###
@@ -271,5 +313,13 @@ def competition(competition_id):
 
     os1 = joinedload(Competition.slides).joinedload(Slide.components)
     os2 = joinedload(Competition.slides).joinedload(Slide.questions).joinedload(Question.alternatives)
-    ot = joinedload(Competition.teams).joinedload(Team.question_answers)
-    return Competition.query.filter(Competition.id == competition_id).options(os1).options(os2).options(ot).first()
+    ot = joinedload(Competition.teams).joinedload(Team.question_alternative_answers)
+    ot1 = joinedload(Competition.teams).joinedload(Team.question_scores)
+    return (
+        Competition.query.filter(Competition.id == competition_id)
+        .options(os1)
+        .options(os2)
+        .options(ot)
+        .options(ot1)
+        .first()
+    )

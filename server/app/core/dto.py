@@ -81,7 +81,13 @@ class QuestionAlternativeDTO:
     list_schema = schemas.QuestionAlternativeSchema(many=True)
 
 
-class QuestionAnswerDTO:
+class QuestionAlternativeAnswerDTO:
     api = Namespace("answers")
-    schema = schemas.QuestionAnswerSchema(many=False)
-    list_schema = schemas.QuestionAnswerSchema(many=True)
+    schema = schemas.QuestionAlternativeAnswerSchema(many=False)
+    list_schema = schemas.QuestionAlternativeAnswerSchema(many=True)
+
+
+class QuestionScoreDTO:
+    api = Namespace("answers")
+    schema = schemas.QuestionScoreSchema(many=False)
+    list_schema = schemas.QuestionScoreSchema(many=True)

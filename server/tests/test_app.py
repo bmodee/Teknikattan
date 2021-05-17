@@ -471,11 +471,15 @@ def test_authorization(client):
     assert response.status_code == codes.UNAUTHORIZED
 
     # Get own answers
-    response, body = get(client, f"/api/competitions/{competition_id}/teams/{team_id}/answers", headers=headers)
+    response, body = get(
+        client, f"/api/competitions/{competition_id}/teams/{team_id}/answers/question_alternatives", headers=headers
+    )
     assert response.status_code == codes.OK
 
     # Try to get another teams answers
-    response, body = get(client, f"/api/competitions/{competition_id}/teams/{team_id+1}/answers", headers=headers)
+    response, body = get(
+        client, f"/api/competitions/{competition_id}/teams/{team_id+1}/answers/question_alternatives", headers=headers
+    )
     assert response.status_code == codes.UNAUTHORIZED
 
     #### JUDGE ####
@@ -499,9 +503,13 @@ def test_authorization(client):
     assert response.status_code == codes.UNAUTHORIZED
 
     # Get team answers
-    response, body = get(client, f"/api/competitions/{competition_id}/teams/{team_id}/answers", headers=headers)
+    response, body = get(
+        client, f"/api/competitions/{competition_id}/teams/{team_id}/answers/question_alternatives", headers=headers
+    )
     assert response.status_code == codes.OK
 
     # Also get antoher teams answers
-    response, body = get(client, f"/api/competitions/{competition_id}/teams/{team_id+1}/answers", headers=headers)
+    response, body = get(
+        client, f"/api/competitions/{competition_id}/teams/{team_id+1}/answers/question_alternatives", headers=headers
+    )
     assert response.status_code == codes.OK

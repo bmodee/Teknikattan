@@ -64,12 +64,21 @@ class QuestionSchema(BaseSchema):
     correcting_instructions = ma.auto_field()
 
 
-class QuestionAnswerSchema(BaseSchema):
+class QuestionAlternativeAnswerSchema(BaseSchema):
     class Meta(BaseSchema.Meta):
-        model = models.QuestionAnswer
+        model = models.QuestionAlternativeAnswer
 
     id = ma.auto_field()
     answer = ma.auto_field()
+    question_alternative_id = ma.auto_field()
+    team_id = ma.auto_field()
+
+
+class QuestionScoreSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.QuestionScore
+
+    id = ma.auto_field()
     score = ma.auto_field()
     question_id = ma.auto_field()
     team_id = ma.auto_field()

@@ -66,11 +66,17 @@ export interface QuestionAlternative {
   question_id: number
 }
 
-export interface QuestionAnswer {
+export interface QuestionAlternativeAnswer {
   id: number
-  question_id: number
   team_id: number
+  question_alternative_id: number
   answer: string
+}
+
+export interface QuestionScore {
+  id: number
+  team_id: number
+  question_id: number
   score: number
 }
 

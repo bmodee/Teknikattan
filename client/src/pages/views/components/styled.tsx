@@ -31,6 +31,7 @@ export const ScoreInput = styled(TextField)`
 export const AnswerContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
+  flex-direction: column;
 `
 
 export const JudgeScoringInstructionsContainer = styled(Paper)`

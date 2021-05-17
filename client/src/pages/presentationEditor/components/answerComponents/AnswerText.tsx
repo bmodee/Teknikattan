@@ -31,7 +31,6 @@ const AnswerText = ({ activeSlide, competitionId }: AnswerTextProps) => {
   const dispatch = useAppDispatch()
   const teamId = useAppSelector((state) => state.competitionLogin.data?.team_id)
   const team = useAppSelector((state) => state.presentation.competition.teams.find((team) => team.id === teamId))
-  const answerId = team?.question_answers.find((answer) => answer.question_id === activeSlide?.questions[0].id)?.id
 
   const onAnswerChange = (answer: string) => {
     if (timerHandle) {
@@ -43,30 +42,28 @@ const AnswerText = ({ activeSlide, competitionId }: AnswerTextProps) => {
   }
 
   const updateAnswer = async (answer: string) => {
-    if (activeSlide && team) {
-      console.log(team.question_answers)
-      if (team?.question_answers.find((answer) => answer.question_id === activeSlide.questions[0].id)) {
-        await axios
-          .put(`/api/competitions/${competitionId}/teams/${teamId}/answers/${answerId}`, {
-            answer,
-          })
-          .then(() => {
-            dispatch(getPresentationCompetition(competitionId))
-          })
-          .catch(console.log)
-      } else {
-        await axios
-          .post(`/api/competitions/${competitionId}/teams/${teamId}/answers`, {
-            answer,
-            score: 0,
-            question_id: activeSlide.questions[0].id,
-          })
-          .then(() => {
-            dispatch(getPresentationCompetition(competitionId))
-          })
-          .catch(console.log)
-      }
+    if (!activeSlide) {
+      return
     }
+    const alternative = activeSlide.questions[0].alternatives[0]
+    const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/question_alternatives/${alternative.id}`
+    await axios
+      .put(url, { answer: answer })
+      .then(() => {
+        dispatch(getPresentationCompetition(competitionId))
+      })
+      .catch(console.log)
+  }
+
+  const getDefaultString = () => {
+    if (!team || !activeSlide) {
+      return
+    }
+    const activeAltId = activeSlide.questions[0].alternatives[0].id
+    return (
+      team.question_alternative_answers.find((questionAnswer) => questionAnswer.question_alternative_id === activeAltId)
+        ?.answer || 'Svar...'
+    )
   }
 
   return (
@@ -79,9 +76,7 @@ const AnswerText = ({ activeSlide, competitionId }: AnswerTextProps) => {
       <ListItem style={{ height: '100%' }}>
         <TextField
           disabled={team === undefined}
-          defaultValue={
-            team?.question_answers.find((questionAnswer) => questionAnswer.id === answerId)?.answer || 'Svar...'
-          }
+          defaultValue={getDefaultString()}
           style={{ height: '100%' }}
           variant="outlined"
           fullWidth={true}
