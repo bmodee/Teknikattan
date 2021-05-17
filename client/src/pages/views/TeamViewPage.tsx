@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useAppSelector } from '../../hooks'
 import { socketConnect } from '../../sockets'
 import SlideDisplay from '../presentationEditor/components/SlideDisplay'
-import { OperatorContainer, OperatorHeader, PresentationBackground, PresentationContainer } from './styled'
+import { OperatorContainer, PresentationBackground, PresentationContainer } from './styled'
 
 const TeamViewPage: React.FC = () => {
   const code = useAppSelector((state) => state.presentation.code)
@@ -28,7 +28,6 @@ const TeamViewPage: React.FC = () => {
   }, [])
   return (
     <OperatorContainer>
-      <OperatorHeader></OperatorHeader>
       <PresentationBackground>
         <PresentationContainer>
           {activeViewTypeId && <SlideDisplay variant="presentation" activeViewTypeId={activeViewTypeId} />}

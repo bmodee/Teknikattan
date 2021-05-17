@@ -16,9 +16,9 @@ import {
   Typography,
 } from '@material-ui/core'
 import AssignmentIcon from '@material-ui/icons/Assignment'
-import BackspaceIcon from '@material-ui/icons/Backspace'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import CloseIcon from '@material-ui/icons/Close'
 import FileCopyIcon from '@material-ui/icons/FileCopy'
 import LinkIcon from '@material-ui/icons/Link'
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
@@ -41,7 +41,7 @@ import {
   OperatorHeader,
   OperatorHeaderItem,
   OperatorInnerContent,
-  ToolBarContainer,
+  OperatorQuitButton,
 } from './styled'
 
 /**
@@ -246,11 +246,11 @@ const OperatorViewPage: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <OperatorHeader>
+      <OperatorHeader color="primary" position="fixed">
         <Tooltip title="Avsluta tävling" arrow>
-          <OperatorButton onClick={handleVerifyExit} variant="contained" color="secondary">
-            <BackspaceIcon fontSize="large" />
-          </OperatorButton>
+          <OperatorQuitButton onClick={handleVerifyExit} variant="contained" color="secondary">
+            <CloseIcon fontSize="large" />
+          </OperatorQuitButton>
         </Tooltip>
 
         <Dialog open={openAlert} onClose={handleClose} aria-labelledby="responsive-dialog-title">
@@ -270,61 +270,60 @@ const OperatorViewPage: React.FC = () => {
           </DialogActions>
         </Dialog>
         <OperatorHeaderItem>
-          <Typography variant="h3">{presentation.competition.name}</Typography>
+          <Typography variant="h4">{presentation.competition.name}</Typography>
         </OperatorHeaderItem>
         <OperatorHeaderItem>
-          <Typography variant="h3">
+          <Typography variant="h4">
             {activeSlideOrder !== undefined && activeSlideOrder + 1} / {presentation.competition.slides.length}
           </Typography>
         </OperatorHeaderItem>
       </OperatorHeader>
-      <div style={{ height: 0, paddingTop: 120 }} />
+      {<div style={{ minHeight: 64 }} />}
       <OperatorContent>
         <OperatorInnerContent>
           {activeViewTypeId && <SlideDisplay variant="presentation" activeViewTypeId={activeViewTypeId} />}
         </OperatorInnerContent>
       </OperatorContent>
-      <div style={{ height: 0, paddingTop: 140 }} />
-      <OperatorFooter>
-        <ToolBarContainer>
-          <Tooltip title="Föregående sida" arrow>
-            <OperatorButton onClick={handleSetPrevSlide} variant="contained" disabled={isFirstSlide}>
-              <ChevronLeftIcon fontSize="large" />
+      {<div style={{ minHeight: 128 }} />}
+      <OperatorFooter position="fixed">
+        <Tooltip title="Föregående sida" arrow>
+          <OperatorButton onClick={handleSetPrevSlide} variant="contained" disabled={isFirstSlide} color="primary">
+            <ChevronLeftIcon fontSize="large" />
+          </OperatorButton>
+        </Tooltip>
+
+        {slideTimer !== null && (
+          <Tooltip title="Starta timer" arrow>
+            <OperatorButton
+              onClick={handleStartTimer}
+              variant="contained"
+              disabled={timer.value !== null && !timer.enabled}
+              color="primary"
+            >
+              <TimerIcon fontSize="large" />
+              <Timer disableText />
             </OperatorButton>
           </Tooltip>
+        )}
 
-          {slideTimer && (
-            <Tooltip title="Starta timer" arrow>
-              <OperatorButton
-                onClick={handleStartTimer}
-                variant="contained"
-                disabled={timer.value !== null && !timer.enabled}
-              >
-                <TimerIcon fontSize="large" />
-                <Timer disableText />
-              </OperatorButton>
-            </Tooltip>
-          )}
+        <Tooltip title="Visa ställning för publik" arrow>
+          <OperatorButton onClick={() => socketSync({ show_scoreboard: true })} variant="contained" color="primary">
+            <AssignmentIcon fontSize="large" />
+          </OperatorButton>
+        </Tooltip>
+        {showScoreboard && <Scoreboard isOperator />}
 
-          <Tooltip title="Visa ställning för publik" arrow>
-            <OperatorButton onClick={() => socketSync({ show_scoreboard: true })} variant="contained">
-              <AssignmentIcon fontSize="large" />
-            </OperatorButton>
-          </Tooltip>
-          {showScoreboard && <Scoreboard isOperator />}
+        <Tooltip title="Visa koder" arrow>
+          <OperatorButton onClick={handleOpenCodes} variant="contained" color="primary">
+            <SupervisorAccountIcon fontSize="large" />
+          </OperatorButton>
+        </Tooltip>
 
-          <Tooltip title="Visa koder" arrow>
-            <OperatorButton onClick={handleOpenCodes} variant="contained">
-              <SupervisorAccountIcon fontSize="large" />
-            </OperatorButton>
-          </Tooltip>
-
-          <Tooltip title="Nästa sida" arrow>
-            <OperatorButton onClick={handleSetNextSlide} variant="contained" disabled={isLastSlide}>
-              <ChevronRightIcon fontSize="large" />
-            </OperatorButton>
-          </Tooltip>
-        </ToolBarContainer>
+        <Tooltip title="Nästa sida" arrow>
+          <OperatorButton onClick={handleSetNextSlide} variant="contained" disabled={isLastSlide} color="primary">
+            <ChevronRightIcon fontSize="large" />
+          </OperatorButton>
+        </Tooltip>
       </OperatorFooter>
 
       <Snackbar

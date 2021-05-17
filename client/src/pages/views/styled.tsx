@@ -35,35 +35,42 @@ export const ViewSelectButtonGroup = styled.div`
   margin-right: auto;
 `
 
-export const OperatorHeader = styled.div`
+export const OperatorHeader = styled(AppBar)`
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
-  height: 120px;
+  align-items: center;
+  height: 64px;
   width: 100%;
-  position: absolute;
 `
 
-export const OperatorFooter = styled.div`
+export const OperatorFooter = styled(AppBar)`
+  background: white;
   display: flex;
-  justify-content: space-between;
-  height: 140px;
-  position: absolute;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 128px;
+  top: auto;
   bottom: 0;
   width: 100%;
 `
 
-export const OperatorButton = styled(Button)`
-  width: 100px;
-  height: 100px;
-  margin-left: 16px;
-  margin-right: 16px;
-  margin-top: 16px;
+export const OperatorQuitButton = styled(Button)`
+  height: 100%;
+  padding: 0;
 `
 
-export const OperatorHeaderItem = styled(Button)`
+export const OperatorButton = styled(Button)`
+  min-width: 90px;
+  min-height: 90px;
   margin-left: 16px;
   margin-right: 16px;
-  margin-top: 16px;
+`
+
+export const OperatorHeaderItem = styled.div`
+  margin-left: 16px;
+  margin-right: 16px;
 `
 
 export const OperatorContainer = styled.div`
@@ -140,7 +147,7 @@ export const OperatorInnerContent = styled.div`
   width: 100%;
   /* Makes sure width is not bigger than where a 16:9 display can fit 
   without overlapping with header and footer */
-  max-width: calc(((100vh - 260px) / 9) * 16);
+  max-width: calc(((100vh - 192px) / 9) * 16);
 `
 
 export const PresentationContainer = styled.div`
