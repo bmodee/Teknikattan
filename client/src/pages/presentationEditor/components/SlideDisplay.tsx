@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../hooks'
 import PresentationComponent from '../../views/components/PresentationComponent'
 import Timer from '../../views/components/Timer'
 import RndComponent from './RndComponent'
-import { Center, SlideEditorContainer, SlideEditorContainerRatio, SlideEditorPaper } from './styled'
+import { Center, SlideDisplayText, SlideEditorContainer, SlideEditorContainerRatio, SlideEditorPaper } from './styled'
 
 type SlideDisplayProps = {
   //Prop to distinguish between editor and active competition
@@ -59,13 +59,13 @@ const SlideDisplay = ({ variant, activeViewTypeId, currentSlideId }: SlideDispla
     <SlideEditorContainer>
       <SlideEditorContainerRatio>
         <SlideEditorPaper ref={editorPaperRef}>
-          <Typography variant="h3" style={{ position: 'absolute', left: 5, top: 5 }}>
-            {variant === 'editor' && `Tid kvar: ${slide?.timer}`}
+          <SlideDisplayText scale={scale}>
+            {variant === 'editor' && slide?.timer ? `Tid kvar: ${slide?.timer}` : ''}
             {variant === 'presentation' && <Timer />}
-          </Typography>
-          <Typography variant="h3" style={{ position: 'absolute', right: 5, top: 5 }}>
+          </SlideDisplayText>
+          <SlideDisplayText scale={scale} right>
             {slide && `Sida: ${slide?.order + 1} / ${totalSlides}`}
-          </Typography>
+          </SlideDisplayText>
           {(competitionBackgroundImage || slideBackgroundImage) && (
             <img
               src={`/static/images/${
