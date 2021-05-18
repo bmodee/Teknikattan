@@ -8,10 +8,12 @@ import {
   IconButton,
   ListItem,
   ListItemText,
+  Snackbar,
   TextField,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import EditIcon from '@material-ui/icons/Edit'
+import { Alert } from '@material-ui/lab'
 import axios from 'axios'
 import React, { useState } from 'react'
 import { getEditorCompetition } from '../../../actions/editor'
@@ -32,6 +34,7 @@ type TeamsProps = {
 const Teams = ({ competitionId }: TeamsProps) => {
   const dispatch = useAppDispatch()
   const competition = useAppSelector((state) => state.editor.competition)
+  const [errorActive, setErrorActive] = React.useState(false)
   const editTeam = async () => {
     if (editTeamState.variant === 'Add') {
       await axios
@@ -46,7 +49,9 @@ const Teams = ({ competitionId }: TeamsProps) => {
         .then(() => {
           dispatch(getEditorCompetition(competitionId))
         })
-        .catch(console.log)
+        .catch((response) => {
+          if (response?.response?.status === 409) setErrorActive(true)
+        })
     }
     setEditTeamState({ open: false })
   }
@@ -102,7 +107,14 @@ const Teams = ({ competitionId }: TeamsProps) => {
           <DialogContentText>
             Skriv {editTeamState.variant === 'Edit' ? 'det nya' : ''} namnet på laget och klicka sedan på bekräfta.
           </DialogContentText>
-          <TextField autoFocus margin="dense" label="Lagnamn" fullWidth onChange={updateSelectedTeamName} />
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Lagnamn"
+            fullWidth
+            onChange={updateSelectedTeamName}
+            defaultValue={editTeamState.variant === 'Edit' ? editTeamState.team?.name : ''}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEditTeamState({ open: false })} color="secondary">
@@ -113,6 +125,9 @@ const Teams = ({ competitionId }: TeamsProps) => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar open={errorActive} autoHideDuration={4000} onClose={() => setErrorActive(false)}>
+        <Alert severity="error">{`Du kan inte välja det namnet eftersom ett annat lag har samma namn, välj ett annat namn och försök igen.`}</Alert>
+      </Snackbar>
     </SettingsList>
   )
 }
