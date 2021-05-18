@@ -33,7 +33,9 @@ const SlideSettings: React.FC = () => {
       <SettingsList>
         {activeSlide && <SlideType activeSlide={activeSlide} competitionId={competitionId} />}
         <Divider />
-        {activeSlide && <Timer activeSlide={activeSlide} competitionId={competitionId} />}
+        {activeSlide && Boolean(activeSlide.questions[0]) && (
+          <Timer activeSlide={activeSlide} competitionId={competitionId} />
+        )}
       </SettingsList>
 
       {activeSlide?.questions[0] && <QuestionSettings activeSlide={activeSlide} competitionId={competitionId} />}

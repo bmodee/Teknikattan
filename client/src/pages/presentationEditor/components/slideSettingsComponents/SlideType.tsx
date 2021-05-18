@@ -53,7 +53,6 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
     closeSlideTypeDialog()
     if (activeSlide) {
       if (activeSlide.questions?.[0] && activeSlide.questions[0].type_id !== selectedSlideType) {
-        deleteQuestionComponent(questionComponentId)
         if (selectedSlideType === 0) {
           // Change slide type from a question type to information
           await axios
@@ -78,13 +77,13 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
               total_score: 0,
               type_id: selectedSlideType,
             })
-            .then(() => {
+            .then(({ data }) => {
               dispatch(getEditorCompetition(competitionId))
-              removeQuestionComponent().then(() => createQuestionComponent())
+              removeQuestionComponent().then(() => createQuestionComponent(data.id))
             })
             .catch(console.log)
         }
-      } else if (activeSlide.questions[0].type_id === 0 && selectedSlideType !== 0) {
+      } else if (!activeSlide.questions[0] && selectedSlideType !== 0) {
         // Change slide type from information to a question type
         await axios
           .post(`/api/competitions/${competitionId}/slides/${activeSlide.id}/questions`, {
@@ -92,16 +91,16 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
             total_score: 0,
             type_id: selectedSlideType,
           })
-          .then(() => {
+          .then(({ data }) => {
             dispatch(getEditorCompetition(competitionId))
-            createQuestionComponent()
+            createQuestionComponent(data.id)
           })
           .catch(console.log)
       }
     }
   }
 
-  const createQuestionComponent = async () => {
+  const createQuestionComponent = async (question_id: number) => {
     await axios
       .post(`/api/competitions/${competitionId}/slides/${activeSlide.id}/components`, {
         x: 0,
@@ -110,7 +109,7 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
         h: 250,
         type_id: 3,
         view_type_id: 1,
-        question_id: activeSlide.questions[0].id,
+        question_id,
       })
       .then(() => {
         dispatch(getEditorCompetition(competitionId))
@@ -123,14 +122,6 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
     if (questionComponentId) {
       await axios
         .delete(`/api/competitions/${competitionId}/slides/${activeSlide.id}/components/${questionComponentId}`)
-        .catch(console.log)
-    }
-  }
-
-  const deleteQuestionComponent = (componentId: number | undefined) => {
-    if (componentId) {
-      axios
-        .delete(`/api/competitions/${competitionId}/slides/${activeSlide.id}/components/${componentId}`)
         .catch(console.log)
     }
   }
