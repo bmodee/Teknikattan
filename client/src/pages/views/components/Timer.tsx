@@ -50,7 +50,7 @@ const Timer = ({ disableText }: TimerProps) => {
     )
   }, [timer.enabled, slideTimer])
 
-  return <div>{`${!disableText ? 'Tid kvar:' : ''} ${Math.round(remainingTimer / 1000)}`}</div>
+  return <>{`${!disableText ? 'Tid kvar:' : ''} ${Math.round(remainingTimer / 1000)}`}</>
 }
 
 export default Timer

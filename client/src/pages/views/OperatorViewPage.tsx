@@ -27,7 +27,8 @@ import { Alert } from '@material-ui/lab'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useAppSelector } from '../../hooks'
+import { logoutCompetition } from '../../actions/competitionLogin'
+import { useAppDispatch, useAppSelector } from '../../hooks'
 import { socketConnect, socketEndPresentation, socketSync } from '../../sockets'
 import SlideDisplay from '../presentationEditor/components/SlideDisplay'
 import { Center } from '../presentationEditor/components/styled'
@@ -89,7 +90,7 @@ const OperatorViewPage: React.FC = () => {
   const competitionName = useAppSelector((state) => state.presentation.competition.name)
 
   //const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
-
+  const dispatch = useAppDispatch()
   const classes = useStyles()
   const teams = useAppSelector((state) => state.presentation.competition.teams)
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
@@ -140,8 +141,7 @@ const OperatorViewPage: React.FC = () => {
   const endCompetition = () => {
     setOpen(false)
     socketEndPresentation()
-    history.push('/admin/competition-manager')
-    window.location.reload(false) // TODO: fix this, we "need" to refresh site to be able to run the competition correctly again
+    dispatch(logoutCompetition('Operator'))
   }
 
   const getCodes = async () => {
@@ -287,22 +287,26 @@ const OperatorViewPage: React.FC = () => {
       {<div style={{ minHeight: 128 }} />}
       <OperatorFooter position="fixed">
         <Tooltip title="Föregående sida" arrow>
-          <OperatorButton onClick={handleSetPrevSlide} variant="contained" disabled={isFirstSlide} color="primary">
-            <ChevronLeftIcon fontSize="large" />
-          </OperatorButton>
+          <div>
+            <OperatorButton onClick={handleSetPrevSlide} variant="contained" disabled={isFirstSlide} color="primary">
+              <ChevronLeftIcon fontSize="large" />
+            </OperatorButton>
+          </div>
         </Tooltip>
 
         {slideTimer !== null && (
           <Tooltip title="Starta timer" arrow>
-            <OperatorButton
-              onClick={handleStartTimer}
-              variant="contained"
-              disabled={timer.value !== null && !timer.enabled}
-              color="primary"
-            >
-              <TimerIcon fontSize="large" />
-              <Timer disableText />
-            </OperatorButton>
+            <div>
+              <OperatorButton
+                onClick={handleStartTimer}
+                variant="contained"
+                disabled={timer.value !== null && !timer.enabled}
+                color="primary"
+              >
+                <TimerIcon fontSize="large" />
+                <Timer disableText />
+              </OperatorButton>
+            </div>
           </Tooltip>
         )}
 
@@ -320,9 +324,11 @@ const OperatorViewPage: React.FC = () => {
         </Tooltip>
 
         <Tooltip title="Nästa sida" arrow>
-          <OperatorButton onClick={handleSetNextSlide} variant="contained" disabled={isLastSlide} color="primary">
-            <ChevronRightIcon fontSize="large" />
-          </OperatorButton>
+          <div>
+            <OperatorButton onClick={handleSetNextSlide} variant="contained" disabled={isLastSlide} color="primary">
+              <ChevronRightIcon fontSize="large" />
+            </OperatorButton>
+          </div>
         </Tooltip>
       </OperatorFooter>
 

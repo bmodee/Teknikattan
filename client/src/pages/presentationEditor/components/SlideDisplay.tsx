@@ -59,11 +59,11 @@ const SlideDisplay = ({ variant, activeViewTypeId, currentSlideId }: SlideDispla
     <SlideEditorContainer>
       <SlideEditorContainerRatio>
         <SlideEditorPaper ref={editorPaperRef}>
-          <SlideDisplayText scale={scale}>
+          <SlideDisplayText $scale={scale}>
             {variant === 'editor' && slide?.timer ? `Tid kvar: ${slide?.timer}` : ''}
             {variant === 'presentation' && <Timer />}
           </SlideDisplayText>
-          <SlideDisplayText scale={scale} right>
+          <SlideDisplayText $scale={scale} $right>
             {slide && `Sida: ${slide?.order + 1} / ${totalSlides}`}
           </SlideDisplayText>
           {(competitionBackgroundImage || slideBackgroundImage) && (
