@@ -32,16 +32,14 @@ def all(db_type):
 def one(db_type, id, required=True):
     """ Get lazy db-item in the table that has the same id. """
 
-    return db_type.query.filter(db_type.id == id).first_extended(required=required)
+    return db_type.query.filter(db_type.id == id).first_api(required=required)
 
 
 ### Codes ###
 def code_by_code(code):
     """ Gets the code object associated with the provided code. """
 
-    return Code.query.filter(Code.code == code.upper()).first_extended(
-        True, "A presentation with that code does not exist"
-    )
+    return Code.query.filter(Code.code == code.upper()).first_api(True, "A presentation with that code does not exist")
 
 
 def code_list(competition_id):
@@ -65,7 +63,7 @@ def user_exists(email):
 def user_by_email(email):
     """ Gets the user object associated with the provided email. """
 
-    return User.query.filter(User.email == email).first_extended(error_code=codes.UNAUTHORIZED)
+    return User.query.filter(User.email == email).first_api(error_code=codes.UNAUTHORIZED)
 
 
 ### Slides ###
@@ -77,7 +75,7 @@ def slide(competition_id, slide_id):
     join_competition = Competition.id == Slide.competition_id
     filters = (Competition.id == competition_id) & (Slide.id == slide_id)
 
-    return Slide.query.join(Competition, join_competition).filter(filters).first_extended()
+    return Slide.query.join(Competition, join_competition).filter(filters).first_api()
 
 
 def slide_list(competition_id):
@@ -104,7 +102,7 @@ def team(competition_id, team_id):
     join_competition = Competition.id == Team.competition_id
     filters = (Competition.id == competition_id) & (Team.id == team_id)
 
-    return Team.query.join(Competition, join_competition).filter(filters).first_extended()
+    return Team.query.join(Competition, join_competition).filter(filters).first_api()
 
 
 def team_list(competition_id):
@@ -129,7 +127,7 @@ def question(competition_id, slide_id, question_id):
     join_slide = Slide.id == Question.slide_id
     filters = (Competition.id == competition_id) & (Slide.id == slide_id) & (Question.id == question_id)
 
-    return Question.query.join(Competition, join_competition).join(Slide, join_slide).filter(filters).first_extended()
+    return Question.query.join(Competition, join_competition).join(Slide, join_slide).filter(filters).first_api()
 
 
 def question_list(competition_id, slide_id):
@@ -185,7 +183,7 @@ def question_alternative(
         .join(Slide, join_slide)
         .join(Question, join_question)
         .filter(filters)
-        .first_extended()
+        .first_api()
     )
 
 
@@ -255,7 +253,7 @@ def question_alternative_answer(competition_id, team_id, question_alternative_id
         QuestionAlternativeAnswer.query.join(Competition, join_competition)
         .join(Team, join_team)
         .filter(filters)
-        .first_extended(required)
+        .first_api()
     )
 
 
@@ -287,11 +285,7 @@ def component(competition_id, slide_id, component_id):
 
     poly = with_polymorphic(Component, [TextComponent, ImageComponent])
     return (
-        db.session.query(poly)
-        .join(Competition, join_competition)
-        .join(Slide, join_slide)
-        .filter(filters)
-        .first_extended()
+        db.session.query(poly).join(Competition, join_competition).join(Slide, join_slide).filter(filters).first_api()
     )
 
 

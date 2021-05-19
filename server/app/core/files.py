@@ -2,10 +2,11 @@
 Contains functions related to file handling, mainly saving and deleting images.
 """
 
-from PIL import Image
-from flask import current_app, has_app_context
 import os
+
+from flask import current_app, has_app_context
 from flask_uploads import IMAGES, UploadSet
+from PIL import Image
 
 if has_app_context():
     PHOTO_PATH = current_app.config["UPLOADED_PHOTOS_DEST"]
@@ -32,6 +33,13 @@ if has_app_context():
 
 
 def _delete_image(filename):
+    """
+    Private function
+    Delete an image with the given filename
+    :param filename: Of the image that will be deleted
+    :type filename: str
+    :rtype: None
+    """
     path = os.path.join(PHOTO_PATH, filename)
     os.remove(path)
 
@@ -39,6 +47,10 @@ def _delete_image(filename):
 def save_image_with_thumbnail(image_file):
     """
     Saves the given image and also creates a small thumbnail for it.
+    :param image_file: Image object that will be saved on server
+    :type image_file: object
+    :return: Filename of the saved image, if filename already exist the filename will be changed
+    :rtype: str
     """
 
     saved_filename = image_set.save(image_file)
@@ -55,6 +67,8 @@ def save_image_with_thumbnail(image_file):
 def delete_image_and_thumbnail(filename):
     """
     Delete the given image together with its thumbnail.
+    :param filename:
+    :type filename:
     """
     _delete_image(filename)
     _delete_image(f"thumbnail_{filename}")

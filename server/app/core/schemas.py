@@ -1,5 +1,5 @@
 """
-This module contains schemas used to convert database objects into 
+This module contains marshmallow schemas used to convert database objects into 
 dictionaries.
 """
 

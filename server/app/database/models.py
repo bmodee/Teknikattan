@@ -5,13 +5,19 @@ each other.
 """
 
 from app.core import bcrypt, db
-from app.database.types import ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT, ID_TEXT_COMPONENT
+from app.database.types import IMAGE_COMPONENT_ID, QUESTION_COMPONENT_ID, TEXT_COMPONENT_ID
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 
-STRING_SIZE = 254
+STRING_SIZE = 254  # Default size of string Columns (varchar)
 
 
 class Whitelist(db.Model):
+    """
+    Table with allowed jwt.
+
+    Depend on table: User, Competition.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String, unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
@@ -24,6 +30,10 @@ class Whitelist(db.Model):
 
 
 class Blacklist(db.Model):
+    """
+    Table with banned jwt.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String, unique=True)
 
@@ -32,6 +42,10 @@ class Blacklist(db.Model):
 
 
 class Role(db.Model):
+    """
+    Table with roles: Admin and Editor.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(STRING_SIZE), unique=True)
 
@@ -41,8 +55,11 @@ class Role(db.Model):
         self.name = name
 
 
-# TODO Region?
 class City(db.Model):
+    """
+    Table with cities.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(STRING_SIZE), unique=True)
 
@@ -54,6 +71,12 @@ class City(db.Model):
 
 
 class User(db.Model):
+    """
+    Table with users.
+
+    Depend on table: Role, City.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(STRING_SIZE), unique=True)
     name = db.Column(db.String(STRING_SIZE), nullable=True)
@@ -92,6 +115,12 @@ class User(db.Model):
 
 
 class Media(db.Model):
+    """
+    Table with media objects that can be image or video depending on type_id.
+
+    Depend on table: MediaType, User.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(STRING_SIZE), unique=True)
     type_id = db.Column(db.Integer, db.ForeignKey("media_type.id"), nullable=False)
@@ -104,6 +133,12 @@ class Media(db.Model):
 
 
 class Competition(db.Model):
+    """
+    Table with competitions.
+
+    Depend on table: Media, City.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(STRING_SIZE), unique=True)
     year = db.Column(db.Integer, nullable=False, default=2020)
@@ -127,6 +162,12 @@ class Competition(db.Model):
 
 
 class Team(db.Model):
+    """
+    Table with teams.
+
+    Depend on table: Competition.
+    """
+
     __table_args__ = (db.UniqueConstraint("competition_id", "name"),)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(STRING_SIZE), nullable=False)
@@ -143,6 +184,12 @@ class Team(db.Model):
 
 
 class Slide(db.Model):
+    """
+    Table with slides.
+
+    Depend on table: Competition, Media.
+    """
+
     __table_args__ = (db.UniqueConstraint("order", "competition_id"),)
     id = db.Column(db.Integer, primary_key=True)
     order = db.Column(db.Integer, nullable=False)
@@ -164,6 +211,12 @@ class Slide(db.Model):
 
 
 class Question(db.Model):
+    """
+    Table with questions of different types depending on type_id
+
+    Depend on table: QuestionType, Slide.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(STRING_SIZE), nullable=False)
     total_score = db.Column(db.Integer, nullable=True, default=None)
@@ -182,6 +235,12 @@ class Question(db.Model):
 
 
 class QuestionAlternative(db.Model):
+    """
+    Table with question alternatives.
+
+    Depend on table: Question.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(STRING_SIZE), nullable=False)
     value = db.Column(db.Integer, nullable=False)
@@ -194,6 +253,14 @@ class QuestionAlternative(db.Model):
 
 
 class QuestionScore(db.Model):
+    """
+    Table with question answers.
+
+    Depend on table: Question, Team.
+
+    Unique Constraint: Question.id, Team.id.
+    """
+
     __table_args__ = (db.UniqueConstraint("question_id", "team_id"),)
     id = db.Column(db.Integer, primary_key=True)
     score = db.Column(db.Integer, nullable=True, default=0)
@@ -222,6 +289,13 @@ class QuestionAlternativeAnswer(db.Model):
 
 
 class Component(db.Model):
+    """
+    Table implemented with single table inheritance where each subclass is linked to a specific type_id
+    This class/table contains all fields from every subclass.
+
+    Depend on table: :ViewType, Slide, ComponentType, Media, Question.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     x = db.Column(db.Integer, nullable=False, default=0)
     y = db.Column(db.Integer, nullable=False, default=0)
@@ -244,28 +318,50 @@ class Component(db.Model):
 
 
 class TextComponent(Component):
+    """
+    Subclass of Component that contains text.
+    """
+
     text = db.Column(db.Text, default="", nullable=False)
 
     # __tablename__ = None
-    __mapper_args__ = {"polymorphic_identity": ID_TEXT_COMPONENT}
+    __mapper_args__ = {"polymorphic_identity": TEXT_COMPONENT_ID}
 
 
 class ImageComponent(Component):
+    """
+    Subclass of Component that contains an image.
+
+    Depend on table: Media.
+    """
+
     media_id = db.Column(db.Integer, db.ForeignKey("media.id"), nullable=True)
     media = db.relationship("Media", uselist=False)
 
     # __tablename__ = None
-    __mapper_args__ = {"polymorphic_identity": ID_IMAGE_COMPONENT}
+    __mapper_args__ = {"polymorphic_identity": IMAGE_COMPONENT_ID}
 
 
 class QuestionComponent(Component):
+    """
+    Subclass of Component that contains a question.
+
+    Depend on table: Question.
+    """
+
     question_id = db.Column(db.Integer, db.ForeignKey("question.id"), nullable=True)
 
     # __tablename__ = None
-    __mapper_args__ = {"polymorphic_identity": ID_QUESTION_COMPONENT}
+    __mapper_args__ = {"polymorphic_identity": QUESTION_COMPONENT_ID}
 
 
 class Code(db.Model):
+    """
+    Table with codes.
+
+    Depend on table: ViewType, Competition, Team.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.Text, unique=True)
     view_type_id = db.Column(db.Integer, db.ForeignKey("view_type.id"), nullable=False)
@@ -282,6 +378,10 @@ class Code(db.Model):
 
 
 class ViewType(db.Model):
+    """
+    Table with view types: Team, Judge, Audience and Operator.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(STRING_SIZE), unique=True)
 
@@ -290,6 +390,10 @@ class ViewType(db.Model):
 
 
 class ComponentType(db.Model):
+    """
+    Table with component types: Text, Image and Question.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(STRING_SIZE), unique=True)
     components = db.relationship("Component", backref="component_type")
@@ -299,6 +403,10 @@ class ComponentType(db.Model):
 
 
 class MediaType(db.Model):
+    """
+    Table with media types: Image and Video.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(STRING_SIZE), unique=True)
     media = db.relationship("Media", backref="type")
@@ -308,6 +416,10 @@ class MediaType(db.Model):
 
 
 class QuestionType(db.Model):
+    """
+    Table with question types: Text, Practical, Multiple and Single.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(STRING_SIZE), unique=True)
     questions = db.relationship("Question", backref="type")

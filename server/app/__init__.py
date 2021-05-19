@@ -12,11 +12,14 @@ def create_app(config_name="configmodule.DevelopmentConfig"):
     SocketIO instance and pass in the Flask app to start the server.
     """
 
+    # Init flask
     app = Flask(__name__, static_url_path="/static", static_folder="static")
     app.config.from_object(config_name)
     app.url_map.strict_slashes = False
+
     with app.app_context():
 
+        # Init flask apps
         bcrypt.init_app(app)
         jwt.init_app(app)
         db.init_app(app)
@@ -24,13 +27,17 @@ def create_app(config_name="configmodule.DevelopmentConfig"):
         ma.init_app(app)
         configure_uploads(app, (MediaDTO.image_set,))
 
+        # Init socket
         from app.core.sockets import sio
 
         sio.init_app(app)
 
+        # Init api
         from app.apis import flask_api
 
         flask_api.init_app(app)
+
+        # Flask helpers methods
 
         @app.before_request
         def clear_trailing():

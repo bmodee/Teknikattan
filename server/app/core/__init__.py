@@ -9,6 +9,7 @@ from flask_jwt_extended.jwt_manager import JWTManager
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 
+# Flask apps
 db = SQLAlchemy(model_class=Base, query_class=ExtendedQuery)
 bcrypt = Bcrypt()
 jwt = JWTManager()
@@ -17,5 +18,13 @@ ma = Marshmallow()
 
 @jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
+    """
+    An extension method with flask_jwt_extended that will execute when jwt verifies
+    Check if the token is blacklisted in the database
+    :param decrypted_token: jti or string of the jwt
+    :type decrypted_token: str
+    :return: True if token is blacklisted
+    :rtype: bool
+    """
     jti = decrypted_token["jti"]
     return models.Blacklist.query.filter_by(jti=jti).first() is not None

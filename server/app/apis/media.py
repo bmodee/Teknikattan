@@ -54,21 +54,21 @@ class ImageList(Resource):
             api.abort(codes.INTERNAL_SERVER_ERROR, "Something went wrong when trying to save image")
 
 
-@api.route("/images/<ID>")
-@api.param("ID")
+@api.route("/images/<media_id>")
+@api.param("media_id")
 class ImageList(Resource):
     @protect_route(allowed_roles=["*"], allowed_views=["*"])
-    def get(self, ID):
+    def get(self, media_id):
         """ Gets the specified image. """
 
-        item = dbc.get.one(Media, ID)
+        item = dbc.get.one(Media, media_id)
         return item_response(schema.dump(item))
 
     @protect_route(allowed_roles=["*"])
-    def delete(self, ID):
+    def delete(self, media_id):
         """ Deletes the specified image. """
 
-        item = dbc.get.one(Media, ID)
+        item = dbc.get.one(Media, media_id)
         try:
             files.delete_image_and_thumbnail(item.filename)
             dbc.delete.default(item)

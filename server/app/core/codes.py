@@ -11,13 +11,14 @@ CODE_RE = re.compile(f"^[{ALLOWED_CHARS}]{{{CODE_LENGTH}}}$")
 
 
 def generate_code_string() -> str:
-    """Generates a 6 character long random sequence containg uppercase letters
-    and numbers.
+    """
+    Return a 6 character long random sequence containing uppercase letters and numbers.
     """
     return "".join(random.choices(ALLOWED_CHARS, k=CODE_LENGTH))
 
 
 def verify_code(code: str) -> bool:
-    """Returns True if code only contains letters and/or numbers
-    and is exactly 6 characters long."""
+    """
+    Returns True if code only contains letters and/or numbers and is exactly 6 characters long.
+    """
     return CODE_RE.search(code.upper()) is not None
