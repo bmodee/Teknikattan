@@ -48,3 +48,16 @@ export const ScoringInstructionsInner = styled.div`
   align-items: center;
   flex-direction: column;
 `
+
+export const AnswersDisplay = styled.div`
+  display: flex;
+  flex-direction: row;
+`
+
+export const Answers = styled.div`
+  margin-left: 15px;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+`

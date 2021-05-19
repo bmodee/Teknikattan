@@ -59,10 +59,10 @@ const AnswerText = ({ activeSlide, competitionId }: AnswerTextProps) => {
     if (!team || !activeSlide) {
       return
     }
-    const activeAltId = activeSlide.questions[0].alternatives[0].id
+    const activeAltId = activeSlide.questions[0]?.alternatives[0]?.id
     return (
       team.question_alternative_answers.find((questionAnswer) => questionAnswer.question_alternative_id === activeAltId)
-        ?.answer || 'Svar...'
+        ?.answer || ''
     )
   }
 
