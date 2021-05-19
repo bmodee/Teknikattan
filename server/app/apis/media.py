@@ -69,6 +69,15 @@ class ImageList(Resource):
         """ Deletes the specified image. """
 
         item = dbc.get.one(Media, media_id)
+        if len(item.image_components) > 0:
+            api.abort(codes.CONFLICT, "Component depends on this Image")
+
+        if len(item.competition_background_images) > 0:
+            api.abort(codes.CONFLICT, "Competition background image depends on this Image")
+
+        if len(item.slide_background_images) > 0:
+            api.abort(codes.CONFLICT, "Slide background image depends on this Image")
+
         try:
             files.delete_image_and_thumbnail(item.filename)
             dbc.delete.default(item)

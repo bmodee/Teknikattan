@@ -7,6 +7,7 @@ each other.
 from app.core import bcrypt, db
 from app.database.types import IMAGE_COMPONENT_ID, QUESTION_COMPONENT_ID, TEXT_COMPONENT_ID
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
+from sqlalchemy.orm import backref
 
 STRING_SIZE = 254  # Default size of string Columns (varchar)
 
@@ -126,6 +127,10 @@ class Media(db.Model):
     type_id = db.Column(db.Integer, db.ForeignKey("media_type.id"), nullable=False)
     upload_by_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
+    image_components = db.relationship("ImageComponent", backref="media")
+    competition_background_images = db.relationship("Competition", backref="background_image")
+    slide_background_images = db.relationship("Slide", backref="background_image")
+
     def __init__(self, filename, type_id, upload_by_id):
         self.filename = filename
         self.type_id = type_id
@@ -146,13 +151,10 @@ class Competition(db.Model):
     city_id = db.Column(db.Integer, db.ForeignKey("city.id"), nullable=False)
 
     background_image_id = db.Column(db.Integer, db.ForeignKey("media.id"), nullable=True)
-    background_image = db.relationship("Media", uselist=False)
 
     slides = db.relationship("Slide", backref="competition")
     teams = db.relationship("Team", backref="competition")
     codes = db.relationship("Code", backref="competition")
-
-    background_image = db.relationship("Media", uselist=False)
 
     def __init__(self, name, year, city_id):
         self.name = name
@@ -200,7 +202,6 @@ class Slide(db.Model):
     competition_id = db.Column(db.Integer, db.ForeignKey("competition.id"), nullable=False)
 
     background_image_id = db.Column(db.Integer, db.ForeignKey("media.id"), nullable=True)
-    background_image = db.relationship("Media", uselist=False)
 
     components = db.relationship("Component", backref="slide")
     questions = db.relationship("Question", backref="questions")
@@ -336,7 +337,6 @@ class ImageComponent(Component):
     """
 
     media_id = db.Column(db.Integer, db.ForeignKey("media.id"), nullable=True)
-    media = db.relationship("Media", uselist=False)
 
     # __tablename__ = None
     __mapper_args__ = {"polymorphic_identity": IMAGE_COMPONENT_ID}
