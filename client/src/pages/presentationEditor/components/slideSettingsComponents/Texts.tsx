@@ -1,12 +1,12 @@
-import { Divider, ListItem, ListItemText, Typography } from '@material-ui/core'
+import { Divider, ListItem, ListItemText } from '@material-ui/core'
+import axios from 'axios'
 import React from 'react'
+import { getEditorCompetition } from '../../../../actions/editor'
 import { useAppDispatch, useAppSelector } from '../../../../hooks'
 import { TextComponent } from '../../../../interfaces/ApiModels'
 import { RichSlide } from '../../../../interfaces/ApiRichModels'
 import { AddButton, Center, SettingsList, TextCard } from '../styled'
 import TextComponentEdit from '../TextComponentEdit'
-import axios from 'axios'
-import { getEditorCompetition } from '../../../../actions/editor'
 
 type TextsProps = {
   activeViewTypeId: number
@@ -27,7 +27,7 @@ const Texts = ({ activeViewTypeId, activeSlide, competitionId }: TextsProps) => 
     if (activeSlide) {
       await axios.post(`/api/competitions/${competitionId}/slides/${activeSlide?.id}/components`, {
         type_id: 1,
-        text: 'Ny text',
+        text: '<p><span style="font-size: 24pt;">Ny text</span></p>',
         w: 315,
         h: 50,
         view_type_id: activeViewTypeId,
