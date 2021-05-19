@@ -30,7 +30,7 @@ from app.database.models import (
     ViewType,
     Whitelist,
 )
-from app.database.types import ID_IMAGE_COMPONENT, ID_QUESTION_COMPONENT, ID_TEXT_COMPONENT
+from app.database.types import IMAGE_COMPONENT_ID, QUESTION_COMPONENT_ID, TEXT_COMPONENT_ID
 from flask import current_app
 from flask.globals import current_app
 from flask_restx import abort
@@ -40,8 +40,8 @@ from sqlalchemy import exc
 
 def db_add(item):
     """
-    Internal function. Adds item to the database
-    and handles comitting and refreshing.
+    Internal function that add item to the database.
+    Handle different types of errors that occur when inserting an item into the database by calling abort.
     """
     try:
         db.session.add(item)
@@ -73,12 +73,12 @@ def component(type_id, slide_id, view_type_id, x=0, y=0, w=0, h=0, copy=False, *
     coordinates with the provided size and data.
     """
 
-    if type_id == ID_TEXT_COMPONENT:
+    if type_id == TEXT_COMPONENT_ID:
         item = db_add(
             TextComponent(slide_id, type_id, view_type_id, x, y, w, h),
         )
         item.text = data.get("text")
-    elif type_id == ID_IMAGE_COMPONENT:
+    elif type_id == IMAGE_COMPONENT_ID:
         if not copy:  # Scale image if adding a new one, a copied image should keep it's size
             item_image = get.one(Media, data["media_id"])
             filename = item_image.filename
@@ -101,7 +101,7 @@ def component(type_id, slide_id, view_type_id, x=0, y=0, w=0, h=0, copy=False, *
             ImageComponent(slide_id, type_id, view_type_id, x, y, w, h),
         )
         item.media_id = data.get("media_id")
-    elif type_id == ID_QUESTION_COMPONENT:
+    elif type_id == QUESTION_COMPONENT_ID:
         item = db_add(
             QuestionComponent(slide_id, type_id, view_type_id, x, y, w, h),
         )

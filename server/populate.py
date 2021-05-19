@@ -9,7 +9,7 @@ from app import create_app, db
 from app.database.models import City, QuestionType, Role
 
 
-def _add_items():
+def create_default_items():
     media_types = ["Image", "Video"]
     question_types = ["Text", "Practical", "Multiple", "Single"]
     component_types = ["Text", "Image", "Question"]
@@ -125,4 +125,4 @@ if __name__ == "__main__":
 
         db.drop_all()
         db.create_all()
-        _add_items()
+        create_default_items()
