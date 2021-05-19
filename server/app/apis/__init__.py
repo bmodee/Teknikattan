@@ -100,6 +100,7 @@ from .components import api as component_ns
 from .media import api as media_ns
 from .misc import api as misc_ns
 from .questions import api as question_ns
+from .scores import api as score_ns
 from .slides import api as slide_ns
 from .teams import api as team_ns
 from .users import api as user_ns
@@ -114,8 +115,9 @@ flask_api.add_namespace(slide_ns, path="/api/competitions/<competition_id>/slide
 flask_api.add_namespace(
     alternative_ns, path="/api/competitions/<competition_id>/slides/<slide_id>/questions/<question_id>/alternatives"
 )
-flask_api.add_namespace(answer_ns, path="/api/competitions/<competition_id>/teams/<team_id>/answers")
 flask_api.add_namespace(team_ns, path="/api/competitions/<competition_id>/teams")
 flask_api.add_namespace(code_ns, path="/api/competitions/<competition_id>/codes")
 flask_api.add_namespace(question_ns, path="/api/competitions/<competition_id>")
 flask_api.add_namespace(component_ns, path="/api/competitions/<competition_id>/slides/<slide_id>/components")
+flask_api.add_namespace(answer_ns, path="/api/competitions/<competition_id>/teams/<team_id>/answers")
+flask_api.add_namespace(score_ns, path="/api/competitions/<competition_id>/teams/<team_id>/answers/question_scores")

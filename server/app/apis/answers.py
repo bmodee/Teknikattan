@@ -23,23 +23,6 @@ answer_parser_add.add_argument("answer", type=str, required=True, location="json
 answer_parser_edit = reqparse.RequestParser()
 answer_parser_edit.add_argument("answer", type=str, default=sentinel, location="json")
 
-score_parser_add = reqparse.RequestParser()
-score_parser_add.add_argument("score", type=int, required=False, location="json")
-
-score_parser_edit = reqparse.RequestParser()
-score_parser_edit.add_argument("score", type=int, default=sentinel, location="json")
-
-
-@api.route("/question_scores")
-@api.param("competition_id, team_id")
-class QuestionScoreList(Resource):
-    @protect_route(allowed_roles=["*"], allowed_views=["*"])
-    def get(self, competition_id, team_id):
-        """ Gets all question answers that the specified team has given. """
-
-        items = dbc.get.question_score_list(competition_id, team_id)
-        return list_response(score_list_schema.dump(items))
-
 
 @api.route("/question_alternatives")
 @api.param("competition_id, team_id")
@@ -50,31 +33,6 @@ class QuestionAlternativeList(Resource):
 
         items = dbc.get.question_alternative_answer_list(competition_id, team_id)
         return list_response(list_schema.dump(items))
-
-
-@api.route("/question_scores/<question_id>")
-@api.param("competition_id, team_id, question_id")
-class QuestionScores(Resource):
-    @protect_route(allowed_roles=["*"], allowed_views=["*"])
-    def get(self, competition_id, team_id, question_id):
-        """ Gets the specified question answer. """
-
-        item = dbc.get.question_score(competition_id, team_id, question_id)
-        return item_response(score_schema.dump(item))
-
-    @protect_route(allowed_roles=["*"], allowed_views=["*"])
-    def put(self, competition_id, team_id, question_id):
-        """ Add or edit specified quesiton_answer. """
-
-        item = dbc.get.question_score(competition_id, team_id, question_id, required=False)
-        if item is None:
-            args = score_parser_add.parse_args(strict=True)
-            item = dbc.add.question_score(args.get("score"), question_id, team_id)
-        else:
-            args = score_parser_edit.parse_args(strict=True)
-            item = dbc.edit.default(item, **args)
-
-        return item_response(score_schema.dump(item))
 
 
 @api.route("/question_alternatives/<question_alternative_id>")

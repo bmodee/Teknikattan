@@ -222,7 +222,7 @@ def question_score(competition_id, team_id, question_id, required=True):
         QuestionScore.query.join(Team, join_team)
         .join(Competition, join_competition)
         .filter(filters)
-        .first_extended(required)
+        .first_api(required)
     )
 
 
