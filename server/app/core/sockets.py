@@ -26,7 +26,7 @@ active_competitions = {}
 
 def _unpack_claims():
     """
-    :return: A tuple containing competition_id and view, gotten from claim
+    :return: A tuple containing competition_id and view from claim
     :rtype: tuple
     """
 
@@ -39,10 +39,19 @@ def is_active_competition(competition_id):
     :return: True if competition with competition_id is currently active else False
     :rtype: bool
     """
+
     return competition_id in active_competitions
 
 
 def _get_sync_variables(active_competition, sync_values):
+    """
+    Returns a dictionary with all values from active_competition that is to be
+    synced.
+
+    :return: A dicationary containg key-value pairs from active_competition
+    thats in sync_values
+    :rtype: dictionary
+    """
     return {key: value for key, value in active_competition.items() if key in sync_values}
 
 
@@ -83,7 +92,7 @@ def authorize_client(f, allowed_views=None, require_active_competition=True, *ar
 def connect() -> None:
     """
     Connect to a active competition. If competition with competition_id is not active,
-    start it if client is an operator, otherwise ignore it.
+    start it if client is an operator, otherwise do nothing.
     """
 
     competition_id, view = _unpack_claims()
@@ -133,7 +142,7 @@ def disconnect() -> None:
 @authorize_client(allowed_views=["Operator"])
 def end_presentation() -> None:
     """
-    End a active_competition by sending end_presentation to all connected clients.
+    End a presentation by sending end_presentation to all connected clients.
     """
 
     competition_id, _ = _unpack_claims()
@@ -144,7 +153,8 @@ def end_presentation() -> None:
 @authorize_client(allowed_views=["Operator"])
 def sync(data) -> None:
     """
-    Sync active_competition for all clients connected to competition.
+    Update all values from data thats in an active_competitions. Also sync all
+    the updated values to all clients connected to the same competition.
     """
 
     competition_id, view = _unpack_claims()
@@ -153,6 +163,7 @@ def sync(data) -> None:
     for key, value in data.items():
         if key not in active_competition:
             logger.warning(f"Invalid sync data: '{key}':'{value}'")
+            continue
 
         active_competition[key] = value
 
