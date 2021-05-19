@@ -13,6 +13,7 @@ class BaseSchema(ma.SQLAlchemySchema):
         strict = True
         load_instance = False
         include_relationships = False
+        ordered = False
 
 
 class IdNameSchema(BaseSchema):

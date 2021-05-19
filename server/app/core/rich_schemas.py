@@ -14,6 +14,7 @@ class RichSchema(ma.SQLAlchemySchema):
         strict = True
         load_instance = True
         include_relationships = True
+        ordered = False
 
 
 class QuestionSchemaRich(RichSchema):

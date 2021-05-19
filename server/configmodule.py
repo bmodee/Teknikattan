@@ -19,6 +19,7 @@ class Config:
     SQLALCHEMY_ECHO = False
     USER_LOGIN_LOCKED_ATTEMPTS = 12
     USER_LOGIN_LOCKED_EXPIRES = timedelta(hours=3)
+    JSON_SORT_KEYS = False
 
 
 class DevelopmentConfig(Config):

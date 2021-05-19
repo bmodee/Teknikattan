@@ -19,7 +19,7 @@ from app.database.models import (
     User,
 )
 from sqlalchemy import func
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, subqueryload
 from sqlalchemy.orm.util import with_polymorphic
 
 
@@ -311,15 +311,15 @@ def component_list(competition_id, slide_id):
 def competition(competition_id):
     """ Get Competition and all it's sub-entities. """
 
-    os1 = joinedload(Competition.slides).joinedload(Slide.components)
-    os2 = joinedload(Competition.slides).joinedload(Slide.questions).joinedload(Question.alternatives)
-    ot = joinedload(Competition.teams).joinedload(Team.question_alternative_answers)
-    ot1 = joinedload(Competition.teams).joinedload(Team.question_scores)
+    join_component = joinedload(Competition.slides).subqueryload(Slide.components)
+    join_alternatives = joinedload(Competition.slides).joinedload(Slide.questions).joinedload(Question.alternatives)
+    join_question_alternative_answer = joinedload(Competition.teams).joinedload(Team.question_alternative_answers)
+    join_question_score = joinedload(Competition.teams).joinedload(Team.question_scores)
     return (
         Competition.query.filter(Competition.id == competition_id)
-        .options(os1)
-        .options(os2)
-        .options(ot)
-        .options(ot1)
+        .options(join_component)
+        .options(join_alternatives)
+        .options(join_question_alternative_answer)
+        .options(join_question_score)
         .first()
     )
