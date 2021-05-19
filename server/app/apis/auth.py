@@ -3,7 +3,7 @@ All API calls concerning question answers.
 Default route: /api/auth
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import app.core.http_codes as codes
 import app.database.controller as dbc
@@ -114,22 +114,26 @@ class AuthLogin(Resource):
         if not item_user:
             api.abort(codes.UNAUTHORIZED, "Invalid email or password")
 
+        now = datetime.now()
+
         # Login with existing email but with wrong password
         if not item_user.is_correct_password(password):
             # Increase the login attempts every time the user tries to login with wrong password
             item_user.login_attempts += 1
 
             # Lock the user out for some time
-            if item_user.login_attempts == USER_LOGIN_LOCKED_ATTEMPTS:
-                item_user.locked = datetime.now() + USER_LOGIN_LOCKED_EXPIRES
+            if item_user.login_attempts >= USER_LOGIN_LOCKED_ATTEMPTS:
+                item_user.locked = now + USER_LOGIN_LOCKED_EXPIRES
 
             dbc.utils.commit()
             api.abort(codes.UNAUTHORIZED, "Invalid email or password")
 
         # Otherwise if login was successful but the user is locked
         if item_user.locked:
+            print(item_user.locked)
+            print(now)
             # Check if locked is greater than now
-            if item_user.locked > datetime.now():
+            if item_user.locked.timestamp() > now.timestamp():
                 api.abort(codes.UNAUTHORIZED, f"Try again in {item_user.locked} hours.")
             else:
                 item_user.locked = None

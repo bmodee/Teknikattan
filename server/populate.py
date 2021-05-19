@@ -84,16 +84,16 @@ def _add_items():
             for k in range(3):
                 x = random.randrange(1, 500)
                 y = random.randrange(1, 500)
-                w = random.randrange(150, 400)
-                h = random.randrange(150, 400)
+                w = 350
+                h = 50
                 dbc.add.component(
                     1, item_slide.id, 1, x, y, w, h, text=f"<p><span style='font-size: 24pt;'>{k}</span></p>"
                 )
             for k in range(3):
                 x = random.randrange(1, 500)
                 y = random.randrange(1, 500)
-                w = random.randrange(150, 400)
-                h = random.randrange(150, 400)
+                w = 350
+                h = 50
                 dbc.add.component(
                     1, item_slide.id, 3, x, y, w, h, text=f"<p><span style='font-size: 24pt;'>{k}</span></p>"
                 )

@@ -129,7 +129,7 @@ def question(competition_id, slide_id, question_id):
     join_slide = Slide.id == Question.slide_id
     filters = (Competition.id == competition_id) & (Slide.id == slide_id) & (Question.id == question_id)
 
-    return Question.query.join(Competition, join_competition).join(Slide, join_slide).filter(filters).first_extended()
+    return Question.query.join(Slide, join_slide).join(Competition, join_competition).filter(filters).first_extended()
 
 
 def question_list(competition_id, slide_id):
@@ -142,7 +142,7 @@ def question_list(competition_id, slide_id):
     join_slide = Slide.id == Question.slide_id
     filters = (Competition.id == competition_id) & (Slide.id == slide_id)
 
-    return Question.query.join(Competition, join_competition).join(Slide, join_slide).filter(filters).all()
+    return Question.query.join(Slide, join_slide).join(Competition, join_competition).filter(filters).all()
 
 
 def question_list_for_competition(competition_id):
@@ -155,7 +155,7 @@ def question_list_for_competition(competition_id):
     join_slide = Slide.id == Question.slide_id
     filters = Competition.id == competition_id
 
-    return Question.query.join(Competition, join_competition).join(Slide, join_slide).filter(filters).all()
+    return Question.query.join(Slide, join_slide).join(Competition, join_competition).filter(filters).all()
 
 
 ### Question Alternative ###
@@ -181,9 +181,9 @@ def question_alternative(
     )
 
     return (
-        QuestionAlternative.query.join(Competition, join_competition)
+        QuestionAlternative.query.join(Question, join_question)
         .join(Slide, join_slide)
-        .join(Question, join_question)
+        .join(Competition, join_competition)
         .filter(filters)
         .first_extended()
     )
@@ -201,9 +201,9 @@ def question_alternative_list(competition_id, slide_id, question_id):
     filters = (Competition.id == competition_id) & (Slide.id == slide_id) & (Question.id == question_id)
 
     return (
-        QuestionAlternative.query.join(Competition, join_competition)
+        QuestionAlternative.query.join(Question, join_question)
         .join(Slide, join_slide)
-        .join(Question, join_question)
+        .join(Competition, join_competition)
         .filter(filters)
         .all()
     )
@@ -221,8 +221,8 @@ def question_score(competition_id, team_id, question_id, required=True):
     join_team = Team.id == QuestionScore.team_id
     filters = (Competition.id == competition_id) & (Team.id == team_id) & (QuestionScore.question_id == question_id)
     return (
-        QuestionScore.query.join(Competition, join_competition)
-        .join(Team, join_team)
+        QuestionScore.query.join(Team, join_team)
+        .join(Competition, join_competition)
         .filter(filters)
         .first_extended(required)
     )
@@ -236,7 +236,7 @@ def question_score_list(competition_id, team_id):
     join_competition = Competition.id == Team.competition_id
     join_team = Team.id == QuestionScore.team_id
     filters = (Competition.id == competition_id) & (Team.id == team_id)
-    return QuestionScore.query.join(Competition, join_competition).join(Team, join_team).filter(filters).all()
+    return QuestionScore.query.join(Team, join_team).join(Competition, join_competition).filter(filters).all()
 
 
 def question_alternative_answer(competition_id, team_id, question_alternative_id, required=True):
@@ -252,8 +252,8 @@ def question_alternative_answer(competition_id, team_id, question_alternative_id
         & (QuestionAlternativeAnswer.question_alternative_id == question_alternative_id)
     )
     return (
-        QuestionAlternativeAnswer.query.join(Competition, join_competition)
-        .join(Team, join_team)
+        QuestionAlternativeAnswer.query.join(Team, join_team)
+        .join(Competition, join_competition)
         .filter(filters)
         .first_extended(required)
     )
@@ -267,7 +267,7 @@ def question_alternative_answer_list(competition_id, team_id):
     join_competition = Competition.id == Team.competition_id
     join_team = Team.id == QuestionAlternativeAnswer.team_id
     filters = (Competition.id == competition_id) & (Team.id == team_id)
-    query = QuestionAlternativeAnswer.query.join(Competition, join_competition).join(Team, join_team).filter(filters)
+    query = QuestionAlternativeAnswer.query.join(Team, join_team).join(Competition, join_competition).filter(filters)
     # Get total score
     # sum = query.with_entities(func.sum(QuestionAnswer.score)).all()
     items = query.all()
@@ -288,8 +288,8 @@ def component(competition_id, slide_id, component_id):
     poly = with_polymorphic(Component, [TextComponent, ImageComponent])
     return (
         db.session.query(poly)
-        .join(Competition, join_competition)
         .join(Slide, join_slide)
+        .join(Competition, join_competition)
         .filter(filters)
         .first_extended()
     )
@@ -304,7 +304,7 @@ def component_list(competition_id, slide_id):
     join_competition = Competition.id == Slide.competition_id
     join_slide = Slide.id == Component.slide_id
     filters = (Competition.id == competition_id) & (Slide.id == slide_id)
-    return Component.query.join(Competition, join_competition).join(Slide, join_slide).filter(filters).all()
+    return Component.query.join(Slide, join_slide).join(Competition, join_competition).filter(filters).all()
 
 
 ### Competitions ###
