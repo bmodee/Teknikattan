@@ -39,7 +39,6 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
   const components = useAppSelector(
     (state) => state.editor.competition.slides.find((slide) => slide.id === state.editor.activeSlideId)?.components
   )
-  const questionComponentId = components?.find((qCompId) => qCompId.type_id === 3)?.id
 
   const openSlideTypeDialog = (type_id: number) => {
     setSelectedSlideType(type_id)
@@ -82,6 +81,21 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
               removeQuestionComponent().then(() => createQuestionComponent(data.id))
             })
             .catch(console.log)
+          if (selectedSlideType === 1) {
+            // Add an alternative to text questions to allow giving answers.
+            await axios
+              .post(
+                `/api/competitions/${competitionId}/slides/${activeSlide.id}/questions/${activeSlide.questions[0].id}/alternatives`,
+                {
+                  text: '',
+                  value: 1,
+                }
+              )
+              .then(({ data }) => {
+                dispatch(getEditorCompetition(competitionId))
+              })
+              .catch(console.log)
+          }
         }
       } else if (!activeSlide.questions[0] && selectedSlideType !== 0) {
         // Change slide type from information to a question type
@@ -96,6 +110,21 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
             createQuestionComponent(data.id)
           })
           .catch(console.log)
+        if (selectedSlideType === 1) {
+          // Add an alternative to text questions to allow giving answers.
+          await axios
+            .post(
+              `/api/competitions/${competitionId}/slides/${activeSlide.id}/questions/${activeSlide.questions[0].id}/alternatives`,
+              {
+                text: '',
+                value: 1,
+              }
+            )
+            .then(({ data }) => {
+              dispatch(getEditorCompetition(competitionId))
+            })
+            .catch(console.log)
+        }
       }
     }
   }
@@ -157,7 +186,7 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
           <DialogContent>
             <DialogContentText>
               Om du ändrar sidtypen kommer eventuella frågeinställningar gå förlorade. Det inkluderar: frågans namn,
-              poäng och svarsalternativ.{' '}
+              poäng, svarsalternativ och svar från lagen.{' '}
             </DialogContentText>
           </DialogContent>
           <DialogActions>

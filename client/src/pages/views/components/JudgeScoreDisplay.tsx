@@ -1,10 +1,17 @@
-import { Box, Typography } from '@material-ui/core'
+import { Box, Divider, Typography } from '@material-ui/core'
 import axios from 'axios'
 import React from 'react'
 import { getPresentationCompetition } from '../../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { RichSlide } from '../../../interfaces/ApiRichModels'
-import { AnswerContainer, ScoreDisplayContainer, ScoreDisplayHeader, ScoreInput } from './styled'
+import {
+  AnswerContainer,
+  Answers,
+  AnswersDisplay,
+  ScoreDisplayContainer,
+  ScoreDisplayHeader,
+  ScoreInput,
+} from './styled'
 
 type ScoreDisplayProps = {
   teamIndex: number
@@ -13,7 +20,6 @@ type ScoreDisplayProps = {
 
 const JudgeScoreDisplay = ({ teamIndex, activeSlide }: ScoreDisplayProps) => {
   const dispatch = useAppDispatch()
-  const questionTypes = useAppSelector((state) => state.types.questionTypes)
   const currentTeam = useAppSelector((state) => state.presentation.competition.teams[teamIndex])
   const currentCompetititonId = useAppSelector((state) => state.presentation.competition.id)
 
@@ -22,7 +28,6 @@ const JudgeScoreDisplay = ({ teamIndex, activeSlide }: ScoreDisplayProps) => {
   const questionMaxScore = activeQuestion?.total_score
 
   const scores = currentTeam.question_scores.map((questionAnswer) => questionAnswer.score)
-  const textQuestionType = questionTypes.find((questionType) => questionType.name === 'Text')?.id || 0
   const handleEditScore = async (newScore: number, questionId: number) => {
     await axios
       .put(`/api/competitions/${currentCompetititonId}/teams/${currentTeam.id}/answers/question_scores/${questionId}`, {
@@ -31,33 +36,38 @@ const JudgeScoreDisplay = ({ teamIndex, activeSlide }: ScoreDisplayProps) => {
       .then(() => dispatch(getPresentationCompetition(currentCompetititonId.toString())))
   }
 
-  const getAlternativeAnswers = () => {
+  const getAnswers = () => {
     const result: string[] = []
     if (!activeQuestion) {
       return result
     }
-
     for (const alt of activeQuestion.alternatives) {
-      const value = currentTeam.question_alternative_answers.find((x) => x.question_alternative_id === alt.id)
-      if (!value) {
+      const ans = currentTeam.question_alternative_answers.find((x) => x.question_alternative_id === alt.id)
+      if (!ans) {
         continue
       }
       if (activeQuestion.type_id === 1) {
-        result.push(alt.text)
-      } else if (+value.answer > 0) {
+        // Text question
+        result.push(ans.answer)
+      } else if (+ans.answer > 0) {
         result.push(alt.text)
       }
-      /*
-      switch(activeQuestion.question_type.name){
-        case "Text":
-          result.push(alt.text)
-          break;
-        default:
-      }*/
     }
-
     return result
-    //const asdasd = currentTeam.question_alternative_answers.filter((x)=>x.question_alternative_id === activeQuestion.alternatives[0].io)
+  }
+
+  const getAlternatives = () => {
+    const result: string[] = []
+    if (!activeQuestion) {
+      return result
+    }
+    for (const alt of activeQuestion.alternatives) {
+      if (activeQuestion.type_id !== 1 && +alt.value > 0) {
+        // Not text question and correct answer
+        result.push(alt.text)
+      }
+    }
+    return result
   }
 
   return (
@@ -81,15 +91,37 @@ const JudgeScoreDisplay = ({ teamIndex, activeSlide }: ScoreDisplayProps) => {
       </ScoreDisplayHeader>
       <Typography variant="h6">Alla poäng: [ {scores.map((score) => `${score} `)}]</Typography>
       <Typography variant="h6">Total poäng: {scores.reduce((a, b) => a + b, 0)}</Typography>
-      {activeQuestion && (
-        <AnswerContainer>
-          {getAlternativeAnswers().map((v, k) => (
-            <Typography variant="body1" key={k}>
-              <span>&#8226;</span> {v}
-            </Typography>
-          ))}
-        </AnswerContainer>
-      )}
+
+      <AnswersDisplay>
+        <Answers>
+          <Divider />
+          <Typography variant="body1">Lagets svar:</Typography>
+          {activeQuestion && (
+            <AnswerContainer>
+              {getAnswers().map((v, k) => (
+                <Typography variant="body1" key={k}>
+                  <span>&#8226;</span> {v}
+                </Typography>
+              ))}
+            </AnswerContainer>
+          )}
+        </Answers>
+
+        <Answers>
+          <Divider />
+          <Typography variant="body1">Korrekta svar:</Typography>
+          {activeQuestion && (
+            <AnswerContainer>
+              {getAlternatives().map((v, k) => (
+                <Typography variant="body1" key={k}>
+                  <span>&#8226;</span> {v}
+                </Typography>
+              ))}
+            </AnswerContainer>
+          )}
+        </Answers>
+      </AnswersDisplay>
+
       {!activeQuestion && <Typography variant="body1">Inget svar</Typography>}
     </ScoreDisplayContainer>
   )

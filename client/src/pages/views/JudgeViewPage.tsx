@@ -2,7 +2,7 @@ import { Divider, List, ListItemText, Snackbar, Typography } from '@material-ui/
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Alert } from '@material-ui/lab'
 import React, { useEffect, useState } from 'react'
-import { getPresentationCompetition } from '../../actions/presentation'
+import { getPresentationCompetition, setPresentationTimer } from '../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { RichSlide } from '../../interfaces/ApiRichModels'
 import { socketConnect } from '../../sockets'
@@ -53,7 +53,6 @@ const JudgeViewPage: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState<RichSlide | undefined>(undefined)
   const currentQuestion = currentSlide?.questions[0]
   const operatorActiveSlideId = useAppSelector((state) => state.presentation.activeSlideId)
-  const timer = useAppSelector((state) => state.presentation.timer)
   const operatorActiveSlideOrder = useAppSelector(
     (state) => state.presentation.competition.slides.find((slide) => slide.id === operatorActiveSlideId)?.order
   )
@@ -74,14 +73,35 @@ const JudgeViewPage: React.FC = () => {
       dispatch(getPresentationCompetition(competitionId.toString()))
     }
   }, [operatorActiveSlideId])
-  // useEffect(() => {
-  //   // Every second tic of the timer, load new answers
-  //   // TODO: use a set interval that updates every second ( look in Timer.tsx in clien/src/pages/views/components )
-  //   // Then clear interval when timer - Date.now() is negative
-  //   if (timer !== null && timer - (Date.now() % 2) === 0 && competitionId) {
-  //     dispatch(getPresentationCompetition(competitionId.toString()))
-  //   }
-  // }, [timer])
+
+  const timer = useAppSelector((state) => state.presentation.timer)
+  const [timerIntervalId, setTimerIntervalId] = useState<NodeJS.Timeout | null>(null)
+  useEffect(() => {
+    if (!timer.enabled) {
+      if (timerIntervalId !== null && competitionId) {
+        clearInterval(timerIntervalId)
+        dispatch(getPresentationCompetition(competitionId.toString()))
+      }
+      return
+    }
+    setTimerIntervalId(
+      setInterval(() => {
+        if (timer.value === null) return
+
+        if (timer.value - Date.now() < 0) {
+          if (competitionId) {
+            dispatch(getPresentationCompetition(competitionId.toString()))
+          }
+          dispatch(setPresentationTimer({ ...timer, enabled: false }))
+          return
+        }
+
+        if (competitionId) {
+          dispatch(getPresentationCompetition(competitionId.toString()))
+        }
+      }, 1000)
+    )
+  }, [timer.enabled])
   return (
     <div style={{ height: '100%' }}>
       <JudgeAppBar position="fixed">
