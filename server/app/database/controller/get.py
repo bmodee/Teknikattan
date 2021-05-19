@@ -253,7 +253,7 @@ def question_alternative_answer(competition_id, team_id, question_alternative_id
         QuestionAlternativeAnswer.query.join(Team, join_team)
         .join(Competition, join_competition)
         .filter(filters)
-        .first_api()
+        .first_api(required=required)
     )
 
 
