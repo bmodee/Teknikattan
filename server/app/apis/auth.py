@@ -28,6 +28,7 @@ login_parser.add_argument("password", type=str, required=True, location="json")
 create_user_parser = login_parser.copy()
 create_user_parser.add_argument("city_id", type=int, required=True, location="json")
 create_user_parser.add_argument("role_id", type=int, required=True, location="json")
+create_user_parser.add_argument("name", type=str, required=False, location="json")
 
 login_code_parser = reqparse.RequestParser()
 login_code_parser.add_argument("code", type=str, required=True, location="json")
