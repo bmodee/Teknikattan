@@ -9,8 +9,7 @@ import pytest
 from app.core import sockets
 
 from tests import app, client, db
-from tests.test_helpers import (add_default_values, change_order_test, delete,
-                                get, post, put)
+from tests.test_helpers import add_default_values, change_order_test, delete, get, post, put
 
 
 # @pytest.mark.skip(reason="Takes long time")
@@ -404,8 +403,9 @@ def test_question_api(client):
     # Get questions from another competition that should have some questions
     CID = 3
     response, body = get(client, f"/api/competitions/{CID}/questions", headers=headers)
+    num_questions = 3
     assert response.status_code == codes.OK
-    assert body["count"] == 0
+    assert body["count"] == num_questions
 
     # Add question
     name = "Nytt namn"
@@ -420,11 +420,12 @@ def test_question_api(client):
     assert response.status_code == codes.OK
     assert item_question["name"] == name
     assert item_question["type_id"] == type_id
+    num_questions += 1
 
     # Checks number of questions
     response, body = get(client, f"/api/competitions/{CID}/questions", headers=headers)
     assert response.status_code == codes.OK
-    assert body["count"] == 1
+    assert body["count"] == num_questions
     """
     # Delete question
     response, _ = delete(client, f"/api/competitions/{CID}/slides/{slide_order}/questions/{QID}", headers=headers)

@@ -67,7 +67,10 @@ def add_default_values():
             dbc.utils.commit_and_refresh(item_slide)
 
             # Add question to competition
-            # dbc.add.question(name=f"Q{i+1}", total_score=i + 1, type_id=1, slide_id=item_slide.id)
+            item_question = dbc.add.question(name=f"Q{i+1}", total_score=i + 1, type_id=1, slide_id=item_slide.id)
+
+            for k in range(3):
+                dbc.add.question_alternative(f"Alternative {k}", f"Correct {k}", item_question.id)
 
             # Add text component
             dbc.add.component(1, item_slide.id, 1, i, 2 * i, 3 * i, 4 * i, text="Text")

@@ -5,8 +5,7 @@ each other.
 """
 
 from app.core import bcrypt, db
-from app.database.types import (IMAGE_COMPONENT_ID, QUESTION_COMPONENT_ID,
-                                TEXT_COMPONENT_ID)
+from app.database.types import IMAGE_COMPONENT_ID, QUESTION_COMPONENT_ID, TEXT_COMPONENT_ID
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import backref
 
@@ -145,8 +144,9 @@ class Competition(db.Model):
     Depend on table: Media, City.
     """
 
+    __table_args__ = (db.UniqueConstraint("name", "year", "city_id"),)
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(STRING_SIZE), unique=True)
+    name = db.Column(db.String(STRING_SIZE), nullable=False)
     year = db.Column(db.Integer, nullable=False, default=2020)
     font = db.Column(db.String(STRING_SIZE), nullable=False)
     city_id = db.Column(db.Integer, db.ForeignKey("city.id"), nullable=False)
@@ -242,6 +242,7 @@ class QuestionAlternative(db.Model):
 
     Depend on table: Question.
     """
+
     __table_args__ = (
         db.UniqueConstraint("question_id", "alternative_order"),
         db.UniqueConstraint("question_id", "correct_order"),

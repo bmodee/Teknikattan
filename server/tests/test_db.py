@@ -78,7 +78,7 @@ def test_media(client):
 def test_copy(client):
     add_default_values()
 
-    # Fetches an empty competition
+    # Fetches a competition
     list_item_competitions, _ = dbc.search.competition(name="Tävling 1")
     item_competition_original = list_item_competitions[0]
 
@@ -86,13 +86,22 @@ def test_copy(client):
     num_slides = 3
     item_slides, total = dbc.search.slide(competition_id=item_competition_original.id)
     assert total == num_slides
-    item_slide_original = item_slides[0]
+    item_slide_original = item_slides[1]
+
+    dbc.delete.slide(item_slides[0])
+    num_slides -= 1
 
     # Inserts several copies of the same slide
     num_copies = 3
     for _ in range(num_copies):
+        # Slide must contain some of these things to copy
+        assert len(item_slide_original.components) > 0
+        assert len(item_slide_original.questions) > 0
+        assert len(item_slide_original.questions[0].alternatives) > 0
+
         item_slide_copy = dbc.copy.slide(item_slide_original)
         num_slides += 1
+
         check_slides_copy(item_slide_original, item_slide_copy, num_slides, num_slides - 1)
         assert item_slide_copy.competition_id == item_slide_original.competition_id
 
@@ -100,6 +109,7 @@ def test_copy(client):
     num_copies = 3
     for _ in range(num_copies):
         item_competition_copy = dbc.copy.competition(item_competition_original)
+        assert len(item_competition_copy.slides) > 0
         for order, item_slide in enumerate(item_competition_copy.slides):
             item_slide_original = item_competition_original.slides[order]
             check_slides_copy(item_slide_original, item_slide, num_slides, order)
@@ -126,8 +136,11 @@ def test_copy(client):
 
 
 def check_slides_copy(item_slide_original, item_slide_copy, num_slides, order):
-    """ Checks that two slides are correct copies of each other. Looks big but is quite fast. """
-    assert item_slide_copy.order == order  # 0 indexing
+    """
+    Checks that two slides are correct copies of each other.
+    This function looks big but is quite fast.
+    """
+    assert item_slide_copy.order == order
     assert item_slide_copy.title == item_slide_original.title
     assert item_slide_copy.body == item_slide_original.body
     assert item_slide_copy.timer == item_slide_original.timer
@@ -151,6 +164,7 @@ def check_slides_copy(item_slide_original, item_slide_copy, num_slides, order):
             assert c1.text == c2.text
         elif c1.type_id == 2:
             assert c1.image_id == c2.image_id
+
     # Checks that all questions were correctly copied
     questions = item_slide_original.questions
     questions_copy = item_slide_copy.questions
@@ -170,10 +184,12 @@ def check_slides_copy(item_slide_original, item_slide_copy, num_slides, order):
         assert len(alternatives) == len(alternatives_copy)
 
         for a1, a2 in zip(alternatives, alternatives_copy):
-            assert a1.text == a2.text
-            assert a1.value == a2.value
-            assert a1.quesiton_id == q1.id
-            assert a2.quesiton_id == q2.id
+            assert a1.alternative == a2.alternative
+            assert a1.alternative_order == a2.alternative_order
+            assert a1.correct == a2.correct
+            assert a1.correct_order == a2.correct_order
+            assert a1.question_id == q1.id
+            assert a2.question_id == q2.id
 
     # Checks that the copy put the slide in the database
     item_slides, total = dbc.search.slide(

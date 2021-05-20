@@ -16,7 +16,17 @@ def create_default_items():
     view_types = ["Team", "Judge", "Audience", "Operator"]
 
     roles = ["Admin", "Editor"]
-    cities = ["Linköping", "Stockholm", "Norrköping", "Örkelljunga"]
+    cities = [
+        "Linköping",
+        "Stockholm",
+        "Norrköping",
+        "Örkelljunga",
+        "Västerås",
+        "Falun",
+        "Sundsvall",
+        "Göteborg",
+        "Malmö",
+    ]
     teams = ["Högstadie A", "Högstadie B", "Högstadie C"]
 
     for name in media_types:
@@ -46,11 +56,27 @@ def create_default_items():
     dbc.add.user("admin@test.se", "password", admin_id, city_id, "Admina Denfina")
     dbc.add.user("test@test.se", "password", editor_id, city_id, "Test Osteron")
 
+    dbc.add.user("sven@test.se", "password", editor_id, 1, "Sven Mattson")
+    dbc.add.user("erika@test.se", "password", editor_id, 2, "Erika Malmberg")
+    dbc.add.user("anette@test.se", "password", editor_id, 3, "Anette Frisk")
+    dbc.add.user("emil@test.se", "password", editor_id, 4, "Emil Svensson")
+    dbc.add.user("david@test.se", "password", editor_id, 5, "David Ek")
+
+    dbc.add.competition(f"Regionfinal", 2012, 1)
+    dbc.add.competition(f"Regionfinal", 2012, 2)
+    dbc.add.competition(f"Regionfinal", 2012, 3)
+    dbc.add.competition(f"Regionfinal", 2012, 4)
+    dbc.add.competition(f"Regionfinal", 2012, 5)
+    dbc.add.competition(f"Rikssemifinal", 2012, 6)
+    dbc.add.competition(f"Rikssemifinal", 2012, 7)
+    dbc.add.competition(f"Rikssemifinal", 2012, 8)
+    dbc.add.competition(f"Riksfinal", 2012, 9)
+
     question_types_items = dbc.get.all(QuestionType)
 
     # Add competitions
     for i in range(len(question_types_items)):
-        item_comp = dbc.add.competition(f"Tävling {i}", 2000 + i, city_id)
+        item_comp = dbc.add.competition(f"Tävling {i}", 3000 + i, city_id)
         dbc.edit.default(item_comp.slides[0], timer=5, title="test-slide-title")
 
         # Add two more slides to competition
@@ -67,17 +93,16 @@ def create_default_items():
             dbc.utils.commit_and_refresh(item_slide)
 
             # Add question to competition
-            """
+
             item_question = dbc.add.question(
                 name=f"Question {j}: {question_types_items[j].name}",
                 total_score=j,
                 type_id=question_types_items[j].id,
                 slide_id=item_slide.id,
             )
-            """
 
             for k in range(3):
-                dbc.add.question_alternative(f"Alternative {k}", f"Correct {k}", item_slide.questions[0].id)
+                dbc.add.question_alternative(f"Alternative {k}", f"Correct {k}", item_question.id)
 
             # Add text components
             # TODO: Add images as components

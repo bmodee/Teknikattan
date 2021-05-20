@@ -4,16 +4,15 @@ This file contains functionality to copy and duplicate data to the database.
 
 from app.database.controller import add, get, search, utils
 from app.database.models import Question
-from app.database.types import (IMAGE_COMPONENT_ID, QUESTION_COMPONENT_ID,
-                                TEXT_COMPONENT_ID)
+from app.database.types import IMAGE_COMPONENT_ID, QUESTION_COMPONENT_ID, TEXT_COMPONENT_ID
 
 
-def _alternative(item_old, question_id):
+def _alternative(item_alternative_old, question_id):
     """
     Internal function. Makes a copy of the provided question alternative.
     """
 
-    return add.question_alternative(item_old.text, item_old.value, question_id)
+    return add.question_alternative(item_alternative_old.alternative, item_alternative_old.correct, question_id)
 
 
 def _question(item_question_old, slide_id):
@@ -91,7 +90,7 @@ def slide_to_competition(item_slide_old, item_competition):
     Does not copy team, question answers.
     """
 
-    item_slide_new = add.slide(item_competition.id)
+    item_slide_new = add.slide(item_competition.id, item_slide_old.order)
 
     # Copy all fields
     item_slide_new.title = item_slide_old.title

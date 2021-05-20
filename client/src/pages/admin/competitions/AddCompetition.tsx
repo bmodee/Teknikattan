@@ -75,7 +75,10 @@ const AddCompetition: React.FC = (props: any) => {
       .catch(({ response }) => {
         console.warn(response.data)
         if (response?.status === 409)
-          actions.setFieldError('error', 'En tävling med det namnet finns redan, välj ett nytt namn och försök igen')
+          actions.setFieldError(
+            'error',
+            'Denna tävling finns redan, välj ett nytt namn, region eller år och försök igen'
+          )
         else if (response.data && response.data.message)
           actions.setFieldError('error', response.data && response.data.message)
         else actions.setFieldError('error', 'Någonting gick fel, försök igen')

@@ -116,11 +116,11 @@ def team(name, competition_id):
     return item
 
 
-def slide(competition_id):
+def slide(competition_id, order=None):
     """ Adds a slide to the provided competition. """
-
-    # Get the last order from given competition
-    order = dbc.utils.count(Slide, {"competition_id": competition_id})
+    if not order:
+        # Get the last order from given competition
+        order = dbc.utils.count(Slide, {"competition_id": competition_id})
 
     # Add slide
     item_slide = db_add(Slide(order, competition_id))
