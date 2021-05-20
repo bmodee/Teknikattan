@@ -4,9 +4,10 @@ import { useAppDispatch, useAppSelector } from '../../../hooks'
 
 type TimerProps = {
   variant: 'editor' | 'presentation'
+  currentSlideId?: number
 }
 
-const Timer = ({ variant }: TimerProps) => {
+const Timer = ({ variant, currentSlideId }: TimerProps) => {
   const dispatch = useAppDispatch()
   const timer = useAppSelector((state) => state.presentation.timer)
   const [remainingTimer, setRemainingTimer] = useState<number>(0)
@@ -22,6 +23,8 @@ const Timer = ({ variant }: TimerProps) => {
   const displayTime = `${remainingDisplayMinutes}:${remainingDisplaySeconds}`
   const [timerIntervalId, setTimerIntervalId] = useState<NodeJS.Timeout | null>(null)
   const slideTimer = useAppSelector((state) => {
+    if (currentSlideId && variant === 'presentation')
+      return state.presentation.competition.slides.find((slide) => slide.id === currentSlideId)?.timer
     if (variant === 'presentation')
       return state.presentation.competition.slides.find((slide) => slide.id === state.presentation.activeSlideId)?.timer
     return state.editor.competition.slides.find((slide) => slide.id === state.editor.activeSlideId)?.timer

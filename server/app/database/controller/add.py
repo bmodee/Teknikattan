@@ -125,20 +125,7 @@ def slide(competition_id):
     # Add slide
     item_slide = db_add(Slide(order, competition_id))
 
-    return item_slide
-
-
-def slide_without_question(competition_id):
-    """ Adds a slide to the provided competition. """
-
-    # Get the last order from given competition
-    order = dbc.utils.count(Slide, {"competition_id": competition_id})
-
-    # Add slide
-    item_slide = db_add(Slide(order, competition_id))
-
-    item_slide = dbc.utils.refresh(item_slide)
-    return item_slide
+    return dbc.utils.refresh(item_slide)
 
 
 def competition(name, year, city_id):

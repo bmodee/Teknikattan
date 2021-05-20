@@ -38,7 +38,7 @@ class SlidesList(Resource):
     def post(self, competition_id):
         """ Posts a new slide to the specified competition. """
 
-        item_slide = dbc.add.slide_without_question(competition_id)
+        item_slide = dbc.add.slide(competition_id)
         return item_response(schema.dump(item_slide))
 
 

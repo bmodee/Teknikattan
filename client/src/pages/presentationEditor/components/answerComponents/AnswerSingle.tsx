@@ -50,7 +50,7 @@ const AnswerSingle = ({ variant, activeSlide, competitionId }: AnswerSingleProps
   }
 
   const updateAnswer = async (alternative: QuestionAlternative) => {
-    if (!(activeSlide && (timer.value === null || (timer.enabled && timer.value)))) {
+    if (!activeSlide || (activeSlide?.timer !== undefined && !timer.enabled)) {
       return
     }
 
@@ -79,7 +79,7 @@ const AnswerSingle = ({ variant, activeSlide, competitionId }: AnswerSingleProps
    */
   const renderRadioButton = (alt: QuestionAlternative) => {
     let disabledStyle
-    if (!(timer.value === null || (timer.enabled && timer.value))) {
+    if (activeSlide?.timer !== undefined && !timer.enabled) {
       disabledStyle = { fill: '#AAAAAA' } // Buttons are light grey if  timer is not on
     }
     if (variant === 'presentation') {

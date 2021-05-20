@@ -41,10 +41,7 @@ def add_default_values():
     # Add competitions
     item_competition = dbc.add.competition("Tom tävling", 2012, item_city.id)
 
-    item_question = dbc.add.question("hej", 5, 1, item_competition.slides[0].id)
-
     item_team1 = dbc.add.team("Hej lag 3", item_competition.id)
-    item_team2 = dbc.add.team("Hej lag 4", item_competition.id)
 
     db.session.add(Code("111111", 1, item_competition.id, item_team1.id))  # Team
     db.session.add(Code("222222", 2, item_competition.id))  # Judge

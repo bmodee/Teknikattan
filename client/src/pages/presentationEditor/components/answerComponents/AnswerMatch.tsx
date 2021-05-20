@@ -70,7 +70,7 @@ const AnswerMatch = ({ variant, activeSlide, competitionId }: AnswerMultipleProp
   }, [teamId])
 
   const getButtonStyle = () => {
-    if (!(timer.value === null || (timer.enabled && timer.value))) {
+    if (activeSlide?.timer !== undefined && !timer.enabled) {
       return { fill: '#AAAAAA' } // Buttons are light grey if  timer is not on
     }
     return {}
@@ -79,7 +79,7 @@ const AnswerMatch = ({ variant, activeSlide, competitionId }: AnswerMultipleProp
   const onMove = async (previousIndex: number, resultIndex: number) => {
     // moved outside the list
     if (resultIndex < 0 || resultIndex >= sortedAnswers.length || variant !== 'presentation') return
-    if (!(timer.value === null || (timer.enabled && timer.value))) return
+    if (activeSlide?.timer !== undefined && !timer.enabled) return
     const answersCopy = [...sortedAnswers]
     const [removed] = answersCopy.splice(previousIndex, 1)
     answersCopy.splice(resultIndex, 0, removed)

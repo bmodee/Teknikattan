@@ -64,7 +64,7 @@ const SlideDisplay = ({ variant, activeViewTypeId, currentSlideId }: SlideDispla
             {slide?.timer && (
               <Card style={{ display: 'flex', alignItems: 'center', padding: 10 }}>
                 <TimerIcon fontSize="large" />
-                <Timer variant={variant} />
+                <Timer variant={variant} currentSlideId={currentSlideId} />
               </Card>
             )}
           </SlideDisplayText>
