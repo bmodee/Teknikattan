@@ -122,6 +122,7 @@ const OperatorViewPage: React.FC = () => {
     endCompetition()
   }
 
+  /** Handles the closing of popup*/
   const handleClose = () => {
     setOpen(false)
     setOpenCode(false)
@@ -133,17 +134,20 @@ const OperatorViewPage: React.FC = () => {
     setOpen(true)
   }
 
+  /** Handles opening the code popup */
   const handleOpenCodes = async () => {
     await getCodes()
     setOpenCode(true)
   }
 
+  /** Function that runs when the operator closes the competition */
   const endCompetition = () => {
     setOpen(false)
     socketEndPresentation()
     dispatch(logoutCompetition('Operator'))
   }
 
+  /** Retrives the codes from the server */
   const getCodes = async () => {
     await axios
       .get(`/api/competitions/${activeId}/codes`)
@@ -179,6 +183,7 @@ const OperatorViewPage: React.FC = () => {
     return typeName
   }
 
+  /** Starting the timer */
   const handleStartTimer = () => {
     if (!slideTimer) return
 
@@ -186,11 +191,13 @@ const OperatorViewPage: React.FC = () => {
     else socketSync({ timer: { ...timer, enabled: false } })
   }
 
+  /** Function that runs when operator presses the next slide button */
   const handleSetNextSlide = () => {
     if (activeSlideOrder !== undefined)
       socketSync({ slide_order: activeSlideOrder + 1, timer: { value: null, enabled: false } })
   }
 
+  /** Function that runs when operator presses the previous slide button */
   const handleSetPrevSlide = () => {
     if (activeSlideOrder !== undefined)
       socketSync({ slide_order: activeSlideOrder - 1, timer: { value: null, enabled: false } })
@@ -205,7 +212,7 @@ const OperatorViewPage: React.FC = () => {
           </DialogTitle>
         </Center>
         <DialogContent>
-          {/* <DialogContentText>Här visas tävlingskoderna till den valda tävlingen.</DialogContentText> */}
+          {/** competition codes popup */}
           {codes &&
             codes.map((code) => (
               <ListItem key={code.id} style={{ display: 'flex' }}>
@@ -246,6 +253,8 @@ const OperatorViewPage: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Verify exit popup */}
       <OperatorHeader color="primary" position="fixed">
         <Tooltip title="Avsluta tävling" arrow>
           <OperatorQuitButton onClick={handleVerifyExit} variant="contained" color="secondary">
@@ -279,12 +288,16 @@ const OperatorViewPage: React.FC = () => {
         </OperatorHeaderItem>
       </OperatorHeader>
       {<div style={{ minHeight: 64 }} />}
+
+      {/* Show the correct slide */}
       <OperatorContent>
         <OperatorInnerContent>
           {activeViewTypeId && <SlideDisplay variant="presentation" activeViewTypeId={activeViewTypeId} />}
         </OperatorInnerContent>
       </OperatorContent>
       {<div style={{ minHeight: 128 }} />}
+
+      {/* Show the operator buttons */}
       <OperatorFooter position="fixed">
         <Tooltip title="Föregående sida" arrow>
           <div>
@@ -332,6 +345,7 @@ const OperatorViewPage: React.FC = () => {
         </Tooltip>
       </OperatorFooter>
 
+      {/* Show the user that they have joined the competition */}
       <Snackbar
         open={successMessageOpen && Boolean(competitionName)}
         autoHideDuration={4000}
