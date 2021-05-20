@@ -85,6 +85,7 @@ const AddRegion: React.FC = (props: any) => {
                 error={Boolean(formik.touched.model?.name && formik.errors.model?.name)}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                value={formik.values.model.name}
                 name="model.name"
                 label="Region"
               />
