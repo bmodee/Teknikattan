@@ -97,7 +97,7 @@ class Statistics(Resource):
     def get(self):
         """ Gets statistics. """
 
-        user_count = User.query.count()
-        competition_count = Competition.query.count()
-        region_count = City.query.count()
+        user_count = dbc.utils.count(User)
+        competition_count = dbc.utils.count(Competition)
+        region_count = dbc.utils.count(City)
         return {"users": user_count, "competitions": competition_count, "regions": region_count}, http_codes.OK

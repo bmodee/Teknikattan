@@ -78,18 +78,17 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
             })
             .then(({ data }) => {
               dispatch(getEditorCompetition(competitionId))
-              removeQuestionComponent().then(() => createQuestionComponent(data.id))
+              removeQuestionComponent().then(() => {
+                //No question component for practical questions
+                if (selectedSlideType !== 2) createQuestionComponent(data.id)
+              })
             })
             .catch(console.log)
           if (selectedSlideType === 1) {
             // Add an alternative to text questions to allow giving answers.
             await axios
               .post(
-                `/api/competitions/${competitionId}/slides/${activeSlide.id}/questions/${activeSlide.questions[0].id}/alternatives`,
-                {
-                  text: '',
-                  value: 1,
-                }
+                `/api/competitions/${competitionId}/slides/${activeSlide.id}/questions/${activeSlide.questions[0].id}/alternatives`
               )
               .then(({ data }) => {
                 dispatch(getEditorCompetition(competitionId))
@@ -107,24 +106,19 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
           })
           .then(({ data }) => {
             dispatch(getEditorCompetition(competitionId))
-            createQuestionComponent(data.id)
+            //No question component for practical questions
+            if (selectedSlideType !== 2) createQuestionComponent(data.id)
+            if (selectedSlideType === 1) {
+              // Add an alternative to text questions to allow giving answers.
+              axios
+                .post(`/api/competitions/${competitionId}/slides/${activeSlide.id}/questions/${data.id}/alternatives`)
+                .then(({ data }) => {
+                  dispatch(getEditorCompetition(competitionId))
+                })
+                .catch(console.log)
+            }
           })
           .catch(console.log)
-        if (selectedSlideType === 1) {
-          // Add an alternative to text questions to allow giving answers.
-          await axios
-            .post(
-              `/api/competitions/${competitionId}/slides/${activeSlide.id}/questions/${activeSlide.questions[0].id}/alternatives`,
-              {
-                text: '',
-                value: 1,
-              }
-            )
-            .then(({ data }) => {
-              dispatch(getEditorCompetition(competitionId))
-            })
-            .catch(console.log)
-        }
       }
     }
   }
@@ -175,6 +169,9 @@ const SlideType = ({ activeSlide, competitionId }: SlideTypeProps) => {
             </MenuItem>
             <MenuItem value={4} button onClick={() => openSlideTypeDialog(4)}>
               <Typography>Alternativfråga</Typography>
+            </MenuItem>
+            <MenuItem value={5} button onClick={() => openSlideTypeDialog(5)}>
+              <Typography>Para ihop-fråga</Typography>
             </MenuItem>
           </Select>
         </FormControl>

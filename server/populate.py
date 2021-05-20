@@ -11,7 +11,7 @@ from app.database.models import City, QuestionType, Role
 
 def create_default_items():
     media_types = ["Image", "Video"]
-    question_types = ["Text", "Practical", "Multiple", "Single"]
+    question_types = ["Text", "Practical", "Multiple", "Single", "Match"]
     component_types = ["Text", "Image", "Question"]
     view_types = ["Team", "Judge", "Audience", "Operator"]
 
@@ -77,7 +77,7 @@ def create_default_items():
             """
 
             for k in range(3):
-                dbc.add.question_alternative(f"Alternative {k}", 0, item_slide.questions[0].id)
+                dbc.add.question_alternative(f"Alternative {k}", f"Correct {k}", item_slide.questions[0].id)
 
             # Add text components
             # TODO: Add images as components

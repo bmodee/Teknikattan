@@ -28,19 +28,19 @@ const SingleChoiceAlternatives = ({ activeSlide, competitionId }: SingleChoiceAl
   const updateAlternativeValue = async (alternative: QuestionAlternative) => {
     if (activeSlide && activeSlide.questions[0]) {
       // Remove check from previously checked alternative
-      const previousCheckedAltId = activeSlide.questions[0].alternatives.find((alt) => alt.value === 1)?.id
+      const previousCheckedAltId = activeSlide.questions[0].alternatives.find((alt) => alt.correct === '1')?.id
       if (previousCheckedAltId !== alternative.id) {
         if (previousCheckedAltId) {
           axios.put(
             `/api/competitions/${competitionId}/slides/${activeSlide?.id}/questions/${activeSlide?.questions[0].id}/alternatives/${previousCheckedAltId}`,
-            { value: 0 }
+            { correct: '0' }
           )
         }
         // Set new checked alternative
         await axios
           .put(
             `/api/competitions/${competitionId}/slides/${activeSlide?.id}/questions/${activeSlide?.questions[0].id}/alternatives/${alternative.id}`,
-            { value: 1 }
+            { correct: '1' }
           )
           .then(() => {
             dispatch(getEditorCompetition(competitionId))
@@ -55,7 +55,7 @@ const SingleChoiceAlternatives = ({ activeSlide, competitionId }: SingleChoiceAl
       await axios
         .put(
           `/api/competitions/${competitionId}/slides/${activeSlide?.id}/questions/${activeSlide?.questions[0].id}/alternatives/${alternative_id}`,
-          { text: newText }
+          { alternative: newText }
         )
         .then(() => {
           dispatch(getEditorCompetition(competitionId))
@@ -69,7 +69,7 @@ const SingleChoiceAlternatives = ({ activeSlide, competitionId }: SingleChoiceAl
       await axios
         .post(
           `/api/competitions/${competitionId}/slides/${activeSlide?.id}/questions/${activeSlide?.questions[0].id}/alternatives`,
-          { text: '', value: 0 }
+          { correct: '0' }
         )
         .then(() => {
           dispatch(getEditorCompetition(competitionId))
@@ -92,7 +92,7 @@ const SingleChoiceAlternatives = ({ activeSlide, competitionId }: SingleChoiceAl
   }
 
   const renderRadioButton = (alt: QuestionAlternative) => {
-    if (alt.value) return <RadioButtonCheckedIcon onClick={() => updateAlternativeValue(alt)} />
+    if (alt.correct === '1') return <RadioButtonCheckedIcon onClick={() => updateAlternativeValue(alt)} />
     else return <RadioButtonUncheckedIcon onClick={() => updateAlternativeValue(alt)} />
   }
 
@@ -114,7 +114,7 @@ const SingleChoiceAlternatives = ({ activeSlide, competitionId }: SingleChoiceAl
             <ListItem divider>
               <AlternativeTextField
                 id="outlined-basic"
-                defaultValue={alt.text}
+                defaultValue={alt.alternative}
                 onChange={(event) => updateAlternativeText(alt.id, event.target.value)}
                 variant="outlined"
               />

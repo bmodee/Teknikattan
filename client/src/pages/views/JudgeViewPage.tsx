@@ -124,17 +124,19 @@ const JudgeViewPage: React.FC = () => {
         <div className={classes.toolbar} />
         <List>
           {slides.map((slide, index) => (
-            <SlideListItem
-              selected={slide.order === currentSlide?.order}
-              onClick={() => handleSelectSlide(index)}
-              divider
-              button
-              key={slide.id}
-              style={{ border: 2, borderStyle: slide.id === operatorActiveSlideId ? 'dashed' : 'none' }}
-            >
-              {renderSlideIcon(slide)}
-              <ListItemText primary={`Sida ${slide.order + 1}`} />
-            </SlideListItem>
+            <>
+              <SlideListItem
+                selected={slide.order === currentSlide?.order}
+                onClick={() => handleSelectSlide(index)}
+                button
+                key={slide.id}
+                style={{ border: 2, borderStyle: slide.id === operatorActiveSlideId ? 'dashed' : 'none' }}
+              >
+                {renderSlideIcon(slide)}
+                <ListItemText primary={`Sida ${slide.order + 1}`} />
+              </SlideListItem>
+              <Divider />
+            </>
           ))}
         </List>
       </LeftDrawer>
@@ -153,7 +155,7 @@ const JudgeViewPage: React.FC = () => {
           </ScoreHeaderPaper>
         )}
         <ScoreHeaderPadding />
-        <List style={{ overflowY: 'scroll', overflowX: 'hidden' }}>
+        <List style={{ overflowY: 'auto', overflowX: 'hidden' }}>
           {teams &&
             teams.map((answer, index) => (
               <div key={answer.name}>

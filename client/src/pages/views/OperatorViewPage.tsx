@@ -317,7 +317,7 @@ const OperatorViewPage: React.FC = () => {
                 color="primary"
               >
                 <TimerIcon fontSize="large" />
-                <Timer disableText />
+                <Timer variant="presentation" />
               </OperatorButton>
             </div>
           </Tooltip>

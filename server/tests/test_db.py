@@ -193,21 +193,26 @@ def test_move_slides(client):
         dbc.add.slide(item_comp.id)
 
     # Move from beginning to end
-    item_comp = dbc.utils.move_slides(item_comp, 0, 9)
+    dbc.utils.move_order(item_comp.slides, "order", 0, 9)
+    dbc.utils.refresh(item_comp)
     assert_slide_order(item_comp, [9, 0, 1, 2, 3, 4, 5, 6, 7, 8])
 
     # Move from end to beginning
-    item_comp = dbc.utils.move_slides(item_comp, 9, 0)
+    dbc.utils.move_order(item_comp.slides, "order", 9, 0)
+    dbc.utils.refresh(item_comp)
     assert_slide_order(item_comp, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 
     # Move some things in the middle
-    item_comp = dbc.utils.move_slides(item_comp, 3, 7)
+    dbc.utils.move_order(item_comp.slides, "order", 3, 7)
+    dbc.utils.refresh(item_comp)
     assert_slide_order(item_comp, [0, 1, 2, 7, 3, 4, 5, 6, 8, 9])
 
-    item_comp = dbc.utils.move_slides(item_comp, 1, 5)
+    dbc.utils.move_order(item_comp.slides, "order", 1, 5)
+    dbc.utils.refresh(item_comp)
     assert_slide_order(item_comp, [0, 5, 1, 7, 2, 3, 4, 6, 8, 9])
 
-    item_comp = dbc.utils.move_slides(item_comp, 8, 2)
+    dbc.utils.move_order(item_comp.slides, "order", 8, 2)
+    dbc.utils.refresh(item_comp)
     assert_slide_order(item_comp, [0, 6, 1, 8, 3, 4, 5, 7, 2, 9])
 
 

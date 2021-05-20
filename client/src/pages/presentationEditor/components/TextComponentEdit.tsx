@@ -37,7 +37,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
     setTimerHandle(
       window.setTimeout(async () => {
         await axios.put(`/api/competitions/${competitionId}/slides/${activeSlideId}/components/${component.id}`, {
-          text: newText,
+          alternative: newText,
         })
         dispatch(getEditorCompetition(competitionId))
       }, 250)

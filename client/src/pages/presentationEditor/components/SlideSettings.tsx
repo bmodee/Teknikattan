@@ -7,6 +7,7 @@ import { useAppSelector } from '../../../hooks'
 import BackgroundImageSelect from './BackgroundImageSelect'
 import Images from './slideSettingsComponents/Images'
 import Instructions from './slideSettingsComponents/Instructions'
+import MatchAlternatives from './slideSettingsComponents/MatchAlternatives'
 import MultipleChoiceAlternatives from './slideSettingsComponents/MultipleChoiceAlternatives'
 import QuestionSettings from './slideSettingsComponents/QuestionSettings'
 import SingleChoiceAlternatives from './slideSettingsComponents/SingleChoiceAlternatives'
@@ -52,6 +53,10 @@ const SlideSettings: React.FC = () => {
 
       {activeSlide?.questions[0]?.type_id === 4 && (
         <SingleChoiceAlternatives activeSlide={activeSlide} competitionId={competitionId} />
+      )}
+
+      {activeSlide?.questions[0]?.type_id === 5 && (
+        <MatchAlternatives activeSlide={activeSlide} competitionId={competitionId} />
       )}
 
       {activeSlide && (

@@ -3,6 +3,7 @@ import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined'
 import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked'
+import UnfoldMoreOutlinedIcon from '@material-ui/icons/UnfoldMoreOutlined'
 import React from 'react'
 import { RichSlide } from '../interfaces/ApiRichModels'
 
@@ -17,6 +18,8 @@ export const renderSlideIcon = (slide: RichSlide) => {
         return <CheckBoxOutlinedIcon /> // multiple choice question
       case 4:
         return <RadioButtonCheckedIcon /> // single choice question
+      case 5:
+        return <UnfoldMoreOutlinedIcon /> // Match question
     }
   } else {
     return <InfoOutlinedIcon /> // information slide

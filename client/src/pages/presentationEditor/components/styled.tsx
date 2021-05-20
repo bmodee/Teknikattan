@@ -153,8 +153,8 @@ interface SlideDisplayTextProps {
 
 export const SlideDisplayText = styled(Typography)<SlideDisplayTextProps>`
   position: absolute;
-  top: 5px;
-  left: ${(props) => (props.$right ? undefined : 5)}px;
-  right: ${(props) => (props.$right ? 5 : undefined)}px;
+  top: 0px;
+  left: ${(props) => (props.$right ? undefined : 0)}px;
+  right: ${(props) => (props.$right ? 0 : undefined)}px;
   font-size: ${(props) => 24 * props.$scale}px;
 `

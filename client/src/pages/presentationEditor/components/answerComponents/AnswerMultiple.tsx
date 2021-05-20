@@ -50,10 +50,6 @@ const AnswerMultiple = ({ variant, activeSlide, competitionId }: AnswerMultipleP
     if (!activeSlide) {
       return
     }
-
-    //const checkedValue = checked ? 1 : 0
-    //const correctAnswer = checkedValue === alternative.value ? 1 : 0
-
     const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/question_alternatives/${alternative.id}`
     const payload = {
       answer: checked ? 1 : 0,
@@ -97,7 +93,7 @@ const AnswerMultiple = ({ variant, activeSlide, competitionId }: AnswerMultipleP
                 checked={decideChecked(alt)}
                 onChange={(event: any) => updateAnswer(alt, event.target.checked)}
               />
-              <Typography style={{ wordBreak: 'break-all' }}>{alt.text}</Typography>
+              <Typography style={{ wordBreak: 'break-all' }}>{alt.alternative}</Typography>
             </ListItem>
           </div>
         ))}

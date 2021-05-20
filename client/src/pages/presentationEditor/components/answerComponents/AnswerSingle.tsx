@@ -110,7 +110,7 @@ const AnswerSingle = ({ variant, activeSlide, competitionId }: AnswerSingleProps
           <div key={alt.id}>
             <ListItem divider>
               {renderRadioButton(alt)}
-              <Typography style={{ wordBreak: 'break-all' }}>{alt.text}</Typography>
+              <Typography style={{ wordBreak: 'break-all' }}>{alt.alternative}</Typography>
             </ListItem>
           </div>
         ))}

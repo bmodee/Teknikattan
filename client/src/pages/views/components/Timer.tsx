@@ -3,24 +3,36 @@ import { setPresentationTimer } from '../../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 
 type TimerProps = {
-  disableText?: boolean
+  variant: 'editor' | 'presentation'
 }
 
-const Timer = ({ disableText }: TimerProps) => {
+const Timer = ({ variant }: TimerProps) => {
   const dispatch = useAppDispatch()
   const timer = useAppSelector((state) => state.presentation.timer)
   const [remainingTimer, setRemainingTimer] = useState<number>(0)
+  const remainingSeconds = remainingTimer / 1000
+  const remainingWholeSeconds = Math.floor(remainingSeconds % 60)
+  // Add a 0 before the seconds if it's lower than 10
+  const remainingDisplaySeconds = `${remainingWholeSeconds < 10 ? '0' : ''}${remainingWholeSeconds}`
+
+  const remainingMinutes = Math.floor(remainingSeconds / 60) % 60
+  // Add a 0 before the minutes if it's lower than 10
+  const remainingDisplayMinutes = `${remainingMinutes < 10 ? '0' : ''}${remainingMinutes}`
+
+  const displayTime = `${remainingDisplayMinutes}:${remainingDisplaySeconds}`
   const [timerIntervalId, setTimerIntervalId] = useState<NodeJS.Timeout | null>(null)
-  const slideTimer = useAppSelector(
-    (state) =>
-      state.presentation.competition.slides.find((slide) => slide.id === state.presentation.activeSlideId)?.timer
-  )
+  const slideTimer = useAppSelector((state) => {
+    if (variant === 'presentation')
+      return state.presentation.competition.slides.find((slide) => slide.id === state.presentation.activeSlideId)?.timer
+    return state.editor.competition.slides.find((slide) => slide.id === state.editor.activeSlideId)?.timer
+  })
 
   useEffect(() => {
-    if (slideTimer) setRemainingTimer(slideTimer)
+    if (slideTimer) setRemainingTimer(slideTimer * 1000)
   }, [slideTimer])
 
   useEffect(() => {
+    if (variant === 'editor') return
     if (!timer.enabled) {
       if (timerIntervalId !== null) clearInterval(timerIntervalId)
 
@@ -50,7 +62,7 @@ const Timer = ({ disableText }: TimerProps) => {
     )
   }, [timer.enabled, slideTimer])
 
-  return <>{`${!disableText ? 'Tid kvar:' : ''} ${Math.round(remainingTimer / 1000)}`}</>
+  return <>{slideTimer && displayTime}</>
 }
 
 export default Timer

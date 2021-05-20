@@ -90,8 +90,10 @@ class QuestionAlternativeSchema(BaseSchema):
         model = models.QuestionAlternative
 
     id = ma.auto_field()
-    text = ma.auto_field()
-    value = ma.auto_field()
+    alternative = ma.auto_field()
+    alternative_order = ma.auto_field()
+    correct = ma.auto_field()
+    correct_order = ma.auto_field()
     question_id = ma.auto_field()
 
 

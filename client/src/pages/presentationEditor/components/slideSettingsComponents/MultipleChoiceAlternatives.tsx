@@ -38,21 +38,20 @@ const MultipleChoiceAlternatives = ({ activeSlide, competitionId }: MultipleChoi
   /**
    * A checked checkbox is represented with 1 and an unchecked with 0.
    */
-  const numberToBool = (num: number) => {
-    if (num === 0) return false
+  const stringToBool = (num: string) => {
+    if (num === '0') return false
     else return true
   }
 
   const updateAlternativeValue = async (alternative: QuestionAlternative) => {
     if (activeSlide && activeSlide.questions?.[0]) {
-      let newValue: number
-      if (alternative.value === 0) {
-        newValue = 1
-      } else newValue = 0
-      await axios
-        .put(
+      let newValue: string
+      if (alternative.correct === '0') {
+        newValue = '1'
+      } else newValue = '0'
+      await axios        .put(
           `/api/competitions/${competitionId}/slides/${activeSlide?.id}/questions/${activeSlide?.questions[0].id}/alternatives/${alternative.id}`,
-          { value: newValue }
+          { correct: newValue }
         )
         .then(() => {
           dispatch(getEditorCompetition(competitionId))
@@ -66,7 +65,7 @@ const MultipleChoiceAlternatives = ({ activeSlide, competitionId }: MultipleChoi
       await axios
         .put(
           `/api/competitions/${competitionId}/slides/${activeSlide?.id}/questions/${activeSlide?.questions[0].id}/alternatives/${alternative_id}`,
-          { text: newText }
+          { alternative: newText }
         )
         .then(() => {
           dispatch(getEditorCompetition(competitionId))
@@ -80,7 +79,7 @@ const MultipleChoiceAlternatives = ({ activeSlide, competitionId }: MultipleChoi
       await axios
         .post(
           `/api/competitions/${competitionId}/slides/${activeSlide?.id}/questions/${activeSlide?.questions[0].id}/alternatives`,
-          { text: '', value: 0 }
+          { correct: '0' }
         )
         .then(() => {
           dispatch(getEditorCompetition(competitionId))
@@ -117,11 +116,11 @@ const MultipleChoiceAlternatives = ({ activeSlide, competitionId }: MultipleChoi
           <ListItem divider>
             <AlternativeTextField
               id="outlined-basic"
-              defaultValue={alt.text}
+              defaultValue={alt.alternative}
               onChange={(event) => updateAlternativeText(alt.id, event.target.value)}
               variant="outlined"
             />
-            <GreenCheckbox checked={numberToBool(alt.value)} onChange={() => updateAlternativeValue(alt)} />
+            <GreenCheckbox checked={stringToBool(alt.correct)} onChange={() => updateAlternativeValue(alt)} />
             <Clickable>
               <CloseIcon onClick={() => handleCloseAnswerClick(alt.id)} />
             </Clickable>

@@ -8,8 +8,7 @@ import app.database.controller as dbc
 from app.apis import item_response, list_response, protect_route
 from app.core.dto import SlideDTO
 from app.core.parsers import sentinel
-from app.database.controller.get import slide_count
-from app.database.models import Competition
+from app.database.models import Competition, Slide
 from flask_restx import Resource, reqparse
 from flask_restx.errors import abort
 
@@ -21,6 +20,7 @@ slide_parser_edit = reqparse.RequestParser()
 slide_parser_edit.add_argument("order", type=int, default=sentinel, location="json")
 slide_parser_edit.add_argument("title", type=str, default=sentinel, location="json")
 slide_parser_edit.add_argument("timer", type=int, default=sentinel, location="json")
+slide_parser_edit.add_argument("order", type=int, default=sentinel, location="json")
 slide_parser_edit.add_argument("background_image_id", default=sentinel, type=int, location="json")
 
 
@@ -59,6 +59,15 @@ class Slides(Resource):
         args = slide_parser_edit.parse_args(strict=True)
 
         item_slide = dbc.get.slide(competition_id, slide_id)
+
+        new_order = args.pop("order")
+        if new_order is not sentinel and item_slide.order != new_order:
+            if not (0 <= new_order < dbc.utils.count(Slide, {"competition_id": competition_id})):
+                abort(codes.BAD_REQUEST, f"Cant change to invalid slide order '{new_order}'")
+
+            item_competition = dbc.get.one(Competition, competition_id)
+            dbc.utils.move_order(item_competition.slides, "order", item_slide.order, new_order)
+
         item_slide = dbc.edit.default(item_slide, **args)
 
         return item_response(schema.dump(item_slide))
@@ -71,29 +80,6 @@ class Slides(Resource):
 
         dbc.delete.slide(item_slide)
         return {}, codes.NO_CONTENT
-
-
-@api.route("/<slide_id>/order")
-@api.param("competition_id, slide_id")
-class SlideOrder(Resource):
-    @protect_route(allowed_roles=["*"])
-    def put(self, competition_id, slide_id):
-        """ Edits the specified slide order using the provided arguments. """
-
-        args = slide_parser_edit.parse_args(strict=True)
-        new_order = args.get("order")
-
-        item_slide = dbc.get.slide(competition_id, slide_id)
-
-        if new_order == item_slide.order:
-            return item_response(schema.dump(item_slide))
-
-        if not (0 <= new_order < dbc.get.slide_count(competition_id)):
-            abort(codes.BAD_REQUEST, f"Cant change to invalid slide order '{new_order}'")
-
-        item_competition = dbc.get.one(Competition, competition_id)
-        dbc.utils.move_slides(item_competition, item_slide.order, new_order)
-        return item_response(schema.dump(item_slide))
 
 
 @api.route("/<slide_id>/copy")

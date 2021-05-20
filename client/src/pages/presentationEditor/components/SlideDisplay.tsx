@@ -1,4 +1,5 @@
-import { Typography } from '@material-ui/core'
+import { Card, Typography } from '@material-ui/core'
+import TimerIcon from '@material-ui/icons/Timer'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { getTypes } from '../../../actions/typesAction'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
@@ -60,11 +61,15 @@ const SlideDisplay = ({ variant, activeViewTypeId, currentSlideId }: SlideDispla
       <SlideEditorContainerRatio>
         <SlideEditorPaper ref={editorPaperRef}>
           <SlideDisplayText $scale={scale}>
-            {variant === 'editor' && slide?.timer ? `Tid kvar: ${slide?.timer}` : ''}
-            {variant === 'presentation' && <Timer />}
+            {slide?.timer && (
+              <Card style={{ display: 'flex', alignItems: 'center', padding: 10 }}>
+                <TimerIcon fontSize="large" />
+                <Timer variant={variant} />
+              </Card>
+            )}
           </SlideDisplayText>
           <SlideDisplayText $scale={scale} $right>
-            {slide && `Sida: ${slide?.order + 1} / ${totalSlides}`}
+            <Card style={{ padding: 10 }}>{slide && `${slide?.order + 1} / ${totalSlides}`}</Card>
           </SlideDisplayText>
           {(competitionBackgroundImage || slideBackgroundImage) && (
             <img

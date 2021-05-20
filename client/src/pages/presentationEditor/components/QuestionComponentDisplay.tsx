@@ -11,9 +11,10 @@
  * @module
  */
 
-import { Card, Divider, ListItem, Typography } from '@material-ui/core'
+import { AppBar, Card, Divider, Typography } from '@material-ui/core'
 import React from 'react'
 import { useAppSelector } from '../../../hooks'
+import AnswerMatch from './answerComponents/AnswerMatch'
 import AnswerMultiple from './answerComponents/AnswerMultiple'
 import AnswerSingle from './answerComponents/AnswerSingle'
 import AnswerText from './answerComponents/AnswerText'
@@ -80,21 +81,34 @@ const QuestionComponentDisplay = ({ variant, currentSlideId }: QuestionComponent
           )
         }
         return
-
+      case 'Match':
+        if (activeSlide) {
+          return (
+            <AnswerMatch
+              variant={variant}
+              activeSlide={activeSlide}
+              competitionId={activeSlide.competition_id.toString()}
+            />
+          )
+        }
+        return
       default:
         break
     }
   }
 
   return (
-    <Card style={{ maxHeight: '100%', overflowY: 'auto' }}>
-      <ListItem>
-        <Center style={{ justifyContent: 'space-evenly' }}>
-          <Typography>Poäng: {total_score}</Typography>
-          <Typography>{questionName}</Typography>
-          <Typography>Timer: {timer}</Typography>
-        </Center>
-      </ListItem>
+    <Card elevation={4} style={{ maxHeight: '100%', overflowY: 'auto' }}>
+      <AppBar position="relative">
+        <div style={{ display: 'flex', height: 60 }}>
+          <Center style={{ alignItems: 'center' }}>
+            <Typography variant="h5">{questionName}</Typography>
+          </Center>
+        </div>
+        <div style={{ position: 'fixed', right: 5, top: 14, display: 'flex', alignItems: 'center' }}>
+          <Typography variant="h5">{total_score}p</Typography>
+        </div>
+      </AppBar>
       <Divider />
       {getAlternatives()}
     </Card>

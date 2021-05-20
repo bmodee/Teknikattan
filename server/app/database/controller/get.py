@@ -2,6 +2,7 @@
 This file contains functionality to get data from the database.
 """
 
+import app.database.controller as dbc
 from app.core import db
 from app.core import http_codes as codes
 from app.database.models import (
@@ -57,7 +58,7 @@ def code_list(competition_id):
 def user_exists(email):
     """ Checks if an user has that email. """
 
-    return User.query.filter(User.email == email).count() > 0
+    return dbc.utils.count(User, {"email": email}) > 0
 
 
 def user_by_email(email):
@@ -87,12 +88,6 @@ def slide_list(competition_id):
     filters = Competition.id == competition_id
 
     return Slide.query.join(Competition, join_competition).filter(filters).all()
-
-
-def slide_count(competition_id):
-    """ Gets the number of slides in the provided competition. """
-
-    return Slide.query.filter(Slide.competition_id == competition_id).count()
 
 
 ### Teams ###

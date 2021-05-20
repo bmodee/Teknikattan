@@ -61,8 +61,10 @@ export interface Question extends NameID {
 
 export interface QuestionAlternative {
   id: number
-  text: string
-  value: number
+  alternative: string
+  alternative_order: number
+  correct: string
+  correct_order: number
   question_id: number
 }
 

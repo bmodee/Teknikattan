@@ -1,4 +1,4 @@
-import { Paper, TextField } from '@material-ui/core'
+import { Paper, TextField, Typography } from '@material-ui/core'
 import styled from 'styled-components'
 
 export const SlideContainer = styled.div`
@@ -60,4 +60,8 @@ export const Answers = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
+`
+
+export const UnderlinedTypography = styled(Typography)`
+  text-decoration: underline;
 `

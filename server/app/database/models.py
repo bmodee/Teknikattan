@@ -5,7 +5,8 @@ each other.
 """
 
 from app.core import bcrypt, db
-from app.database.types import IMAGE_COMPONENT_ID, QUESTION_COMPONENT_ID, TEXT_COMPONENT_ID
+from app.database.types import (IMAGE_COMPONENT_ID, QUESTION_COMPONENT_ID,
+                                TEXT_COMPONENT_ID)
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import backref
 
@@ -241,15 +242,23 @@ class QuestionAlternative(db.Model):
 
     Depend on table: Question.
     """
+    __table_args__ = (
+        db.UniqueConstraint("question_id", "alternative_order"),
+        db.UniqueConstraint("question_id", "correct_order"),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(STRING_SIZE), nullable=False)
-    value = db.Column(db.Integer, nullable=False)
+    alternative = db.Column(db.String(STRING_SIZE), nullable=False)
+    alternative_order = db.Column(db.Integer)
+    correct = db.Column(db.String(STRING_SIZE), nullable=False)
+    correct_order = db.Column(db.Integer)
     question_id = db.Column(db.Integer, db.ForeignKey("question.id"), nullable=False)
 
-    def __init__(self, text, value, question_id):
-        self.text = text
-        self.value = value
+    def __init__(self, alternative, alternative_order, correct, correct_order, question_id):
+        self.alternative = alternative
+        self.alternative_order = alternative_order
+        self.correct = correct
+        self.correct_order = correct_order
         self.question_id = question_id
 
 

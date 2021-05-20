@@ -97,7 +97,7 @@ const QuestionSettings = ({ activeSlide, competitionId }: QuestionSettingsProps)
         <Center>
           <SettingsItemContainer>
             <TextField
-              fullWidth={true}
+              fullWidth
               variant="outlined"
               placeholder="Antal poäng"
               helperText="Välj hur många poäng frågan ska ge för rätt svar.   Lämna blank för att inte använda poängfunktionen"

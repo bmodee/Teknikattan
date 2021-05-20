@@ -9,14 +9,15 @@ from app.database.models import Code
 from flask_restx import abort
 
 
-def move_slides(item_competition, from_order, to_order):
+def move_order(orders, order_key, from_order, to_order):
     """
-    Move slide from from_order to to_order in item_competition.
+    Move key from from_order to to_order in db_item. See examples in
+    alternatives.py and slides.py.
     """
 
-    num_slides = len(item_competition.slides)
-    assert 0 <= from_order < num_slides, "Invalid order to move from"
-    assert 0 <= to_order < num_slides, "Invalid order to move to"
+    num_orders = len(orders)
+    assert 0 <= from_order < num_orders, "Invalid order to move from"
+    assert 0 <= to_order < num_orders, "Invalid order to move to"
 
     # This function is sooo terrible, someone please tell me how to update
     # multiple values in the database at the same time with unique constraints.
@@ -26,61 +27,75 @@ def move_slides(item_competition, from_order, to_order):
     # so 2 commits.
 
     # An example will follow the entire code to make it clear what it does
-    # Lets say we have 5 slides, and we want to move the slide at index 1
+    # Lets say we have 5 orders, and we want to move the item at index 1
     # to index 4.
-    # We begin with a list of slides with orders [0, 1, 2, 3, 4]
-
-    slides = item_competition.slides
+    # We begin with a list of item with orders [0, 1, 2, 3, 4]
 
     change = 1 if to_order < from_order else -1
     start_order = min(from_order, to_order)
     end_order = max(from_order, to_order)
 
-    # Move slides up 100
-    for item_slide in slides:
-        item_slide.order += 100
+    # Move orders up 100
+    for item_with_order in orders:
+        setattr(item_with_order, order_key, getattr(item_with_order, order_key) + 100)
 
-    # Our slide orders now look like [100, 101, 102, 103, 104]
+    # Our items now look like [100, 101, 102, 103, 104]
 
-    # Move slides between from and to order either up or down, but minus in front
-    for item_slide in slides:
-        if start_order <= item_slide.order - 100 <= end_order:
-            item_slide.order = -(item_slide.order + change)
+    # Move orders between from and to order either up or down, but minus in front
+    for item_with_order in orders:
+        if start_order <= getattr(item_with_order, order_key) - 100 <= end_order:
+            setattr(item_with_order, order_key, -(getattr(item_with_order, order_key) + change))
 
-    # Our slide orders now look like [100, -100, -101, -102, -103]
+    # Our items now look like [100, -100, -101, -102, -103]
 
-    # Find the slide that was to be moved and change it to correct order with minus in front
-    for item_slide in slides:
-        if item_slide.order == -(from_order + change + 100):
-            item_slide.order = -(to_order + 100)
+    # Find the item that was to be moved and change it to correct order with minus in front
+    for item_with_order in orders:
+        if getattr(item_with_order, order_key) == -(from_order + change + 100):
+            setattr(item_with_order, order_key, -(to_order + 100))
             break
 
-    # Our slide orders now look like [100, -104, -101, -102, -103]
+    # Our items now look like [100, -104, -101, -102, -103]
 
     db.session.commit()
 
     # Negate all order so that they become positive
-    for item_slide in slides:
-        if start_order <= -(item_slide.order + 100) <= end_order:
-            item_slide.order = -(item_slide.order)
+    for item_with_order in orders:
+        if start_order <= -(getattr(item_with_order, order_key) + 100) <= end_order:
+            setattr(item_with_order, order_key, -getattr(item_with_order, order_key))
 
-    # Our slide orders now look like [100, 104, 101, 102, 103]
+    # Our items now look like [100, 104, 101, 102, 103]
 
-    for item_slide in slides:
-        item_slide.order -= 100
+    for item_with_order in orders:
+        setattr(item_with_order, order_key, getattr(item_with_order, order_key) - 100)
 
-    # Our slide orders now look like [0, 4, 1, 2, 3]
+    # Our items now look like [0, 4, 1, 2, 3]
 
-    # We have now successfully moved slide 1 to 4
+    # We have now successfully moved item from order 1 to order 4
 
-    return commit_and_refresh(item_competition)
+    db.session.commit()
+
+
+def count(db_type, filter=None):
+    """
+    Count number of db_type items that match all keys and values in filter.
+
+    >>> count(User, {"city_id": 1}) # Get number of users with city_id equal to 1
+    5
+    """
+
+    filter = filter or {}
+    query = db_type.query
+    for key, value in filter.items():
+        query = query.filter(getattr(db_type, key) == value)
+    return query.count()
 
 
 def generate_unique_code():
     """ Generates a unique competition code. """
 
     code = generate_code_string()
-    while db.session.query(Code).filter(Code.code == code).count():
+
+    while count(Code, {"code": code}):
         code = generate_code_string()
     return code
 

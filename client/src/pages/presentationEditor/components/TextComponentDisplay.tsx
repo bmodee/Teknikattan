@@ -1,5 +1,5 @@
 import React from 'react'
-import { ImageComponent, TextComponent } from '../../../interfaces/ApiModels'
+import { TextComponent } from '../../../interfaces/ApiModels'
 
 type TextComponentDisplayProps = {
   component: TextComponent

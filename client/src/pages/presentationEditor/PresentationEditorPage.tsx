@@ -131,7 +131,7 @@ const PresentationEditorPage: React.FC = () => {
     setSortedSlides(slidesCopy)
     if (draggedSlideId) {
       await axios
-        .put(`/api/competitions/${competitionId}/slides/${draggedSlideId}/order`, { order: result.destination.index })
+        .put(`/api/competitions/${competitionId}/slides/${draggedSlideId}`, { order: result.destination.index })
         .catch(console.log)
     }
   }

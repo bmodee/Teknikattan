@@ -5,8 +5,8 @@ This file contains functionality to add data to the database.
 import os
 
 import app.core.http_codes as codes
+import app.database.controller as dbc
 from app.core import db
-from app.database.controller import get, utils
 from app.database.models import (
     Blacklist,
     City,
@@ -80,7 +80,7 @@ def component(type_id, slide_id, view_type_id, x=0, y=0, w=0, h=0, copy=False, *
         item.text = data.get("text")
     elif type_id == IMAGE_COMPONENT_ID:
         if not copy:  # Scale image if adding a new one, a copied image should keep it's size
-            item_image = get.one(Media, data["media_id"])
+            item_image = dbc.get.one(Media, data["media_id"])
             filename = item_image.filename
             path = os.path.join(
                 current_app.config["UPLOADED_PHOTOS_DEST"],
@@ -109,14 +109,14 @@ def component(type_id, slide_id, view_type_id, x=0, y=0, w=0, h=0, copy=False, *
     else:
         abort(codes.BAD_REQUEST, f"Invalid type_id{type_id}")
 
-    item = utils.commit_and_refresh(item)
+    item = dbc.utils.commit_and_refresh(item)
     return item
 
 
 def code(view_type_id, competition_id=None, team_id=None):
     """ Adds a code to the database using the provided arguments. """
 
-    code_string = utils.generate_unique_code()
+    code_string = dbc.utils.generate_unique_code()
     return db_add(Code(code_string, view_type_id, competition_id, team_id))
 
 
@@ -135,7 +135,7 @@ def slide(competition_id):
     """ Adds a slide to the provided competition. """
 
     # Get the last order from given competition
-    order = Slide.query.filter(Slide.competition_id == competition_id).count()
+    order = dbc.utils.count(Slide, {"competition_id": competition_id})
 
     # Add slide
     item_slide = db_add(Slide(order, competition_id))
@@ -143,7 +143,7 @@ def slide(competition_id):
     # Add default question
     question(f"Fråga {item_slide.order + 1}", 10, 1, item_slide.id)
 
-    item_slide = utils.refresh(item_slide)
+    item_slide = dbc.utils.refresh(item_slide)
     return item_slide
 
 
@@ -151,12 +151,12 @@ def slide_without_question(competition_id):
     """ Adds a slide to the provided competition. """
 
     # Get the last order from given competition
-    order = Slide.query.filter(Slide.competition_id == competition_id).count()
+    order = dbc.utils.count(Slide, {"competition_id": competition_id})
 
     # Add slide
     item_slide = db_add(Slide(order, competition_id))
 
-    item_slide = utils.refresh(item_slide)
+    item_slide = dbc.utils.refresh(item_slide)
     return item_slide
 
 
@@ -179,7 +179,7 @@ def competition(name, year, city_id):
     # Add code for Operator view
     code(4, item_competition.id)
 
-    item_competition = utils.refresh(item_competition)
+    item_competition = dbc.utils.refresh(item_competition)
     return item_competition
 
 
@@ -202,7 +202,7 @@ def _competition_no_slides(name, year, city_id, font=None):
     # Add code for Operator view
     code(4, item_competition.id)
 
-    item_competition = utils.refresh(item_competition)
+    item_competition = dbc.utils.refresh(item_competition)
     return item_competition
 
 
@@ -276,13 +276,14 @@ def question(name, total_score, type_id, slide_id, correcting_instructions=None)
     return db_add(Question(name, total_score, type_id, slide_id, correcting_instructions))
 
 
-def question_alternative(text, value, question_id):
+def question_alternative(alternative, correct, question_id):
     """
     Adds a question alternative to the specified
     question using the provided arguments.
     """
 
-    return db_add(QuestionAlternative(text, value, question_id))
+    order = dbc.utils.count(QuestionAlternative, {"question_id": question_id})
+    return db_add(QuestionAlternative(alternative, order, correct, order, question_id))
 
 
 def question_score(score, question_id, team_id):
