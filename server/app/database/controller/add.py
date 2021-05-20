@@ -7,30 +7,15 @@ import os
 import app.core.http_codes as codes
 import app.database.controller as dbc
 from app.core import db
-from app.database.models import (
-    Blacklist,
-    City,
-    Code,
-    Competition,
-    ComponentType,
-    ImageComponent,
-    Media,
-    MediaType,
-    Question,
-    QuestionAlternative,
-    QuestionAlternativeAnswer,
-    QuestionComponent,
-    QuestionScore,
-    QuestionType,
-    Role,
-    Slide,
-    Team,
-    TextComponent,
-    User,
-    ViewType,
-    Whitelist,
-)
-from app.database.types import IMAGE_COMPONENT_ID, QUESTION_COMPONENT_ID, TEXT_COMPONENT_ID
+from app.database.models import (Blacklist, City, Code, Competition,
+                                 ComponentType, ImageComponent, Media,
+                                 MediaType, Question, QuestionAlternative,
+                                 QuestionAlternativeAnswer, QuestionComponent,
+                                 QuestionScore, QuestionType, Role, Slide,
+                                 Team, TextComponent, User, ViewType,
+                                 Whitelist)
+from app.database.types import (IMAGE_COMPONENT_ID, QUESTION_COMPONENT_ID,
+                                TEXT_COMPONENT_ID)
 from flask import current_app
 from flask.globals import current_app
 from flask_restx import abort
@@ -140,10 +125,6 @@ def slide(competition_id):
     # Add slide
     item_slide = db_add(Slide(order, competition_id))
 
-    # Add default question
-    question(f"Fråga {item_slide.order + 1}", 10, 1, item_slide.id)
-
-    item_slide = dbc.utils.refresh(item_slide)
     return item_slide
 
 
