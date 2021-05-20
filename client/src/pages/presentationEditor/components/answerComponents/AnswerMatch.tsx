@@ -37,6 +37,7 @@ const AnswerMatch = ({ variant, activeSlide, competitionId }: AnswerMultipleProp
   const [sortedAlternatives, setSortedAlternatives] = useState<QuestionAlternative[]>([])
   const [sortedAnswers, setSortedAnswers] = useState<QuestionAlternative[]>([])
   const team = useAppSelector((state) => state.presentation.competition.teams.find((team) => team.id === teamId))
+  const timer = useAppSelector((state) => state.presentation.timer)
 
   useEffect(() => {
     if (activeSlide) {
@@ -68,9 +69,17 @@ const AnswerMatch = ({ variant, activeSlide, competitionId }: AnswerMultipleProp
     }
   }, [teamId])
 
+  const getButtonStyle = () => {
+    if (!(timer.value === null || (timer.enabled && timer.value))) {
+      return { fill: '#AAAAAA' } // Buttons are light grey if  timer is not on
+    }
+    return {}
+  }
+
   const onMove = async (previousIndex: number, resultIndex: number) => {
     // moved outside the list
     if (resultIndex < 0 || resultIndex >= sortedAnswers.length || variant !== 'presentation') return
+    if (!(timer.value === null || (timer.enabled && timer.value))) return
     const answersCopy = [...sortedAnswers]
     const [removed] = answersCopy.splice(previousIndex, 1)
     answersCopy.splice(resultIndex, 0, removed)
@@ -117,10 +126,10 @@ const AnswerMatch = ({ variant, activeSlide, competitionId }: AnswerMultipleProp
               </MatchCorrectContainer>
               <MatchButtonContainer>
                 <Clickable>
-                  <KeyboardArrowUpIcon onClick={() => onMove(index, index - 1)} />
+                  <KeyboardArrowUpIcon style={getButtonStyle()} onClick={() => onMove(index, index - 1)} />
                 </Clickable>
                 <Clickable>
-                  <KeyboardArrowDownIcon onClick={() => onMove(index, index + 1)} />
+                  <KeyboardArrowDownIcon style={getButtonStyle()} onClick={() => onMove(index, index + 1)} />
                 </Clickable>
               </MatchButtonContainer>
             </MatchCard>

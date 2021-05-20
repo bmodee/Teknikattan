@@ -34,6 +34,7 @@ const AnswerMultiple = ({ variant, activeSlide, competitionId }: AnswerMultipleP
   const dispatch = useAppDispatch()
   const teamId = useAppSelector((state) => state.competitionLogin.data?.team_id)
   const team = useAppSelector((state) => state.presentation.competition.teams.find((team) => team.id === teamId))
+  const timer = useAppSelector((state) => state.presentation.timer)
 
   const decideChecked = (alternative: QuestionAlternative) => {
     const answer = team?.question_alternative_answers.find(
@@ -47,7 +48,7 @@ const AnswerMultiple = ({ variant, activeSlide, competitionId }: AnswerMultipleP
 
   const updateAnswer = async (alternative: QuestionAlternative, checked: boolean) => {
     // TODO: fix. Make list of alternatives and delete & post instead of put to allow multiple boxes checked.
-    if (!activeSlide) {
+    if (!(activeSlide && (timer.value === null || (timer.enabled && timer.value)))) {
       return
     }
     const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/question_alternatives/${alternative.id}`
@@ -90,6 +91,7 @@ const AnswerMultiple = ({ variant, activeSlide, competitionId }: AnswerMultipleP
           <div key={alt.id}>
             <ListItem divider>
               <GreenCheckbox
+                disabled={!(timer.value === null || (timer.enabled && timer.value))}
                 checked={decideChecked(alt)}
                 onChange={(event: any) => updateAnswer(alt, event.target.checked)}
               />

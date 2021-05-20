@@ -37,6 +37,7 @@ const AnswerSingle = ({ variant, activeSlide, competitionId }: AnswerSingleProps
     if (variant === 'editor') return state.editor.competition.teams.find((team) => team.id === teamId)
     return state.presentation.competition.teams.find((team) => team.id === teamId)
   })
+  const timer = useAppSelector((state) => state.presentation.timer)
 
   const decideChecked = (alternative: QuestionAlternative) => {
     const answer = team?.question_alternative_answers.find(
@@ -49,7 +50,7 @@ const AnswerSingle = ({ variant, activeSlide, competitionId }: AnswerSingleProps
   }
 
   const updateAnswer = async (alternative: QuestionAlternative) => {
-    if (!activeSlide) {
+    if (!(activeSlide && (timer.value === null || (timer.enabled && timer.value)))) {
       return
     }
 
@@ -77,22 +78,26 @@ const AnswerSingle = ({ variant, activeSlide, competitionId }: AnswerSingleProps
    * Renders the radio button which the participants will click to mark their answer.
    */
   const renderRadioButton = (alt: QuestionAlternative) => {
+    let disabledStyle
+    if (!(timer.value === null || (timer.enabled && timer.value))) {
+      disabledStyle = { fill: '#AAAAAA' } // Buttons are light grey if  timer is not on
+    }
     if (variant === 'presentation') {
       if (decideChecked(alt)) {
         return (
           <Clickable>
-            <RadioButtonCheckedIcon onClick={() => updateAnswer(alt)} />
+            <RadioButtonCheckedIcon style={disabledStyle} onClick={() => updateAnswer(alt)} />
           </Clickable>
         )
       } else {
         return (
           <Clickable>
-            <RadioButtonUncheckedIcon onClick={() => updateAnswer(alt)} />
+            <RadioButtonUncheckedIcon style={disabledStyle} onClick={() => updateAnswer(alt)} />
           </Clickable>
         )
       }
     } else {
-      return <RadioButtonUncheckedIcon onClick={() => updateAnswer(alt)} />
+      return <RadioButtonUncheckedIcon style={disabledStyle} onClick={() => updateAnswer(alt)} />
     }
   }
 

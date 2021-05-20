@@ -31,14 +31,18 @@ const AnswerText = ({ activeSlide, competitionId }: AnswerTextProps) => {
   const dispatch = useAppDispatch()
   const teamId = useAppSelector((state) => state.competitionLogin.data?.team_id)
   const team = useAppSelector((state) => state.presentation.competition.teams.find((team) => team.id === teamId))
+  const timer = useAppSelector((state) => state.presentation.timer)
 
   const onAnswerChange = (answer: string) => {
     if (timerHandle) {
       clearTimeout(timerHandle)
       setTimerHandle(undefined)
     }
-    //Only updates answer 100ms after last input was made
-    setTimerHandle(window.setTimeout(() => updateAnswer(answer), 100))
+    //Only updates answer if the timer is on
+    if (timer.value === null || (timer.enabled && timer.value)) {
+      //Only updates answer 100ms after last input was made
+      setTimerHandle(window.setTimeout(() => updateAnswer(answer), 100))
+    }
   }
 
   const updateAnswer = async (answer: string) => {
@@ -75,7 +79,7 @@ const AnswerText = ({ activeSlide, competitionId }: AnswerTextProps) => {
       </ListItem>
       <ListItem style={{ height: '100%' }}>
         <TextField
-          disabled={team === undefined}
+          disabled={team === undefined || !(timer.value === null || (timer.enabled && timer.value))}
           defaultValue={getDefaultString()}
           style={{ height: '100%' }}
           variant="outlined"
