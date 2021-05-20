@@ -54,7 +54,7 @@ const AddUser: React.FC = (props: any) => {
     const params = {
       email: values.model.email,
       password: values.model.password,
-      //name: values.model.name,
+      name: values.model.name,
       city_id: selectedCity?.id as number,
       role_id: selectedRole?.id as number,
     }
