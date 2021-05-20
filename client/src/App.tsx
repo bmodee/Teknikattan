@@ -9,6 +9,7 @@ import { ThemeProvider } from 'styled-components'
 import Main from './Main'
 import { Wrapper } from './styled'
 
+/** Create a theme for the application with the colors specified by customer */
 const theme = createMuiTheme({
   palette: {
     primary: {
