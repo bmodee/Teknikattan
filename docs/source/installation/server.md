@@ -5,7 +5,7 @@ In order to install the server, you will need to do the following:
 
 Install [Python](https://www.python.org/downloads/).
 
-Clone [teknikattan-scoring-system](https://gitlab.liu.se/tddd96-grupp11/teknikattan-scoring-system).
+Clone the git repository [teknikattan-scoring-system](https://gitlab.liu.se/tddd96-grupp11/teknikattan-scoring-system).
 
 Open a terminal and navigate to the root of the cloned project.
 
@@ -32,7 +32,7 @@ On Linux/Mac:
 source env/bin/activate
 ```
 
-Install all project dependencies:
+Lastly, install all project dependencies:
 
 ```bash
 pip install -r requirements.txt
@@ -41,3 +41,5 @@ pip install -r requirements.txt
 You should now be ready to start the server.
 Try it by running `python main.py` and navigate to `localhost:5000`.
 If everything worked as it should you should see a list of all available API calls.
+
+[comment]: # (Should we mention the task for starting the server?)

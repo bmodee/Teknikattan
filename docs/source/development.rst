@@ -1,8 +1,8 @@
 Development
 ===========
 
-In this section we give all the instructions necessary to continue the development of this project.
-We also give some recommentations for how to go about it.
+This section will give all the instructions necessary to continue the development of this project.
+Some recommendations for how to go about it will also be given.
 
 .. toctree::
     :maxdepth: 2

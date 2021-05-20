@@ -6,10 +6,10 @@ This documents describes how to install and run the client.
 
 You will need to do the following things to install the client:
 
-1. Install [Visual Studio Code](https://code.visualstudio.com/) (VSCode).
+1. Install [Visual Studio Code](https://code.visualstudio.com/) (VS Code).
 2. Install [Node (LTS)](https://nodejs.org/en/).
 3. Clone this repository if you haven't done so already.
-4. Open the project folder in VSCode.
+4. Open the project folder in VS Code.
 5. Open the integrated terminal by pressing `ctrl+ö`.
 6. Type the following commands (or simply paste them) into your terminal:
 

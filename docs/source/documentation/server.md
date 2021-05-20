@@ -16,7 +16,7 @@ sphinx-quickstart
 
 You will be asked a few questions about how to configure Sphinx.
 Just press enter on all, which will use the default.
-You can enter the correct projet name and/or author if you want, but it's not necessary, no one but you will see it anyway.
+You can enter the correct project name and/or author if you want, but it's not necessary, no one but you will see it anyway.
 
 Then will need to modify a few files.
 First add the following code snippet after the first block of comments, above the "project information" comment, in the file `./server/docs/conf.py`:

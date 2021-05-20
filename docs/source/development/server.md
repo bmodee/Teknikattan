@@ -13,7 +13,7 @@ When [installing the server](../installation/server.md) you installed `virtualen
 
 Python uses `pip` to manage it's packages.
 Here we briefly describe to use it.
-All of the following instructions assume you have created and activated a virtual environment.
+All of the following instructions assume you have created and activated a virtual environment and are located in the server folder.
 
 To install a package, run `pip install <package>`.
 
@@ -23,4 +23,4 @@ To save a package as a dependency to the project, run `pip freeze > requirements
 
 To install all project dependencies, run `pip install -r requirements.txt`.
 
-Remember to install the project dependencies whenever someone else has added new ones to the project.
+Remember to install the project dependencies whenever you or someone else has added new ones to the project.

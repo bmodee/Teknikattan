@@ -5,19 +5,21 @@ The terms frontend and client as well as backend and server will be used interch
 
 ![Systemöversikt](../_static/system_overview.svg)
 
-First we have the main server which is written in Python using the micro-framework Flask.
-Then have a fairly small Node server who's only function is to serve the React frontend pages.
-Lastly we have the frontend which is written in TypeScript using React and Redux.
+First there is the main server which is written in Python using the micro-framework Flask.
+Then there is a fairly small Node server with only one function, to serve the React frontend pages.
+Lastly there is the frontend which is written in TypeScript using React and Redux.
 
 ## Communication
 
-The frontend communicates with the backend in two ways.
-All of the following ways are authorized on the server to make sure that who ever tried to communicate has the correct access level.
+The frontend communicates with the backend in two ways, both of which are authorized on the server.
+This is to make sure that whoever tries to communicate has the correct level of access.
 
 ### API
 
-API calls are used for simple functions the client wants to perform, such as getting, editing and saving data.
-These are sent from the client to the backend Node server who will proxy the request to the main Python server.
+[comment]: # (What does "that will proxy the request to the main Python server" mean?)
+
+API calls are used for simple functions that the client wants to perform, such as getting, editing, and saving data.
+These are sent from the client to the backend Node server that will proxy the request to the main Python server.
 The request will then be handled there and the response will be sent back.
 The Node server will then send them back to the client.
 

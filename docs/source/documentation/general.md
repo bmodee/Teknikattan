@@ -17,5 +17,5 @@ choco install make
 You also need to [install the server](../installation/server.md).
 
 You should now be able to generate the documentation by activating the Python virtual environment, navigating to `docs/` and running `make html`.
-Alternatively you can also run the [VSCode task](../development/vscode.html#tasks) `Generate server documentation`, which will do the same thing.
+Alternatively you can also run the [VS Code task](../development/vscode.html#tasks) `Generate documentation`, which will do the same thing.
 If everything went well you should be able to open it by running (from the `docs/` folder) `start ./build/html/index.html` or running the task `Open documentation`, which does the same thing.

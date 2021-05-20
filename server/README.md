@@ -6,10 +6,10 @@ This document describes how to install and run the server.
 
 You will need to do the following things to install the server:
 
-1. Install [Visual Studio Code](https://code.visualstudio.com/) (VSCode).
+1. Install [Visual Studio Code](https://code.visualstudio.com/) (VS Code).
 2. Install [Python](https://www.python.org/downloads/).
 3. Clone this repository if you haven't done so already.
-4. Open the project folder in VSCode.
+4. Open the project folder in VS Code.
 5. Open the integrated terminal by pressing `ctrl+ö`.
 6. Type the following commands into your terminal:
 

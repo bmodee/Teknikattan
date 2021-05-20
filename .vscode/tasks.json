@@ -82,21 +82,21 @@
       }
     },
     {
-      "label": "Generate server documentation",
+      "label": "Generate documentation",
       "type": "shell",
-      "command": "../env/Scripts/activate; ./make html",
+      "command": "../server/env/Scripts/activate; ./make html",
       "problemMatcher": [],
       "options": {
-        "cwd": "${workspaceFolder}/server/docs"
+        "cwd": "${workspaceFolder}/docs"
       }
     },
     {
-      "label": "Open server documentation",
+      "label": "Open documentation",
       "type": "shell",
       "command": "start index.html",
       "problemMatcher": [],
       "options": {
-        "cwd": "${workspaceFolder}/server/docs/build/html"
+        "cwd": "${workspaceFolder}/docs/build/html"
       }
     },
     {

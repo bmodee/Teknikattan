@@ -1,6 +1,10 @@
 # Frontend
 
+[comment]: # (TODO)
+
 ## Working with TypeScript
+
+[comment]: # (TODO)
 
 ### npm
 
@@ -14,4 +18,4 @@ To uninstall a module, run `npm uninstall <module>`.
 
 To install all project dependencies, run `npm install`.
 
-Remember to install the project dependencies whenever someone else has added new ones to the project.
+It is important to remember to install the project dependencies whenever someone else has added new ones to the project.

@@ -1,6 +1,6 @@
 # External programs
 
-We also used some other programs help the development.
+These are some useful programs that can help with the development.
 
 ## Postman
 
@@ -12,3 +12,5 @@ It's very helpful when developing APIs.
 
 [DB Browser for SQlite](https://sqlitebrowser.org/) is used to see what is currently stored in the database.
 You can even edit values.
+
+[comment]: # (Add VS CODE?)

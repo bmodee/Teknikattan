@@ -9,7 +9,7 @@ To install the client and server needed to run the application, look in their re
 ## Using
 
 After installing both the client and the server, you are ready to run the application.
-This is done in VSCode by pressing `ctrl+shift+b` and running the `Start client and server` task.
+This is done in VS Code by pressing `ctrl+shift+b` and running the `Start client and server` task.
 The terminals for the client and server will now be seen on the right and left, respectively.
 After making a change to either the client or the server while they are running, simply reload the page to see the changes immediately.
 
@@ -27,7 +27,7 @@ To begin working, you need to choose an issue and create a branch from it.
 4. Choose one of these issues and click on it.
 5. Add yourself as an asignee (in top right corner).
 6. Press the little green downarrow on the right of the `Create merge request` button and select and press `Create branch`.
-7. Open the project in VSCode.
+7. Open the project in VS Code.
 8. Type `git pull`. This will fetch the new branch you just created.
 9. Switch to it by running `git checkout <branch>`. (Example: `git checkout 5-add-login-api`)
 
@@ -49,7 +49,7 @@ This is done in two steps:
 First you need to prepare your branch to be merged and then create a merge request.
 First, prepare your branch to be merged.
 
-1. Open the project in VSCode.
+1. Open the project in VS Code.
 2. Checkout your branch, if you are not already on it (`git checkout <branch>`).
 3. Run `git pull origin dev`. This will try to merge the latest changes from `dev` into your branch. This can have a few different results:
    - There will be no changes, which is fine.
@@ -70,12 +70,12 @@ You cannot approve your own merge requests but once it's approved anyone can mer
 ### Merge conflicts
 
 You will need to manually merge if there is a merge conflict between your branch and another.
-This is simply done by opening the project in VSCode and going to the Git tab on the left (git symbol).
+This is simply done by opening the project in VS Code and going to the Git tab on the left (git symbol).
 You will then see som files marked with `C`, which indicates that there are conflicts in these files.
 You will have to go through all of the merge conflicts and solve them in each file.
-A merge typically looks like the code snippet at the bottom of this document in plain text (try opening this in VSCode and see how it looks).
+A merge typically looks like the code snippet at the bottom of this document in plain text (try opening this in VS Code and see how it looks).
 The only thing you really need to do is removing the `<<<<<<<`, `=======` and `>>>>>>>` symbols from the document, although you don't have to do it by hand.
-In VSCode, you can simply choose if you want to keep incoming changes (from the branch you merging into), current changes (from your branch) or both.
+In VS Code, you can simply choose if you want to keep incoming changes (from the branch you merging into), current changes (from your branch) or both.
 Solve all the merge conflicts in every file and run the tests to make sure it still works.
 Commit and push your changes when you are done.
 
