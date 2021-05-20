@@ -20,6 +20,7 @@ interface formError {
   message: string
 }
 
+/** Form logic with some requirements and constraints */
 const accountSchema: Yup.SchemaOf<AccountLoginFormModel> = Yup.object({
   model: Yup.object()
     .shape({
@@ -42,6 +43,8 @@ const AdminLogin: React.FC = () => {
     }
     setLoading(UILoading)
   }, [UIErrors, UILoading])
+
+  /** dispatch with the entered values */
   const handleAccountSubmit = (values: AccountLoginFormModel, actions: FormikHelpers<AccountLoginFormModel>) => {
     dispatch(loginUser(values.model, history))
   }
@@ -50,6 +53,8 @@ const AdminLogin: React.FC = () => {
   const accountInitialValues: AccountLoginFormModel = {
     model: { email: '', password: '' },
   }
+
+  /** Render the form */
   return (
     <Formik initialValues={accountInitialValues} validationSchema={accountSchema} onSubmit={handleAccountSubmit}>
       {(formik) => (

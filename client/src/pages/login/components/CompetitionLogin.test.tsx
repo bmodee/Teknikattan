@@ -4,6 +4,8 @@ import { Provider } from 'react-redux'
 import store from '../../../store'
 import CompetitionLogin from './CompetitionLogin'
 
+/** Test CompetitionLogin */
+
 it('renders competition login', () => {
   render(
     <Provider store={store}>
