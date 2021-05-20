@@ -224,7 +224,7 @@ const AddUser: React.FC = (props: any) => {
                 </Button>
                 {formik.errors.error && (
                   <Alert severity="error">
-                    <AlertTitle>Error</AlertTitle>
+                    <AlertTitle>Något gick fel</AlertTitle>
                     {formik.errors.error}
                   </Alert>
                 )}

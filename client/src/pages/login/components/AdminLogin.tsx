@@ -92,7 +92,7 @@ const AdminLogin: React.FC = () => {
           </Button>
           {errors.message && (
             <Alert severity="error">
-              <AlertTitle>Error</AlertTitle>
+              <AlertTitle>Något gick fel</AlertTitle>
               <Typography>Någonting gick fel. Kontrollera</Typography>
               <Typography>dina användaruppgifter och försök igen</Typography>
             </Alert>

@@ -147,7 +147,7 @@ const JudgeScoreDisplay = ({ teamIndex, activeSlide }: ScoreDisplayProps) => {
             </Card>
           ))}
         </div>
-        Total poäng: {scores.reduce((a, b) => sumTwoScores(a, b), 0)}
+        Totala poäng: {scores.reduce((a, b) => sumTwoScores(a, b), 0)}
       </Typography>
       <AnswersDisplay>
         <Answers>

@@ -63,7 +63,7 @@ const CompetitionLogin: React.FC = () => {
           </Button>
           {errors && (
             <Alert severity="error">
-              <AlertTitle>Error</AlertTitle>
+              <AlertTitle>Något gick fel</AlertTitle>
               <Typography>En tävling med den koden existerar ej.</Typography>
               <Typography>Dubbelkolla koden och försök igen</Typography>
             </Alert>

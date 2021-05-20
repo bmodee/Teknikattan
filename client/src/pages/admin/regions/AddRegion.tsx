@@ -102,7 +102,7 @@ const AddRegion: React.FC = (props: any) => {
           </FormControl>
           {formik.errors.error && (
             <Alert severity="error">
-              <AlertTitle>Error</AlertTitle>
+              <AlertTitle>Något gick fel</AlertTitle>
               {formik.errors.error}
             </Alert>
           )}
