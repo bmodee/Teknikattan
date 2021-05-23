@@ -152,7 +152,7 @@ const UserManager: React.FC = (props: any) => {
           <TableBody>
             {users &&
               users.map((row) => (
-                <TableRow key={row.email}>
+                <TableRow key={row.id}>
                   <TableCell scope="row">{row.email}</TableCell>
                   <TableCell scope="row">{row.name}</TableCell>
                   <TableCell>{cities.find((city) => city.id === row.city_id)?.name || ''}</TableCell>

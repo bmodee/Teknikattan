@@ -81,7 +81,7 @@ const RegionManager: React.FC = (props: any) => {
           <TableBody>
             {cities &&
               cities.map((row) => (
-                <TableRow key={row.name}>
+                <TableRow key={row.id}>
                   <TableCell scope="row">{row.name}</TableCell>
                   <TableCell align="right">
                     <Button onClick={(event) => handleClick(event, row.id)} data-testid={row.name}>
