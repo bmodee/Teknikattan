@@ -316,7 +316,7 @@ const CompetitionManager: React.FC = (props: any) => {
           <TableBody>
             {competitions &&
               competitions.map((row) => (
-                <TableRow key={row.name}>
+                <TableRow key={row.id}>
                   <TableCell scope="row">
                     <Button color="primary" component={Link} to={`/editor/competition-id=${row.id}`}>
                       {row.name}
