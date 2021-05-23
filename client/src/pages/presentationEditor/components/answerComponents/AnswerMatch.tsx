@@ -58,7 +58,7 @@ const AnswerMatch = ({ variant, activeSlide, competitionId }: AnswerMultipleProp
           (alt) => alternative.alternative_order === alt.correct_order
         )
         axios
-          .put(`/api/competitions/${competitionId}/teams/${teamId}/answers/question_alternatives/${alternative.id}`, {
+          .put(`/api/competitions/${competitionId}/teams/${teamId}/answers/${alternative.id}`, {
             answer: `${alternative.alternative} - ${answer?.correct}`,
           })
           .then(() => {
@@ -89,7 +89,7 @@ const AnswerMatch = ({ variant, activeSlide, competitionId }: AnswerMultipleProp
       const answeredText = answersCopy[index].correct
       if (!activeSlide) return
       axios
-        .put(`/api/competitions/${competitionId}/teams/${teamId}/answers/question_alternatives/${alternative.id}`, {
+        .put(`/api/competitions/${competitionId}/teams/${teamId}/answers/${alternative.id}`, {
           answer: `${alternative.alternative} - ${answeredText}`,
         })
         .catch(console.log)

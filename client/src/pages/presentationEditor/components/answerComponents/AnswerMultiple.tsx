@@ -51,7 +51,7 @@ const AnswerMultiple = ({ variant, activeSlide, competitionId }: AnswerMultipleP
     if (!activeSlide || (activeSlide?.timer !== null && !timer.enabled)) {
       return
     }
-    const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/question_alternatives/${alternative.id}`
+    const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/${alternative.id}`
     const payload = {
       answer: checked ? 1 : 0,
     }

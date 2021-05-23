@@ -57,11 +57,11 @@ const AnswerSingle = ({ variant, activeSlide, competitionId }: AnswerSingleProps
     // Unselect each radio button to only allow one selected alternative
     const alternatives = activeSlide.questions[0].alternatives
     for (const alt of alternatives) {
-      const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/question_alternatives/${alt.id}`
+      const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/${alt.id}`
       await axios.put(url, { answer: 0 })
     }
     // Update selected alternative
-    const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/question_alternatives/${alternative.id}`
+    const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/${alternative.id}`
     await axios
       .put(url, { answer: 1 })
       .then(() => {

@@ -50,7 +50,7 @@ const AnswerText = ({ activeSlide, competitionId }: AnswerTextProps) => {
       return
     }
     const alternative = activeSlide.questions[0].alternatives[0]
-    const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/question_alternatives/${alternative.id}`
+    const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/${alternative.id}`
     await axios
       .put(url, { answer })
       .then(() => {
