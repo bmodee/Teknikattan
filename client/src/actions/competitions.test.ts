@@ -11,25 +11,24 @@ const mockStore = configureMockStore(middlewares)
 
 it('dispatches correct actions when getting competitions', async () => {
   const compRes: any = {
-    data: {
-      items: [
-        {
-          id: 21,
-          name: 'ggff',
-          year: 2021,
-          style_id: 1,
-          city: { name: 'city_name', id: 5 },
-        },
-        {
-          id: 22,
-          name: 'sssss',
-          year: 2021,
-          style_id: 1,
-          city: { name: 'city_name', id: 5 },
-        },
-      ],
-      count: 2,
-      total_count: 3,
+    data: [
+      {
+        id: 21,
+        name: 'ggff',
+        year: 2021,
+        style_id: 1,
+        city: { name: 'city_name', id: 5 },
+      },
+      {
+        id: 22,
+        name: 'sssss',
+        year: 2021,
+        style_id: 1,
+        city: { name: 'city_name', id: 5 },
+      },
+    ],
+    headers: {
+      pagination: '{"count": 2,"total": 3, "page_size": 5}',
     },
   }
 
@@ -37,9 +36,9 @@ it('dispatches correct actions when getting competitions', async () => {
     return Promise.resolve(compRes)
   })
   const expectedActions = [
-    { type: Types.SET_COMPETITIONS, payload: compRes.data.items },
-    { type: Types.SET_COMPETITIONS_TOTAL, payload: compRes.data.total_count },
-    { type: Types.SET_COMPETITIONS_COUNT, payload: compRes.data.count },
+    { type: Types.SET_COMPETITIONS, payload: compRes.data },
+    { type: Types.SET_COMPETITIONS_TOTAL, payload: 3 },
+    { type: Types.SET_COMPETITIONS_COUNT, payload: 2 },
   ]
   const store = mockStore({ competitions: { filterParams: [] } })
   await getCompetitions()(store.dispatch, store.getState as any)

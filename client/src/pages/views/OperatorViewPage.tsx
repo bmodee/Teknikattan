@@ -152,7 +152,7 @@ const OperatorViewPage: React.FC = () => {
     await axios
       .get(`/api/competitions/${activeId}/codes`)
       .then((response) => {
-        setCodes(response.data.items)
+        setCodes(response.data)
       })
       .catch(console.log)
   }

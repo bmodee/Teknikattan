@@ -16,7 +16,7 @@ const initialState: CompetitionState = {
   competitions: [],
   total: 0,
   count: 0,
-  filterParams: { pageSize: 10, page: 0 },
+  filterParams: { pageSize: 10, page: 1 },
 }
 
 /** Intercept actions for competitions state and update the state */

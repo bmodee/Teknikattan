@@ -8,19 +8,18 @@ import RegionManager from './Regions'
 
 it('renders region manager', () => {
   const cityRes: any = {
-    data: {
-      items: [
-        {
-          id: 1,
-          name: 'Link\u00f6ping',
-        },
-        {
-          id: 2,
-          name: 'Stockholm',
-        },
-      ],
-      count: 2,
-      total_count: 3,
+    data: [
+      {
+        id: 1,
+        name: 'Link\u00f6ping',
+      },
+      {
+        id: 2,
+        name: 'Stockholm',
+      },
+    ],
+    headers: {
+      pagination: '{"count": 2,"total_count": 3}',
     },
   }
 

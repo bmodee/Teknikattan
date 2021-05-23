@@ -1,6 +1,8 @@
 import pytest
 from app import create_app, db
 
+DISABLE_TESTS = False
+
 
 @pytest.fixture
 def app():

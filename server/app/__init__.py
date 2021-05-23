@@ -1,9 +1,11 @@
 from flask import Flask, redirect, request
 from flask_uploads import configure_uploads
+from flask_uploads.extensions import IMAGES
+from flask_uploads.flask_uploads import UploadSet
 
 import app.database.models as models
+from app.apis import init_api
 from app.core import bcrypt, db, jwt, ma
-from app.core.dto import MediaDTO
 
 
 def create_app(config_name="configmodule.DevelopmentConfig"):
@@ -25,7 +27,7 @@ def create_app(config_name="configmodule.DevelopmentConfig"):
         db.init_app(app)
         db.create_all()
         ma.init_app(app)
-        configure_uploads(app, (MediaDTO.image_set,))
+        configure_uploads(app, (UploadSet("photos", IMAGES),))
 
         # Init socket
         from app.core.sockets import sio
@@ -36,6 +38,7 @@ def create_app(config_name="configmodule.DevelopmentConfig"):
         from app.apis import flask_api
 
         flask_api.init_app(app)
+        init_api()
 
         # Flask helpers methods
 

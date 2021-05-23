@@ -2,11 +2,13 @@
 This file contains some miscellaneous functionality.
 """
 
-import app.core.http_codes as codes
+from app.apis import http_codes
 from app.core import db
 from app.core.codes import generate_code_string
 from app.database.models import Code
-from flask_restx import abort
+from flask_smorest import abort
+
+# from flask_restx import abort
 
 
 def move_order(orders, order_key, from_order, to_order):
@@ -106,7 +108,7 @@ def refresh(item):
     try:
         db.session.refresh(item)
     except Exception as e:
-        abort(codes.INTERNAL_SERVER_ERROR, f"Refresh failed!\n{str(e)}")
+        abort(http_codes.INTERNAL_SERVER_ERROR, f"Refresh failed!\n{str(e)}")
 
     return item
 
@@ -118,7 +120,7 @@ def commit():
         db.session.commit()
     except Exception as e:
         db.session.rollback()
-        abort(codes.INTERNAL_SERVER_ERROR, f"Commit failed!\n{str(e)}")
+        abort(http_codes.INTERNAL_SERVER_ERROR, f"Commit failed!\n{str(e)}")
 
 
 def commit_and_refresh(item):

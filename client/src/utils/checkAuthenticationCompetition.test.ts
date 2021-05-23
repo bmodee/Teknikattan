@@ -15,22 +15,25 @@ it('dispatches correct actions when auth token is ok', async () => {
   const decodedToken = {
     iat: 1620216181,
     exp: 32514436993,
-    user_claims: { competition_id: 123123, team_id: 321321, view: 'Participant', code: 'ABCDEF' },
+    competition_id: 123123,
+    team_id: 321321,
+    view: 'Participant',
+    code: 'ABCDEF',
   }
 
   const testToken =
-    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjMyNTE0NDM2OTkzLCJ1c2VyX2NsYWltcyI6eyJjb21wZXRpdGlvbl9pZCI6MTIzMTIzLCJ0ZWFtX2lkIjozMjEzMjEsInZpZXciOiJQYXJ0aWNpcGFudCIsImNvZGUiOiJBQkNERUYifX0.1gPRJcjn3xuPOcgUUffMngIQDoDtxS9RZczcbdyyaaA'
+    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjAyMTYxODEsImV4cCI6MzI1MTQ0MzY5OTMsImNvbXBldGl0aW9uX2lkIjoxMjMxMjMsInRlYW1faWQiOjMyMTMyMSwidmlldyI6IlBhcnRpY2lwYW50IiwiY29kZSI6IkFCQ0RFRiJ9.fNrU8s-ZHPFCLYqtD2nogmSy31sBtX-8KWu911xNC8I'
   localStorage.setItem('JudgeToken', testToken)
   await CheckAuthenticationCompetition('Judge')
   expect(spy).toBeCalledWith({
     type: Types.SET_COMPETITION_LOGIN_DATA,
     payload: {
-      competition_id: decodedToken.user_claims.competition_id,
-      team_id: decodedToken.user_claims.team_id,
-      view: decodedToken.user_claims.view,
+      competition_id: decodedToken.competition_id,
+      team_id: decodedToken.team_id,
+      view: decodedToken.view,
     },
   })
-  expect(spy).toBeCalledWith({ type: Types.SET_PRESENTATION_CODE, payload: decodedToken.user_claims.code })
+  expect(spy).toBeCalledWith({ type: Types.SET_PRESENTATION_CODE, payload: decodedToken.code })
   expect(spy).toBeCalledWith({
     type: Types.SET_PRESENTATION_COMPETITION,
     payload: compRes.data,
@@ -48,7 +51,7 @@ it('dispatches correct actions when getting user data fails', async () => {
   })
   const spy = jest.spyOn(store, 'dispatch')
   const testToken =
-    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjMyNTE0NDM2OTkzLCJ1c2VyX2NsYWltcyI6eyJjb21wZXRpdGlvbl9pZCI6MTIzMTIzLCJ0ZWFtX2lkIjozMjEzMjEsInZpZXciOiJQYXJ0aWNpcGFudCIsImNvZGUiOiJBQkNERUYifX0.1gPRJcjn3xuPOcgUUffMngIQDoDtxS9RZczcbdyyaaA'
+    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjAyMTYxODEsImV4cCI6MzI1MTQ0MzY5OTMsImNvbXBldGl0aW9uX2lkIjoxMjMxMjMsInRlYW1faWQiOjMyMTMyMSwidmlldyI6IlBhcnRpY2lwYW50IiwiY29kZSI6IkFCQ0RFRiJ9.fNrU8s-ZHPFCLYqtD2nogmSy31sBtX-8KWu911xNC8I'
   localStorage.setItem('AudienceToken', testToken)
   await CheckAuthenticationCompetition('Audience')
   expect(spy).toBeCalledWith({ type: Types.SET_COMPETITION_LOGIN_UNAUTHENTICATED })

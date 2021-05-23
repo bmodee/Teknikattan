@@ -3,70 +3,75 @@ All API calls concerning question alternatives.
 Default route: /api/competitions/<competition_id>/teams
 """
 
-import app.core.http_codes as codes
+from flask_smorest.error_handler import ErrorSchema
 import app.database.controller as dbc
-from app.apis import item_response, list_response, protect_route
-from app.core.dto import TeamDTO
-from app.core.parsers import sentinel
-from flask_restx import Resource, reqparse
+from app.core import ma
+from app.core.schemas import BaseSchema, TeamSchema
+from app.database import models
+from flask.views import MethodView
 
-api = TeamDTO.api
-schema = TeamDTO.schema
-list_schema = TeamDTO.list_schema
+from . import ALL, ExtendedBlueprint, http_codes
 
-team_parser_add = reqparse.RequestParser()
-team_parser_add.add_argument("name", type=str, required=True, location="json")
+blp = ExtendedBlueprint(
+    "team",
+    "team",
+    url_prefix="/api/competitions/<competition_id>/teams",
+    description="Operations on teams",
+)
 
-team_parser_edit = reqparse.RequestParser()
-team_parser_edit.add_argument("name", type=str, default=sentinel, location="json")
+
+class TeamAddArgsSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.Team
+
+    name = ma.auto_field(required=True)
 
 
-@api.route("")
-@api.param("competition_id")
-class TeamsList(Resource):
-    @protect_route(allowed_roles=["*"])
+class TeamEditArgsSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.Team
+
+    name = ma.auto_field(required=False)
+
+
+@blp.route("")
+class Teams(MethodView):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.response(http_codes.OK, TeamSchema(many=True))
     def get(self, competition_id):
         """ Gets all teams to the specified competition. """
+        return dbc.get.team_list(competition_id)
 
-        items = dbc.get.team_list(competition_id)
-        return list_response(list_schema.dump(items))
-
-    @protect_route(allowed_roles=["*"])
-    def post(self, competition_id):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.arguments(TeamAddArgsSchema)
+    @blp.response(http_codes.OK, TeamSchema)
+    @blp.alt_response(http_codes.CONFLICT, ErrorSchema, description="Could not add team")
+    def post(self, args, competition_id):
         """ Posts a new team to the specified competition. """
-
-        args = team_parser_add.parse_args(strict=True)
-        item_team = dbc.add.team(args["name"], competition_id)
-        return item_response(schema.dump(item_team))
+        return dbc.add.team(args["name"], competition_id)
 
 
-@api.route("/<team_id>")
-@api.param("competition_id,team_id")
-class Teams(Resource):
-    @protect_route(allowed_roles=["*"])
+@blp.route("/<team_id>")
+class TeamsById(MethodView):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.response(http_codes.OK, TeamSchema)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Could not find team")
     def get(self, competition_id, team_id):
         """ Gets the specified team. """
+        return dbc.get.team(competition_id, team_id)
 
-        item = dbc.get.team(competition_id, team_id)
-        return item_response(schema.dump(item))
-
-    @protect_route(allowed_roles=["*"])
-    def put(self, competition_id, team_id):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.arguments(TeamEditArgsSchema)
+    @blp.response(http_codes.OK, TeamSchema)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Could not find team")
+    def put(self, args, competition_id, team_id):
         """ Edits the specified team using the provided arguments. """
+        return dbc.edit.default(dbc.get.team(competition_id, team_id), **args)
 
-        args = team_parser_edit.parse_args(strict=True)
-        name = args.get("name")
-
-        item_team = dbc.get.team(competition_id, team_id)
-
-        item_team = dbc.edit.default(item_team, name=name, competition_id=competition_id)
-        return item_response(schema.dump(item_team))
-
-    @protect_route(allowed_roles=["*"])
+    @blp.authorization(allowed_roles=ALL)
+    @blp.response(http_codes.NO_CONTENT, None)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Could not find team")
     def delete(self, competition_id, team_id):
         """ Deletes the specified team. """
-
-        item_team = dbc.get.team(competition_id, team_id)
-
-        dbc.delete.team(item_team)
-        return {}, codes.NO_CONTENT
+        dbc.delete.team(dbc.get.team(competition_id, team_id))
+        return None

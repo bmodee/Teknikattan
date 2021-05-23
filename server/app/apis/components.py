@@ -3,97 +3,100 @@ All API calls concerning competitions.
 Default route: /api/competitions/<competition_id>/slides/<slide_id>/components
 """
 
-import app.core.http_codes as codes
 import app.database.controller as dbc
-from app.apis import item_response, list_response, protect_route
-from app.core.dto import ComponentDTO
-from app.core.parsers import sentinel
-from flask_restx import Resource, reqparse
+from app.core.schemas import BaseSchema, ComponentSchema
+from flask.views import MethodView
+from flask_smorest.error_handler import ErrorSchema
+from marshmallow import fields
 
-api = ComponentDTO.api
-schema = ComponentDTO.schema
-list_schema = ComponentDTO.list_schema
+from . import ALL, ExtendedBlueprint, http_codes
 
-component_parser_add = reqparse.RequestParser()
-component_parser_add.add_argument("x", type=int, default=0, location="json")
-component_parser_add.add_argument("y", type=int, default=0, location="json")
-component_parser_add.add_argument("w", type=int, default=1, location="json")
-component_parser_add.add_argument("h", type=int, default=1, location="json")
-component_parser_add.add_argument("type_id", type=int, required=True, location="json")
-component_parser_add.add_argument("view_type_id", type=int, required=True, location="json")
-component_parser_add.add_argument("text", type=str, default=None, location="json")
-component_parser_add.add_argument("media_id", type=int, default=None, location="json")
-component_parser_add.add_argument("question_id", type=int, default=None, location="json")
-
-component_parser_edit = reqparse.RequestParser()
-component_parser_edit.add_argument("x", type=int, default=sentinel, location="json")
-component_parser_edit.add_argument("y", type=int, default=sentinel, location="json")
-component_parser_edit.add_argument("w", type=int, default=sentinel, location="json")
-component_parser_edit.add_argument("h", type=int, default=sentinel, location="json")
-component_parser_edit.add_argument("text", type=str, default=sentinel, location="json")
-component_parser_edit.add_argument("media_id", type=int, default=sentinel, location="json")
-component_parser_edit.add_argument("question_id", type=int, default=sentinel, location="json")
+blp = ExtendedBlueprint(
+    "component",
+    "component",
+    url_prefix="/api/competitions/<competition_id>/slides/<slide_id>/components",
+    description="Adding, updating, deleting and copy components",
+)
 
 
-@api.route("")
-@api.param("competition_id, slide_id")
-class ComponentList(Resource):
-    @protect_route(allowed_roles=["*"], allowed_views=["*"])
+class ComponentAddArgsSchema(BaseSchema):
+
+    x = fields.Integer(required=False, missing=0)
+    y = fields.Integer(required=False, missing=0)
+    w = fields.Integer(required=False, missing=1)
+    h = fields.Integer(required=False, missing=1)
+
+    type_id = fields.Integer(required=True)
+    view_type_id = fields.Integer(required=True)
+
+    text = fields.String(required=False)
+    media_id = fields.Integer(required=False)
+    question_id = fields.Integer(required=False)
+
+
+class ComponentEditArgsSchema(BaseSchema):
+
+    x = fields.Integer(required=False)
+    y = fields.Integer(required=False)
+    w = fields.Integer(required=False)
+    h = fields.Integer(required=False)
+
+    type_id = fields.Integer(required=False)
+    view_type_id = fields.Integer(required=False)
+
+    text = fields.String(required=False)
+    media_id = fields.Integer(required=False)
+    question_id = fields.Integer(required=False)
+
+
+@blp.route("")
+class Components(MethodView):
+    @blp.authorization(allowed_roles=ALL, allowed_views=ALL)
+    @blp.response(http_codes.OK, ComponentSchema(many=True))
     def get(self, competition_id, slide_id):
         """ Gets all components in the specified slide and competition. """
+        return dbc.get.component_list(competition_id, slide_id)
 
-        items = dbc.get.component_list(competition_id, slide_id)
-        return list_response(list_schema.dump(items))
-
-    @protect_route(allowed_roles=["*"])
-    def post(self, competition_id, slide_id):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.arguments(ComponentAddArgsSchema)
+    @blp.response(http_codes.OK, ComponentSchema)
+    def post(self, args, competition_id, slide_id):
         """ Posts a new component to the specified slide. """
-
-        args = component_parser_add.parse_args()
-        item = dbc.add.component(slide_id=slide_id, **args)
-        return item_response(schema.dump(item))
+        return dbc.add.component(slide_id=slide_id, **args)
 
 
-@api.route("/<component_id>")
-@api.param("competition_id, slide_id, component_id")
-class ComponentByID(Resource):
-    @protect_route(allowed_roles=["*"], allowed_views=["*"])
+@blp.route("/<component_id>")
+class ComponentById(MethodView):
+    @blp.authorization(allowed_roles=ALL, allowed_views=ALL)
+    @blp.response(http_codes.OK, ComponentSchema)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Could not find component")
     def get(self, competition_id, slide_id, component_id):
         """ Gets the specified component. """
+        return dbc.get.component(competition_id, slide_id, component_id)
 
-        item = dbc.get.component(competition_id, slide_id, component_id)
-        return item_response(schema.dump(item))
-
-    @protect_route(allowed_roles=["*"])
-    def put(self, competition_id, slide_id, component_id):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.arguments(ComponentEditArgsSchema)
+    @blp.response(http_codes.OK, ComponentSchema)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Could not find component")
+    @blp.alt_response(http_codes.CONFLICT, ErrorSchema, description="Could not update component with given values")
+    def put(self, args, competition_id, slide_id, component_id):
         """ Edits the specified component using the provided arguments. """
+        return dbc.edit.default(dbc.get.component(competition_id, slide_id, component_id), **args)
 
-        args = component_parser_edit.parse_args(strict=True)
-        item = dbc.get.component(competition_id, slide_id, component_id)
-        args_without_sentinel = {key: value for key, value in args.items() if value is not sentinel}
-        item = dbc.edit.default(item, **args_without_sentinel)
-        return item_response(schema.dump(item))
-
-    @protect_route(allowed_roles=["*"])
+    @blp.authorization(allowed_roles=ALL)
+    @blp.response(http_codes.NO_CONTENT, None)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Could not find component")
+    @blp.alt_response(http_codes.CONFLICT, ErrorSchema, description="Could not delete component")
     def delete(self, competition_id, slide_id, component_id):
         """ Deletes the specified component. """
-
-        item = dbc.get.component(competition_id, slide_id, component_id)
-        dbc.delete.component(item)
-        return {}, codes.NO_CONTENT
+        dbc.delete.component(dbc.get.component(competition_id, slide_id, component_id))
+        return None
 
 
-@api.route("/<component_id>/copy/<view_type_id>")
-@api.param("competition_id, slide_id, component_id, view_type_id")
-class ComponentList(Resource):
-    @protect_route(allowed_roles=["*"])
+@blp.route("/<component_id>/copy/<view_type_id>")
+class ComponentCopy(MethodView):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.response(http_codes.OK, ComponentSchema)
     def post(self, competition_id, slide_id, component_id, view_type_id):
         """ Creates a deep copy of the specified component. """
-
-        item_component = dbc.get.component(
-            competition_id,
-            slide_id,
-            component_id,
-        )
-        item = dbc.copy.component(item_component, slide_id, view_type_id)
-        return item_response(schema.dump(item))
+        return dbc.copy.component(dbc.get.component(competition_id, slide_id, component_id), slide_id, view_type_id)

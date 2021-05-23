@@ -18,14 +18,12 @@ it('renders presentation editor', () => {
     },
   }
   const citiesRes: any = {
-    data: {
-      items: [
-        {
-          name: '',
-          city_id: 0,
-        },
-      ],
-    },
+    data: [
+      {
+        name: '',
+        city_id: 0,
+      },
+    ],
   }
   const typesRes: any = {
     data: {

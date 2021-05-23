@@ -13,15 +13,15 @@ export const getCities = () => async (dispatch: AppDispatch) => {
     .then((res) => {
       dispatch({
         type: Types.SET_CITIES,
-        payload: res.data.items,
-      })
-      dispatch({
-        type: Types.SET_CITIES_COUNT,
-        payload: res.data.total_count,
+        payload: res.data,
       })
       dispatch({
         type: Types.SET_CITIES_TOTAL,
-        payload: res.data.count,
+        payload: res.data.length,
+      })
+      dispatch({
+        type: Types.SET_CITIES_COUNT,
+        payload: res.data.length,
       })
     })
     .catch((err) => console.log(err))

@@ -3,7 +3,7 @@ This file contains functionality to copy and duplicate data to the database.
 """
 
 from app.database.controller import add, get, search, utils
-from app.database.models import Question
+from app.database.models import Competition, Question
 from app.database.types import IMAGE_COMPONENT_ID, QUESTION_COMPONENT_ID, TEXT_COMPONENT_ID
 
 
@@ -115,9 +115,9 @@ def competition(item_competition_old):
     """
 
     name = "Kopia av " + item_competition_old.name
-    item_competition, total = search.competition(name=name)
-    if item_competition:
-        name = "Kopia av " + item_competition[total - 1].name
+
+    while item_competition := Competition.query.filter(Competition.name == name).first():
+        name = "Kopia av " + item_competition.name
 
     item_competition_new = add._competition_no_slides(
         name,

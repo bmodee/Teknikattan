@@ -4,101 +4,106 @@ Default route: /api/competitions
 """
 
 import app.database.controller as dbc
-from app.apis import item_response, list_response, protect_route
-from app.core.dto import CompetitionDTO
-from app.core.parsers import search_parser, sentinel
+from app.core import ma
+from app.core.rich_schemas import CompetitionSchemaRich
+from app.core.schemas import BaseSchema, CompetitionSchema
+from app.database import models
 from app.database.models import Competition
-from flask_restx import Resource, reqparse
+from flask.views import MethodView
+from flask_smorest.error_handler import ErrorSchema
 
-api = CompetitionDTO.api
-schema = CompetitionDTO.schema
-rich_schema = CompetitionDTO.rich_schema
-list_schema = CompetitionDTO.list_schema
+from . import ALL, ExtendedBlueprint, http_codes
 
-competition_parser_add = reqparse.RequestParser()
-competition_parser_add.add_argument("name", type=str, required=True, location="json")
-competition_parser_add.add_argument("year", type=int, required=True, location="json")
-competition_parser_add.add_argument("city_id", type=int, required=True, location="json")
-
-competition_parser_edit = reqparse.RequestParser()
-competition_parser_edit.add_argument("name", type=str, default=sentinel, location="json")
-competition_parser_edit.add_argument("year", type=int, default=sentinel, location="json")
-competition_parser_edit.add_argument("city_id", type=int, default=sentinel, location="json")
-competition_parser_edit.add_argument("background_image_id", default=sentinel, type=int, location="json")
-
-competition_parser_search = search_parser.copy()
-competition_parser_search.add_argument("name", type=str, default=sentinel, location="args")
-competition_parser_search.add_argument("year", type=int, default=sentinel, location="args")
-competition_parser_search.add_argument("city_id", type=int, default=sentinel, location="args")
+blp = ExtendedBlueprint(
+    "competitions", "competitions", url_prefix="/api/competitions", description="Operations competitions"
+)
 
 
-@api.route("")
-class CompetitionsList(Resource):
-    @protect_route(allowed_roles=["*"])
-    def post(self):
-        """ Posts a new competition. """
+class CompetitionAddArgsSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.Competition
 
-        args = competition_parser_add.parse_args(strict=True)
-
-        # Add competition
-        item = dbc.add.competition(**args)
-
-        # Add default slide
-        # dbc.add.slide(item.id)
-        return item_response(schema.dump(item))
+    name = ma.auto_field()
+    year = ma.auto_field()
+    city_id = ma.auto_field()
 
 
-@api.route("/<competition_id>")
-@api.param("competition_id")
-class Competitions(Resource):
-    @protect_route(allowed_roles=["*"], allowed_views=["*"])
+class CompetitionEditArgsSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.Competition
+
+    name = ma.auto_field(required=False)
+    year = ma.auto_field(required=False)
+    city_id = ma.auto_field(required=False)
+    background_image_id = ma.auto_field(required=False)
+
+
+class CompetitionSearchArgsSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.Competition
+
+    name = ma.auto_field(required=False)
+    year = ma.auto_field(required=False)
+    city_id = ma.auto_field(required=False)
+    background_image_id = ma.auto_field(required=False)
+
+
+@blp.route("")
+class Competitions(MethodView):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.arguments(CompetitionAddArgsSchema)
+    @blp.response(http_codes.OK, CompetitionSchema)
+    @blp.alt_response(http_codes.CONFLICT, ErrorSchema, description="Competition could not be added")
+    def post(self, args):
+        """ Adds a new competition. """
+        return dbc.add.competition(**args)
+
+
+@blp.route("/<competition_id>")
+class CompetitionById(MethodView):
+    @blp.authorization(allowed_roles=ALL, allowed_views=ALL)
+    @blp.response(http_codes.OK, CompetitionSchemaRich)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Competition not found")
     def get(self, competition_id):
         """ Gets the specified competition. """
+        return dbc.get.competition(competition_id)
 
-        item = dbc.get.competition(competition_id)
-
-        return item_response(rich_schema.dump(item))
-
-    @protect_route(allowed_roles=["*"])
-    def put(self, competition_id):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.arguments(CompetitionEditArgsSchema)
+    @blp.response(http_codes.OK, CompetitionSchema)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Competition not found")
+    @blp.alt_response(http_codes.CONFLICT, ErrorSchema, description="Competition could not be updated")
+    def put(self, args, competition_id):
         """ Edits the specified competition with the specified arguments. """
+        return dbc.edit.default(dbc.get.one(Competition, competition_id), **args)
 
-        args = competition_parser_edit.parse_args(strict=True)
-        item = dbc.get.one(Competition, competition_id)
-        item = dbc.edit.default(item, **args)
-
-        return item_response(schema.dump(item))
-
-    @protect_route(allowed_roles=["*"])
+    @blp.authorization(allowed_roles=ALL)
+    @blp.response(http_codes.NO_CONTENT, None)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Competition not found")
+    @blp.alt_response(http_codes.CONFLICT, ErrorSchema, description="Competition could not be deleted")
     def delete(self, competition_id):
         """ Deletes the specified competition. """
-
-        item = dbc.get.one(Competition, competition_id)
-        dbc.delete.competition(item)
-
-        return "deleted"
+        dbc.delete.competition(dbc.get.one(Competition, competition_id))
+        return None
 
 
-@api.route("/search")
-class CompetitionSearch(Resource):
-    @protect_route(allowed_roles=["*"])
-    def get(self):
+@blp.route("/search")
+class CompetitionSearch(MethodView):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.arguments(CompetitionSearchArgsSchema, location="query")
+    @blp.paginate()
+    @blp.response(http_codes.OK, CompetitionSchema(many=True))
+    def get(self, args, pagination_parameters):
         """ Finds a specific competition based on the provided arguments. """
-
-        args = competition_parser_search.parse_args(strict=True)
-        items, total = dbc.search.competition(**args)
-        return list_response(list_schema.dump(items), total)
+        return dbc.search.competition(pagination_parameters, **args)
 
 
-@api.route("/<competition_id>/copy")
-@api.param("competition_id")
-class SlidesOrder(Resource):
-    @protect_route(allowed_roles=["*"])
+@blp.route("/<competition_id>/copy")
+class SlidesOrder(MethodView):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.response(http_codes.OK, CompetitionSchema)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Competition not found")
+    @blp.alt_response(http_codes.CONFLICT, ErrorSchema, description="Competition could not be copied")
     def post(self, competition_id):
         """ Creates a deep copy of the specified competition. """
-
-        item_competition = dbc.get.competition(competition_id)
-
-        item_competition_copy = dbc.copy.competition(item_competition)
-
-        return item_response(schema.dump(item_competition_copy))
+        return dbc.copy.competition(dbc.get.competition(competition_id))

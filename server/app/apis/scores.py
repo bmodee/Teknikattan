@@ -4,53 +4,59 @@ Default route: /api/competitions/<competition_id>/teams/<team_id>/answers/quesit
 """
 
 import app.database.controller as dbc
-from app.apis import item_response, list_response, protect_route
-from app.core.dto import QuestionScoreDTO
-from app.core.parsers import sentinel
-from flask_restx import Resource, reqparse
+from app.core import ma
+from app.core.schemas import BaseSchema, QuestionScoreSchema
+from app.database import models
+from flask.views import MethodView
+from flask_smorest.error_handler import ErrorSchema
 
-api = QuestionScoreDTO.api
-schema = QuestionScoreDTO.schema
-list_schema = QuestionScoreDTO.list_schema
+from . import ALL, ExtendedBlueprint, http_codes
 
-score_parser_add = reqparse.RequestParser()
-score_parser_add.add_argument("score", type=int, required=False, location="json")
+blp = ExtendedBlueprint(
+    "score",
+    "score",
+    url_prefix="/api/competitions/<competition_id>/teams/<team_id>/scores",
+    description="Operations on scores",
+)
 
-score_parser_edit = reqparse.RequestParser()
-score_parser_edit.add_argument("score", type=int, default=sentinel, location="json")
+
+class ScoreAddArgsSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.QuestionScore
+
+    score = ma.auto_field(required=False)
 
 
-@api.route("/")
-@api.param("competition_id, team_id")
-class QuestionScoreList(Resource):
-    @protect_route(allowed_roles=["*"], allowed_views=["*"])
+@blp.route("")
+class QuestionScoreList(MethodView):
+    @blp.authorization(allowed_roles=ALL, allowed_views=ALL)
+    @blp.response(http_codes.OK, QuestionScoreSchema(many=True))
     def get(self, competition_id, team_id):
         """ Gets all question answers that the specified team has given. """
-
-        items = dbc.get.question_score_list(competition_id, team_id)
-        return list_response(list_schema.dump(items))
+        return dbc.get.question_score_list(competition_id, team_id)
 
 
-@api.route("/<question_id>")
-@api.param("competition_id, team_id, question_id")
-class QuestionScores(Resource):
-    @protect_route(allowed_roles=["*"], allowed_views=["*"])
+@blp.route("/<question_id>")
+class QuestionScores(MethodView):
+    @blp.authorization(allowed_roles=ALL, allowed_views=ALL)
+    @blp.response(http_codes.OK, QuestionScoreSchema)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Cant find answer")
     def get(self, competition_id, team_id, question_id):
-        """ Gets the specified question answer. """
+        """ Gets the score for the provided team on the provided question. """
+        return dbc.get.question_score(competition_id, team_id, question_id)
 
-        item = dbc.get.question_score(competition_id, team_id, question_id)
-        return item_response(schema.dump(item))
-
-    @protect_route(allowed_roles=["*"], allowed_views=["*"])
-    def put(self, competition_id, team_id, question_id):
+    @blp.authorization(allowed_roles=ALL, allowed_views=ALL)
+    @blp.arguments(ScoreAddArgsSchema)
+    @blp.response(http_codes.OK, QuestionScoreSchema)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Cant find score")
+    @blp.alt_response(http_codes.CONFLICT, ErrorSchema, description="Can't add or edit score with provided values")
+    def put(self, args, competition_id, team_id, question_id):
         """ Add or edit specified quesiton_answer. """
 
         item = dbc.get.question_score(competition_id, team_id, question_id, required=False)
         if item is None:
-            args = score_parser_add.parse_args(strict=True)
             item = dbc.add.question_score(args.get("score"), question_id, team_id)
         else:
-            args = score_parser_edit.parse_args(strict=True)
             item = dbc.edit.default(item, **args)
 
-        return item_response(schema.dump(item))
+        return item

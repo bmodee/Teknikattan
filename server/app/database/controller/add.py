@@ -4,21 +4,36 @@ This file contains functionality to add data to the database.
 
 import os
 
-import app.core.http_codes as codes
 import app.database.controller as dbc
+from app.apis import http_codes
 from app.core import db
-from app.database.models import (Blacklist, City, Code, Competition,
-                                 ComponentType, ImageComponent, Media,
-                                 MediaType, Question, QuestionAlternative,
-                                 QuestionAlternativeAnswer, QuestionComponent,
-                                 QuestionScore, QuestionType, Role, Slide,
-                                 Team, TextComponent, User, ViewType,
-                                 Whitelist)
-from app.database.types import (IMAGE_COMPONENT_ID, QUESTION_COMPONENT_ID,
-                                TEXT_COMPONENT_ID)
+from app.database.models import (
+    Blacklist,
+    City,
+    Code,
+    Competition,
+    ComponentType,
+    ImageComponent,
+    Media,
+    MediaType,
+    Question,
+    QuestionAlternative,
+    QuestionAlternativeAnswer,
+    QuestionComponent,
+    QuestionScore,
+    QuestionType,
+    Role,
+    Slide,
+    Team,
+    TextComponent,
+    User,
+    ViewType,
+    Whitelist,
+)
+from app.database.types import IMAGE_COMPONENT_ID, QUESTION_COMPONENT_ID, TEXT_COMPONENT_ID
 from flask import current_app
 from flask.globals import current_app
-from flask_restx import abort
+from flask_smorest import abort
 from PIL import Image
 from sqlalchemy import exc
 
@@ -33,21 +48,16 @@ def db_add(item):
         db.session.commit()
         db.session.refresh(item)
     except (exc.IntegrityError):
-        abort(codes.CONFLICT, f"Item of type {type(item)} cannot be added due to an Integrity Constraint")
+        db.session.rollback()
+        abort(http_codes.CONFLICT, message=f"Kunde inte lägga objektet")
     except (exc.SQLAlchemyError, exc.DBAPIError):
         db.session.rollback()
         # SQL errors such as item already exists
-        abort(
-            codes.INTERNAL_SERVER_ERROR,
-            f"Item of type {type(item)} could not be created",
-        )
+        abort(http_codes.INTERNAL_SERVER_ERROR, message=f"Kunde inte lägga objektet")
     except:
         db.session.rollback()
         # Catching other errors
-        abort(
-            codes.INTERNAL_SERVER_ERROR,
-            f"Something went wrong when creating {type(item)}",
-        )
+        abort(http_codes.INTERNAL_SERVER_ERROR, message=f"Kunde lägga till objektet")
 
     return item
 
@@ -92,7 +102,7 @@ def component(type_id, slide_id, view_type_id, x=0, y=0, w=0, h=0, copy=False, *
         )
         item.question_id = data.get("question_id")
     else:
-        abort(codes.BAD_REQUEST, f"Invalid type_id{type_id}")
+        abort(http_codes.BAD_REQUEST, f"Ogiltigt typ_id '{type_id}'")
 
     item = dbc.utils.commit_and_refresh(item)
     return item
@@ -256,7 +266,7 @@ def question_alternative(alternative, correct, question_id):
 
 def question_score(score, question_id, team_id):
     """
-    Adds a question answer to the specified team
+    Adds a question score to the specified team
     and question using the provided arguments.
     """
 

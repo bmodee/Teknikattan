@@ -3,7 +3,11 @@ The database submodule contaisn all functionality that has to do with the
 database. It can add, get, delete, edit, search and copy items.
 """
 
-from flask_restx import abort
+from app.apis import http_codes
+from flask_smorest import abort
+from flask_smorest.pagination import PaginationParameters
+
+# from flask_restx import abort
 from flask_sqlalchemy import BaseQuery
 from flask_sqlalchemy.model import Model
 from sqlalchemy import Column, DateTime
@@ -25,7 +29,7 @@ class ExtendedQuery(BaseQuery):
     Extensions to a regular query which makes using the database more convenient.
     """
 
-    def first_api(self, required=True, error_message=None, error_code=404):
+    def first_api(self, required=True, error_message=None, error_code=http_codes.NOT_FOUND):
         """
         Extensions of the first() functions otherwise used on queries. Abort
         if no item was found and it was required.
@@ -43,12 +47,11 @@ class ExtendedQuery(BaseQuery):
         item = self.first()
 
         if required and not item:
-            error_message = error_message or "Object not found"
-            abort(error_code, error_message)
+            abort(error_code, message=error_message or "Objektet hittades inte")
 
         return item
 
-    def pagination(self, page=0, page_size=15, order_column=None, order=1):
+    def paginate_api(self, pagination_parameters, order_column=None, order=1):
         """
         When looking for lists of items this is used to only return a few of
         them to allow for pagination.
@@ -64,30 +67,11 @@ class ExtendedQuery(BaseQuery):
         :rtype: list, int
         """
 
-        query = self
+        pagination_parameters = pagination_parameters or PaginationParameters(page=1, page_size=10)
+
         if order_column:
-            if order == 1:
-                query = query.order_by(order_column)
-            else:
-                query = query.order_by(order_column.desc())
+            self = self.order_by(order_column if order == 1 else order_column.desc())
 
-        total = query.count()
-        query = query.limit(page_size).offset(page * page_size)
-        items = query.all()
-        return items, total
-
-
-# class Dictionary(TypeDecorator):
-
-#     impl = Text
-
-#     def process_bind_param(self, value, dialect):
-#         if value is not None:
-#             value = json.dumps(value)
-
-#         return value
-
-#     def process_result_value(self, value, dialect):
-#         if value is not None:
-#             value = json.loads(value)
-#         return value
+        pagination = self.paginate(page=pagination_parameters.page, per_page=pagination_parameters.page_size)
+        pagination_parameters.item_count = pagination.total
+        return pagination.items

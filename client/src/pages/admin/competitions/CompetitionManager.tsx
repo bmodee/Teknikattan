@@ -161,7 +161,7 @@ const CompetitionManager: React.FC = (props: any) => {
     await axios
       .get(`/api/competitions/${id}/codes`)
       .then((response) => {
-        setCodes(response.data.items)
+        setCodes(response.data)
       })
       .catch(console.log)
   }
@@ -171,8 +171,7 @@ const CompetitionManager: React.FC = (props: any) => {
     await axios
       .get(`/api/competitions/${id}/teams`)
       .then((response) => {
-        // console.log(response.data.items)
-        setTeams(response.data.items)
+        setTeams(response.data)
       })
       .catch((err) => {
         console.log(err)
@@ -344,8 +343,8 @@ const CompetitionManager: React.FC = (props: any) => {
         rowsPerPageOptions={[]}
         rowsPerPage={filterParams.pageSize}
         count={competitionTotal}
-        page={filterParams.page}
-        onChangePage={(event, newPage) => handleFilterChange({ ...filterParams, page: newPage })}
+        page={filterParams.page - 1}
+        onChangePage={(event, newPage) => handleFilterChange({ ...filterParams, page: newPage + 1 })}
       />
       <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         <MenuItem onClick={handleStartCompetition}>Starta</MenuItem>

@@ -15,7 +15,7 @@ export const loginCompetition = (code: string, history: History, redirect: boole
 ) => {
   dispatch({ type: Types.LOADING_COMPETITION_LOGIN })
   await axios
-    .post('/api/auth/login/code', { code })
+    .post('/api/auth/code', { code })
     .then((res) => {
       const token = `Bearer ${res.data.access_token}`
       localStorage.setItem(`${res.data.view}Token`, token) //setting token to local storage

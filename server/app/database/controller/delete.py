@@ -2,11 +2,13 @@
 This file contains functionality to delete data to the database.
 """
 
-import app.core.http_codes as codes
 import app.database.controller as dbc
+from app.apis import http_codes
 from app.core import db
 from app.database.models import QuestionAlternativeAnswer, QuestionScore, Whitelist
-from flask_restx import abort
+from flask_smorest import abort
+
+# from flask_restx import abort
 from sqlalchemy.exc import IntegrityError
 
 
@@ -18,13 +20,10 @@ def default(item):
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
-        abort(codes.CONFLICT, f"Item of type {type(item)} cannot be deleted due to an Integrity Constraint")
+        abort(http_codes.CONFLICT, message=f"Kunde inte ta bort objektet")
     except:
         db.session.rollback()
-        abort(
-            codes.INTERNAL_SERVER_ERROR,
-            f"Item of type {type(item)} could not be deleted",
-        )
+        abort(http_codes.INTERNAL_SERVER_ERROR, message=f"Kunde inte ta bort objektet")
 
 
 def whitelist_to_blacklist(filters):

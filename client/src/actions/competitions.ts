@@ -24,15 +24,16 @@ export const getCompetitions = () => async (dispatch: AppDispatch, getState: () 
     .then((res) => {
       dispatch({
         type: Types.SET_COMPETITIONS,
-        payload: res.data.items,
+        payload: res.data,
       })
+      const pagination = JSON.parse(res.headers.pagination)
       dispatch({
         type: Types.SET_COMPETITIONS_TOTAL,
-        payload: res.data.total_count,
+        payload: pagination.total,
       })
       dispatch({
         type: Types.SET_COMPETITIONS_COUNT,
-        payload: res.data.count,
+        payload: res.data.length,
       })
     })
     .catch((err) => {

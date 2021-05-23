@@ -5,27 +5,24 @@ This file contains functionality to find data to the database.
 from app.database.models import Competition, Media, Question, Slide, User
 
 
-def image(filename, page=0, page_size=15, order=1, order_by=None):
+def image(pagination_parameters=None, filename=None, order=1, order_by=None):
     """ Finds and returns an image from the file name. """
 
     query = Media.query.filter(Media.type_id == 1)
     if filename:
         query = query.filter(Media.filename.like(f"%{filename}%"))
 
-    return query.pagination(page, page_size, None, None)
+    return query.paginate_api(pagination_parameters)
 
 
 def user(
+    pagination_parameters=None,
     email=None,
     name=None,
     city_id=None,
     role_id=None,
-    page=0,
-    page_size=15,
-    order=1,
-    order_by=None,
 ):
-    """ Finds and returns a user from the provided parameters. """
+    """ Finds and returns any number of users from the provided parameters. """
 
     query = User.query
     if name:
@@ -37,21 +34,14 @@ def user(
     if role_id:
         query = query.filter(User.role_id == role_id)
 
-    order_column = User.id  # Default order_by
-    if order_by:
-        order_column = getattr(User.__table__.c, order_by)
-
-    return query.pagination(page, page_size, order_column, order)
+    return query.paginate_api(pagination_parameters)
 
 
 def competition(
+    pagination_parameters=None,
     name=None,
     year=None,
     city_id=None,
-    page=0,
-    page_size=15,
-    order=1,
-    order_by=None,
 ):
     """ Finds and returns a competition from the provided parameters. """
 
@@ -63,21 +53,15 @@ def competition(
     if city_id:
         query = query.filter(Competition.city_id == city_id)
 
-    order_column = Competition.year  # Default order_by
-    if order_by:
-        order_column = getattr(Competition.columns, order_by)
-
-    return query.pagination(page, page_size, order_column, order)
+    return query.paginate_api(pagination_parameters)
 
 
 def slide(
+    pagination_paramters=None,
     slide_order=None,
     title=None,
     body=None,
     competition_id=None,
-    page=0,
-    page_size=15,
-    order=1,
     order_by=None,
 ):
     """ Finds and returns a slide from the provided parameters. """
@@ -92,11 +76,7 @@ def slide(
     if competition_id:
         query = query.filter(Slide.competition_id == competition_id)
 
-    order_column = Slide.id  # Default order_by
-    if order_by:
-        order_column = getattr(Slide.__table__.c, order_by)
-
-    return query.pagination(page, page_size, order_column, order)
+    return query.paginate_api(pagination_paramters)
 
 
 def questions(

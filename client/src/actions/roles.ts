@@ -13,7 +13,7 @@ export const getRoles = () => async (dispatch: AppDispatch) => {
     .then((res) => {
       dispatch({
         type: Types.SET_ROLES,
-        payload: res.data.items,
+        payload: res.data,
       })
     })
     .catch((err) => console.log(err))

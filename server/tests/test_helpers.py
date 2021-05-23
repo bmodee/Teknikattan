@@ -1,7 +1,7 @@
 import json
 
-import app.core.http_codes as codes
 import app.database.controller as dbc
+from app.apis import http_codes
 from app.core import db
 from app.database.models import City, Code, Role, Slide
 
@@ -144,15 +144,15 @@ def assert_object_values(obj, values):
 # Changes order of slides
 def change_order_test(client, cid, slide_id, new_slide_id, h):
     response, new_order_body = get(client, f"/api/competitions/{cid}/slides/{new_slide_id}", headers=h)
-    assert response.status_code == codes.OK
+    assert response.status_code == http_codes.OK
     response, order_body = get(client, f"/api/competitions/{cid}/slides/{slide_id}", headers=h)
-    assert response.status_code == codes.OK
+    assert response.status_code == http_codes.OK
 
     new_order = new_order_body["order"]
 
     # Changes order
     response, _ = put(client, f"/api/competitions/{cid}/slides/{slide_id}/order", {"order": new_order}, headers=h)
-    assert response.status_code == codes.OK
+    assert response.status_code == http_codes.OK
 
 
 def assert_slide_order(item_comp, correct_order):

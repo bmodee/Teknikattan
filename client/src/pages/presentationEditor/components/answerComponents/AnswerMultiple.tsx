@@ -48,7 +48,7 @@ const AnswerMultiple = ({ variant, activeSlide, competitionId }: AnswerMultipleP
 
   const updateAnswer = async (alternative: QuestionAlternative, checked: boolean) => {
     // TODO: fix. Make list of alternatives and delete & post instead of put to allow multiple boxes checked.
-    if (!activeSlide || (activeSlide?.timer !== undefined && !timer.enabled)) {
+    if (!activeSlide || (activeSlide?.timer !== null && !timer.enabled)) {
       return
     }
     const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/question_alternatives/${alternative.id}`
@@ -91,7 +91,7 @@ const AnswerMultiple = ({ variant, activeSlide, competitionId }: AnswerMultipleP
           <div key={alt.id}>
             <ListItem divider>
               <GreenCheckbox
-                disabled={activeSlide?.timer !== undefined && !timer.enabled}
+                disabled={activeSlide?.timer !== null && !timer.enabled}
                 checked={decideChecked(alt)}
                 onChange={(event: any) => updateAnswer(alt, event.target.checked)}
               />

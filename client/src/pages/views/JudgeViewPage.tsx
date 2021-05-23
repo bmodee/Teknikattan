@@ -124,19 +124,18 @@ const JudgeViewPage: React.FC = () => {
         <div className={classes.toolbar} />
         <List>
           {slides.map((slide, index) => (
-            <>
+            <div key={slide.id}>
               <SlideListItem
                 selected={slide.order === currentSlide?.order}
                 onClick={() => handleSelectSlide(index)}
                 button
-                key={slide.id}
                 style={{ border: 2, borderStyle: slide.id === operatorActiveSlideId ? 'dashed' : 'none' }}
               >
                 {renderSlideIcon(slide)}
                 <ListItemText primary={`Sida ${slide.order + 1}`} />
               </SlideListItem>
               <Divider />
-            </>
+            </div>
           ))}
         </List>
       </LeftDrawer>

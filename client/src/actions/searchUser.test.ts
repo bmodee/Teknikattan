@@ -10,27 +10,26 @@ const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 it('dispatches correct actions when getting users', async () => {
   const userRes: any = {
-    data: {
-      items: [
-        {
-          id: 21,
-          name: 'ggff',
-          email: 'email@test.com',
-          year: 2021,
-          role_id: 1,
-          city_id: 0,
-        },
-        {
-          id: 22,
-          name: 'sssss',
-          email: 'email@test.com',
-          year: 2021,
-          role_id: 1,
-          city_id: 0,
-        },
-      ],
-      count: 2,
-      total_count: 3,
+    data: [
+      {
+        id: 21,
+        name: 'ggff',
+        email: 'email@test.com',
+        year: 2021,
+        role_id: 1,
+        city_id: 0,
+      },
+      {
+        id: 22,
+        name: 'sssss',
+        email: 'email@test.com',
+        year: 2021,
+        role_id: 1,
+        city_id: 0,
+      },
+    ],
+    headers: {
+      pagination: '{"count": 2,"total": 3, "page_size":5 }',
     },
   }
 
@@ -38,9 +37,9 @@ it('dispatches correct actions when getting users', async () => {
     return Promise.resolve(userRes)
   })
   const expectedActions = [
-    { type: Types.SET_SEARCH_USERS, payload: userRes.data.items },
-    { type: Types.SET_SEARCH_USERS_TOTAL_COUNT, payload: userRes.data.total_count },
-    { type: Types.SET_SEARCH_USERS_COUNT, payload: userRes.data.count },
+    { type: Types.SET_SEARCH_USERS, payload: userRes.data },
+    { type: Types.SET_SEARCH_USERS_TOTAL_COUNT, payload: 3 },
+    { type: Types.SET_SEARCH_USERS_COUNT, payload: userRes.data.length },
   ]
   const store = mockStore({ searchUsers: { filterParams: [] } })
   await getSearchUsers()(store.dispatch, store.getState as any)

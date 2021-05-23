@@ -21,13 +21,13 @@ export const CheckAuthenticationCompetition = async (role: 'Judge' | 'Operator' 
           store.dispatch({
             type: Types.SET_COMPETITION_LOGIN_DATA,
             payload: {
-              competition_id: decodedToken.user_claims.competition_id,
-              team_id: decodedToken.user_claims.team_id,
-              view: decodedToken.user_claims.view,
+              competition_id: decodedToken.competition_id,
+              team_id: decodedToken.team_id,
+              view: decodedToken.view,
             },
           })
-          getPresentationCompetition(decodedToken.user_claims.competition_id)(store.dispatch, store.getState)
-          setPresentationCode(decodedToken.user_claims.code)(store.dispatch)
+          getPresentationCompetition(decodedToken.competition_id)(store.dispatch, store.getState)
+          setPresentationCode(decodedToken.code)(store.dispatch)
         })
         .catch((error) => {
           console.log(error)

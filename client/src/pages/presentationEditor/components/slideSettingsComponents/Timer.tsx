@@ -32,7 +32,7 @@ const Timer = ({ activeSlide, competitionId }: TimerProps) => {
     if (activeSlide) {
       setTimer(timerValue)
       await axios
-        .put(`/api/competitions/${competitionId}/slides/${activeSlide.id}`, { timer: timerValue })
+        .put(`/api/competitions/${competitionId}/slides/${activeSlide.id}`, { timer: timerValue || null })
         .then(() => {
           dispatch(getEditorCompetition(competitionId))
         })

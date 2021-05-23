@@ -3,87 +3,85 @@ All API calls concerning question answers.
 Default route: /api/competitions/<competition_id>
 """
 
-import app.core.http_codes as codes
 import app.database.controller as dbc
-from app.apis import item_response, list_response, protect_route
-from app.core.dto import QuestionDTO
-from app.core.parsers import sentinel
-from flask_restx import Resource, reqparse
+from app.core import ma
+from app.core.schemas import BaseSchema, QuestionSchema
+from app.database import models
+from flask.views import MethodView
+from flask_smorest.error_handler import ErrorSchema
 
-api = QuestionDTO.api
-schema = QuestionDTO.schema
-list_schema = QuestionDTO.list_schema
+from . import ALL, ExtendedBlueprint, http_codes
 
-question_parser_add = reqparse.RequestParser()
-question_parser_add.add_argument("name", type=str, default=None, location="json")
-question_parser_add.add_argument("total_score", type=int, default=None, location="json")
-question_parser_add.add_argument("type_id", type=int, required=True, location="json")
-question_parser_add.add_argument("correcting_instructions", type=str, default=None, location="json")
-
-question_parser_edit = reqparse.RequestParser()
-question_parser_edit.add_argument("name", type=str, default=sentinel, location="json")
-question_parser_edit.add_argument("total_score", type=int, default=sentinel, location="json")
-question_parser_edit.add_argument("type_id", type=int, default=sentinel, location="json")
-question_parser_edit.add_argument("correcting_instructions", type=str, default=sentinel, location="json")
+blp = ExtendedBlueprint(
+    "question",
+    "question",
+    url_prefix="/api/competitions/<competition_id>/slides/<slide_id>/questions",
+    description="Adding, updating and deleting questions",
+)
 
 
-@api.route("/questions")
-@api.param("competition_id")
-class QuestionList(Resource):
-    @protect_route(allowed_roles=["*"])
-    def get(self, competition_id):
-        """ Gets all questions in the specified competition. """
+class QuestionAddArgsSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.Question
 
-        items = dbc.get.question_list_for_competition(competition_id)
-        return list_response(list_schema.dump(items))
+    name = ma.auto_field(required=False, missing="")
+    total_score = ma.auto_field(required=False, missing=None)
+    type_id = ma.auto_field(required=True)
+    correcting_instructions = ma.auto_field(required=False, missing=None)
 
 
-@api.route("/slides/<slide_id>/questions")
-@api.param("competition_id, slide_id")
-class QuestionListForSlide(Resource):
-    @protect_route(allowed_roles=["*"])
+class QuestionEditArgsSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.Question
+
+    name = ma.auto_field(required=False)
+    total_score = ma.auto_field(required=False)
+    type_id = ma.auto_field(required=False)
+    correcting_instructions = ma.auto_field(required=False)
+
+
+@blp.route("")
+class Questions(MethodView):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.response(http_codes.OK, QuestionSchema(many=True))
     def get(self, competition_id, slide_id):
         """ Gets all questions in the specified competition and slide. """
+        return dbc.get.question_list(competition_id, slide_id)
 
-        items = dbc.get.question_list(competition_id, slide_id)
-        return list_response(list_schema.dump(items))
-
-    @protect_route(allowed_roles=["*"])
-    def post(self, competition_id, slide_id):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.arguments(QuestionAddArgsSchema)
+    @blp.response(http_codes.OK, QuestionSchema)
+    @blp.alt_response(http_codes.CONFLICT, ErrorSchema, description="Could not add question")
+    def post(self, args, competition_id, slide_id):
         """ Posts a new question to the specified slide using the provided arguments. """
-
-        args = question_parser_add.parse_args(strict=True)
-        item = dbc.add.question(slide_id=slide_id, **args)
-        return item_response(schema.dump(item))
+        return dbc.add.question(slide_id=slide_id, **args)
 
 
-@api.route("/slides/<slide_id>/questions/<question_id>")
-@api.param("competition_id, slide_id, question_id")
-class QuestionById(Resource):
-    @protect_route(allowed_roles=["*"])
+@blp.route("/<question_id>")
+class QuestionById(MethodView):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.response(http_codes.OK, QuestionSchema)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Could not find question")
     def get(self, competition_id, slide_id, question_id):
         """
         Gets the specified question using the specified competition and slide.
         """
+        return dbc.get.question(competition_id, slide_id, question_id)
 
-        item_question = dbc.get.question(competition_id, slide_id, question_id)
-        return item_response(schema.dump(item_question))
-
-    @protect_route(allowed_roles=["*"])
-    def put(self, competition_id, slide_id, question_id):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.arguments(QuestionEditArgsSchema)
+    @blp.response(http_codes.OK, QuestionSchema)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Could not find question")
+    @blp.alt_response(http_codes.CONFLICT, ErrorSchema, description="Could not edit question")
+    def put(self, args, competition_id, slide_id, question_id):
         """ Edits the specified question with the provided arguments. """
+        return dbc.edit.default(dbc.get.question(competition_id, slide_id, question_id), **args)
 
-        args = question_parser_edit.parse_args(strict=True)
-
-        item_question = dbc.get.question(competition_id, slide_id, question_id)
-        item_question = dbc.edit.default(item_question, **args)
-
-        return item_response(schema.dump(item_question))
-
-    @protect_route(allowed_roles=["*"])
+    @blp.authorization(allowed_roles=ALL)
+    @blp.response(http_codes.NO_CONTENT, None)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Could not find question")
+    @blp.alt_response(http_codes.CONFLICT, ErrorSchema, description="Could not delete question")
     def delete(self, competition_id, slide_id, question_id):
         """ Deletes the specified question. """
-
-        item_question = dbc.get.question(competition_id, slide_id, question_id)
-        dbc.delete.question(item_question)
-        return {}, codes.NO_CONTENT
+        dbc.delete.question(dbc.get.question(competition_id, slide_id, question_id))
+        return None

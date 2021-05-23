@@ -8,35 +8,33 @@ import AdminPage from './AdminPage'
 
 it('renders admin view', () => {
   const cityRes: any = {
-    data: {
-      items: [
-        {
-          id: 1,
-          name: 'Link\u00f6ping',
-        },
-        {
-          id: 2,
-          name: 'Stockholm',
-        },
-      ],
-      count: 2,
-      total_count: 3,
+    data: [
+      {
+        id: 1,
+        name: 'Link\u00f6ping',
+      },
+      {
+        id: 2,
+        name: 'Stockholm',
+      },
+    ],
+    headers: {
+      pagination: '{"count": 2,"total_count": 3}',
     },
   }
   const rolesRes: any = {
-    data: {
-      items: [
-        {
-          id: 1,
-          name: 'role1',
-        },
-        {
-          id: 2,
-          name: 'role2',
-        },
-      ],
-      count: 2,
-      total_count: 3,
+    data: [
+      {
+        id: 1,
+        name: 'role1',
+      },
+      {
+        id: 2,
+        name: 'role2',
+      },
+    ],
+    headers: {
+      pagination: '{"count": 2,"total_count": 3}',
     },
   }
   ;(mockedAxios.get as jest.Mock).mockImplementation((path: string, params?: any) => {

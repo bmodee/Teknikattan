@@ -3,12 +3,14 @@ This file tests the database controller functions.
 """
 
 import app.database.controller as dbc
+import pytest
 from app.database.models import City, Code, Competition, Media, MediaType, Role, Slide, User
 
-from tests import app, client, db
+from tests import DISABLE_TESTS, app, client, db
 from tests.test_helpers import add_default_values, assert_all_slide_orders, assert_should_fail, assert_slide_order
 
 
+@pytest.mark.skipif(DISABLE_TESTS, reason="Only run when DISABLE_TESTS is False")
 def test_default_values(client):
     add_default_values()
 
@@ -40,6 +42,7 @@ def test_default_values(client):
     assert_should_fail(assert_all_slide_orders)
 
 
+@pytest.mark.skipif(DISABLE_TESTS, reason="Only run when DISABLE_TESTS is enabled")
 def test_user(client):
     add_default_values()
     item_user = User.query.filter_by(email="test@test.se").first()
@@ -57,6 +60,7 @@ def test_user(client):
     assert len(item_city.users) == 1 and item_city.users[0].id == item_user.id
 
 
+@pytest.mark.skipif(DISABLE_TESTS, reason="Only run when DISABLE_TESTS is enabled")
 def test_media(client):
     add_default_values()
     item_user = User.query.filter_by(email="test@test.se").first()
@@ -75,17 +79,18 @@ def test_media(client):
     assert item_media.upload_by.email == "test@test.se"
 
 
+@pytest.mark.skipif(DISABLE_TESTS, reason="Only run when DISABLE_TESTS is enabled")
 def test_copy(client):
     add_default_values()
 
     # Fetches a competition
-    list_item_competitions, _ = dbc.search.competition(name="Tävling 1")
+    list_item_competitions = dbc.search.competition(name="Tävling 1")
     item_competition_original = list_item_competitions[0]
 
     # Fetches the first slide in that competition
     num_slides = 3
-    item_slides, total = dbc.search.slide(competition_id=item_competition_original.id)
-    assert total == num_slides
+    item_slides = dbc.search.slide(competition_id=item_competition_original.id)
+    assert len(item_slides) == num_slides
     item_slide_original = item_slides[1]
 
     dbc.delete.slide(item_slides[0])
@@ -192,14 +197,15 @@ def check_slides_copy(item_slide_original, item_slide_copy, num_slides, order):
             assert a2.question_id == q2.id
 
     # Checks that the copy put the slide in the database
-    item_slides, total = dbc.search.slide(
+    item_slides = dbc.search.slide(
         competition_id=item_slide_copy.competition_id,
         # page_size=num_slides + 1, # Use this total > 15
     )
-    assert total == num_slides
+    assert len(item_slides) == num_slides
     assert item_slide_copy == item_slides[order]
 
 
+@pytest.mark.skipif(DISABLE_TESTS, reason="Only run when DISABLE_TESTS is enabled")
 def test_move_slides(client):
     add_default_values()
 

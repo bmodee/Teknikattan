@@ -2,10 +2,11 @@
 This file contains functionality to get data from the database.
 """
 
-import app.core.http_codes as codes
+from app.apis import http_codes
 from app.core import db
-from app.core.parsers import sentinel
-from flask_restx.errors import abort
+from flask_smorest import abort
+
+# from flask_restx.errors import abort
 from sqlalchemy import exc
 
 
@@ -29,12 +30,12 @@ def default(item, **kwargs):
     for key, value in kwargs.items():
         if not hasattr(item, key):
             raise AttributeError(f"Item of type {type(item)} has no attribute '{key}'")
-        if value is not sentinel:
-            setattr(item, key, value)
+        setattr(item, key, value)
     try:
         db.session.commit()
     except exc.IntegrityError:
-        abort(codes.CONFLICT, f"Item of type {type(item)} cannot be edited due to an Integrity Constraint")
+        db.session.rollback()
+        abort(http_codes.CONFLICT, f"Kunde inte utföra ändringen")
 
     db.session.refresh(item)
     return item

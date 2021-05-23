@@ -15,19 +15,18 @@ it('renders operator view page', async () => {
       },
     }
     const teamsRes: any = {
-      data: {
-        items: [
-          {
-            id: 1,
-            name: 'team1',
-          },
-          {
-            id: 2,
-            name: 'team2',
-          },
-        ],
-        count: 2,
-        total_count: 3,
+      data: [
+        {
+          id: 1,
+          name: 'team1',
+        },
+        {
+          id: 2,
+          name: 'team2',
+        },
+      ],
+      headers: {
+        pagination: '{"count": 2,"total_count": 3}',
       },
     }
 

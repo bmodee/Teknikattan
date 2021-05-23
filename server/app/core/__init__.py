@@ -16,15 +16,12 @@ jwt = JWTManager()
 ma = Marshmallow()
 
 
-@jwt.token_in_blacklist_loader
-def check_if_token_in_blacklist(decrypted_token):
+@jwt.token_in_blocklist_loader
+def check_if_token_in_blacklist(jwt_headers, jwt_data):
     """
     An extension method with flask_jwt_extended that will execute when jwt verifies
     Check if the token is blacklisted in the database
-    :param decrypted_token: jti or string of the jwt
-    :type decrypted_token: str
-    :return: True if token is blacklisted
-    :rtype: bool
     """
-    jti = decrypted_token["jti"]
+
+    jti = jwt_data["jti"]
     return models.Blacklist.query.filter_by(jti=jti).first() is not None

@@ -170,9 +170,9 @@ const UserManager: React.FC = (props: any) => {
         component="div"
         rowsPerPageOptions={[]}
         rowsPerPage={filterParams.pageSize}
-        count={usersTotal}
-        page={filterParams.page}
-        onChangePage={(event, newPage) => handleFilterChange({ ...filterParams, page: newPage })}
+        count={usersTotal || 0}
+        page={filterParams.page - 1}
+        onChangePage={(event, newPage) => handleFilterChange({ ...filterParams, page: newPage + 1 })}
       />
     </div>
   )

@@ -1,18 +1,31 @@
-import app.core.http_codes as http_codes
+from functools import wraps
+
 from flask_jwt_extended import verify_jwt_in_request
-from flask_jwt_extended.utils import get_jwt_claims
-from flask_restx.errors import abort
+from flask_jwt_extended.utils import get_jwt
+from flask_smorest import Blueprint, abort
+from flask_smorest.error_handler import ErrorSchema
+
+Blueprint.PAGINATION_HEADER_FIELD_NAME = "pagination"
 
 
-def validate_editor(db_item, *views):
-    claims = get_jwt_claims()
-    city_id = int(claims.get("city_id"))
-    if db_item.city_id != city_id:
-        abort(http_codes.UNAUTHORIZED)
+ALL = ["*"]
+
+
+class http_codes:
+    OK = 200
+    NO_CONTENT = 204
+    BAD_REQUEST = 400
+    UNAUTHORIZED = 401
+    FORBIDDEN = 403
+    NOT_FOUND = 404
+    CONFLICT = 409
+    GONE = 410
+    INTERNAL_SERVER_ERROR = 500
+    SERVICE_UNAVAILABLE = 503
 
 
 def _is_allowed(allowed, actual):
-    return actual and "*" in allowed or actual in allowed
+    return actual and allowed == ALL or actual in allowed
 
 
 def _has_access(in_claim, in_route):
@@ -20,104 +33,108 @@ def _has_access(in_claim, in_route):
     return not in_route or in_claim and in_claim == in_route
 
 
-def protect_route(allowed_roles=None, allowed_views=None):
-    def wrapper(func):
-        def inner(*args, **kwargs):
-            verify_jwt_in_request()
-            claims = get_jwt_claims()
+# class AuthorizationHeadersSchema(Schema):
 
-            # Authorize request if roles has access to the route #
+#     Authorization = fields.String(required=True)
 
-            nonlocal allowed_roles
-            allowed_roles = allowed_roles or []
-            role = claims.get("role")
-            if _is_allowed(allowed_roles, role):
-                return func(*args, **kwargs)
 
-            # Authorize request if view has access and is trying to access the
-            # competition its in. Also check team if client is a team.
-            # Allow request if route doesn't belong to any competition.
+class ExtendedBlueprint(Blueprint):
+    def authorization(self, allowed_roles=None, allowed_views=None):
+        def decorator(func):
 
-            nonlocal allowed_views
-            allowed_views = allowed_views or []
-            view = claims.get("view")
-            if not _is_allowed(allowed_views, view):
-                abort(
-                    http_codes.UNAUTHORIZED,
-                    f"Client with view '{view}' is not allowed to access route with allowed views {allowed_views}.",
-                )
+            # func = self.arguments(AuthorizationHeadersSchema, location="headers")(func)
+            func = self.alt_response(http_codes.UNAUTHORIZED, ErrorSchema, description="Unauthorized")(func)
 
-            claim_competition_id = claims.get("competition_id")
-            route_competition_id = kwargs.get("competition_id")
-            if not _has_access(claim_competition_id, route_competition_id):
-                abort(
-                    http_codes.UNAUTHORIZED,
-                    f"Client in competition '{claim_competition_id}' is not allowed to access competition '{route_competition_id}'.",
-                )
+            @wraps(func)
+            def wrapper(*args, **kwargs):
 
-            if view == "Team":
-                claim_team_id = claims.get("team_id")
-                route_team_id = kwargs.get("team_id")
-                if not _has_access(claim_team_id, route_team_id):
+                # Check that allowed_roles and allowed_views have correct type
+                nonlocal allowed_roles
+                nonlocal allowed_views
+                allowed_roles = allowed_roles or []
+                allowed_views = allowed_views or []
+                assert (
+                    isinstance(allowed_roles, list) or allowed_roles == "*"
+                ), f"Allowed roles must be a list or '*', not '{allowed_roles}'"
+                assert (
+                    isinstance(allowed_views, list) or allowed_views == "*"
+                ), f"Allowed views must be a list or '*', not '{allowed_views}'"
+
+                verify_jwt_in_request()
+                jwt = get_jwt()
+
+                # Authorize request if roles has access to the route #
+
+                role = jwt.get("role")
+                if _is_allowed(allowed_roles, role):
+                    return func(*args, **kwargs)
+
+                # Authorize request if view has access and is trying to access the
+                # competition its in. Also check team if client is a team.
+                # Allow request if route doesn't belong to any competition.
+
+                view = jwt.get("view")
+                if not _is_allowed(allowed_views, view):
                     abort(
                         http_codes.UNAUTHORIZED,
-                        f"Client in team '{claim_team_id}' is not allowed to access team '{route_team_id}'.",
+                        f"Client with view '{view}' is not allowed to access route with allowed views {allowed_views}.",
                     )
 
-            return func(*args, **kwargs)
+                claim_competition_id = jwt.get("competition_id")
+                route_competition_id = kwargs.get("competition_id")
+                if not _has_access(claim_competition_id, route_competition_id):
+                    abort(
+                        http_codes.UNAUTHORIZED,
+                        f"Client in competition '{claim_competition_id}' is not allowed to access competition '{route_competition_id}'.",
+                    )
 
-        return inner
+                if view == "Team":
+                    claim_team_id = jwt.get("team_id")
+                    route_team_id = kwargs.get("team_id")
+                    if not _has_access(claim_team_id, route_team_id):
+                        abort(
+                            http_codes.UNAUTHORIZED,
+                            f"Client in team '{claim_team_id}' is not allowed to access team '{route_team_id}'.",
+                        )
 
-    return wrapper
+                return func(*args, **kwargs)
 
+            return wrapper
 
-def text_response(message, code=http_codes.OK):
-    return {"message": message}, code
-
-
-def list_response(items, total=None, code=http_codes.OK):
-    if type(items) is not list:
-        abort(http_codes.INTERNAL_SERVER_ERROR)
-    if not total:
-        total = len(items)
-    return {"items": items, "count": len(items), "total_count": total}, code
-
-
-def item_response(item, code=http_codes.OK):
-    if isinstance(item, list):
-        abort(http_codes.INTERNAL_SERVER_ERROR)
-    return item, code
+        return decorator
 
 
-from flask_restx import Api
-
-from .alternatives import api as alternative_ns
-from .answers import api as answer_ns
-from .auth import api as auth_ns
-from .codes import api as code_ns
-from .competitions import api as comp_ns
-from .components import api as component_ns
-from .media import api as media_ns
-from .misc import api as misc_ns
-from .questions import api as question_ns
-from .scores import api as score_ns
-from .slides import api as slide_ns
-from .teams import api as team_ns
-from .users import api as user_ns
+from flask_smorest import Api
 
 flask_api = Api()
-flask_api.add_namespace(media_ns, path="/api/media")
-flask_api.add_namespace(misc_ns, path="/api/misc")
-flask_api.add_namespace(user_ns, path="/api/users")
-flask_api.add_namespace(auth_ns, path="/api/auth")
-flask_api.add_namespace(comp_ns, path="/api/competitions")
-flask_api.add_namespace(slide_ns, path="/api/competitions/<competition_id>/slides")
-flask_api.add_namespace(
-    alternative_ns, path="/api/competitions/<competition_id>/slides/<slide_id>/questions/<question_id>/alternatives"
-)
-flask_api.add_namespace(team_ns, path="/api/competitions/<competition_id>/teams")
-flask_api.add_namespace(code_ns, path="/api/competitions/<competition_id>/codes")
-flask_api.add_namespace(question_ns, path="/api/competitions/<competition_id>")
-flask_api.add_namespace(component_ns, path="/api/competitions/<competition_id>/slides/<slide_id>/components")
-flask_api.add_namespace(answer_ns, path="/api/competitions/<competition_id>/teams/<team_id>/answers")
-flask_api.add_namespace(score_ns, path="/api/competitions/<competition_id>/teams/<team_id>/answers/question_scores")
+
+
+def init_api():
+
+    from .alternatives import blp as alternative_blp
+    from .answers import blp as answer_blp
+    from .auth import blp as auth_blp
+    from .codes import blp as code_blp
+    from .competitions import blp as competition_blp
+    from .components import blp as component_blp
+    from .media import blp as media_blp
+    from .misc import blp as misc_blp
+    from .questions import blp as question_blp
+    from .scores import blp as score_blp
+    from .slides import blp as slide_blp
+    from .teams import blp as team_blp
+    from .users import blp as user_blp
+
+    flask_api.register_blueprint(user_blp)
+    flask_api.register_blueprint(auth_blp)
+    flask_api.register_blueprint(competition_blp)
+    flask_api.register_blueprint(misc_blp)
+    flask_api.register_blueprint(media_blp)
+    flask_api.register_blueprint(slide_blp)
+    flask_api.register_blueprint(question_blp)
+    flask_api.register_blueprint(team_blp)
+    flask_api.register_blueprint(code_blp)
+    flask_api.register_blueprint(alternative_blp)
+    flask_api.register_blueprint(component_blp)
+    flask_api.register_blueprint(answer_blp)
+    flask_api.register_blueprint(score_blp)

@@ -3,8 +3,8 @@ This file contains functionality to get data from the database.
 """
 
 import app.database.controller as dbc
+from app.apis import http_codes
 from app.core import db
-from app.core import http_codes as codes
 from app.database.models import (
     Code,
     Competition,
@@ -63,8 +63,7 @@ def user_exists(email):
 
 def user_by_email(email):
     """ Gets the user object associated with the provided email. """
-
-    return User.query.filter(User.email == email).first_api(error_code=codes.UNAUTHORIZED)
+    return User.query.filter(User.email == email).first_api()
 
 
 ### Slides ###
@@ -297,7 +296,7 @@ def component_list(competition_id, slide_id):
 
 
 ### Competitions ###
-def competition(competition_id):
+def competition(competition_id, required=True):
     """ Get Competition and all it's sub-entities. """
 
     join_component = joinedload(Competition.slides).subqueryload(Slide.components)
@@ -310,5 +309,5 @@ def competition(competition_id):
         .options(join_alternatives)
         .options(join_question_alternative_answer)
         .options(join_question_score)
-        .first()
+        .first_api(required, "Tävlingen kunde inte hittas")
     )

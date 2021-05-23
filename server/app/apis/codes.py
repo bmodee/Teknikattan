@@ -4,35 +4,32 @@ Default route: /api/competitions/<competition_id>/codes
 """
 
 import app.database.controller as dbc
-from app.apis import item_response, list_response, protect_route
-from app.core.dto import CodeDTO
+from app.core.schemas import CodeSchema
 from app.database.models import Code
-from flask_restx import Resource
+from flask.views import MethodView
+from flask_smorest.error_handler import ErrorSchema
 
-api = CodeDTO.api
-schema = CodeDTO.schema
-list_schema = CodeDTO.list_schema
+from . import ALL, ExtendedBlueprint, http_codes
+
+blp = ExtendedBlueprint(
+    "code", "code", url_prefix="/api/competitions/<competition_id>/codes", description="Operations on codes"
+)
 
 
-@api.route("")
-@api.param("competition_id")
-class CodesList(Resource):
-    @protect_route(allowed_roles=["*"], allowed_views=["Operator"])
+@blp.route("")
+class CodesList(MethodView):
+    @blp.authorization(allowed_roles=ALL, allowed_views=["Operator"])
+    @blp.response(http_codes.OK, CodeSchema(many=True))
     def get(self, competition_id):
         """ Gets the all competition codes. """
-
-        items = dbc.get.code_list(competition_id)
-        return list_response(list_schema.dump(items), len(items))
+        return dbc.get.code_list(competition_id)
 
 
-@api.route("/<code_id>")
-@api.param("competition_id, code_id")
-class CodesById(Resource):
-    @protect_route(allowed_roles=["*"])
+@blp.route("/<code_id>")
+class CodesById(MethodView):
+    @blp.authorization(allowed_roles=ALL)
+    @blp.response(http_codes.OK, CodeSchema)
+    @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Code not found")
     def put(self, competition_id, code_id):
         """ Generates a new competition code. """
-
-        item = dbc.get.one(Code, code_id)
-        item.code = dbc.utils.generate_unique_code()
-        dbc.utils.commit_and_refresh(item)
-        return item_response(schema.dump(item))
+        return dbc.edit.default(dbc.get.one(Code, code_id), code=dbc.utils.generate_unique_code())

@@ -4,57 +4,55 @@ Default route: /api/competitions/<competition_id>/teams/<team_id>/answers
 """
 
 import app.database.controller as dbc
-from app.apis import item_response, list_response, protect_route
-from app.core.dto import QuestionAlternativeAnswerDTO, QuestionScoreDTO
-from app.core.parsers import sentinel
-from flask_restx import Resource, reqparse
+from app.core import ma
+from app.core.schemas import BaseSchema, QuestionAlternativeAnswerSchema
+from app.database import models
+from flask.views import MethodView
 
-api = QuestionAlternativeAnswerDTO.api
-schema = QuestionAlternativeAnswerDTO.schema
-list_schema = QuestionAlternativeAnswerDTO.list_schema
+from . import ALL, ExtendedBlueprint, http_codes
 
-score_schema = QuestionScoreDTO.schema
-score_list_schema = QuestionScoreDTO.list_schema
-
-
-answer_parser_add = reqparse.RequestParser()
-answer_parser_add.add_argument("answer", type=str, required=True, location="json")
-
-answer_parser_edit = reqparse.RequestParser()
-answer_parser_edit.add_argument("answer", type=str, default=sentinel, location="json")
+blp = ExtendedBlueprint(
+    "answer",
+    "answer",
+    url_prefix="/api/competitions/<competition_id>/teams/<team_id>/answers",
+    description="Adding, updating, deleting and copy answer",
+)
 
 
-@api.route("/question_alternatives")
-@api.param("competition_id, team_id")
-class QuestionAlternativeList(Resource):
-    @protect_route(allowed_roles=["*"], allowed_views=["*"])
+class AnswerAddArgsSchema(BaseSchema):
+    class Meta(BaseSchema.Meta):
+        model = models.QuestionAlternativeAnswer
+
+    answer = ma.auto_field(required=False)
+
+
+@blp.route("")
+class QuestionAlternativeList(MethodView):
+    @blp.authorization(allowed_roles=ALL, allowed_views=ALL)
+    @blp.response(http_codes.OK, QuestionAlternativeAnswerSchema)
     def get(self, competition_id, team_id):
         """ Gets all question answers that the specified team has given. """
-
-        items = dbc.get.question_alternative_answer_list(competition_id, team_id)
-        return list_response(list_schema.dump(items))
+        return dbc.get.question_alternative_answer_list(competition_id, team_id)
 
 
-@api.route("/question_alternatives/<question_alternative_id>")
-@api.param("competition_id, team_id, question_alternative_id")
-class QuestionAlternativeAnswers(Resource):
-    @protect_route(allowed_roles=["*"], allowed_views=["*"])
-    def get(self, competition_id, team_id, question_alternative_id):
+@blp.route("/<answer_id>")
+class QuestionAlternativeAnswers(MethodView):
+    @blp.authorization(allowed_roles=ALL, allowed_views=ALL)
+    @blp.response(http_codes.OK, QuestionAlternativeAnswerSchema)
+    def get(self, competition_id, team_id, answer_id):
         """ Gets the specified question answer. """
+        return dbc.get.question_alternative_answer(competition_id, team_id, answer_id)
 
-        item = dbc.get.question_alternative_answer(competition_id, team_id, question_alternative_id)
-        return item_response(schema.dump(item))
-
-    @protect_route(allowed_roles=["*"], allowed_views=["*"])
-    def put(self, competition_id, team_id, question_alternative_id):
+    @blp.authorization(allowed_roles=ALL, allowed_views=ALL)
+    @blp.arguments(AnswerAddArgsSchema)
+    @blp.response(http_codes.OK, QuestionAlternativeAnswerSchema)
+    def put(self, args, competition_id, team_id, answer_id):
         """ Add or edit specified quesiton_answer. """
 
-        item = dbc.get.question_alternative_answer(competition_id, team_id, question_alternative_id, required=False)
+        item = dbc.get.question_alternative_answer(competition_id, team_id, answer_id, required=False)
         if item is None:
-            args = answer_parser_add.parse_args(strict=True)
-            item = dbc.add.question_alternative_answer(args.get("answer"), question_alternative_id, team_id)
+            item = dbc.add.question_alternative_answer(args.get("answer"), answer_id, team_id)
         else:
-            args = answer_parser_edit.parse_args(strict=True)
             item = dbc.edit.default(item, **args)
 
-        return item_response(schema.dump(item))
+        return item

@@ -16,7 +16,7 @@ const initialState: SearchUserState = {
   users: [],
   total: 0,
   count: 0,
-  filterParams: { pageSize: 10, page: 0 },
+  filterParams: { pageSize: 10, page: 1 },
 }
 
 /** Intercept actions for searchUser state and update the state */

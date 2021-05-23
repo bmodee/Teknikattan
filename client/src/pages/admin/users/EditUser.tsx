@@ -14,7 +14,7 @@ import {
   TextField,
   Theme,
   useMediaQuery,
-  useTheme,
+  useTheme
 } from '@material-ui/core'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { Alert, AlertTitle } from '@material-ui/lab'
@@ -110,7 +110,7 @@ const EditUser = ({ user }: UserIdProps) => {
   const handleDeleteUsers = async () => {
     setOpen(false)
     await axios
-      .delete(`/api/auth/delete/${user.id}`)
+      .delete(`/api/users/${user.id}`)
       .then(() => {
         setAnchorEl(null)
         dispatch(getSearchUsers())

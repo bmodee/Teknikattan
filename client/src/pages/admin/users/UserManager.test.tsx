@@ -8,25 +8,24 @@ import UserManager from './UserManager'
 
 it('renders user manager', () => {
   const userRes: any = {
-    data: {
-      items: [
-        {
-          id: 1,
-          name: 'user1',
-          email: 'user1@email.com',
-          role_id: 0,
-          city_id: 0,
-        },
-        {
-          id: 2,
-          name: 'Stockholm',
-          email: 'user2@email.com',
-          role_id: 0,
-          city_id: 0,
-        },
-      ],
-      count: 2,
-      total_count: 3,
+    data: [
+      {
+        id: 1,
+        name: 'user1',
+        email: 'user1@email.com',
+        role_id: 0,
+        city_id: 0,
+      },
+      {
+        id: 2,
+        name: 'Stockholm',
+        email: 'user2@email.com',
+        role_id: 0,
+        city_id: 0,
+      },
+    ],
+    headers: {
+      pagination: '{"count": 2,"total_count": 3, "page_size": 5}',
     },
   }
 

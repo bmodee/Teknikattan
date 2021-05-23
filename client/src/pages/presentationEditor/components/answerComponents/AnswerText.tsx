@@ -39,7 +39,7 @@ const AnswerText = ({ activeSlide, competitionId }: AnswerTextProps) => {
       setTimerHandle(undefined)
     }
     //Only updates answer if the timer is on
-    if (activeSlide?.timer !== undefined && !timer.enabled) {
+    if (!(activeSlide?.timer !== null && !timer.enabled)) {
       //Only updates answer 100ms after last input was made
       setTimerHandle(window.setTimeout(() => updateAnswer(answer), 100))
     }
@@ -79,7 +79,7 @@ const AnswerText = ({ activeSlide, competitionId }: AnswerTextProps) => {
       </ListItem>
       <ListItem style={{ height: '100%' }}>
         <TextField
-          disabled={team === undefined || (activeSlide?.timer !== undefined && !timer.enabled)}
+          disabled={team === undefined || (activeSlide?.timer !== null && !timer.enabled)}
           defaultValue={getDefaultString()}
           style={{ height: '100%' }}
           variant="outlined"
