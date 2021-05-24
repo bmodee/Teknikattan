@@ -1,7 +1,6 @@
 # Editor
 
-[comment]: # 'Explain where to find the competition name. Perhaps an image or link to Admin?'
-
+The [competition manager](./admin.md) will list all competitions.
 After clicking on a competition name you will enter the editor and will be able to edit it.
 The Teknikåttan logo in the top left corner will take you back to the Admin page and right under that all slides are shown.
 A newly created competition will have one empty default slide.
@@ -9,6 +8,7 @@ Switch to a different slide by clicking on it.
 In the bottom left corner you will be able to add a new slide using the "Ny sida" button.
 Delete or copy a slide simply by right clicking on it and choosing the appropriate option.
 In the top right corner you will be able to change which view you see and edit.
+By right clicking on a component you will be able to delete it or copy it to the same or a different view.
 
 ![Editor with competition tab open](../_static/editor_competition.png)
 
@@ -31,5 +31,3 @@ Below that you will be able to add and remove text and image components as well 
 The background image for the competition can be overridden by explicitly setting it on a specific page.
 
 ![Editor with slide tab open](../_static/editor_slide.jpg)
-
-[comment]: # 'Perhaps mention right clicking a component to make a copy to another view?'

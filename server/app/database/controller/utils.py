@@ -8,8 +8,6 @@ from app.core.codes import generate_code_string
 from app.database.models import Code
 from flask_smorest import abort
 
-# from flask_restx import abort
-
 
 def move_order(orders, order_key, from_order, to_order):
     """

@@ -19,5 +19,4 @@ npm install
 You should now be ready to start the client.
 Try it by running `npm run start`.
 A web page should open where you can see the [login page](../user_manual/login.md).
-
-[comment]: # (Should we mention the task for starting the client?)
+If you are using VS Code you can also start the client with the [task](../development/vscode.md) `start client`.

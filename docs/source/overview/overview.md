@@ -16,10 +16,8 @@ This is to make sure that whoever tries to communicate has the correct level of 
 
 ### API
 
-[comment]: # (What does "that will proxy the request to the main Python server" mean?)
-
 API calls are used for simple functions that the client wants to perform, such as getting, editing, and saving data.
-These are sent from the client to the backend Node server that will proxy the request to the main Python server.
+These are sent from the client to the backend Node server that will forward the request to the main Python server.
 The request will then be handled there and the response will be sent back.
 The Node server will then send them back to the client.
 

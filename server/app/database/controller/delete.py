@@ -7,8 +7,6 @@ from app.apis import http_codes
 from app.core import db
 from app.database.models import QuestionAlternativeAnswer, QuestionScore, Whitelist
 from flask_smorest import abort
-
-# from flask_restx import abort
 from sqlalchemy.exc import IntegrityError
 
 

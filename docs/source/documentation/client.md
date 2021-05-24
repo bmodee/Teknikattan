@@ -16,5 +16,3 @@ start ./docs/index.html
 ```
 
 If you want to include the documentation from the tests, go to the file `client/tsconfig.json` and comment out the line `"exlude": "**/*.test.*"`.
-
-[comment]: # (There should be a task for this, or does one exist already?)

@@ -41,5 +41,4 @@ pip install -r requirements.txt
 You should now be ready to start the server.
 Try it by running `python main.py` and navigate to `localhost:5000`.
 If everything worked as it should you should see a list of all available API calls.
-
-[comment]: # (Should we mention the task for starting the server?)
+If you are using VS Code you can also start the server with the [task](../development/vscode.md) `start server`.

@@ -13,8 +13,6 @@ The Python and Pylance extensions help with linting Python code, auto imports, s
 Prettier is an extension used to format JavaScript and TypeScript.
 ESLint is used to lint JavaScript and TypeScript code.
 
-[comment]: # ("is used to lint JavaScript" what is lint? It's not explained)
-
 Live Share is an extension that is used to write code together at the same time, much like a Google Docs document.
 There were however a few issues with the Python extension that made Live Share hard to work with.
 

@@ -5,8 +5,6 @@ This file contains functionality to get data from the database.
 from app.apis import http_codes
 from app.core import db
 from flask_smorest import abort
-
-# from flask_restx.errors import abort
 from sqlalchemy import exc
 
 

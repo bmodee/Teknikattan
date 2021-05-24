@@ -6,8 +6,6 @@ database. It can add, get, delete, edit, search and copy items.
 from app.apis import http_codes
 from flask_smorest import abort
 from flask_smorest.pagination import PaginationParameters
-
-# from flask_restx import abort
 from flask_sqlalchemy import BaseQuery
 from flask_sqlalchemy.model import Model
 from sqlalchemy import Column, DateTime

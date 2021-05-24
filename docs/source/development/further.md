@@ -20,15 +20,3 @@ A list of all the questions that needs to be supported (and more) can be found o
 
 Here we will give a list of things we think will improve the system.
 It is not certain that they are a better solutions but definitely something to look into.
-
-### Replace Flask-RESTX with flask-smorest
-
-[comment]: # (This is already implemented)
-
-We currently use [Flask-RESTX](https://flask-restx.readthedocs.io/en/latest/) to define our endpoints and parse the arguments they take, either as a query string or in the body.
-But when responding we use [Marshmallow](https://flask-smorest.readthedocs.io/en/latest/) to generate the JSON objects to return.
-We believe that [flask-smorest](https://flask-smorest.readthedocs.io/en/latest/) would integrate a lot better with Marshmallow.
-This would give us the ability to more easily show the expected arguments and the return values for our endpoints using Swagger (when visiting `localhost:5000`).
-Currently we only show the route.
-The work required also seems to be rather small because they look quite similar.
-This would also remove the deprecated [reqparse](https://flask-restx.readthedocs.io/en/latest/parsing.html) part from Flask-RESTX, which is desirable.

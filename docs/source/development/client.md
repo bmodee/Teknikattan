@@ -1,10 +1,10 @@
 # Frontend
 
-[comment]: # (TODO)
+Here it is described how to work with the frontend in the system.
 
 ## Working with TypeScript
 
-[comment]: # (TODO)
+The main programming languange used for the front end is TypeScript.
 
 ### npm
 
