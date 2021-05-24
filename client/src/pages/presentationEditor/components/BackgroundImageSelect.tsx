@@ -1,28 +1,34 @@
+/**
+ * This file contains the BackgroundImageSelect function, which returns a component used to select a background image.
+ * This component is used to set a background for either the entire competition, or for a specific slide.
+ * It is used in CompetitionSettings and in SlideSettings.
+ */
 import { ListItem, ListItemText, Typography } from '@material-ui/core'
-import React, { useState } from 'react'
-import { useAppDispatch, useAppSelector } from '../../../hooks'
-import {
-  AddButton,
-  AddBackgroundButton,
-  Center,
-  HiddenInput,
-  ImportedImage,
-  SettingsList,
-  ImageNameText,
-  ImageTextContainer,
-} from './styled'
 import CloseIcon from '@material-ui/icons/Close'
 import axios from 'axios'
-import { Media } from '../../../interfaces/ApiModels'
+import React from 'react'
 import { getEditorCompetition } from '../../../actions/editor'
+import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { uploadFile } from '../../../utils/uploadImage'
+import {
+  AddBackgroundButton,
+  AddButton,
+  Center,
+  HiddenInput,
+  ImageNameText,
+  ImageTextContainer,
+  ImportedImage,
+  SettingsList,
+} from './styled'
 
 type BackgroundImageSelectProps = {
   variant: 'competition' | 'slide'
 }
 
+/** Creates and renders a background image selection component */
 const BackgroundImageSelect = ({ variant }: BackgroundImageSelectProps) => {
   const activeSlideId = useAppSelector((state) => state.editor.activeSlideId)
+  /** Gets a background image from either the competition state or the slide state, depending on variant */
   const backgroundImage = useAppSelector((state) => {
     if (variant === 'competition') return state.editor.competition.background_image
     else return state.editor.competition.slides.find((slide) => slide.id === activeSlideId)?.background_image
@@ -30,8 +36,8 @@ const BackgroundImageSelect = ({ variant }: BackgroundImageSelectProps) => {
   const competitionId = useAppSelector((state) => state.editor.competition.id)
   const dispatch = useAppDispatch()
 
+  /** Creates a new background image component for the competition or slide on the database using API call. */
   const updateBackgroundImage = async (mediaId: number) => {
-    // Creates a new image component on the database using API call.
     if (variant === 'competition') {
       await axios
         .put(`/api/competitions/${competitionId}`, { background_image_id: mediaId })
@@ -49,8 +55,8 @@ const BackgroundImageSelect = ({ variant }: BackgroundImageSelectProps) => {
     }
   }
 
+  /** Removes background image media and from competition using API calls. */
   const removeBackgroundImage = async () => {
-    // Removes background image media and from competition using API calls.
     await axios.delete(`/api/media/images/${backgroundImage?.id}`).catch(console.log)
     if (variant === 'competition') {
       await axios
@@ -69,9 +75,10 @@ const BackgroundImageSelect = ({ variant }: BackgroundImageSelectProps) => {
     }
   }
 
+  /** Reads the selected image file and uploads it to the server.
+   * Creates a new background image component containing the file.
+   */
   const handleFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Reads the selected image file and uploads it to the server.
-    // Creates a new image component containing the file.
     if (e.target.files !== null && e.target.files[0]) {
       const files = Array.from(e.target.files)
       const file = files[0]
@@ -86,6 +93,7 @@ const BackgroundImageSelect = ({ variant }: BackgroundImageSelectProps) => {
 
   return (
     <SettingsList>
+      {/** Choose an image */}
       {!backgroundImage && (
         <ListItem button style={{ padding: 0 }}>
           <HiddenInput
@@ -102,6 +110,7 @@ const BackgroundImageSelect = ({ variant }: BackgroundImageSelectProps) => {
           </AddBackgroundButton>
         </ListItem>
       )}
+      {/** Display thumbnail for chosen image, and remove image */}
       {backgroundImage && (
         <>
           <ListItem divider>

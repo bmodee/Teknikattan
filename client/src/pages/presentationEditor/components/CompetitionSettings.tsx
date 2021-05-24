@@ -1,3 +1,8 @@
+/**
+ * This file contains the CompetitionSettings function, which returns the right hand side competition settings panel.
+ * This component is used to change settings which apply to the entire competition.
+ * It is contained in the SettingsPanel, alongside the SlideSettings.
+ */
 import { Divider, FormControl, InputLabel, ListItem, MenuItem, Select, TextField, Typography } from '@material-ui/core'
 import axios from 'axios'
 import React, { useState } from 'react'
@@ -13,6 +18,7 @@ interface CompetitionParams {
   competitionId: string
 }
 
+/** Creates and renders a competition settings component */
 const CompetitionSettings: React.FC = () => {
   const { competitionId }: CompetitionParams = useParams()
   const [nameErrorText, setNameErrorText] = useState<string | undefined>(undefined)
@@ -20,6 +26,7 @@ const CompetitionSettings: React.FC = () => {
   const competition = useAppSelector((state) => state.editor.competition)
   const cities = useAppSelector((state) => state.cities.cities)
 
+  /** Sets the name of the competition in the database */
   const updateCompetitionName = async (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     await axios
       .put(`/api/competitions/${competitionId}`, { name: event.target.value })
@@ -32,6 +39,7 @@ const CompetitionSettings: React.FC = () => {
       })
   }
 
+  /** Sets the city of the competition in the database */
   const updateCompetitionCity = async (city: City) => {
     await axios
       .put(`/api/competitions/${competitionId}`, { city_id: city.id })
@@ -53,6 +61,7 @@ const CompetitionSettings: React.FC = () => {
   return (
     <PanelContainer>
       <SettingsList>
+        {/** Text field for setting the competition name */}
         <FirstItem>
           <ListItem>
             <TextField
@@ -68,7 +77,7 @@ const CompetitionSettings: React.FC = () => {
           </ListItem>
         </FirstItem>
         <Divider />
-
+        {/** Set region */}
         <ListItem>
           <FormControl fullWidth variant="outlined">
             <InputLabel>Region</InputLabel>
@@ -86,9 +95,9 @@ const CompetitionSettings: React.FC = () => {
           </FormControl>
         </ListItem>
       </SettingsList>
-
+      {/** Set teams */}
       <Teams competitionId={competitionId} />
-
+      {/** Set background image */}
       <BackgroundImageSelect variant="competition" />
     </PanelContainer>
   )

@@ -1,4 +1,6 @@
-/* This file compiles and renders the right hand slide settings bar, under the tab "SIDA".
+/**
+ * This file contains the SlideSettings function, which returns the right hand slide settings bar.
+ * This component is used to edit settings associated to a slide, such as question, image and text components.
  */
 import { Divider } from '@material-ui/core'
 import React from 'react'
@@ -20,6 +22,7 @@ interface CompetitionParams {
   competitionId: string
 }
 
+/** Creates and renders the slide settings component */
 const SlideSettings: React.FC = () => {
   const { competitionId }: CompetitionParams = useParams()
 
@@ -59,10 +62,12 @@ const SlideSettings: React.FC = () => {
         <MatchAlternatives activeSlide={activeSlide} competitionId={competitionId} />
       )}
 
+      {/** Text components */}
       {activeSlide && (
         <Texts activeViewTypeId={activeViewTypeId} activeSlide={activeSlide} competitionId={competitionId} />
       )}
 
+      {/** Image components */}
       {activeSlide && (
         <Images activeViewTypeId={activeViewTypeId} activeSlide={activeSlide} competitionId={competitionId} />
       )}

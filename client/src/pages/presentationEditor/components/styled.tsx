@@ -1,3 +1,6 @@
+/**
+ * This file supplies CSS styles to the presentation editor components.
+ */
 import { Button, Card, List, ListItemText, Tab, TextField, Typography } from '@material-ui/core'
 import styled from 'styled-components'
 

@@ -25,7 +25,9 @@ type QuestionComponentProps = {
   currentSlideId?: number
 }
 
+/** Creates and renders a question component */
 const QuestionComponentDisplay = ({ variant, currentSlideId }: QuestionComponentProps) => {
+  /** Gets the slide from the relevant state (presentation or editor) */
   const activeSlide = useAppSelector((state) => {
     if (variant === 'presentation' && currentSlideId)
       return state.presentation.competition.slides.find((slide) => slide.id === currentSlideId)
@@ -35,7 +37,7 @@ const QuestionComponentDisplay = ({ variant, currentSlideId }: QuestionComponent
   })
 
   const timer = activeSlide?.timer
-  const total_score = activeSlide?.questions[0].total_score
+  const total_score = activeSlide?.questions[0].total_score //[0] is because each slide can only have one question currently.
   const questionName = activeSlide?.questions[0].name
 
   const questionTypeId = activeSlide?.questions[0].type_id
@@ -110,7 +112,7 @@ const QuestionComponentDisplay = ({ variant, currentSlideId }: QuestionComponent
         </div>
       </AppBar>
       <Divider />
-      {getAlternatives()}
+      {getAlternatives() /*This displays the actual alternatives for the question*/}
     </Card>
   )
 }

@@ -1,3 +1,8 @@
+/**
+ * This file contains the Texts function, which returns a component containing text components.
+ * This component is used to edit and add text components in a slide.
+ * It is used in SlideSettings.
+ */
 import { Divider, ListItem, ListItemText } from '@material-ui/core'
 import axios from 'axios'
 import React from 'react'
@@ -14,7 +19,9 @@ type TextsProps = {
   competitionId: string
 }
 
+/** Creates and renders a texts component */
 const Texts = ({ activeViewTypeId, activeSlide, competitionId }: TextsProps) => {
+  /** Gets all text components from the slide state */
   const texts = useAppSelector(
     (state) =>
       state.editor.competition.slides
@@ -23,6 +30,8 @@ const Texts = ({ activeViewTypeId, activeSlide, competitionId }: TextsProps) => 
   )
 
   const dispatch = useAppDispatch()
+
+  /** Adds a new text component to the slide using API call */
   const handleAddText = async () => {
     if (activeSlide) {
       await axios.post(`/api/competitions/${competitionId}/slides/${activeSlide?.id}/components`, {
@@ -43,6 +52,7 @@ const Texts = ({ activeViewTypeId, activeSlide, competitionId }: TextsProps) => 
           <ListItemText primary="Text" />
         </Center>
       </ListItem>
+      {/** Shows list of all text components in the slide */}
       {texts &&
         texts
           .filter((text) => text.view_type_id === activeViewTypeId)
@@ -52,6 +62,7 @@ const Texts = ({ activeViewTypeId, activeSlide, competitionId }: TextsProps) => 
               <Divider />
             </TextCard>
           ))}
+      {/** Button to create new text component */}
       <ListItem button onClick={handleAddText}>
         <Center>
           <AddButton variant="button">Lägg till text</AddButton>

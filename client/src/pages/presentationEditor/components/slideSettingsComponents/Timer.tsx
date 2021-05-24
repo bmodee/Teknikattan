@@ -1,3 +1,8 @@
+/**
+ * This file contains the Timer function, which returns the timer component.
+ * This component is used to set the allowed time for a slide.
+ * It is used in SlideSettings.
+ */
 import { ListItem, TextField } from '@material-ui/core'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
@@ -11,20 +16,24 @@ type TimerProps = {
   competitionId: string
 }
 
+/** Creates and renders a timer component */
 const Timer = ({ activeSlide, competitionId }: TimerProps) => {
   const maxTime = 1000000 // ms
   const dispatch = useAppDispatch()
   const [timerHandle, setTimerHandle] = useState<number | undefined>(undefined)
+
+  /** Handles changes in the timer text field. Updates the timer every 300 ms */
   const handleChangeTimer = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     if (timerHandle) {
       clearTimeout(timerHandle)
       setTimerHandle(undefined)
     }
-    //Only updates slide and api 300s after last input was made
+    //Only updates slide and api 300 ms after last input was made
     setTimerHandle(window.setTimeout(() => updateTimer(event), 300))
     setTimer(+event.target.value)
   }
 
+  /** Updates the database with the new timer value.  */
   const updateTimer = async (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     /** If timer value is above the max value, set the timer value to max value to not overflow the server */
     // Sets score to event.target.value if it's between 0 and max
@@ -44,10 +53,12 @@ const Timer = ({ activeSlide, competitionId }: TimerProps) => {
   useEffect(() => {
     setTimer(activeSlide?.timer)
   }, [activeSlide])
+
   return (
     <ListItem>
       <Center>
         <SettingsItemContainer>
+          {/** Text files to change timer value */}
           <TextField
             id="standard-number"
             fullWidth={true}

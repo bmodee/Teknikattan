@@ -1,3 +1,8 @@
+/**
+ * This file contains the Teams function, which returns the part of the editor used to edit teams.
+ * This component is shown in the PresentationEditorPage as a part of CompetitionSettings.
+ */
+
 import {
   Button,
   Dialog,
@@ -31,10 +36,13 @@ type TeamsProps = {
   competitionId: string
 }
 
+/** Creates and renders a teams component */
 const Teams = ({ competitionId }: TeamsProps) => {
   const dispatch = useAppDispatch()
   const competition = useAppSelector((state) => state.editor.competition)
   const [errorActive, setErrorActive] = React.useState(false)
+
+  /** Adds or edits a team connected to the competition in the database, depending on the state */
   const editTeam = async () => {
     if (editTeamState.variant === 'Add') {
       await axios
@@ -44,6 +52,7 @@ const Teams = ({ competitionId }: TeamsProps) => {
         })
         .catch(console.log)
     } else if (editTeamState.team) {
+      // Edit existing team
       await axios
         .put(`/api/competitions/${competitionId}/teams/${editTeamState.team.id}`, { name: selectedTeamName })
         .then(() => {
@@ -62,6 +71,7 @@ const Teams = ({ competitionId }: TeamsProps) => {
     selectedTeamName = event.target.value
   }
 
+  /** Removes the team with teamId=tid */
   const removeTeam = async (tid: number) => {
     await axios
       .delete(`/api/competitions/${competitionId}/teams/${tid}`)
@@ -78,6 +88,7 @@ const Teams = ({ competitionId }: TeamsProps) => {
           <ListItemText primary="Lag" />
         </Center>
       </ListItem>
+      {/** One list item for each team in the competition */}
       {competition.teams &&
         competition.teams.map((team) => (
           <div key={team.id}>
@@ -92,11 +103,13 @@ const Teams = ({ competitionId }: TeamsProps) => {
             </ListItem>
           </div>
         ))}
+      {/** Button to add team */}
       <ListItem button onClick={() => setEditTeamState({ variant: 'Add', open: true })}>
         <Center>
           <AddButton variant="button">Lägg till lag</AddButton>
         </Center>
       </ListItem>
+      {/** Dialog box which opens when adding or editing a team */}
       <Dialog open={editTeamState.open} onClose={() => setEditTeamState({ open: false })}>
         <DialogTitle>
           {editTeamState.variant === 'Edit' && editTeamState.team

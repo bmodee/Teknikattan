@@ -1,3 +1,8 @@
+/**
+ * This file contains the RndComponent function, which returns a resizable and draggable component.
+ * This component is used by text, image and question components in the presentation editor.
+ * It uses the React-Rnd library.
+ */
 import { Card, IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
@@ -21,9 +26,12 @@ type RndComponentProps = {
   scale: number
 }
 
+/** State for right click menu; closed initially */
 const initialMenuState = { menuIsOpen: false, mouseX: null, mouseY: null, componentId: null }
 
+/** Creates and renders a resizable and draggable component */
 const RndComponent = ({ component, width, height, scale }: RndComponentProps) => {
+  //States
   const [hover, setHover] = useState(false)
   const [currentPos, setCurrentPos] = useState<Position>({ x: component.x, y: component.y })
   const [currentSize, setCurrentSize] = useState<Size>({ w: component.w, h: component.h })
@@ -33,6 +41,7 @@ const RndComponent = ({ component, width, height, scale }: RndComponentProps) =>
   const typeName = useAppSelector(
     (state) => state.types.componentTypes.find((componentType) => componentType.id === component.type_id)?.name
   )
+  /** State for right click menu */
   const [menuState, setMenuState] = useState<{
     menuIsOpen: boolean
     mouseX: null | number
@@ -41,30 +50,39 @@ const RndComponent = ({ component, width, height, scale }: RndComponentProps) =>
   }>(initialMenuState)
   const dispatch = useAppDispatch()
 
+  /** Sets position of the component in the database */
   const handleUpdatePos = (pos: Position) => {
     axios.put(`/api/competitions/${competitionId}/slides/${slideId}/components/${component.id}`, {
       x: pos.x,
       y: pos.y,
     })
   }
+
+  /** Sets size of the component in the database */
   const handleUpdateSize = (size: Size) => {
     axios.put(`/api/competitions/${competitionId}/slides/${slideId}/components/${component.id}`, {
       w: size.w,
       h: size.h,
     })
   }
+
+  /** Positions the component centered horizontally */
   const handleCenterHorizontal = () => {
     const centerX = width / (2 * scale) - currentSize.w / 2
     setCurrentPos({ x: centerX, y: currentPos.y })
     handleUpdatePos({ x: centerX, y: currentPos.y })
   }
+
+  /** Positions the component centered vertically */
   const handleCenterVertical = () => {
     const centerY = height / (2 * scale) - currentSize.h / 2
     setCurrentPos({ x: currentPos.x, y: centerY })
     handleUpdatePos({ x: currentPos.x, y: centerY })
   }
+
+  /** Opens right click context menu */
   const handleRightClick = (event: React.MouseEvent<HTMLDivElement>, componentId: number) => {
-    event.preventDefault()
+    event.preventDefault() //Prevents browser-native context menu from being opened
     setMenuState({
       menuIsOpen: true,
       mouseX: event.clientX - 2,
@@ -72,9 +90,13 @@ const RndComponent = ({ component, width, height, scale }: RndComponentProps) =>
       componentId: componentId,
     })
   }
+
+  /** Closes right click context menu */
   const handleCloseMenu = () => {
     setMenuState(initialMenuState)
   }
+
+  /** Creates a copy of the component in the database. The copy will be placed in the supplied slide type (e.g. viewer, participant). */
   const handleDuplicateComponent = async (viewTypeId: number) => {
     console.log('Duplicate')
     await axios
@@ -85,6 +107,8 @@ const RndComponent = ({ component, width, height, scale }: RndComponentProps) =>
       .catch(console.log)
     setMenuState(initialMenuState)
   }
+
+  /** Deletes the component from the database */
   const handleRemoveComponent = async () => {
     console.log('Remove')
     await axios
@@ -94,6 +118,9 @@ const RndComponent = ({ component, width, height, scale }: RndComponentProps) =>
     setMenuState(initialMenuState)
   }
 
+  /** Handles key presses:
+   * -Holding down shift retains the aspect ratio of the component when resizing
+   */
   useEffect(() => {
     const downHandler = (ev: KeyboardEvent) => {
       if (ev.key === 'Shift') setShiftPressed(true)
@@ -109,6 +136,7 @@ const RndComponent = ({ component, width, height, scale }: RndComponentProps) =>
     }
   }, [])
 
+  /** Renders the contained text, image och question component */
   const renderInnerComponent = () => {
     switch (component.type_id) {
       case ComponentTypes.Text:
@@ -139,6 +167,7 @@ const RndComponent = ({ component, width, height, scale }: RndComponentProps) =>
   }
 
   return (
+    /** Renders an Rnd component from the react-rnd library */
     <Rnd
       minWidth={75 * scale}
       minHeight={75 * scale}
@@ -171,6 +200,7 @@ const RndComponent = ({ component, width, height, scale }: RndComponentProps) =>
         setCurrentPos({ x: position.x / scale, y: position.y / scale })
       }}
     >
+      {/** Buttons for centering the component */}
       {hover && (
         <Card elevation={6} style={{ position: 'absolute', zIndex: 10 }}>
           <Tooltip title="Centrera horisontellt">
@@ -182,6 +212,7 @@ const RndComponent = ({ component, width, height, scale }: RndComponentProps) =>
         </Card>
       )}
       {renderInnerComponent()}
+      {/** Context menu */}
       <Menu
         keepMounted
         open={menuState.menuIsOpen}

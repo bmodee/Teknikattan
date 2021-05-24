@@ -1,3 +1,9 @@
+/**
+ * This file contains the TextComponentEdit function, which returns the text component used in the editor.
+ * This component is used when editing a text component. It uses TinyMCE.
+ * When a text component is displayed in a competition, the file TextComponentDisplay is used instead.
+ */
+
 import { Editor } from '@tinymce/tinymce-react'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
@@ -15,6 +21,7 @@ interface CompetitionParams {
   competitionId: string
 }
 
+/** Creates and renders an editable text component */
 const TextComponentEdit = ({ component }: ImageComponentProps) => {
   const { competitionId }: CompetitionParams = useParams()
   const [content, setContent] = useState('')
@@ -27,6 +34,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
     setContent(component.text)
   }, [])
 
+  /** Saves the supplied text to the database */
   const handleSaveText = async (newText: string) => {
     setContent(newText)
     if (timerHandle) {
@@ -44,6 +52,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
     )
   }
 
+  /** Deletes the text component */
   const handleDeleteText = async (componentId: number) => {
     await axios.delete(`/api/competitions/${competitionId}/slides/${activeSlideId}/components/${componentId}`)
     dispatch(getEditorCompetition(competitionId))
@@ -51,6 +60,7 @@ const TextComponentEdit = ({ component }: ImageComponentProps) => {
 
   return (
     <>
+      {/** TinyMCE component */}
       <Editor
         value={content || ''}
         init={{

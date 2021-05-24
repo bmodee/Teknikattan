@@ -1,3 +1,7 @@
+/**
+ * This file contains the SlideDisplay function, which returns the slide component.
+ * It is used both in the presentation editor and in active competitions.
+ */
 import { Card, Typography } from '@material-ui/core'
 import TimerIcon from '@material-ui/icons/Timer'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
@@ -16,7 +20,9 @@ type SlideDisplayProps = {
   currentSlideId?: number
 }
 
+/** Creates and renders a slide component */
 const SlideDisplay = ({ variant, activeViewTypeId, currentSlideId }: SlideDisplayProps) => {
+  /** Returns a slide from either the editor or presentation (competition) state */
   const slide = useAppSelector((state) => {
     if (currentSlideId && variant === 'presentation')
       return state.presentation.competition.slides.find((slide) => slide.id === currentSlideId)
@@ -24,11 +30,15 @@ const SlideDisplay = ({ variant, activeViewTypeId, currentSlideId }: SlideDispla
       return state.editor.competition.slides.find((slide) => slide.id === state.editor.activeSlideId)
     return state.presentation.competition.slides.find((slide) => slide.id === state.presentation.activeSlideId)
   })
+
+  /** Returns the number of slides */
   const totalSlides = useAppSelector((state) => {
     if (variant === 'presentation') return state.presentation.competition.slides.length
     return state.editor.competition.slides.length
   })
   const components = slide?.components
+
+  /** Returns the background image */
   const competitionBackgroundImage = useAppSelector((state) => {
     if (variant === 'editor') return state.editor.competition.background_image
     return state.presentation.competition.background_image
@@ -39,12 +49,13 @@ const SlideDisplay = ({ variant, activeViewTypeId, currentSlideId }: SlideDispla
   const editorPaperRef = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(0)
   const [height, setHeight] = useState(0)
-  //Makes scale close to 1, 800 height is approxemately for a 1920 by 1080 monitor
+  //Makes scale close to 1, 800 height is approximately for a 1920 by 1080 monitor
   const scale = height / 800
   useEffect(() => {
     dispatch(getTypes())
   }, [])
 
+  /** Resizes the slide if the browser window is resized */
   useLayoutEffect(() => {
     const updateScale = () => {
       if (editorPaperRef.current) {
@@ -56,6 +67,7 @@ const SlideDisplay = ({ variant, activeViewTypeId, currentSlideId }: SlideDispla
     updateScale()
     return () => window.removeEventListener('resize', updateScale)
   }, [])
+
   return (
     <SlideEditorContainer>
       <SlideEditorContainerRatio>
@@ -81,6 +93,7 @@ const SlideDisplay = ({ variant, activeViewTypeId, currentSlideId }: SlideDispla
               draggable={false}
             />
           )}
+          {/** Renders editable components if in the editor, and non-editable if in a competition */}
           {components &&
             components
               .filter((component) => component.view_type_id === activeViewTypeId)
