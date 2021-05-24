@@ -65,6 +65,8 @@ const Images = ({ activeViewTypeId, activeSlide, competitionId }: ImagesProps) =
         createImageComponent(response)
       }
     }
+    // Resets the input, so that the same file can be uploaded again.
+    e.target.value = ''
   }
 
   const handleCloseimageClick = async (image: ImageComponent) => {
@@ -107,7 +109,13 @@ const Images = ({ activeViewTypeId, activeSlide, competitionId }: ImagesProps) =
               <ListItem divider button>
                 <ImportedImage src={`http://localhost:5000/static/images/thumbnail_${image.media?.filename}`} />
                 <Center>
-                  <ListItemText primary={image.media?.filename} />
+                  <ListItemText
+                    primary={
+                      image.media?.filename.length > 25
+                        ? image.media?.filename.substr(0, 24) + '...'
+                        : image.media?.filename
+                    }
+                  />
                 </Center>
                 <CloseIcon onClick={() => handleCloseimageClick(image)} />
               </ListItem>
