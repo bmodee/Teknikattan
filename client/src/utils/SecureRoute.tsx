@@ -27,6 +27,7 @@ const SecureRoute: React.FC<SecureRouteProps> = ({ component: Component, authLev
     }
   }, [])
 
+  // If the user is authenticated and wants to log in, redirect to the correct path
   if (initialized) {
     if (authLevel === 'login')
       return (
@@ -35,6 +36,7 @@ const SecureRoute: React.FC<SecureRouteProps> = ({ component: Component, authLev
           render={(props) => (userAuthenticated ? <Redirect to="/admin" /> : <Component {...props} />)}
         />
       )
+    // the user does not have access to the admin page
     else if (compInitialized && viewType && authLevel !== 'admin') {
       return (
         <Route
@@ -44,7 +46,9 @@ const SecureRoute: React.FC<SecureRouteProps> = ({ component: Component, authLev
           }
         />
       )
-    } else
+    }
+    // the user does not have access to the admin page
+    else
       return (
         <Route {...rest} render={(props) => (userAuthenticated ? <Component {...props} /> : <Redirect to="/" />)} />
       )
