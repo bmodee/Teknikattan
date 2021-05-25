@@ -1,3 +1,6 @@
+/**
+ * This file contains the component to display a timer for the presentation slides.
+ */
 import React, { useEffect, useState } from 'react'
 import { setPresentationTimer } from '../../../actions/presentation'
 import { useAppDispatch, useAppSelector } from '../../../hooks'

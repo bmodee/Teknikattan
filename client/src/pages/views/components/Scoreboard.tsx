@@ -1,3 +1,7 @@
+/**
+ * This file contains the scoreboard component that the operator can
+ * bring up in OperatorViewPage.tsx to show current standings.
+ */
 import {
   Button,
   Dialog,
@@ -18,6 +22,7 @@ type ScoreboardProps = {
   isOperator?: boolean
 }
 
+/** Render the scoreboard */
 const Scoreboard = ({ isOperator }: ScoreboardProps) => {
   const teams = useAppSelector((state) => state.presentation.competition.teams)
 
@@ -57,6 +62,7 @@ const Scoreboard = ({ isOperator }: ScoreboardProps) => {
 
       {isOperator && (
         <DialogActions>
+          {/** Stop showing the standings */}
           <Button onClick={() => socketSync({ show_scoreboard: false })} color="primary">
             Stäng
           </Button>

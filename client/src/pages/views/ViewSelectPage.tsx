@@ -1,3 +1,6 @@
+/**
+ * This file contains the page that redirects a user to the correct view when entered via a url with a code.
+ */
 import { CircularProgress, Typography } from '@material-ui/core'
 import React, { useEffect } from 'react'
 import { Redirect, useHistory, useParams } from 'react-router-dom'

@@ -1,3 +1,6 @@
+/**
+ * This file contains the view that is to be shown for the person operating the presentation for the competition.
+ */
 import {
   Box,
   Button,
@@ -74,6 +77,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+// interface to keep track of important id's
 interface Code {
   id: number
   code: string
@@ -82,6 +86,7 @@ interface Code {
   team_id: number
 }
 
+/** Connects a device to a competition and renders out the correct components for the operator viewType */
 const OperatorViewPage: React.FC = () => {
   // for dialog alert
   const [openAlert, setOpen] = React.useState(false)
@@ -113,6 +118,7 @@ const OperatorViewPage: React.FC = () => {
   const showScoreboard = useAppSelector((state) => state.presentation.show_scoreboard)
 
   useEffect(() => {
+    /** Connect as operator */
     socketConnect('Operator')
   }, [])
 

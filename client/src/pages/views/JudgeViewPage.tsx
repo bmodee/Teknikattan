@@ -1,3 +1,6 @@
+/**
+ * This file contains the view that is to be shown for the judges of the competition.
+ */
 import { Divider, List, ListItemText, Snackbar, Typography } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Alert } from '@material-ui/lab'
@@ -40,6 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+/** Connects a device to a competition and renders out the correct components for the judge viewType */
 const JudgeViewPage: React.FC = () => {
   const classes = useStyles()
   const dispatch = useAppDispatch()
@@ -61,6 +65,7 @@ const JudgeViewPage: React.FC = () => {
     setCurrentSlide(slides[index])
   }
   useEffect(() => {
+    /** Connect as judge */
     if (code && code !== '') {
       socketConnect('Judge')
     }
@@ -104,6 +109,7 @@ const JudgeViewPage: React.FC = () => {
   }, [timer.enabled])
   return (
     <div style={{ height: '100%' }}>
+      {/** Top app bar */}
       <JudgeAppBar position="fixed">
         <JudgeToolbar>
           <JudgeQuestionsLabel variant="h5">Frågor</JudgeQuestionsLabel>
@@ -113,6 +119,7 @@ const JudgeViewPage: React.FC = () => {
           <JudgeAnswersLabel variant="h5">Svar</JudgeAnswersLabel>
         </JudgeToolbar>
       </JudgeAppBar>
+      {/** List of slides */}
       <LeftDrawer
         width={leftDrawerWidth}
         variant="permanent"
@@ -125,6 +132,7 @@ const JudgeViewPage: React.FC = () => {
         <List>
           {slides.map((slide, index) => (
             <div key={slide.id}>
+              {/** Render icons, show active slide and active operator slide */}
               <SlideListItem
                 selected={slide.order === currentSlide?.order}
                 onClick={() => handleSelectSlide(index)}
@@ -139,6 +147,7 @@ const JudgeViewPage: React.FC = () => {
           ))}
         </List>
       </LeftDrawer>
+      {/** Panel to distribute points and correct submitted answers from teams*/}
       <RightDrawer
         width={rightDrawerWidth}
         variant="permanent"
@@ -174,6 +183,7 @@ const JudgeViewPage: React.FC = () => {
           )}
         </InnerContent>
       </Content>
+      {/** Confirm that the connection was successful */}
       <Snackbar open={successMessageOpen} autoHideDuration={4000} onClose={() => setSuccessMessageOpen(false)}>
         <Alert severity="success">{`Du har gått med i tävlingen "${competitionName}" som domare`}</Alert>
       </Snackbar>

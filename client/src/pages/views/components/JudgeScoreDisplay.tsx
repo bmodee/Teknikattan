@@ -1,3 +1,6 @@
+/**
+ * This file contains JudgeScoreDisplay component rendered in the right panel in JudgeViewPage.tsx.
+ */
 import { Box, Card, Divider, Typography } from '@material-ui/core'
 import axios from 'axios'
 import React from 'react'
@@ -36,6 +39,7 @@ const JudgeScoreDisplay = ({ teamIndex, activeSlide }: ScoreDisplayProps) => {
       scores.push(correctTeamScore.score)
     } else scores.push(undefined)
   }
+  /** Edit the points for an answered question */
   const handleEditScore = async (newScore: number, questionId: number) => {
     await axios
       .put(`/api/competitions/${currentCompetititonId}/teams/${currentTeam.id}/answers/question_scores/${questionId}`, {
@@ -44,6 +48,7 @@ const JudgeScoreDisplay = ({ teamIndex, activeSlide }: ScoreDisplayProps) => {
       .then(() => dispatch(getPresentationCompetition(currentCompetititonId.toString())))
   }
 
+  /** Sum two values */
   const sumTwoScores = (a: number | undefined, b: number | undefined) => {
     let aValue = 0
     let bValue = 0
@@ -109,6 +114,7 @@ const JudgeScoreDisplay = ({ teamIndex, activeSlide }: ScoreDisplayProps) => {
         )}
       </ScoreDisplayHeader>
       <Typography variant="h6">
+        {/** Slides */}
         Sidor:
         <div style={{ display: 'flex' }}>
           {questions.map((question, index) => (
@@ -128,6 +134,7 @@ const JudgeScoreDisplay = ({ teamIndex, activeSlide }: ScoreDisplayProps) => {
             </Card>
           ))}
         </div>
+        {/** Team points for each question */}
         Poäng:
         <div style={{ display: 'flex' }}>
           {scores.map((score, index) => (
@@ -147,6 +154,7 @@ const JudgeScoreDisplay = ({ teamIndex, activeSlide }: ScoreDisplayProps) => {
             </Card>
           ))}
         </div>
+        {/** Team total points */}
         Totala poäng: {scores.reduce((a, b) => sumTwoScores(a, b), 0)}
       </Typography>
       <AnswersDisplay>

@@ -1,3 +1,6 @@
+/**
+ * This file supplies CSS styles for the different viewtypes.
+ */
 import { AppBar, Button, Card, Drawer, Toolbar, Typography } from '@material-ui/core'
 import styled from 'styled-components'
 

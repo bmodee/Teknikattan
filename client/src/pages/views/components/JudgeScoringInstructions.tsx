@@ -1,3 +1,6 @@
+/**
+ * This file contains JudgeScoringInstructions component rendered in the right panel in JudgeViewPage.tsx.
+ */
 import { Typography } from '@material-ui/core'
 import React from 'react'
 import { RichQuestion } from '../../../interfaces/ApiRichModels'

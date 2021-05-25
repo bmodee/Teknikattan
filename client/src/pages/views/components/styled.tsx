@@ -1,3 +1,6 @@
+/**
+ * This file supplies CSS styles to the view components.
+ */
 import { Paper, TextField, Typography } from '@material-ui/core'
 import styled from 'styled-components'
 
