@@ -16,6 +16,9 @@ There are however a few major things left to be done.
 The system needs to support a lot of different types of questions.
 A list of all the questions that needs to be supported (and more) can be found on [Teknikattan scoring system](https://github.com/TechnoX/teknikattan-scoring-system/blob/master/kandidatarbete_teknikattan.md).
 
+### Scaling of components
+Components rendered in SlideDisplay.tsx in client are scaled inconsistently and should use [scale transform](https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/scale()) from CSS.
+
 ## Refactoring
 
 Here we will give a list of things we think will improve the system.
