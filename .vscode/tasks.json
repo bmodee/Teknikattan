@@ -104,6 +104,12 @@
       "group": "build",
       "dependsOn": ["Start server", "Start client"],
       "problemMatcher": []
+    },
+    {
+      "label": "Start client, server and populate",
+      "group": "build",
+      "dependsOn": ["Start server", "Start client", "Populate database"],
+      "problemMatcher": []
     }
   ]
 }
