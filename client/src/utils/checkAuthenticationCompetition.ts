@@ -1,3 +1,7 @@
+/** This file contains the funtion to check if authenticated
+ *  when logging in with a code generated from competition
+ */
+
 import axios from 'axios'
 import jwtDecode from 'jwt-decode'
 import { logoutCompetition } from '../actions/competitionLogin'

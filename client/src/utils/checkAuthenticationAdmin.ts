@@ -1,3 +1,5 @@
+/** This file contains the funtion to check if Admin is authenticated */
+
 import axios from 'axios'
 import jwtDecode from 'jwt-decode'
 import Types from '../actions/types'

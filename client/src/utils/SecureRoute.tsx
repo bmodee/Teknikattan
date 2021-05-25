@@ -1,3 +1,5 @@
+/** Utility component to use for authentication*/
+
 import React from 'react'
 import { Redirect, Route, RouteProps } from 'react-router-dom'
 import { useAppSelector } from '../hooks'
@@ -10,7 +12,7 @@ interface SecureRouteProps extends RouteProps {
   authLevel: 'admin' | 'login' | 'Operator' | 'Team' | 'Judge' | 'Audience'
 }
 
-/** Utility component to use for authentication, replace all routes that should be private with secure routes*/
+/** replace all routes that should be private with secure routes */
 const SecureRoute: React.FC<SecureRouteProps> = ({ component: Component, authLevel, ...rest }: SecureRouteProps) => {
   const userAuthenticated = useAppSelector((state) => state.user.authenticated)
   const compAuthenticated = useAppSelector((state) => state.competitionLogin.authenticated)

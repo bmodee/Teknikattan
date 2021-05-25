@@ -1,3 +1,5 @@
+/** Change the icon depending on what type of question the slide has */
+
 import BuildOutlinedIcon from '@material-ui/icons/BuildOutlined'
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined'
 import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined'

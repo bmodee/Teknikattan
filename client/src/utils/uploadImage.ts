@@ -1,3 +1,5 @@
+/** Handles the uploading of a picture to a competition */
+
 import axios from 'axios'
 import { getEditorCompetition } from '../actions/editor'
 import { Media } from '../interfaces/ApiModels'
