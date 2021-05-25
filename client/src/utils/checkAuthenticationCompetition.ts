@@ -9,19 +9,23 @@ import { getPresentationCompetition, setPresentationCode } from '../actions/pres
 import Types from '../actions/types'
 import store from '../store'
 
+/** The user is not authorized => logout the user*/
 const UnAuthorized = async (role: 'Judge' | 'Operator' | 'Team' | 'Audience') => {
   await logoutCompetition(role)(store.dispatch)
 }
 
 export const CheckAuthenticationCompetition = async (role: 'Judge' | 'Operator' | 'Team' | 'Audience') => {
-  const authToken = localStorage[`${role}Token`]
+  const authToken = localStorage[`${role}Token`] // Retrives from local storage
   if (authToken) {
-    const decodedToken: any = jwtDecode(authToken)
+    // If the user has an authtoken
+    const decodedToken: any = jwtDecode(authToken) // Decode it
+    // Check expiration data anb if it is still valid
     if (decodedToken.exp * 1000 >= Date.now()) {
       axios.defaults.headers.common['Authorization'] = authToken
       await axios
         .get('/api/auth/test')
         .then(() => {
+          // Make user authenticated
           store.dispatch({
             type: Types.SET_COMPETITION_LOGIN_DATA,
             payload: {
@@ -34,11 +38,12 @@ export const CheckAuthenticationCompetition = async (role: 'Judge' | 'Operator' 
           setPresentationCode(decodedToken.code)(store.dispatch)
         })
         .catch((error) => {
-          console.log(error)
-          UnAuthorized(role)
+          // An error has occured
+          console.log(error) // Log the error
+          UnAuthorized(role) // The user is not authorized
         })
     } else {
-      await UnAuthorized(role)
+      await UnAuthorized(role) // The user is not authorized
     }
   }
 }
