@@ -12,7 +12,13 @@ def _alternative(item_alternative_old, question_id):
     Internal function. Makes a copy of the provided question alternative.
     """
 
-    return add.question_alternative(item_alternative_old.alternative, item_alternative_old.correct, question_id)
+    return add.question_alternative(
+        question_id,
+        item_alternative_old.alternative,
+        item_alternative_old.alternative_order,
+        item_alternative_old.correct,
+        item_alternative_old.correct_order,
+    )
 
 
 def _question(item_question_old, slide_id):

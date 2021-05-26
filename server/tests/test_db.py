@@ -4,10 +4,30 @@ This file tests the database controller functions.
 
 import app.database.controller as dbc
 import pytest
-from app.database.models import City, Code, Competition, Media, MediaType, Role, Slide, User
+from app.database.models import (
+    City,
+    Code,
+    Competition,
+    Media,
+    MediaType,
+    Question,
+    QuestionAlternative,
+    QuestionAlternativeAnswer,
+    QuestionScore,
+    Role,
+    Slide,
+    Team,
+    User,
+)
 
 from tests import DISABLE_TESTS, app, client, db
-from tests.test_helpers import add_default_values, assert_all_slide_orders, assert_should_fail, assert_slide_order
+from tests.test_helpers import (
+    add_default_values,
+    assert_all_slide_orders,
+    assert_insert_fail,
+    assert_should_fail,
+    assert_slide_order,
+)
 
 
 @pytest.mark.skipif(DISABLE_TESTS, reason="Only run when DISABLE_TESTS is False")
@@ -238,134 +258,79 @@ def test_move_slides(client):
     assert_slide_order(item_comp, [0, 6, 1, 8, 3, 4, 5, 7, 2, 9])
 
 
-"""
+@pytest.mark.skipif(DISABLE_TESTS, reason="Only run when DISABLE_TESTS is enabled")
 def test_question(client):
-    add_default_values()
-    item_user = User.query.filter_by(email="test@test.se").first()
-
-    # Get image type
-    image_type = MediaType.query.filter_by(name="Image").first()
-
-    # Add image
-    db.session.add(Media("bild.png", image_type.id, item_user.id))
-    db.session.commit()
-    item_media = Media.query.filter_by(filename="bild.png").first()
 
     # Add competition
-    item_city = City.query.filter_by(name="Linköping").first()
-    dbc.add.competition("teknik8", 2020, item_city.id)
-    dbc.add.competition("teknik9", 2020, item_city.id)
-    item_competition = Competition.query.filter_by(name="teknik8").first()
-    item_competition_2 = Competition.query.filter_by(name="teknik9").first()
+    dbc.add.competition("Tävling 1", 2021, 1)
+    item_competition = Competition.query.filter(Competition.name == "Tävling 1").one()
 
-    assert item_competition is not None
-    assert item_competition.id == 4
-    assert item_competition.city.name == "Linköping"
+    # Add two teams
+    dbc.add.team("Lag 1", item_competition.id)
+    dbc.add.team("Lag 2", item_competition.id)
+    item_team_1 = Team.query.filter(Team.name == "Lag 1").one()
+    item_team_2 = Team.query.filter(Team.name == "Lag 2").one()
 
-    # Add teams
-    dbc.add.team("Lag1", item_competition)
-    dbc.add.team("Lag2", item_competition)
+    # Get default slide
+    item_slide_1 = Slide.query.filter((Slide.competition_id == item_competition.id) & (Slide.order == 0)).one()
 
-    assert_insert_fail(Team, "Lag1", item_competition.id)
+    # Add question to default slide
+    dbc.add.question("Fråga 1", 10, 1, item_slide_1.id)
+    item_question_1 = Question.query.filter(Question.name == "Fråga 1").one()
+    dbc.edit.default(item_question_1, name="Ny fråga 1", correcting_instructions="Rättningsinstruktioner")
 
-    dbc.add.team("Lag1", item_competition_2)
+    # Add alternatives
+    dbc.add.question_alternative(item_question_1.id)
+    item_alterantive_1 = QuestionAlternative.query.filter(QuestionAlternative.question_id == item_question_1.id).one()
 
-    assert Team.query.filter((Team.competition_id == item_competition.id) & (Team.name == "Lag1")).count() == 1
-    assert Team.query.filter((Team.competition_id == item_competition.id) & (Team.name == "Lag2")).count() == 1
-    assert Team.query.filter((Team.competition_id == item_competition_2.id) & (Team.name == "Lag1")).count() == 1
-    assert Team.query.filter(Team.name == "Lag1").count() == 2
-    assert Team.query.filter(Team.competition_id == item_competition.id).count() == 2
-    assert Team.query.count() == 3
+    # Add answers
+    dbc.add.question_alternative_answer("Lag 1 svar 1", item_alterantive_1.id, item_team_1.id)
+    dbc.add.question_alternative_answer("Lag 2 svar 1", item_alterantive_1.id, item_team_2.id)
+    item_answer_1 = QuestionAlternativeAnswer.query.filter(QuestionAlternativeAnswer.answer == "Lag 1 svar 1").one()
+    dbc.edit.default(item_answer_1, answer="5")
 
-    # Add slides
-    dbc.add.slide(item_competition)
-    dbc.add.slide(item_competition)
-    dbc.add.slide(item_competition)
+    # Add scores
+    dbc.add.question_score(10, item_question_1.id, item_team_1.id)
+    dbc.add.question_score(5, item_question_1.id, item_team_2.id)
+    item_score_1 = QuestionScore.query.filter(
+        (QuestionScore.question_id == item_question_1.id) & (QuestionScore.team_id == item_team_1.id)
+    ).one()
+    dbc.edit.default(item_score_1, score=5)
 
-    # Try add slide with same order
-    assert_insert_fail(Slide, 1, item_competition.id)
-    assert_exists(Slide, 3, order=1)
 
-    item_slide1 = Slide.query.filter_by(order=0).first()
-    item_slide2 = Slide.query.filter_by(order=1).first()
-    item_slide3 = Slide.query.filter_by(order=2).first()
-
-    assert item_slide1 is not None
-    assert item_slide2 is not None
-    assert item_slide3 is not None
-
-    # Add questions
-    question_type_bool = QuestionType.query.filter_by(name="Boolean").first()
-    question_type_multiple = QuestionType.query.filter_by(name="Multiple").first()
-
-    dbc.add.question("Fråga1", 10, question_type_bool.id, item_slide2)
-    dbc.add.question("Fråga2", 10, question_type_multiple.id, item_slide3)
-
-    assert question_type_bool is not None
-    assert question_type_multiple is not None
-
-    item_q1 = Question.query.filter_by(name="Fråga1").first()
-    item_q2 = Question.query.filter_by(name="Fråga2").first()
-    assert item_q1.type.name == "Boolean"
-    assert item_q2.type.name == "Multiple"
-
-    # Get question
-    CID = 3
-    QID = 4
-    item_q1 = dbc.get.question(CID, QID)
-    assert item_q1.id == QID
-    item_slide = dbc.get.slide(CID, item_q1.slide_id)
-    assert item_q1.slide_id == item_slide.id
-
-    # Edit question
-    print(item_q1.type_id)
-    print(item_q1.slide_id)
-    name = "Nytt namn"
-    total_score = 44
-    type_id = 2
-    slide_id = 4
-    dbc.edit.question(item_q1, name=name, total_score=total_score, type_id=type_id, slide_id=slide_id)
-    item_q1 = Question.query.filter_by(name=name).first()
-    assert item_q1.name == name
-    assert item_q1.total_score == total_score
-    assert item_q1.type_id == type_id
-    assert item_q1.slide_id == slide_id
-
-    # Search for question
-    item_q2, _ = dbc.get.search_questions(
-        name=name, total_score=total_score, type_id=type_id, slide_id=slide_id, competition_id=CID
-    )
-    assert item_q1 == item_q2[0]
-
-    assert_all_slide_orders()
-
-def test_slide(client):
+@pytest.mark.skipif(DISABLE_TESTS, reason="Only run when DISABLE_TESTS is enabled")
+def test_team(client):
     add_default_values()
 
-    # Get all slides
-    slides = Slide.query.all()
-    item_slides = dbc.get.search_slide()
-    assert slides == item_slides[0]
+    # All teams were added
+    teams = Team.query.all()
+    assert len(teams) == 4
 
-    # Search using all parameters
-    item_comp = Competition.query.filter(Competition.name == "Tävling 1").first()
-    aux = dbc.get.search_slide(slide_order=1, title="Title 1", body="Body 1", competition_id=item_comp.id)
-    item_slide = aux[0][0]
-    assert item_comp.slides[1] == item_slide
+    # Get team
+    item_team1 = dbc.get.team(1, 1)
+    assert item_team1.id == 1
+    assert item_team1.name == "Lag 1"
+    assert item_team1.competition.id == 1
 
-    # Edit all parameters of a slide
-    title = "Ändrad titel"
-    timer = 42
-    slide_id = item_slide.id
-    dbc.edit.slide(item_slide, title=title, timer=timer)
-    aux = dbc.get.search_slide(slide_order=1, title=title, body="Body 1", competition_id=item_comp.id)
-    item_slide = aux[0][0]
-    assert item_slide.id == slide_id
-    assert item_slide.title == title
-    assert item_slide.timer == timer
+    # Add team
+    item_comp = Competition.query.filter(Competition.id == 2).one()
+    no_teams = len(Team.query.all())
+    item_team1 = dbc.add.team("Nytt lag", item_comp.id)
+    no_teams += 1
+    assert len(Team.query.all()) == no_teams
+    item_team2 = dbc.get.team(2, item_team1.id)
+    assert item_team1 == item_team2
 
-    # Delete slide
-    aux = dbc.get.search_slide(slide_order=1, competition_id=item_comp.id)
-    item_slide = aux[0][0]
-    dbc.delete.slide(item_slide)
-"""
+    # Try to add same team again
+    assert_insert_fail(Team, "Nytt lag", item_comp.id)
+    assert len(Team.query.all()) == no_teams
+
+    # Edit team
+    name = "Helt nytt lag"
+    item_team2 = dbc.edit.default(item_team1, name=name)
+    assert item_team2.name == name
+    assert item_team1 == item_team2
+
+    # Delete team
+    item_team = dbc.get.team(1, 1)
+    dbc.delete.team(item_team)

@@ -196,10 +196,10 @@ class Slide(db.Model):
     __table_args__ = (db.UniqueConstraint("order", "competition_id"),)
     id = db.Column(db.Integer, primary_key=True)
     order = db.Column(db.Integer, nullable=False)
-    title = db.Column(db.String(STRING_SIZE), nullable=False, default="")
-    body = db.Column(db.Text, nullable=False, default="")
+    title = db.Column(db.String(STRING_SIZE), nullable=False, default="")  # Unused. TODO: Delete
+    body = db.Column(db.Text, nullable=False, default="")  # Unused. TODO: Delete
     timer = db.Column(db.Integer, nullable=True)
-    settings = db.Column(db.Text, nullable=False, default="{}")
+    settings = db.Column(db.Text, nullable=False, default="{}")  # Unused. TODO: Delete
     competition_id = db.Column(db.Integer, db.ForeignKey("competition.id"), nullable=False)
 
     background_image_id = db.Column(db.Integer, db.ForeignKey("media.id"), nullable=True)
@@ -255,7 +255,7 @@ class QuestionAlternative(db.Model):
     correct_order = db.Column(db.Integer)
     question_id = db.Column(db.Integer, db.ForeignKey("question.id"), nullable=False)
 
-    def __init__(self, alternative, alternative_order, correct, correct_order, question_id):
+    def __init__(self, alternative_order, correct_order, question_id, alternative="", correct=""):
         self.alternative = alternative
         self.alternative_order = alternative_order
         self.correct = correct

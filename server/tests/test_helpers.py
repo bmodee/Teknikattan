@@ -41,7 +41,10 @@ def add_default_values():
     # Add competitions
     item_competition = dbc.add.competition("Tom tävling", 2012, item_city.id)
 
-    item_team1 = dbc.add.team("Hej lag 3", item_competition.id)
+    item_team1 = dbc.add.team("Lag 1", item_competition.id)
+    item_team2 = dbc.add.team("Lag 2", item_competition.id)
+    item_team3 = dbc.add.team("Lag 3", item_competition.id)
+    item_team4 = dbc.add.team("Lag 4", item_competition.id)
 
     db.session.add(Code("111111", 1, item_competition.id, item_team1.id))  # Team
     db.session.add(Code("222222", 2, item_competition.id))  # Judge
@@ -69,8 +72,10 @@ def add_default_values():
             # Add question to competition
             item_question = dbc.add.question(name=f"Q{i+1}", total_score=i + 1, type_id=1, slide_id=item_slide.id)
 
-            for k in range(3):
-                dbc.add.question_alternative(f"Alternative {k}", f"Correct {k}", item_question.id)
+            for k in range(6):
+                dbc.add.question_alternative(
+                    item_question.id, f"Alternative {k}", k + 5 % 6, f"Correct {k}", k + 2 % 6
+                )
 
             # Add text component
             dbc.add.component(1, item_slide.id, 1, i, 2 * i, 3 * i, 4 * i, text="Text")
@@ -189,3 +194,9 @@ def assert_should_fail(func, *args):
         pass  # Assert failed, as it should
     else:
         assert False  # Assertion didn't fail
+
+
+def assert_dict_has_values(dict_to_check, dict_values_to_have):
+    """ Assert that dict_to_check has keys equal to values in dict_values_to_have. """
+    for key, value in dict_values_to_have.items():
+        assert dict_to_check[key] == value

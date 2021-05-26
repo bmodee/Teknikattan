@@ -49,15 +49,15 @@ def db_add(item):
         db.session.refresh(item)
     except (exc.IntegrityError):
         db.session.rollback()
-        abort(http_codes.CONFLICT, message=f"Kunde inte lägga objektet")
+        abort(http_codes.CONFLICT, message=f"Kunde inte lägga till objektet")
     except (exc.SQLAlchemyError, exc.DBAPIError):
         db.session.rollback()
         # SQL errors such as item already exists
-        abort(http_codes.INTERNAL_SERVER_ERROR, message=f"Kunde inte lägga objektet")
+        abort(http_codes.INTERNAL_SERVER_ERROR, message=f"Kunde inte lägga till objektet")
     except:
         db.session.rollback()
         # Catching other errors
-        abort(http_codes.INTERNAL_SERVER_ERROR, message=f"Kunde lägga till objektet")
+        abort(http_codes.INTERNAL_SERVER_ERROR, message=f"Kunde inte lägga till objektet")
 
     return item
 
@@ -254,14 +254,18 @@ def question(name, total_score, type_id, slide_id, correcting_instructions=None)
     return db_add(Question(name, total_score, type_id, slide_id, correcting_instructions))
 
 
-def question_alternative(alternative, correct, question_id):
+def question_alternative(question_id, alternative="", alternative_order=None, correct="", correct_order=None):
     """
     Adds a question alternative to the specified
     question using the provided arguments.
     """
 
     order = dbc.utils.count(QuestionAlternative, {"question_id": question_id})
-    return db_add(QuestionAlternative(alternative, order, correct, order, question_id))
+
+    alternative_order = alternative_order if alternative_order is not None else order
+    correct_order = correct_order if correct_order is not None else order
+
+    return db_add(QuestionAlternative(alternative_order, correct_order, question_id, alternative, correct))
 
 
 def question_score(score, question_id, team_id):

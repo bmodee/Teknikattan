@@ -9,7 +9,7 @@ from app.apis import http_codes
 from app.core import sockets
 
 from tests import DISABLE_TESTS, app, client, db
-from tests.test_helpers import add_default_values, change_order_test, delete, get, post, put
+from tests.test_helpers import add_default_values, assert_dict_has_values, change_order_test, delete, get, post, put
 
 
 @pytest.mark.skipif(DISABLE_TESTS, reason="Only run when DISABLE_TESTS is False")
@@ -392,43 +392,80 @@ def test_slide_api(client):
 def test_question_api(client):
     add_default_values()
 
+    COMPETITION_ID = 3
+    SLIDE_ID = 6
+
     # Login in with default user
     response, body = post(client, "/api/auth/login", {"email": "test@test.se", "password": "password"})
     assert response.status_code == http_codes.OK
     headers = {"Authorization": "Bearer " + body["access_token"]}
 
-    num_questions = 3
+    # Get number of questions before
+    response, questions = get(
+        client, f"/api/competitions/{COMPETITION_ID}/slides/{SLIDE_ID}/questions", headers=headers
+    )
+    assert response.status_code == http_codes.OK
+
+    num_questions_before = len(questions)
 
     # Add question
-    name = "Nytt namn"
-    type_id = 2
-    slide_order = 6
-    response, item_question = post(
+    data = {
+        "name": "Nytt namn",
+        "type_id": 2,
+    }
+    response, question = post(
         client,
-        f"/api/competitions/{3}/slides/{slide_order}/questions",
-        {"name": name, "type_id": type_id},
+        f"/api/competitions/{COMPETITION_ID}/slides/{SLIDE_ID}/questions",
+        data=data,
         headers=headers,
     )
     assert response.status_code == http_codes.OK
-    assert item_question["name"] == name
-    assert item_question["type_id"] == type_id
-    num_questions += 1
+    assert_dict_has_values(question, data)
 
-    """
+    # Get number of questions after
+    response, questions = get(
+        client, f"/api/competitions/{COMPETITION_ID}/slides/{SLIDE_ID}/questions", headers=headers
+    )
+    assert response.status_code == http_codes.OK
+    assert question["id"] == questions[-1]["id"]  # Last question is same as the one we added
+    assert len(questions) == num_questions_before + 1  # One more question than before
+
+    question_id = question["id"]
+
+    # Edit question
+    data = {
+        "correcting_instructions": "Rätt så här",
+        "type_id": 2,
+        "name": "Ännu ett nytt namn",
+        "total_score": 5,
+    }
+    response, edited_question = put(
+        client,
+        f"/api/competitions/{COMPETITION_ID}/slides/{SLIDE_ID}/questions/{question_id}",
+        data=data,
+        headers=headers,
+    )
+    assert response.status_code == http_codes.OK
+    assert_dict_has_values(edited_question, data)
+
+    # Get question
+    response, edited_question_from_get = get(
+        client, f"/api/competitions/{COMPETITION_ID}/slides/{SLIDE_ID}/questions/{question_id}", headers=headers
+    )
+    assert response.status_code == http_codes.OK
+    assert edited_question == edited_question_from_get
+
     # Delete question
-    response, _ = delete(client, f"/api/competitions/{CID}/slides/{slide_order}/questions/{QID}", headers=headers)
-    num_questions -= 1
+    response, _ = delete(
+        client, f"/api/competitions/{COMPETITION_ID}/slides/{SLIDE_ID}/questions/{question_id}", headers=headers
+    )
     assert response.status_code == http_codes.NO_CONTENT
 
-    # Checks that there are fewer questions
-    response, body = get(client, f"/api/competitions/{CID}/questions", headers=headers)
-    assert response.status_code == http_codes.OK
-    assert body["count"] == num_questions
-
     # Tries to delete question again
-    response, _ = delete(client, f"/api/competitions/{CID}/slides/{NEW_slide_order}/questions/{QID}", headers=headers)
+    response, _ = delete(
+        client, f"/api/competitions/{COMPETITION_ID}/slides/{SLIDE_ID}/questions/{question_id}", headers=headers
+    )
     assert response.status_code == http_codes.NOT_FOUND
-    """
 
 
 @pytest.mark.skipif(DISABLE_TESTS, reason="Only run when DISABLE_TESTS is False")
@@ -494,3 +531,88 @@ def test_authorization(client):
     # Also get antoher teams answers
     response, body = get(client, f"/api/competitions/{competition_id}/teams/{team_id+1}/answers", headers=headers)
     assert response.status_code == http_codes.OK
+
+
+@pytest.mark.skipif(DISABLE_TESTS, reason="Only run when DISABLE_TESTS is False")
+def test_team_api(client):
+    add_default_values()
+
+    # Login in with default user
+    response, body = post(client, "/api/auth/login", {"email": "test@test.se", "password": "password"})
+    assert response.status_code == http_codes.OK
+    headers = {"Authorization": "Bearer " + body["access_token"]}
+
+    # Get no teams for empty competition
+    CID = 2
+    response, body = get(client, f"/api/competitions/{CID}/teams", headers=headers)
+    assert response.status_code == http_codes.OK
+    assert len(body) == 0
+
+    # Get teams in competition
+    CID = 1
+    response, body = get(client, f"/api/competitions/{CID}/teams", headers=headers)
+    num_teams = 4
+    assert response.status_code == http_codes.OK
+    assert len(body) == num_teams
+    assert body[0]["name"] == "Lag 1"
+    assert body[1]["name"] == "Lag 2"
+    assert body[2]["name"] == "Lag 3"
+    assert body[3]["name"] == "Lag 4"
+
+    # Post new team
+    name = "Testlag"
+    response, body = post(client, f"/api/competitions/{CID}/teams", {"name": name}, headers=headers)
+    num_teams += 1
+    assert response.status_code == http_codes.OK
+    assert body["name"] == name
+    assert body["competition_id"] == CID
+
+    # Get teams in competition
+    response, body = get(client, f"/api/competitions/{CID}/teams", headers=headers)
+    assert response.status_code == http_codes.OK
+    assert len(body) == num_teams
+    assert body[0]["name"] == "Lag 1"
+    assert body[1]["name"] == "Lag 2"
+    assert body[2]["name"] == "Lag 3"
+    assert body[3]["name"] == "Lag 4"
+    assert body[4]["name"] == name
+
+    # Gets a specific team
+    TID = 5
+    response, body = get(client, f"/api/competitions/{CID}/teams/{TID}", {"name": name}, headers=headers)
+    assert response.status_code == http_codes.OK
+    assert body["name"] == name
+    assert body["competition_id"] == CID
+    assert body["id"] == TID
+
+    # Edits team
+    name = "Nytt lagnamn"
+    assert body["name"] != name
+    response, body = put(client, f"/api/competitions/{CID}/teams/{TID}", {"name": name}, headers=headers)
+    assert response.status_code == http_codes.OK
+    assert body["name"] == name
+    assert body["competition_id"] == CID
+
+    # Tries to edit team
+    response, _ = put(client, f"/api/competitions/{CID}/teams/{-1}", {"name": name}, headers=headers)
+    assert response.status_code == http_codes.NOT_FOUND
+
+    # Get teams in competition
+    response, body = get(client, f"/api/competitions/{CID}/teams", headers=headers)
+    assert response.status_code == http_codes.OK
+    assert len(body) == num_teams
+    assert body[4]["name"] == name
+
+    # Deletes team
+    response, _ = delete(client, f"/api/competitions/{CID}/teams/{TID}", {"name": name}, headers=headers)
+    num_teams -= 1
+    assert response.status_code == http_codes.NO_CONTENT
+
+    # Get teams in competition
+    response, body = get(client, f"/api/competitions/{CID}/teams", headers=headers)
+    assert response.status_code == http_codes.OK
+    assert len(body) == num_teams
+
+    # Tries to delete team
+    response, _ = delete(client, f"/api/competitions/{CID}/teams/{TID}", {"name": name}, headers=headers)
+    assert response.status_code == http_codes.NOT_FOUND
