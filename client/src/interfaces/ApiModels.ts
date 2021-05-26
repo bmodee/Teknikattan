@@ -1,3 +1,9 @@
+/**
+ * This file contains interfaces used by the API when getting tables from the database.
+ * Some of these interfaces are lightweight versions used when getting all data is unneccesary.
+ * The full versions of these interfaces are found in ApiRichModels.
+ */
+
 export interface NameID {
   id: number
   name: string

@@ -1,3 +1,6 @@
+/**
+ * This file contains interfaces used when filtering.
+ */
 export interface CompetitionFilterParams {
   name?: string
   year?: number

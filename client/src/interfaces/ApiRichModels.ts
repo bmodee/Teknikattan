@@ -1,3 +1,9 @@
+/**
+ * This file contains interfaces used by the API when getting full tables from the database.
+ * These interfaces also have more lightweight versions used when getting all data is unneccesary,
+ * found in ApiModels.
+ */
+
 import { Component, Media, QuestionAlternative, QuestionAlternativeAnswer, QuestionScore } from './ApiModels'
 
 export interface RichCompetition {

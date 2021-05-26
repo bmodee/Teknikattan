@@ -1,3 +1,6 @@
+/**
+ * This file contains interfaces used by form models.
+ */
 export interface ServerResponse {
   code: number
   message: string
