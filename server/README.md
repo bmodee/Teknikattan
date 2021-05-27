@@ -13,6 +13,9 @@ You will need to do the following things to install the server:
 5. Open the project folder in VS Code.
 6. Open the integrated terminal by pressing `ctrl+ö`.
 7. Type the following commands into your terminal:
+8. (Production) Install PostgreSQL 13
+   - [Windows](https://www.postgresql.org/):
+   - [Linux](https://phoenixnap.com/kb/how-to-install-postgresql-on-ubuntu):
 
 ### Windows
 
@@ -50,8 +53,7 @@ sudo apt install python3-venv
 # Go into the server folder.
 cd server
 
-# Create a python virtual environment. If it can't find python3, try
-# python or py -3 instead of python3.
+# Create a python virtual environment. If it can't find python3, try python.
 python3 -m venv env
 
 # Activate the virtual environment.
@@ -65,19 +67,19 @@ pip install -r requirements.txt
 
 ## Common problems
 
-### Make sure python 3 is running with the python command
+### Make sure python +3.8 is running with the python command
 
 ```
-py --version
-or
-python --version
-
-- If the version is < 3 try the following commands
-
-py3 or python3
+(Windows): py --version or py3 --version
+(Linux): python --version or python3 --version
 ```
 
-### Make sure pip is running with python 3
+(Linux) This [guide](https://dev.to/serhatteker/how-to-upgrade-to-python-3-7-on-ubuntu-18-04-18-10-5hab)
+can help you upgrade python
+
+(Windows) Download python 3.8 [here](https://www.python.org/downloads/)
+
+### Make sure pip is running with python 3 and right
 
 ```
 pip --version
@@ -95,6 +97,12 @@ can help you upgrade pip
 
 ```
 pip install wheel
+```
+
+### Problem: psycopg
+
+```
+pip install psycopg2
 ```
 
 This [guide](https://stackoverflow.com/questions/53204916/what-is-the-meaning-of-failed-building-wheel-for-x-in-pip-install)
