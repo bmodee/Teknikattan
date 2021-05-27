@@ -66,7 +66,7 @@
       "label": "Populate database",
       "type": "shell",
       "group": "build",
-      "command": "env/Scripts/python populate.py",
+      "command": "env/Scripts/python main.py populate dev lite",
       "problemMatcher": [],
       "options": {
         "cwd": "${workspaceFolder}/server"

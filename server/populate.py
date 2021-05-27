@@ -144,6 +144,7 @@ def create_default_items():
     # dbc.add.question_answer("ett svar som ger 3p", 3, 1, 3)
 
 
+"""
 if __name__ == "__main__":
     argv = sys.argv
 
@@ -169,3 +170,4 @@ if __name__ == "__main__":
         create_default_items()
 
     print("Task populating done")
+"""
