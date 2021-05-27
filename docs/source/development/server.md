@@ -1,5 +1,33 @@
 # Backend
 
+## Arguments when running backend
+
+When running main.py several arguments can be used
+
+```
+arg1(action):    server(default), populate
+arg2(mode):      dev(default), prod
+arg3(database):  lite(default), postgre
+
+```
+
+### Running server
+
+```
+main.py -> same as below
+main.py server dev lite -> Run server in dev-mode with sql-lite
+
+main.py server prod postgre -> Run server in production-mode with postgresql
+
+```
+
+### Populating backend
+
+```
+main.py populate dev lite -> Populate database in dev-mode with sql-lite
+main.py populate prod postgre -> Populate database in production-mode with postgresql
+```
+
 ## Working with Python
 
 In this section we briefly describe how to work with Python.
