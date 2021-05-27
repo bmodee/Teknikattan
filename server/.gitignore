@@ -7,3 +7,5 @@ app/static/
 
 # Documentation
 docs
+
+./secret-webconfig.json
