@@ -149,3 +149,9 @@ pip install wheel
 
 This [guide](https://stackoverflow.com/questions/53204916/what-is-the-meaning-of-failed-building-wheel-for-x-in-pip-install)
 can help you troubleshoot this problem further.
+
+### Problem: psycopg
+
+```
+pip install psycopg2
+```
