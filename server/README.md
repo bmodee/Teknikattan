@@ -65,6 +65,10 @@ pip install -r requirements.txt
 
 ```
 
+The last step is to install all the required packages.
+If you are running it in production, run `pip install -r requirements.txt`.
+But if you are a developer, run `pip install -r requirements-dev.txt`.
+
 ## Common problems
 
 ### Make sure python +3.8 is running with the python command
