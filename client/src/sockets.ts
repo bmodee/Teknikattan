@@ -30,7 +30,7 @@ export const socketConnect = (role: 'Judge' | 'Operator' | 'Team' | 'Audience') 
 
   // The token is the JWT returned from the login/code API call.
   const token = localStorage[`${role}Token`]
-  socket = io('localhost:5000', {
+  socket = io('/', {
     transportOptions: {
       polling: {
         extraHeaders: {

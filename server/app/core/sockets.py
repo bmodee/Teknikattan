@@ -19,7 +19,7 @@ stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
 logger.addHandler(stream_handler)
 
-sio = SocketIO(cors_allowed_origins="http://localhost:3000")
+sio = SocketIO(cors_allowed_origins="*")
 
 active_competitions = {}
 
