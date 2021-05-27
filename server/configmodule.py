@@ -65,12 +65,6 @@ class TestingConfig(Config, LiteTestDbConfig):
     USER_LOGIN_LOCKED_EXPIRES = timedelta(seconds=4)
 
 
-class ProductionConfig(Config):
+class ProductionConfig(Config, LiteDevDbConfig):
     DEBUG = False
     TESTING = False
-    # HOST = "localhost"
-    # PORT = 5432
-    # USER = "postgres"
-    # PASSWORD = "password"
-    # DATABASE = "teknik8"
-    # SQLALCHEMY_DATABASE_URI = "postgresql://" + USER + ":" + PASSWORD + "@" + HOST + ":" + str(PORT) + "/" + DATABASE
