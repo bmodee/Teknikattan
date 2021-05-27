@@ -3,6 +3,7 @@ This file will reset and polulate the database with some data.
 """
 
 import random
+import sys
 
 import app.database.controller as dbc
 from app import create_app, db
@@ -102,7 +103,7 @@ def create_default_items():
             )
 
             for k in range(3):
-                dbc.add.question_alternative(f"Alternative {k}", f"Correct {k}", item_question.id)
+                dbc.add.question_alternative(item_question.id, alternative=f"Alternative {k}", correct=f"Correct {k}")
 
             # Add text components
             # TODO: Add images as components
@@ -144,10 +145,27 @@ def create_default_items():
 
 
 if __name__ == "__main__":
-    app, _ = create_app("configmodule.DevelopmentConfig")
+    argv = sys.argv
+
+    mode = argv[1] if len(argv) > 1 else "dev"
+    if mode == "dev" or mode == "test":
+        database = argv[2] if len(argv) > 2 else "lite"
+    elif mode == "prod":
+        database = "postgre"
+    else:
+        print("Invalid args")
+        print("Dev args: no args, 'dev lite' or 'dev postgre'")
+        print("Prod args: 'prod'\n")
+        sys.exit(-1)
+
+    print(f"Populating server in {mode} mode with database {database}...")
+
+    app, _ = create_app(mode, database)
 
     with app.app_context():
 
         db.drop_all()
         db.create_all()
         create_default_items()
+
+    print("Task populating done")

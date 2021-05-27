@@ -6,7 +6,7 @@ DISABLE_TESTS = False
 
 @pytest.fixture
 def app():
-    app, _ = create_app("configmodule.TestingConfig")
+    app, _ = create_app("test","lite")
     app.app_context().push()
     db.drop_all()
     db.create_all()

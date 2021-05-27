@@ -2,32 +2,6 @@ import os
 from datetime import timedelta
 
 
-class DevDbConfig:
-    HOST = "localhost"
-    PORT = 5432
-    USER = "postgres"
-    PASSWORD = "password"
-    DATABASE = "teknik8"
-    SQLALCHEMY_DATABASE_URI = "postgresql://" + USER + ":" + PASSWORD + "@" + HOST + ":" + str(PORT) + "/" + DATABASE
-
-
-class TestDbConfig:
-    HOST = "localhost"
-    PORT = 5432
-    USER = "postgres"
-    PASSWORD = "password"
-    DATABASE = "teknik8-test"
-    SQLALCHEMY_DATABASE_URI = "postgresql://" + USER + ":" + PASSWORD + "@" + HOST + ":" + str(PORT) + "/" + DATABASE
-
-
-class LiteDevDbConfig:
-    SQLALCHEMY_DATABASE_URI = "sqlite:///database.db"
-
-
-class LiteTestDbConfig:
-    SQLALCHEMY_DATABASE_URI = "sqlite:///test.db"
-
-
 class Config:
     DEBUG = False
     TESTING = False
@@ -55,16 +29,19 @@ class Config:
     OPENAPI_SWAGGER_UI_URL = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
 
 
-class DevelopmentConfig(Config, LiteDevDbConfig):
+class DevelopmentConfig(Config):
     DEBUG = True
+    SERVER_NAME = "localhost:5000"
 
 
-class TestingConfig(Config, LiteTestDbConfig):
+class TestingConfig(Config):
     TESTING = True
+    SERVER_NAME = "localhost:5000"
     USER_LOGIN_LOCKED_ATTEMPTS = 4
     USER_LOGIN_LOCKED_EXPIRES = timedelta(seconds=4)
 
 
-class ProductionConfig(Config, LiteDevDbConfig):
+class ProductionConfig(Config):
     DEBUG = False
     TESTING = False
+    SERVER_NAME = "130.237.227.40:5000"  # teknikattan.sys.kth.se
