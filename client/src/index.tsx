@@ -1,3 +1,7 @@
+/**
+ * Entry point for the client
+ */
+
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'

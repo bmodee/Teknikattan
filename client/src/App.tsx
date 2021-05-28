@@ -1,3 +1,7 @@
+/**
+ * A component that wraps Main.tsx in a theme
+ */
+
 import {
   MuiThemeProvider,
   StylesProvider,
