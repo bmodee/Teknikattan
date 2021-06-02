@@ -23,3 +23,9 @@ Components rendered in SlideDisplay.tsx in client are scaled inconsistently and 
 
 Here we will give a list of things we think will improve the system.
 It is not certain that they are a better solutions but definitely something to look into.
+
+### Server configuration
+
+The server can be configured to run in development or production mode and can use either sqllite or postgresql.
+The code to handle these configuration options were written very late in the project and should be refactored, maybe using [argparse](https://docs.python.org/3/library/argparse.html).
+
