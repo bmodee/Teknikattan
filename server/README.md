@@ -39,6 +39,10 @@ Set-ExecutionPolicy Unrestricted -Scope Process
 
 # Install all the required packages into your virtual environment.
 pip install -r requirements.txt
+
+# If there are any errors, please try this.
+npm rm react react-dom
+npm i -s react react-dom
 ```
 
 ### Linux(Ubuntu)

@@ -20,3 +20,9 @@ You should now be ready to start the client.
 Try it by running `npm run start`.
 A web page should open where you can see the [login page](../user_manual/login.md).
 If you are using VS Code you can also start the client with the [task](../development/vscode.md) `start client`.
+
+## If there are any errors, please try this.
+```
+npm rm react react-dom
+npm i -s react react-dom
+```
