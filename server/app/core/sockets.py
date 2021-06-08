@@ -109,11 +109,11 @@ def connect() -> None:
     if is_active_competition(competition_id):
         active_competition = active_competitions[competition_id]
         active_competition["client_count"] += 1
-        join_room(competition_id)
+        join_room(str(competition_id))
         emit("sync", _get_sync_variables(active_competition, ["slide_order", "timer"]))
-        logger.info(f"Client '{request.sid}' with view '{view}' joined competition '{competition_id}'")
+        logger.info(f"Client '{request.sid}' with view '{view}' joined competition '{str(competition_id)}'")
     elif view == "Operator":
-        join_room(competition_id)
+        join_room(str(competition_id))
         active_competitions[competition_id] = {
             "client_count": 1,
             "slide_order": 0,
@@ -155,7 +155,7 @@ def end_presentation() -> None:
     """
 
     competition_id, _ = _unpack_claims()
-    emit("end_presentation", room=competition_id, include_self=True)
+    emit("end_presentation", room=str(competition_id), include_self=True)
 
 
 @sio.event
@@ -176,7 +176,7 @@ def sync(data) -> None:
 
         active_competition[key] = value
 
-    emit("sync", _get_sync_variables(active_competition, data), room=competition_id, include_self=True)
+    emit("sync", _get_sync_variables(active_competition, data), room=str(competition_id), include_self=True)
     logger.info(
         f"Client '{request.sid}' with view '{view}' synced values {_get_sync_variables(active_competition, data)} in competition '{competition_id}'"
     )
