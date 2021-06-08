@@ -42,7 +42,7 @@ const JudgeScoreDisplay = ({ teamIndex, activeSlide }: ScoreDisplayProps) => {
   /** Edit the points for an answered question */
   const handleEditScore = async (newScore: number, questionId: number) => {
     await axios
-      .put(`/api/competitions/${currentCompetititonId}/teams/${currentTeam.id}/answers/question_scores/${questionId}`, {
+      .put(`/api/competitions/${currentCompetititonId}/teams/${currentTeam.id}/scores/${questionId}`, {
         score: newScore,
       })
       .then(() => dispatch(getPresentationCompetition(currentCompetititonId.toString())))
