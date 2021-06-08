@@ -63,21 +63,22 @@ def test_misc_api(client):
     ## Cities
     response, body = post(client, "/api/misc/cities", {"name": "Göteborg"}, headers=headers)
     assert response.status_code == http_codes.OK
-    assert len(body) >= 2 and body[2]["name"] == "Göteborg"
+    assert len(body) >= 2 and body[0]["name"] == "Göteborg"
 
     # Rename city
     response, body = put(client, "/api/misc/cities/3", {"name": "Gbg"}, headers=headers)
     assert response.status_code == http_codes.OK
-    assert len(body) >= 2 and body[2]["name"] == "Gbg"
+
+    assert len(body) >= 2 and body[0]["name"] == "Gbg"
 
     # Delete city
     # First checks current cities
     response, body = get(client, "/api/misc/cities", headers=headers)
     assert response.status_code == http_codes.OK
     assert len(body) >= 3
-    assert body[0]["name"] == "Linköping"
-    assert body[1]["name"] == "Testköping"
-    assert body[2]["name"] == "Gbg"
+    assert body[0]["name"] == "Gbg"
+    assert body[1]["name"] == "Linköping"
+    assert body[2]["name"] == "Testköping"
 
     # Deletes city
     response, body = delete(client, "/api/misc/cities/3", headers=headers)
