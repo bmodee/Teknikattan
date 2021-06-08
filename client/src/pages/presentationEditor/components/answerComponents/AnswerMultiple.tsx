@@ -53,7 +53,7 @@ const AnswerMultiple = ({ variant, activeSlide, competitionId }: AnswerMultipleP
     }
     const url = `/api/competitions/${competitionId}/teams/${teamId}/answers/${alternative.id}`
     const payload = {
-      answer: checked ? 1 : 0,
+      answer: checked ? '1' : '0',
     }
     await axios
       .put(url, payload)
