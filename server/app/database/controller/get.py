@@ -24,21 +24,26 @@ from sqlalchemy.orm import joinedload, subqueryload
 from sqlalchemy.orm.util import with_polymorphic
 
 
-def all(db_type):
-    """ Gets a list of all lazy db-items in the provided table. """
+def all(db_type, order_columns=None):
+    """Gets a list of all lazy db-items in the provided table."""
 
-    return db_type.query.all()
+    query = db_type.query
+
+    if order_columns:
+        query = query.order_by(*order_columns)
+
+    return query.all()
 
 
 def one(db_type, id, required=True):
-    """ Get lazy db-item in the table that has the same id. """
+    """Get lazy db-item in the table that has the same id."""
 
     return db_type.query.filter(db_type.id == id).first_api(required=required)
 
 
 ### Codes ###
 def code_by_code(code):
-    """ Gets the code object associated with the provided code. """
+    """Gets the code object associated with the provided code."""
 
     return Code.query.filter(Code.code == code.upper()).first_api(True, "A presentation with that code does not exist")
 
@@ -56,13 +61,13 @@ def code_list(competition_id):
 
 ### Users ###
 def user_exists(email):
-    """ Checks if an user has that email. """
+    """Checks if an user has that email."""
 
     return dbc.utils.count(User, {"email": email}) > 0
 
 
 def user_by_email(email):
-    """ Gets the user object associated with the provided email. """
+    """Gets the user object associated with the provided email."""
     return User.query.filter(User.email == email).first_api()
 
 
@@ -91,7 +96,7 @@ def slide_list(competition_id):
 
 ### Teams ###
 def team(competition_id, team_id):
-    """ Gets the team object associated with the competition and team. """
+    """Gets the team object associated with the competition and team."""
 
     join_competition = Competition.id == Team.competition_id
     filters = (Competition.id == competition_id) & (Team.id == team_id)
@@ -297,7 +302,7 @@ def component_list(competition_id, slide_id):
 
 ### Competitions ###
 def competition(competition_id, required=True):
-    """ Get Competition and all it's sub-entities. """
+    """Get Competition and all it's sub-entities."""
 
     join_component = joinedload(Competition.slides).subqueryload(Slide.components)
     join_alternatives = joinedload(Competition.slides).joinedload(Slide.questions).joinedload(Question.alternatives)

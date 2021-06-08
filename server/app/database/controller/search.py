@@ -6,7 +6,7 @@ from app.database.models import Competition, Media, Question, Slide, User
 
 
 def image(pagination_parameters=None, filename=None, order=1, order_by=None):
-    """ Finds and returns an image from the file name. """
+    """Finds and returns an image from the file name."""
 
     query = Media.query.filter(Media.type_id == 1)
     if filename:
@@ -22,7 +22,7 @@ def user(
     city_id=None,
     role_id=None,
 ):
-    """ Finds and returns any number of users from the provided parameters. """
+    """Finds and returns any number of users from the provided parameters."""
 
     query = User.query
     if name:
@@ -34,7 +34,7 @@ def user(
     if role_id:
         query = query.filter(User.role_id == role_id)
 
-    return query.paginate_api(pagination_parameters)
+    return query.paginate_api(pagination_parameters, order_columns=(User.name,))
 
 
 def competition(
@@ -43,7 +43,7 @@ def competition(
     year=None,
     city_id=None,
 ):
-    """ Finds and returns a competition from the provided parameters. """
+    """Finds and returns a competition from the provided parameters."""
 
     query = Competition.query
     if name:
@@ -53,7 +53,7 @@ def competition(
     if city_id:
         query = query.filter(Competition.city_id == city_id)
 
-    return query.paginate_api(pagination_parameters)
+    return query.paginate_api(pagination_parameters, order_columns=(Competition.year.desc(), Competition.name))
 
 
 def slide(
@@ -62,9 +62,8 @@ def slide(
     title=None,
     body=None,
     competition_id=None,
-    order_by=None,
 ):
-    """ Finds and returns a slide from the provided parameters. """
+    """Finds and returns a slide from the provided parameters."""
 
     query = Slide.query
     if slide_order:
@@ -90,7 +89,7 @@ def questions(
     order=1,
     order_by=None,
 ):
-    """ Finds and returns a question from the provided parameters. """
+    """Finds and returns a question from the provided parameters."""
 
     query = Question.query
     if name:

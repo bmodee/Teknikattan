@@ -36,7 +36,7 @@ class TypesResponseSchema(BaseSchema):
 class Types(MethodView):
     @blp.response(http_codes.OK, TypesResponseSchema)
     def get(self):
-        """ Gets a list of all types """
+        """Gets a list of all types"""
         return dict(
             media_types=dbc.get.all(MediaType),
             component_types=dbc.get.all(ComponentType),
@@ -50,7 +50,7 @@ class RoleList(MethodView):
     @blp.authorization(allowed_roles=ALL)
     @blp.response(http_codes.OK, RoleSchema(many=True))
     def get(self):
-        """ Gets a list of all roles. """
+        """Gets a list of all roles."""
         return dbc.get.all(Role)
 
 
@@ -66,16 +66,16 @@ class CitiesList(MethodView):
     @blp.authorization(allowed_roles=ALL)
     @blp.response(http_codes.OK, CitySchema(many=True))
     def get(self):
-        """ Gets a list of all cities. """
-        return dbc.get.all(City)
+        """Gets a list of all cities."""
+        return dbc.get.all(City, order_columns=(City.name,))
 
     @blp.authorization(allowed_roles=["Admin"])
     @blp.arguments(CitySchema)
     @blp.response(http_codes.OK, CitySchema(many=True))
     def post(self, args):
-        """ Posts the specified city. """
+        """Posts the specified city."""
         dbc.add.city(**args)
-        return dbc.get.all(City)
+        return dbc.get.all(City, order_columns=(City.name,))
 
 
 @blp.route("/cities/<city_id>")
@@ -88,9 +88,9 @@ class Cities(MethodView):
         http_codes.CONFLICT, ErrorSchema, description="The city can't be updated with the provided values"
     )
     def put(self, args, city_id):
-        """ Edits the specified city with the provided arguments. """
+        """Edits the specified city with the provided arguments."""
         dbc.edit.default(dbc.get.one(City, city_id), **args)
-        return dbc.get.all(City)
+        return dbc.get.all(City, order_columns=(City.name,))
 
     @blp.authorization(allowed_roles=["Admin"])
     @blp.response(http_codes.OK, CitySchema(many=True))
@@ -99,9 +99,9 @@ class Cities(MethodView):
         http_codes.CONFLICT, ErrorSchema, description="The city can't be updated with the provided values"
     )
     def delete(self, city_id):
-        """ Deletes the specified city. """
+        """Deletes the specified city."""
         dbc.delete.default(dbc.get.one(City, city_id))
-        return dbc.get.all(City)
+        return dbc.get.all(City, order_columns=(City.name,))
 
 
 class StatisticsResponseSchema(BaseSchema):
@@ -115,5 +115,5 @@ class Statistics(MethodView):
     @blp.authorization(allowed_roles=ALL)
     @blp.response(http_codes.OK, StatisticsResponseSchema)
     def get(self):
-        """ Gets statistics. """
+        """Gets statistics."""
         return {"users": User.query.count(), "competitions": Competition.query.count(), "regions": City.query.count()}

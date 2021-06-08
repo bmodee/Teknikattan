@@ -49,7 +49,7 @@ class ExtendedQuery(BaseQuery):
 
         return item
 
-    def paginate_api(self, pagination_parameters, order_column=None, order=1):
+    def paginate_api(self, pagination_parameters, order_columns=None):
         """
         When looking for lists of items this is used to only return a few of
         them to allow for pagination.
@@ -57,8 +57,8 @@ class ExtendedQuery(BaseQuery):
         :type page: int
         :param page_size: Amount of rows that will be retrieved from the query
         :type page_size: int
-        :param order_column: Field of a DbModel in which the query shall order by
-        :type order_column: sqlalchemy.sql.schema.Column
+        :param order_columns: Field of a DbModel in which the query shall order by
+        :type tuple: Tuple containting sqlalchemy.sql.schema.Column
         :param order: If equals 1 then order by ascending otherwise order by descending
         :type order: int
         :return: A page/list of items with offset page*page_size and the total count of all rows ignoring page and page_size
@@ -67,8 +67,8 @@ class ExtendedQuery(BaseQuery):
 
         pagination_parameters = pagination_parameters or PaginationParameters(page=1, page_size=10)
 
-        if order_column:
-            self = self.order_by(order_column if order == 1 else order_column.desc())
+        if order_columns:
+            self = self.order_by(*order_columns)
 
         pagination = self.paginate(page=pagination_parameters.page, per_page=pagination_parameters.page_size)
         pagination_parameters.item_count = pagination.total
