@@ -5,13 +5,13 @@ This file contains functionality to delete data to the database.
 import app.database.controller as dbc
 from app.apis import http_codes
 from app.core import db
-from app.database.models import QuestionAlternativeAnswer, QuestionScore, Whitelist
+from app.database.models import QuestionAlternative, QuestionAlternativeAnswer, QuestionScore, Whitelist
 from flask_smorest import abort
 from sqlalchemy.exc import IntegrityError
 
 
 def default(item):
-    """ Deletes item and commits. """
+    """Deletes item and commits."""
 
     try:
         db.session.delete(item)
@@ -40,13 +40,13 @@ def whitelist_to_blacklist(filters):
 
 
 def component(item_component):
-    """ Deletes component. """
+    """Deletes component."""
 
     default(item_component)
 
 
 def _slide(item_slide):
-    """ Internal delete for slide. """
+    """Internal delete for slide."""
 
     for item_question in item_slide.questions:
         question(item_question)
@@ -57,7 +57,7 @@ def _slide(item_slide):
 
 
 def slide(item_slide):
-    """ Deletes slide and updates order of other slides if neccesary. """
+    """Deletes slide and updates order of other slides if neccesary."""
 
     competition_id = item_slide.competition_id
     slide_order = item_slide.order
@@ -74,7 +74,7 @@ def slide(item_slide):
 
 
 def team(item_team):
-    """ Deletes team, its question answers and the code. """
+    """Deletes team, its question answers and the code."""
 
     for item_question_answer in item_team.question_alternative_answers:
         default(item_question_answer)
@@ -85,7 +85,7 @@ def team(item_team):
 
 
 def question(item_question):
-    """ Deletes question and its alternatives and answers. """
+    """Deletes question and its alternatives and answers."""
 
     scores = QuestionScore.query.filter(QuestionScore.question_id == item_question.id).all()
 
@@ -99,7 +99,7 @@ def question(item_question):
 
 
 def alternatives(item_alternatives):
-    """ Deletes question alternative. """
+    """Deletes question alternative."""
     answers = QuestionAlternativeAnswer.query.filter(
         QuestionAlternativeAnswer.question_alternative_id == item_alternatives.id
     ).all()
@@ -109,8 +109,29 @@ def alternatives(item_alternatives):
     default(item_alternatives)
 
 
+def alternative(item_alternative):
+    """Deletes specified alternative and updates the order for the remaining alternatives"""
+
+    alternatives_to_same_question = QuestionAlternative.query.filter(
+        QuestionAlternative.question_id == item_alternative.question_id
+    ).all()
+
+    alternative_order = item_alternative.alternative_order
+    correct_order = item_alternative.correct_order
+
+    default(item_alternative)
+
+    for other_alternative in alternatives_to_same_question:
+        if other_alternative.alternative_order > alternative_order:
+            other_alternative.alternative_order -= 1
+        if other_alternative.correct_order > correct_order:
+            other_alternative.correct_order -= 1
+
+    db.session.commit()
+
+
 def competition(item_competition):
-    """ Deletes competition, its slides, teams and codes. """
+    """Deletes competition, its slides, teams and codes."""
 
     for item_slide in item_competition.slides:
         _slide(item_slide)
@@ -123,6 +144,6 @@ def competition(item_competition):
 
 
 def code(item_code):
-    """ Deletes competition code. """
+    """Deletes competition code."""
 
     default(item_code)

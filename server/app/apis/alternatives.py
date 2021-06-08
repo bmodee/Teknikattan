@@ -46,7 +46,7 @@ class Alternatives(MethodView):
     @blp.authorization(allowed_roles=ALL, allowed_views=ALL)
     @blp.response(http_codes.OK, QuestionAlternativeSchema(many=True))
     def get(self, competition_id, slide_id, question_id):
-        """ Gets the all question alternatives to the specified question. """
+        """Gets the all question alternatives to the specified question."""
         return dbc.get.question_alternative_list(competition_id, slide_id, question_id)
 
     @blp.authorization(allowed_roles=ALL)
@@ -67,7 +67,7 @@ class QuestionAlternatives(MethodView):
     @blp.response(http_codes.OK, QuestionAlternativeSchema)
     @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Could not find alternative")
     def get(self, competition_id, slide_id, question_id, alternative_id):
-        """ Gets the specified question alternative. """
+        """Gets the specified question alternative."""
         return dbc.get.question_alternative(competition_id, slide_id, question_id, alternative_id)
 
     @blp.authorization(allowed_roles=ALL)
@@ -118,6 +118,6 @@ class QuestionAlternatives(MethodView):
     @blp.alt_response(http_codes.NOT_FOUND, ErrorSchema, description="Could not find alternative")
     @blp.alt_response(http_codes.CONFLICT, ErrorSchema, description="Could not delete alternative")
     def delete(self, competition_id, slide_id, question_id, alternative_id):
-        """ Deletes the specified question alternative. """
-        dbc.delete.default(dbc.get.question_alternative(competition_id, slide_id, question_id, alternative_id))
+        """Deletes the specified question alternative."""
+        dbc.delete.alternative(dbc.get.question_alternative(competition_id, slide_id, question_id, alternative_id))
         return None
